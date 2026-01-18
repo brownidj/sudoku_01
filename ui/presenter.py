@@ -134,6 +134,34 @@ class Presenter(IUserActions):
         self._apply_result(res)
         self._render("New game (" + p.difficulty + "): " + p.puzzle_id)
 
+    def on_save_requested(self) -> None:
+        """Handle a save request from the View.
+
+        The Presenter exports a JSON-safe payload via the application layer and
+        passes it back to the View for actual persistence.
+        """
+
+        payload = self._service.export_save(self._history)
+        self._view.present_save_payload(payload)
+
+    def on_load_requested(self, data: dict) -> None:
+        """Handle a load request from the View.
+
+        Args:
+            data: A JSON-decoded dictionary produced by a prior save operation.
+        """
+
+        res = self._service.import_save(data)
+        self._selected = None
+        self._last_conflicts = frozenset()
+        self._last_solved = False
+
+        # Once a game is loaded, difficulty changes should be locked
+        # if the loaded history already has player moves.
+        self._difficulty_locked = res.history.can_undo()
+
+        self._apply_result(res)
+
     # -------- Internal helpers --------
 
     def _lock_difficulty_if_first_player_change(self, before_history, after_history) -> None:

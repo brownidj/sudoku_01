@@ -9,6 +9,7 @@ from domain import ops, rules
 from domain.types import Board, Coord, Digit
 
 from application import puzzles
+from application import persistence
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,21 @@ class GameService:
         """Start a new game from a named puzzle."""
         puzzle = puzzles.get_puzzle(puzzle_id)
         return self.new_game_from_grid(puzzle.grid)
+
+    def export_save(self, history: History) -> dict:
+        """Export the current game history to a JSON-safe dict.
+
+        The caller (UI layer) is responsible for encoding and storing this data.
+        """
+        return persistence.serialize_history(history)
+
+    def import_save(self, data: dict) -> MoveResult:
+        """Load a previously saved game.
+
+        The provided data must come from `export_save` (or an equivalent source).
+        """
+        history = persistence.deserialize_history(data)
+        return self._result(history, None, "Game loaded.")
 
     def place_digit(self, history: History, coord: Coord, digit: Digit) -> MoveResult:
         """Place a digit using *soft enforcement*.

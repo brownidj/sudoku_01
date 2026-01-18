@@ -56,6 +56,14 @@ class IView(Protocol):
         """Optional: Presenter can enable/disable keyboard capture based on focus."""
         ...
 
+    def present_save_payload(self, payload: dict) -> None:
+        """Provide a JSON-safe save payload to the View.
+
+        The View is responsible for encoding (e.g. JSON) and persisting this
+        payload via file dialogs or other mechanisms.
+        """
+        ...
+
 
 class IUserActions(Protocol):
     """Events the View forwards to the Presenter (no Tkinter event objects)."""
@@ -84,4 +92,20 @@ class IUserActions(Protocol):
 
     def on_new_game(self) -> None:
         """Start a new game (puzzle selection is handled by the Presenter/application layer)."""
+        ...
+
+    def on_save_requested(self) -> None:
+        """Request that the current game be saved.
+
+        The View handles file dialogs and JSON encoding; the Presenter provides
+        the serializable payload via the application layer.
+        """
+        ...
+
+    def on_load_requested(self, data: dict) -> None:
+        """Request that a previously saved game be loaded.
+
+        Args:
+            data: A JSON-decoded dictionary produced by a prior save operation.
+        """
         ...

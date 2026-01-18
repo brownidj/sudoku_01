@@ -51,3 +51,15 @@ def test_generate_puzzle_hard_givens_range():
 
     givens = sum(1 for row in p.grid for v in row if v is not None)
     assert 22 <= givens <= 30
+
+
+def test_generate_puzzle_has_rotational_symmetry_in_blanks():
+    rng = random.Random(10)
+    p = generate_puzzle("medium", rng=rng)
+
+    for r in range(9):
+        for c in range(9):
+            r2, c2 = 8 - r, 8 - c
+            is_blank = p.grid[r][c] is None
+            is_blank_sym = p.grid[r2][c2] is None
+            assert is_blank == is_blank_sym

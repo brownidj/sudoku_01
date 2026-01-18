@@ -45,6 +45,12 @@ class ActionsProxy(IUserActions):
     def on_set_difficulty(self, difficulty: str) -> None:
         self._t().on_set_difficulty(difficulty)
 
+    def on_save_requested(self) -> None:
+        self._t().on_save_requested()
+
+    def on_load_requested(self, data: dict) -> None:
+        self._t().on_load_requested(data)
+
 
 def main() -> None:
     root = tk.Tk()

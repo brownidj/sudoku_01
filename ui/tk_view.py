@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 
+import json
+import time
 import tkinter as tk
+from tkinter import filedialog, messagebox
 from typing import Literal
 
 from ui.contracts import IView, IUserActions, UiState
 
 # Set True temporarily to debug UI wiring.
-DEBUG_UI = False
+DEBUG_UI = True
 
 
 class TkSudokuView(tk.Frame, IView):
@@ -28,6 +31,14 @@ class TkSudokuView(tk.Frame, IView):
         self._actions = actions
 
         master.title("Sudoku")
+
+        # Menu bar
+        self._menubar = tk.Menu(master)
+        self._file_menu = tk.Menu(self._menubar, tearoff=0)
+        self._file_menu.add_command(label="Save…", command=self._on_save_clicked)
+        self._file_menu.add_command(label="Load…", command=self._on_load_clicked)
+        self._menubar.add_cascade(label="File", menu=self._file_menu)
+        master.config(menu=self._menubar)
 
         # Top controls
         self._topbar = tk.Frame(self)
@@ -64,6 +75,9 @@ class TkSudokuView(tk.Frame, IView):
 
         # Cached state for redraw
         self._last_state: UiState | None = None
+        # View-local transient status override (e.g. save/load confirmations)
+        self._status_override: str | None = None
+        self._status_override_job: str | None = None
 
         # Layout cache (computed from canvas size)
         self._origin_x = 0
@@ -80,11 +94,97 @@ class TkSudokuView(tk.Frame, IView):
 
     # ---------------- IView ----------------
 
+    def _dbg(self, *parts: object) -> None:
+        if not DEBUG_UI:
+            return
+        try:
+            stamp = time.strftime("%H:%M:%S")
+        except Exception:
+            stamp = "?"
+        try:
+            print("[TkView %s]" % stamp, *parts)
+        except Exception:
+            pass
+
+    def _set_status_override(self, text: str, ms: int = 3000) -> None:
+        """Show a temporary status message without fighting Presenter renders."""
+
+        self._dbg("_set_status_override:", text, "ms=", ms)
+        self._status_override = text
+        self._status.config(text=text)
+        self._dbg("_set_status_override: label set to=", self._status.cget("text"))
+        try:
+            self._status.update_idletasks()
+        except Exception:
+            pass
+
+        # Cancel any pending clear
+        if self._status_override_job is not None:
+            try:
+                self.after_cancel(self._status_override_job)
+            except Exception:
+                pass
+            self._status_override_job = None
+
+        if ms > 0:
+            self._status_override_job = self.after(ms, self._clear_status_override)
+
+    def _clear_status_override(self) -> None:
+        self._dbg("_clear_status_override")
+        self._status_override = None
+        self._status_override_job = None
+        if self._last_state is not None:
+            self._status.config(text=self._last_state.status_text)
+        else:
+            self._status.config(text="")
+
+        try:
+            self._status.update_idletasks()
+        except Exception:
+            pass
+
+    def present_save_payload(self, payload: dict) -> None:
+        """Prompt the user to save a JSON-safe payload to disk."""
+
+        self._dbg("present_save_payload: begin")
+        path = filedialog.asksaveasfilename(
+            title="Save Sudoku",
+            defaultextension=".json",
+            filetypes=[("Sudoku save", "*.json"), ("JSON", "*.json"), ("All files", "*.*")],
+        )
+        self._dbg("present_save_payload: path=", path)
+        if not path:
+            return
+
+        try:
+            self._dbg("present_save_payload: writing")
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(payload, f, ensure_ascii=False, indent=2)
+            self._dbg("present_save_payload: wrote ok")
+        except OSError as e:
+            messagebox.showerror("Save failed", "Unable to save file.\n\n" + str(e))
+            return
+
+        # Status feedback (Presenter remains pure)
+        self._dbg("present_save_payload: setting status override")
+        self._set_status_override("Saved: " + path)
+        self._dbg("present_save_payload: label now=", self._status.cget("text"))
+
     def render(self, state: UiState) -> None:
         """Render the UI state provided by the Presenter."""
 
         self._last_state = state
-        self._status.config(text=state.status_text)
+        self._dbg("render: status_text=", state.status_text, " override=", self._status_override)
+        if self._status_override is None:
+            status = state.status_text
+            # View-only indicator for Notes mode (Presenter remains authoritative for game state)
+            try:
+                if bool(getattr(state, "notes_mode", False)):
+                    status = status + "   [NOTES]"
+            except Exception:
+                pass
+            self._status.config(text=status)
+            self._dbg("render: label set to presenter status=", self._status.cget("text"))
         # Keep difficulty dropdown in sync with Presenter-owned state and disable it mid-game.
         try:
             self._difficulty_var.set(state.difficulty)
@@ -180,16 +280,54 @@ class TkSudokuView(tk.Frame, IView):
         # Grid lines on top
         self._draw_grid_lines()
 
+        # Notes mode badge (view-only)
+        try:
+            if state is not None and bool(getattr(state, "notes_mode", False)):
+                bx = self._origin_x + 6
+                by = self._origin_y + 6
+                self._canvas.create_rectangle(bx, by, bx + 70, by + 22, outline="#1e5aa8", width=2, fill="#cfe8ff")
+                self._canvas.create_text(bx + 35, by + 11, text="NOTES", font=("TkDefaultFont", 9, "bold"))
+        except Exception:
+            pass
+
     def _draw_cells(self, state: UiState) -> None:
         cell = self._cell
         ox = self._origin_x
         oy = self._origin_y
 
-        # Colors (simple and distinct)
+        # Colors (layered + distinct)
         color_default = "white"
-        color_highlight = "#f5f5dc"  # light beige
-        color_selected = "#cfe8ff"   # light blue
-        color_conflict = "salmon"
+        color_peer_rowcol = "#eef7ff"   # very light blue
+        color_peer_box = "#f2f0ff"      # very light lavender
+        color_selected = "#cfe8ff"      # light blue
+        color_conflict = "salmon"       # conflict fill
+        outline_selected = "#1e5aa8"
+        outline_conflict = "#a00000"
+
+        sel = None
+        try:
+            sel = getattr(state, "selected", None)
+        except Exception:
+            sel = None
+
+        if sel is None:
+            try:
+                sel = getattr(state, "selected_coord", None)
+            except Exception:
+                sel = None
+
+        sel_r = None
+        sel_c = None
+        if isinstance(sel, tuple) and len(sel) == 2:
+            try:
+                sel_r = int(sel[0])
+                sel_c = int(sel[1])
+            except Exception:
+                sel_r = None
+                sel_c = None
+
+        sel_box_r = (sel_r // 3) if sel_r is not None else None
+        sel_box_c = (sel_c // 3) if sel_c is not None else None
 
         for r in range(9):
             for c in range(9):
@@ -200,26 +338,46 @@ class TkSudokuView(tk.Frame, IView):
                 x1 = x0 + cell
                 y1 = y0 + cell
 
-                # Background precedence: conflict > selected > highlight > default
+                # Peer shading derived from current selection.
+                peer_rowcol = False
+                peer_box = False
+                if sel_r is not None and sel_c is not None:
+                    if (r == sel_r) or (c == sel_c):
+                        peer_rowcol = True
+                    if sel_box_r is not None and sel_box_c is not None:
+                        if (r // 3 == sel_box_r) and (c // 3 == sel_box_c):
+                            peer_box = True
+
+                # Background precedence: conflict > selected > row/col peer > box peer > default
                 if vm.conflicted:
                     bg = color_conflict
                 elif vm.selected:
                     bg = color_selected
-                elif vm.highlighted:
-                    bg = color_highlight
+                elif peer_rowcol:
+                    bg = color_peer_rowcol
+                elif peer_box:
+                    bg = color_peer_box
                 else:
                     bg = color_default
 
+                # Draw cell background
                 self._canvas.create_rectangle(x0, y0, x1, y1, outline="", fill=bg)
+
+                # Strong outlines (selected/conflict)
+                if vm.conflicted:
+                    self._canvas.create_rectangle(x0, y0, x1, y1, outline=outline_conflict, width=3)
+                elif vm.selected:
+                    self._canvas.create_rectangle(x0, y0, x1, y1, outline=outline_selected, width=3)
 
                 # Content
                 if vm.value is not None:
+                    fill = "#111111" if vm.given else "#222222"
                     self._canvas.create_text(
                         (x0 + x1) / 2,
                         (y0 + y1) / 2,
                         text=str(vm.value),
                         font=self._font_given if vm.given else self._font_value,
-                        fill="black",
+                        fill=fill,
                     )
                 else:
                     self._draw_notes(x0, y0, cell, vm.notes)
@@ -273,6 +431,84 @@ class TkSudokuView(tk.Frame, IView):
 
     # ---------------- Internal: input handling ----------------
 
+    def _current_selected(self) -> tuple[int, int] | None:
+        """Return the currently selected cell coordinate, if any."""
+
+        state = self._last_state
+        if state is None:
+            return None
+
+        sel = None
+        try:
+            sel = getattr(state, "selected", None)
+        except Exception:
+            sel = None
+
+        if sel is None:
+            try:
+                sel = getattr(state, "selected_coord", None)
+            except Exception:
+                sel = None
+
+        if isinstance(sel, tuple) and len(sel) == 2:
+            try:
+                r = int(sel[0])
+                c = int(sel[1])
+                if 0 <= r <= 8 and 0 <= c <= 8:
+                    return r, c
+            except Exception:
+                return None
+
+        # Fallback: some UiState variants may not expose a selected coordinate field.
+        # In that case, infer it from the per-cell VM flags.
+        try:
+            board = getattr(state, "board", None)
+            cells = getattr(board, "cells", None) if board is not None else None
+            if cells is not None:
+                for rr in range(9):
+                    row = cells[rr]
+                    for cc in range(9):
+                        try:
+                            if bool(getattr(row[cc], "selected", False)):
+                                return rr, cc
+                        except Exception:
+                            pass
+        except Exception:
+            pass
+
+        return None
+
+    def _on_save_clicked(self) -> None:
+        """Menu action: request a save from the Presenter."""
+
+        self._dbg("_on_save_clicked: requesting save")
+        self._actions.on_save_requested()
+        self._dbg("_on_save_clicked: returned from presenter")
+
+    def _on_load_clicked(self) -> None:
+        """Menu action: load a previously saved game."""
+
+        path = filedialog.askopenfilename(
+            title="Load Sudoku",
+            filetypes=[("Sudoku save", "*.json"), ("JSON", "*.json"), ("All files", "*.*")],
+        )
+        if not path:
+            return
+
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, json.JSONDecodeError) as e:
+            messagebox.showerror("Load failed", "Unable to load file.\n\n" + str(e))
+            return
+
+        if not isinstance(data, dict):
+            messagebox.showerror("Load failed", "Save file format not recognised.")
+            return
+
+        self._set_status_override("Loaded: " + path)
+        self._actions.on_load_requested(data)
+
     def _on_difficulty_selected(self, _ignored: tk.StringVar) -> object | None:
         """Handle difficulty selection from the dropdown.
 
@@ -322,6 +558,31 @@ class TkSudokuView(tk.Frame, IView):
 
         ch = event.char or ""
         keysym = (event.keysym or "")
+
+        # Navigation: arrow keys move selection.
+        if keysym in ("Left", "Right", "Up", "Down"):
+            cur = self._current_selected()
+            if cur is None:
+                r, c = 0, 0
+            else:
+                r, c = cur
+
+            if keysym == "Left":
+                c = max(0, c - 1)
+            elif keysym == "Right":
+                c = min(8, c + 1)
+            elif keysym == "Up":
+                r = max(0, r - 1)
+            elif keysym == "Down":
+                r = min(8, r + 1)
+
+            self._actions.on_cell_clicked((r, c))
+            return
+
+        # Notes toggle: Enter or Space
+        if keysym in ("Return", "space"):
+            self._actions.on_toggle_notes_mode()
+            return
 
         # Digits: prefer keysym (works for keypad), fall back to char.
         # IMPORTANT: do NOT use `ch in "123456789"` because "" is considered a substring of any string.

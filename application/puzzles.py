@@ -270,14 +270,38 @@ def _mask_solution(solution: Grid, difficulty: str, rng: random.Random) -> Grid:
 
     work: list[list[Optional[Digit]]] = [list(row) for row in solution]
 
-    coords = [(r, c) for r in range(9) for c in range(9)]
+    # Rotational symmetry (180°): remove (r, c) together with (8-r, 8-c).
+    # We iterate only over half the grid (including the center cell) to avoid duplicates.
+    coords = [(r, c) for r in range(9) for c in range(9) if (r < 4) or (r == 4 and c <= 4)]
     rng.shuffle(coords)
 
     givens = 81
     for r, c in coords:
         if givens <= target:
             break
+
+        r2, c2 = 8 - r, 8 - c
+
+        # Determine how many givens would be removed by this symmetric step.
+        # Center cell (4,4) maps to itself.
+        if r == r2 and c == c2:
+            removal = 1
+        else:
+            removal = 2
+
+        # Do not overshoot below the target; preserve symmetry.
+        if givens - removal < target:
+            continue
+
+        # Remove the symmetric pair if present.
+        old1 = work[r][c]
+        old2 = work[r2][c2]
+
+        if old1 is None and old2 is None:
+            continue
+
         work[r][c] = None
-        givens -= 1
+        work[r2][c2] = None
+        givens -= removal
 
     return tuple(tuple(work[r][c] for c in range(9)) for r in range(9))
