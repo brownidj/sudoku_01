@@ -20,11 +20,22 @@ class SudokuScreen extends StatefulWidget {
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<int, ui.Image> _animalImages = {};
   Future<void>? _animalLoad;
+  OverlayEntry? _tooltipEntry;
+  List<int> _candidateDigits = const [];
+  Coord? _candidateCoord;
+  bool _showCandidates = false;
 
   @override
   void initState() {
     super.initState();
     _animalLoad = _loadAnimalImages();
+  }
+
+  @override
+  void dispose() {
+    _tooltipEntry?.remove();
+    _tooltipEntry = null;
+    super.dispose();
   }
 
   Future<void> _loadAnimalImages() async {
@@ -48,19 +59,32 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Sudoku'),
+            automaticallyImplyLeading: false,
+            title: const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Animal Sudoku'),
+            ),
             actions: [
-              IconButton(
-                onPressed: () => widget.controller.onSaveRequested(context),
-                icon: const Icon(Icons.save_outlined),
-                tooltip: 'Save',
-              ),
-              IconButton(
-                onPressed: () => widget.controller.onLoadRequested(context),
-                icon: const Icon(Icons.upload_file_outlined),
-                tooltip: 'Load',
+              Builder(
+                builder: (context) => IconButton(
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  icon: const Icon(Icons.menu),
+                  tooltip: 'Menu',
+                ),
               ),
             ],
+          ),
+          drawer: Drawer(
+            child: SafeArea(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: const [
+                  DrawerHeader(
+                    child: Text('Animal Sudoku'),
+                  ),
+                ],
+              ),
+            ),
           ),
           body: SafeArea(
             child: Column(
@@ -72,7 +96,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         final boardSize = min(constraints.maxWidth, constraints.maxHeight);
-                        return Center(
+                        return Align(
+                          alignment: Alignment.topCenter,
                           child: SizedBox(
                             width: boardSize,
                             height: boardSize,
@@ -83,6 +108,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
                                 final coord = _coordFromOffset(layout, local);
                                 if (coord != null) {
                                   _handleCellTap(coord);
+                                }
+                              },
+                              onLongPressStart: (details) {
+                                final local = details.localPosition;
+                                final layout = layoutForSize(Size(boardSize, boardSize));
+                                final coord = _coordFromOffset(layout, local);
+                                if (coord != null) {
+                                  _handleCellLongPress(details.globalPosition, coord);
                                 }
                               },
                               child: CustomPaint(
@@ -99,7 +132,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     ),
                   ),
                 ),
-                _buildStatusBar(state, style),
+                _buildCandidatePanel(state),
                 _buildActionBar(state),
               ],
             ),
@@ -112,38 +145,48 @@ class _SudokuScreenState extends State<SudokuScreen> {
   Widget _buildTopControls(UiState state) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Wrap(
-        alignment: WrapAlignment.spaceBetween,
-        crossAxisAlignment: WrapCrossAlignment.center,
-        spacing: 12,
-        runSpacing: 8,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ElevatedButton.icon(
-            onPressed: widget.controller.onNewGame,
-            icon: const Icon(Icons.refresh),
-            label: const Text('New Game'),
-          ),
-          ToggleButtons(
-            isSelected: [state.contentMode == 'numbers', state.contentMode == 'animals'],
-            onPressed: (index) {
-              widget.controller.onContentModeChanged(index == 1 ? 'animals' : 'numbers');
-            },
-            children: const [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text('Numbers'),
+          Row(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: ToggleButtons(
+                  isSelected: [state.contentMode == 'animals', state.contentMode == 'numbers'],
+                  onPressed: (index) {
+                    widget.controller.onContentModeChanged(index == 0 ? 'animals' : 'numbers');
+                  },
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('Animals'),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12),
+                      child: Text('Numbers'),
+                    ),
+                  ],
+                ),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Text('Animals'),
+              const Spacer(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton.icon(
+                  onPressed: widget.controller.onNewGame,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('New Game'),
+                ),
               ),
             ],
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
+          const SizedBox(height: 8),
+          Wrap(
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            spacing: 12,
+            runSpacing: 8,
             children: [
-              const Text('Difficulty'),
-              const SizedBox(width: 8),
               DropdownButton<String>(
                 value: state.difficulty,
                 onChanged: state.canChangeDifficulty
@@ -159,42 +202,29 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   DropdownMenuItem(value: 'hard', child: Text('Hard')),
                 ],
               ),
-            ],
-          ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Style'),
-              const SizedBox(width: 8),
-              DropdownButton<String>(
-                value: state.styleName,
-                onChanged: (value) {
-                  if (value != null) {
-                    widget.controller.onStyleChanged(value);
-                  }
-                },
-                items: const [
-                  DropdownMenuItem(value: 'Modern', child: Text('Modern')),
-                  DropdownMenuItem(value: 'Classic', child: Text('Classic')),
-                  DropdownMenuItem(value: 'High Contrast', child: Text('High Contrast')),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Style'),
+                  const SizedBox(width: 8),
+                  DropdownButton<String>(
+                    value: state.styleName,
+                    onChanged: (value) {
+                      if (value != null) {
+                        widget.controller.onStyleChanged(value);
+                      }
+                    },
+                    items: const [
+                      DropdownMenuItem(value: 'Modern', child: Text('Modern')),
+                      DropdownMenuItem(value: 'Classic', child: Text('Classic')),
+                      DropdownMenuItem(value: 'High Contrast', child: Text('High Contrast')),
+                    ],
+                  ),
                 ],
               ),
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStatusBar(UiState state, BoardStyle style) {
-    final text = state.solved ? 'Solved.' : state.statusText;
-    return Container(
-      width: double.infinity,
-      color: style.statusBg,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      child: Text(
-        text,
-        style: const TextStyle(fontWeight: FontWeight.w600),
       ),
     );
   }
@@ -209,8 +239,23 @@ class _SudokuScreenState extends State<SudokuScreen> {
           SizedBox(
             height: 40,
             child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                backgroundColor: state.notesMode
+                    ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                    : null,
+                side: BorderSide(
+                  color: state.notesMode
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.outline,
+                ),
+              ),
               onPressed: widget.controller.onToggleNotesMode,
-              child: Text(state.notesMode ? 'Notes: On' : 'Notes: Off'),
+              child: Text(
+                'Notes',
+                style: TextStyle(
+                  fontWeight: state.notesMode ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
             ),
           ),
           SizedBox(
@@ -220,82 +265,45 @@ class _SudokuScreenState extends State<SudokuScreen> {
               child: const Text('Clear'),
             ),
           ),
-          SizedBox(
-            height: 40,
-            child: OutlinedButton(
-              onPressed: state.canUndo ? widget.controller.onUndo : null,
-              child: const Text('Undo'),
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: OutlinedButton(
-              onPressed: state.canRedo ? widget.controller.onRedo : null,
-              child: const Text('Redo'),
-            ),
-          ),
         ],
       ),
     );
+  }
+
+  void _handleCellLongPress(Offset globalPosition, Coord coord) {
+    final state = widget.controller.state;
+    if (state.contentMode != 'animals') {
+      return;
+    }
+    final cell = state.board.cells[coord.row][coord.col];
+    final value = cell.value;
+    if (value == null) {
+      return;
+    }
+    final name = AnimalImageCache.nameForDigit(value);
+    _showTooltip(globalPosition, name);
   }
 
   Future<void> _handleCellTap(Coord coord) async {
     widget.controller.onCellTapped(coord);
     final state = widget.controller.state;
     final cell = state.board.cells[coord.row][coord.col];
-    if (cell.given || cell.value != null) {
+    if (cell.given) {
       return;
     }
     if (_animalLoad != null) {
       await _animalLoad;
     }
     final candidates = _possibleDigits(state, coord);
-    if (candidates.isEmpty) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No available numbers for this cell.')),
-        );
-      }
-      return;
-    }
+    final withClear = [...candidates, 0];
     if (!mounted) {
       return;
     }
-    final selected = await showDialog<int>(
-      context: context,
-      builder: (dialogContext) {
-        final showAnimals = state.contentMode == 'animals';
-        return AlertDialog(
-          content: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final digit in candidates)
-                SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
-                    onPressed: () => Navigator.of(dialogContext).pop(digit),
-                    child: showAnimals
-                        ? _animalOption(digit, state.contentMode == 'animals')
-                        : Text('$digit'),
-                  ),
-                ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-    if (selected != null) {
-      widget.controller.onDigitPressed(selected);
-    }
+    setState(() {
+      _showCandidates = true;
+      _candidateDigits = withClear;
+      _candidateCoord = coord;
+    });
   }
 
   Coord? _coordFromOffset(BoardLayout layout, Offset offset) {
@@ -338,20 +346,131 @@ class _SudokuScreenState extends State<SudokuScreen> {
     return candidates;
   }
 
-  Widget _animalOption(int digit, bool showAnimals) {
-    if (!showAnimals) {
-      return Text('$digit');
+  void _showTooltip(Offset globalPosition, String text) {
+    _tooltipEntry?.remove();
+    final overlay = Overlay.of(context);
+    if (overlay == null) {
+      return;
+    }
+    final size = MediaQuery.of(context).size;
+    const tooltipPadding = EdgeInsets.symmetric(horizontal: 10, vertical: 6);
+    const tooltipMargin = 8.0;
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: const TextStyle(color: Colors.white, fontSize: 12),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final tooltipSize = Size(
+      textPainter.width + tooltipPadding.horizontal,
+      textPainter.height + tooltipPadding.vertical,
+    );
+
+    var left = globalPosition.dx - tooltipSize.width / 2;
+    var top = globalPosition.dy - tooltipSize.height - 14;
+    left = left.clamp(tooltipMargin, size.width - tooltipSize.width - tooltipMargin);
+    top = top.clamp(tooltipMargin, size.height - tooltipSize.height - tooltipMargin);
+
+    _tooltipEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: left,
+        top: top,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: tooltipPadding,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              text,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(_tooltipEntry!);
+    Future.delayed(const Duration(seconds: 2), () {
+      _tooltipEntry?.remove();
+      _tooltipEntry = null;
+    });
+  }
+
+  Widget _animalOption(int digit, GlobalKey<TooltipState> tooltipKey) {
+    if (digit == 0) {
+      return const Icon(Icons.clear);
     }
     final image = _animalImages[digit];
     if (image == null) {
       return Text('$digit');
     }
-    return SizedBox(
-      width: 32,
-      height: 32,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: RawImage(image: image),
+    final name = AnimalImageCache.nameForDigit(digit);
+    return Tooltip(
+      key: tooltipKey,
+      message: name,
+      triggerMode: TooltipTriggerMode.manual,
+      child: SizedBox(
+        width: 32,
+        height: 32,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: RawImage(image: image),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCandidatePanel(UiState state) {
+    if (!_showCandidates || _candidateCoord == null) {
+      return const SizedBox.shrink();
+    }
+    final showAnimals = state.contentMode == 'animals';
+    return Transform.translate(
+      offset: const Offset(0, -20),
+      child: Container(
+        color: Theme.of(context).colorScheme.surfaceVariant,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+          for (final digit in _candidateDigits)
+            Builder(
+              builder: (context) {
+                final tooltipKey = GlobalKey<TooltipState>();
+                return SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: GestureDetector(
+                    onLongPress:
+                        showAnimals ? () => tooltipKey.currentState?.ensureTooltipVisible() : null,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                      onPressed: () {
+                        if (digit == 0) {
+                          widget.controller.onClearPressed();
+                        } else {
+                          widget.controller.onDigitPressed(digit);
+                        }
+                        setState(() {
+                          _showCandidates = false;
+                          _candidateDigits = const [];
+                          _candidateCoord = null;
+                        });
+                      },
+                      child: showAnimals
+                          ? _animalOption(digit, tooltipKey)
+                          : (digit == 0 ? const Icon(Icons.clear) : Text('$digit')),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

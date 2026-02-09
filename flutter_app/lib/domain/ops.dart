@@ -33,9 +33,11 @@ Board toggleNote(Board board, Coord coord, Digit digit) {
   }
   final notes = cell.notes.toSet();
   if (notes.contains(digit)) {
-    notes.remove(digit);
+    notes.clear();
   } else {
-    notes.add(digit);
+    notes
+      ..clear()
+      ..add(digit);
   }
   final newCell = Cell(value: null, given: false, notes: notes);
   if (_cellEquals(newCell, cell)) {

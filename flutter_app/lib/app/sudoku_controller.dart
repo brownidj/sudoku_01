@@ -71,7 +71,7 @@ class SudokuController extends ChangeNotifier {
   bool _lastSolved = false;
   String _statusText = 'Welcome.';
   String _styleName = 'Modern';
-  String _contentMode = 'numbers';
+  String _contentMode = 'animals';
 
   SudokuController() {
     _history = _service.initialHistory();

@@ -47,6 +47,18 @@ class AnimalImageCache {
     }
   }
 
+  static String nameForDigit(int digit) {
+    return _animalName(digit);
+  }
+
+  static String initialForDigit(int digit) {
+    final name = _animalName(digit);
+    if (name.isEmpty) {
+      return '';
+    }
+    return name[0].toUpperCase();
+  }
+
   static Future<ui.Image> _decodeImage(Uint8List bytes) async {
     final codec = await ui.instantiateImageCodec(bytes);
     final frame = await codec.getNextFrame();

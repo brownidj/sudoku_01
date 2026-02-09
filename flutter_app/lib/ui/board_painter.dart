@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/styles.dart';
 
 class BoardLayout {
@@ -59,7 +60,7 @@ class SudokuBoardPainter extends CustomPainter {
 
     _drawCells(canvas, layout);
     _drawGrid(canvas, layout);
-    _drawNotesBadge(canvas, layout);
+    // Notes badge removed; notes mode is indicated via the UI toggle.
   }
 
   void _drawCells(Canvas canvas, BoardLayout layout) {
@@ -148,16 +149,45 @@ class SudokuBoardPainter extends CustomPainter {
 
   void _drawNotes(Canvas canvas, Rect rect, List<int> notes, double cellSize) {
     final mini = cellSize / 3.0;
-    final fontSize = cellSize * 0.18;
+    final fontSize = cellSize * 0.18 + 4;
+    if (state.contentMode == 'animals') {
+      final digit = notes.first;
+      final image = animalImages[digit];
+      if (image != null) {
+        final targetSize = cellSize * 0.7;
+        final target = Rect.fromLTWH(
+          rect.left + (rect.width - targetSize) / 2,
+          rect.top + (rect.height - targetSize) / 2,
+          targetSize,
+          targetSize,
+        );
+        final source = Rect.fromLTWH(
+          0,
+          0,
+          image.width.toDouble(),
+          image.height.toDouble(),
+        );
+        final paint = Paint()
+          ..colorFilter = const ColorFilter.matrix([
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0.2126, 0.7152, 0.0722, 0, 0,
+            0, 0, 0, 0.3, 0,
+          ]);
+        canvas.drawImageRect(image, source, target, paint);
+        return;
+      }
+    }
     for (final digit in notes) {
       final rr = (digit - 1) ~/ 3;
       final cc = (digit - 1) % 3;
-      final cx = rect.left + (cc + 0.5) * mini;
-      final cy = rect.top + (rr + 0.5) * mini;
+      final left = rect.left + cc * mini;
+      final top = rect.top + rr * mini;
 
+      final label = digit.toString();
       final textPainter = TextPainter(
         text: TextSpan(
-          text: digit.toString(),
+          text: label,
           style: TextStyle(
             color: style.notesColor,
             fontSize: fontSize,
@@ -165,11 +195,11 @@ class SudokuBoardPainter extends CustomPainter {
         ),
         textAlign: TextAlign.center,
         textDirection: TextDirection.ltr,
-      )..layout(minWidth: 0, maxWidth: mini);
+      )..layout(minWidth: mini, maxWidth: mini);
 
       final offset = Offset(
-        cx - textPainter.width / 2,
-        cy - textPainter.height / 2,
+        left + 2,
+        top + mini - textPainter.height - 2,
       );
       textPainter.paint(canvas, offset);
     }
@@ -222,37 +252,7 @@ class SudokuBoardPainter extends CustomPainter {
     }
   }
 
-  void _drawNotesBadge(Canvas canvas, BoardLayout layout) {
-    if (!state.notesMode) {
-      return;
-    }
-    final rect = Rect.fromLTWH(
-      layout.originX + 6,
-      layout.originY + 6,
-      70,
-      22,
-    );
-    final paint = Paint()
-      ..color = style.notesBadgeBg
-      ..style = PaintingStyle.fill;
-    canvas.drawRect(rect, paint);
-    _drawOutline(canvas, rect, style.notesBadgeOutline, 2);
-
-    final textPainter = TextPainter(
-      text: const TextSpan(
-        text: 'NOTES',
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black),
-      ),
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    )..layout(minWidth: 0, maxWidth: rect.width);
-
-    final offset = Offset(
-      rect.left + (rect.width - textPainter.width) / 2,
-      rect.top + (rect.height - textPainter.height) / 2,
-    );
-    textPainter.paint(canvas, offset);
-  }
+  // Notes badge removed.
 
   @override
   bool shouldRepaint(covariant SudokuBoardPainter oldDelegate) {

@@ -49,7 +49,7 @@ class GameService {
       return _result(history, coord, 'No change.');
     }
     final newHistory = history.push(GameState(board: after));
-    final message = legal ? 'Digit placed.' : 'Conflict.';
+    final message = legal ? '' : 'Conflict.';
     return _result(newHistory, coord, message);
   }
 
