@@ -106,7 +106,7 @@ class SudokuBoardPainter extends CustomPainter {
 
         if (cell.value != null) {
           if (state.contentMode == 'animals' && animalImages.containsKey(cell.value)) {
-            _drawAnimal(canvas, rect, animalImages[cell.value]!);
+            _drawAnimal(canvas, rect, animalImages[cell.value]!, cell.value!);
           } else {
             _drawValue(canvas, rect, cell.value!, cell.given, cellSize);
           }
@@ -154,7 +154,7 @@ class SudokuBoardPainter extends CustomPainter {
       final digit = notes.first;
       final image = animalImages[digit];
       if (image != null) {
-        final targetSize = cellSize * 0.7;
+        final targetSize = _animalTargetSize(cellSize, digit);
         final target = Rect.fromLTWH(
           rect.left + (rect.width - targetSize) / 2,
           rect.top + (rect.height - targetSize) / 2,
@@ -205,12 +205,31 @@ class SudokuBoardPainter extends CustomPainter {
     }
   }
 
-  void _drawAnimal(Canvas canvas, Rect rect, ui.Image image) {
-    final targetSize = rect.width * 0.7;
+  void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
+    final targetSize = _animalTargetSize(rect.width, digit);
     final left = rect.left + (rect.width - targetSize) / 2;
     final top = rect.top + (rect.height - targetSize) / 2;
     final target = Rect.fromLTWH(left, top, targetSize, targetSize);
     paintImage(canvas: canvas, rect: target, image: image, fit: BoxFit.contain);
+  }
+
+  double _animalTargetSize(double cellSize, int digit) {
+    final scale = _animalScale(digit);
+    final targetSize = cellSize * 0.7 * scale;
+    final maxSize = cellSize * 0.88;
+    return targetSize > maxSize ? maxSize : targetSize;
+  }
+
+  double _animalScale(int digit) {
+    switch (digit) {
+      case 1: // ape
+      case 5: // elephant
+      case 8: // hippo
+      case 9: // iguana
+        return 1.2;
+      default:
+        return 1.0;
+    }
   }
 
   void _drawGrid(Canvas canvas, BoardLayout layout) {

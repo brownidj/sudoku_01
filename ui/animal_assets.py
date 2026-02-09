@@ -19,7 +19,7 @@ ANIMAL_BY_DIGIT: dict[int, str] = {
     6: "frog",
     7: "giraffe",
     8: "hippo",
-    9: "ibis",
+    9: "iguana",
 }
 
 # Cache images so they are not GC'd and to avoid reloading on every redraw.

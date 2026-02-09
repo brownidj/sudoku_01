@@ -18,7 +18,7 @@ class SudokuScreen extends StatefulWidget {
 }
 
 class _SudokuScreenState extends State<SudokuScreen> {
-  final Map<int, ui.Image> _animalImages = {};
+  final Map<String, Map<int, ui.Image>> _animalImages = {};
   Future<void>? _animalLoad;
   OverlayEntry? _tooltipEntry;
   List<int> _candidateDigits = const [];
@@ -39,7 +39,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   Future<void> _loadAnimalImages() async {
-    final images = await AnimalImageCache.load();
+    final images = await AnimalImageCache.loadAll();
     _animalImages
       ..clear()
       ..addAll(images);
@@ -78,9 +78,32 @@ class _SudokuScreenState extends State<SudokuScreen> {
             child: SafeArea(
               child: ListView(
                 padding: EdgeInsets.zero,
-                children: const [
-                  DrawerHeader(
+                children: [
+                  const DrawerHeader(
                     child: Text('Animal Sudoku'),
+                  ),
+                  const ListTile(
+                    title: Text('Animal Style'),
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Cute'),
+                    value: 'cute',
+                    groupValue: state.animalStyle,
+                    onChanged: (value) {
+                      if (value != null) {
+                        widget.controller.onAnimalStyleChanged(value);
+                      }
+                    },
+                  ),
+                  RadioListTile<String>(
+                    title: const Text('Simple'),
+                    value: 'simple',
+                    groupValue: state.animalStyle,
+                    onChanged: (value) {
+                      if (value != null) {
+                        widget.controller.onAnimalStyleChanged(value);
+                      }
+                    },
                   ),
                 ],
               ),
@@ -122,7 +145,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                                 painter: SudokuBoardPainter(
                                   state: state,
                                   style: style,
-                                  animalImages: _animalImages,
+                                  animalImages: _animalImages[state.animalStyle] ?? const {},
                                 ),
                               ),
                             ),
@@ -403,7 +426,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (digit == 0) {
       return const Icon(Icons.clear);
     }
-    final image = _animalImages[digit];
+    final style = widget.controller.state.animalStyle;
+    final image = _animalImages[style]?[digit];
     if (image == null) {
       return Text('$digit');
     }

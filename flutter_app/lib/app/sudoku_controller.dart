@@ -43,6 +43,7 @@ class UiState {
   final bool canChangeDifficulty;
   final String styleName;
   final String contentMode;
+  final String animalStyle;
   final Coord? selected;
 
   const UiState({
@@ -56,6 +57,7 @@ class UiState {
     required this.canChangeDifficulty,
     required this.styleName,
     required this.contentMode,
+    required this.animalStyle,
     required this.selected,
   });
 }
@@ -72,6 +74,7 @@ class SudokuController extends ChangeNotifier {
   String _statusText = 'Welcome.';
   String _styleName = 'Modern';
   String _contentMode = 'animals';
+  String _animalStyle = 'simple';
 
   SudokuController() {
     _history = _service.initialHistory();
@@ -176,6 +179,11 @@ class SudokuController extends ChangeNotifier {
   void onContentModeChanged(String mode) {
     _contentMode = (mode == 'animals') ? 'animals' : 'numbers';
     _render('Mode: ${_contentMode == 'animals' ? 'Animals' : 'Numbers'}');
+  }
+
+  void onAnimalStyleChanged(String style) {
+    _animalStyle = style == 'cute' ? 'cute' : 'simple';
+    _render('Animal style: $_animalStyle');
   }
 
   Future<void> onSaveRequested(BuildContext context) async {
@@ -285,8 +293,8 @@ class SudokuController extends ChangeNotifier {
       cells.add(row);
     }
 
-    return UiState(
-      board: BoardVm(cells: cells),
+      return UiState(
+        board: BoardVm(cells: cells),
       statusText: _statusText,
       notesMode: _notesMode,
       canUndo: _history.canUndo(),
@@ -294,9 +302,10 @@ class SudokuController extends ChangeNotifier {
       solved: _lastSolved,
       difficulty: _difficulty,
       canChangeDifficulty: !_difficultyLocked,
-      styleName: _styleName,
-      contentMode: _contentMode,
-      selected: _selected,
-    );
+        styleName: _styleName,
+        contentMode: _contentMode,
+        animalStyle: _animalStyle,
+        selected: _selected,
+      );
   }
 }

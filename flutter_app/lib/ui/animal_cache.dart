@@ -4,18 +4,33 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 
 class AnimalImageCache {
-  static Future<Map<int, ui.Image>>? _future;
+  static Future<Map<String, Map<int, ui.Image>>>? _future;
 
-  static Future<Map<int, ui.Image>> load() {
-    _future ??= _loadImages();
+  static Future<Map<String, Map<int, ui.Image>>> loadAll() {
+    _future ??= _loadAll();
     return _future!;
   }
 
-  static Future<Map<int, ui.Image>> _loadImages() async {
+  static Future<Map<int, ui.Image>> loadVariant(String variant) async {
+    final all = await loadAll();
+    return all[variant] ?? all['simple'] ?? <int, ui.Image>{};
+  }
+
+  static Future<Map<String, Map<int, ui.Image>>> _loadAll() async {
+    final simple = await _loadImages(variant: 'simple');
+    final cute = await _loadImages(variant: 'cute');
+    return {
+      'simple': simple,
+      'cute': cute,
+    };
+  }
+
+  static Future<Map<int, ui.Image>> _loadImages({required String variant}) async {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
       final name = _animalName(d);
-      final data = await rootBundle.load('assets/images/animals/${d}_$name.png');
+      final prefix = variant == 'cute' ? 'cartoon_' : '';
+      final data = await rootBundle.load('assets/images/animals/${d}_${prefix}$name.png');
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
     }
@@ -41,7 +56,7 @@ class AnimalImageCache {
       case 8:
         return 'hippo';
       case 9:
-        return 'ibis';
+        return 'iguana';
       default:
         return 'ape';
     }
