@@ -214,22 +214,7 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   double _animalTargetSize(double cellSize, int digit) {
-    final scale = _animalScale(digit);
-    final targetSize = cellSize * 0.7 * scale;
-    final maxSize = cellSize * 0.88;
-    return targetSize > maxSize ? maxSize : targetSize;
-  }
-
-  double _animalScale(int digit) {
-    switch (digit) {
-      case 1: // ape
-      case 5: // elephant
-      case 8: // hippo
-      case 9: // iguana
-        return 1.2;
-      default:
-        return 1.0;
-    }
+    return cellSize * 0.7;
   }
 
   void _drawGrid(Canvas canvas, BoardLayout layout) {
