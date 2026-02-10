@@ -17,6 +17,13 @@ class BoardStyle {
   final Color statusBg;
   final Color notesBadgeBg;
   final Color notesBadgeOutline;
+  final Color outlineGiven;
+  final Color outlineCorrect;
+  final Color outlineSolution;
+  final Color highlightIncorrect;
+  final Color highlightCorrect;
+  final Color highlightGiven;
+  final Color highlightSolution;
 
   const BoardStyle({
     required this.boardBg,
@@ -35,6 +42,13 @@ class BoardStyle {
     required this.statusBg,
     required this.notesBadgeBg,
     required this.notesBadgeOutline,
+    required this.outlineGiven,
+    required this.outlineCorrect,
+    required this.outlineSolution,
+    required this.highlightIncorrect,
+    required this.highlightCorrect,
+    required this.highlightGiven,
+    required this.highlightSolution,
   });
 }
 
@@ -55,6 +69,13 @@ const BoardStyle styleModern = BoardStyle(
   statusBg: Color(0xFFF5F5F5),
   notesBadgeBg: Color(0xFFCFE8FF),
   notesBadgeOutline: Color(0xFF1E5AA8),
+  outlineGiven: Color(0xFFFFD54F),
+  outlineCorrect: Color(0xFF2E8B57),
+  outlineSolution: Color(0xFF1976D2),
+  highlightIncorrect: Color(0xFFFFCDD2),
+  highlightCorrect: Color(0xFFC8E6C9),
+  highlightGiven: Color(0xFFFFF3C0),
+  highlightSolution: Color(0xFFBBDEFB),
 );
 
 const BoardStyle styleClassic = BoardStyle(
@@ -74,6 +95,13 @@ const BoardStyle styleClassic = BoardStyle(
   statusBg: Color(0xFFEFE9DC),
   notesBadgeBg: Color(0xFFE6DDC6),
   notesBadgeOutline: Color(0xFF6B5B3E),
+  outlineGiven: Color(0xFFFFD54F),
+  outlineCorrect: Color(0xFF2E8B57),
+  outlineSolution: Color(0xFF1976D2),
+  highlightIncorrect: Color(0xFFFFCDD2),
+  highlightCorrect: Color(0xFFC8E6C9),
+  highlightGiven: Color(0xFFFFF3C0),
+  highlightSolution: Color(0xFFBBDEFB),
 );
 
 const BoardStyle styleHighContrast = BoardStyle(
@@ -93,6 +121,13 @@ const BoardStyle styleHighContrast = BoardStyle(
   statusBg: Color(0xFFE0E0E0),
   notesBadgeBg: Color(0xFFFFFF99),
   notesBadgeOutline: Colors.black,
+  outlineGiven: Color(0xFFFFD54F),
+  outlineCorrect: Color(0xFF2E8B57),
+  outlineSolution: Color(0xFF1976D2),
+  highlightIncorrect: Color(0xFFFFCDD2),
+  highlightCorrect: Color(0xFFC8E6C9),
+  highlightGiven: Color(0xFFFFF3C0),
+  highlightSolution: Color(0xFFBBDEFB),
 );
 
 BoardStyle styleForName(String name) {

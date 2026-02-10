@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
+import 'package:flutter_app/application/solver.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 
@@ -15,6 +16,9 @@ class CellVm {
   final List<Digit> notes;
   final bool selected;
   final bool conflicted;
+  final bool incorrect;
+  final bool solutionAdded;
+  final bool correct;
 
   const CellVm({
     required this.coord,
@@ -23,6 +27,9 @@ class CellVm {
     required this.notes,
     required this.selected,
     required this.conflicted,
+    required this.incorrect,
+    required this.solutionAdded,
+    required this.correct,
   });
 }
 
@@ -45,6 +52,7 @@ class UiState {
   final String contentMode;
   final String animalStyle;
   final Coord? selected;
+  final bool gameOver;
 
   const UiState({
     required this.board,
@@ -59,6 +67,7 @@ class UiState {
     required this.contentMode,
     required this.animalStyle,
     required this.selected,
+    required this.gameOver,
   });
 }
 
@@ -75,6 +84,12 @@ class SudokuController extends ChangeNotifier {
   String _styleName = 'Modern';
   String _contentMode = 'animals';
   String _animalStyle = 'simple';
+  bool _gameOver = false;
+  Set<Coord> _incorrectCells = {};
+  Set<Coord> _solutionAddedCells = {};
+  Set<Coord> _correctCells = {};
+  Grid? _solutionGrid;
+  Grid? _initialGrid;
 
   SudokuController() {
     _history = _service.initialHistory();
@@ -90,10 +105,19 @@ class SudokuController extends ChangeNotifier {
     _lastConflicts = {};
     _lastSolved = false;
     _difficultyLocked = false;
+    _gameOver = false;
+    _incorrectCells = {};
+    _solutionAddedCells = {};
+    _correctCells = {};
+    _solutionGrid = null;
+    _initialGrid = _copyGrid(puzzle.grid);
     _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
   }
 
   void onCellTapped(Coord coord) {
+    if (_gameOver) {
+      return;
+    }
     final cell = _history.present.board.cellAtCoord(coord);
     if (cell.given) {
       return;
@@ -103,6 +127,9 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onDigitPressed(Digit digit) {
+    if (_gameOver) {
+      return;
+    }
     if (_selected == null) {
       _render('Select a cell');
       return;
@@ -116,6 +143,9 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onClearPressed() {
+    if (_gameOver) {
+      return;
+    }
     if (_selected == null) {
       _render('Select a cell');
       return;
@@ -127,16 +157,25 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onToggleNotesMode() {
+    if (_gameOver) {
+      return;
+    }
     _notesMode = !_notesMode;
     _render(_notesMode ? 'Notes mode on' : 'Notes mode off');
   }
 
   void onUndo() {
+    if (_gameOver) {
+      return;
+    }
     final res = _service.undo(_history);
     _applyResult(res);
   }
 
   void onRedo() {
+    if (_gameOver) {
+      return;
+    }
     final res = _service.redo(_history);
     _applyResult(res);
   }
@@ -148,6 +187,12 @@ class SudokuController extends ChangeNotifier {
     _lastConflicts = {};
     _lastSolved = false;
     _difficultyLocked = false;
+    _gameOver = false;
+    _incorrectCells = {};
+    _solutionAddedCells = {};
+    _correctCells = {};
+    _solutionGrid = null;
+    _initialGrid = _copyGrid(puzzle.grid);
     _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
   }
 
@@ -168,6 +213,12 @@ class SudokuController extends ChangeNotifier {
     _lastConflicts = {};
     _lastSolved = false;
     _difficultyLocked = false;
+    _gameOver = false;
+    _incorrectCells = {};
+    _solutionAddedCells = {};
+    _correctCells = {};
+    _solutionGrid = null;
+    _initialGrid = _copyGrid(puzzle.grid);
     _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
   }
 
@@ -184,6 +235,79 @@ class SudokuController extends ChangeNotifier {
   void onAnimalStyleChanged(String style) {
     _animalStyle = style == 'cute' ? 'cute' : 'simple';
     _render('Animal style: $_animalStyle');
+  }
+
+  void onCheckSolution() {
+    if (_gameOver) {
+      return;
+    }
+    final base = _initialGrid ?? _gridFromBoard(_history.present.board);
+    final solved = solveGrid(base);
+    if (solved == null) {
+      return;
+    }
+    final incorrect = <Coord>{};
+    final added = <Coord>{};
+    final correct = <Coord>{};
+    for (var r = 0; r < 9; r += 1) {
+      for (var c = 0; c < 9; c += 1) {
+        final value = _history.present.board.cellAt(r, c).value;
+        final solvedValue = solved[r][c];
+        if (value != null && solvedValue != null && value != solvedValue) {
+          incorrect.add(Coord(r, c));
+        } else if (value != null && solvedValue != null && value == solvedValue) {
+          final cell = _history.present.board.cellAt(r, c);
+          if (!cell.given) {
+            correct.add(Coord(r, c));
+          }
+        } else if (value == null && solvedValue != null) {
+          added.add(Coord(r, c));
+        }
+      }
+    }
+    _incorrectCells = incorrect;
+    _correctCells = correct;
+    _solutionGrid = null;
+    _solutionAddedCells = {};
+    _selected = null;
+    _gameOver = true;
+    _render('Check complete');
+  }
+
+  void onShowSolution() {
+    if (!_gameOver) {
+      return;
+    }
+    final base = _initialGrid ?? _gridFromBoard(_history.present.board);
+    final solved = solveGrid(base);
+    if (solved == null) {
+      return;
+    }
+    final incorrect = <Coord>{};
+    final added = <Coord>{};
+    final correct = <Coord>{};
+    for (var r = 0; r < 9; r += 1) {
+      for (var c = 0; c < 9; c += 1) {
+        final value = _history.present.board.cellAt(r, c).value;
+        final solvedValue = solved[r][c];
+        if (value != null && solvedValue != null && value != solvedValue) {
+          incorrect.add(Coord(r, c));
+        } else if (value != null && solvedValue != null && value == solvedValue) {
+          final cell = _history.present.board.cellAt(r, c);
+          if (!cell.given) {
+            correct.add(Coord(r, c));
+          }
+        } else if (value == null && solvedValue != null) {
+          added.add(Coord(r, c));
+        }
+      }
+    }
+    _incorrectCells = incorrect;
+    _correctCells = correct;
+    _solutionGrid = solved;
+    _solutionAddedCells = added;
+    _selected = null;
+    _render('Solution');
   }
 
   Future<void> onSaveRequested(BuildContext context) async {
@@ -239,6 +363,12 @@ class SudokuController extends ChangeNotifier {
       _lastConflicts = {};
       _lastSolved = false;
       _difficultyLocked = res.history.canUndo();
+      _gameOver = false;
+      _incorrectCells = {};
+      _solutionAddedCells = {};
+      _correctCells = {};
+      _solutionGrid = null;
+      _initialGrid = _extractInitialGrid(res.history);
       _applyResult(res, statusOverride: 'Game loaded.');
     } catch (error) {
       if (context.mounted) {
@@ -273,28 +403,35 @@ class SudokuController extends ChangeNotifier {
   UiState _buildState() {
     final board = _history.present.board;
     final cells = <List<CellVm>>[];
+    final solution = _solutionGrid;
     for (var r = 0; r < 9; r += 1) {
       final row = <CellVm>[];
       for (var c = 0; c < 9; c += 1) {
         final coord = Coord(r, c);
         final cell = board.cellAt(r, c);
         final notes = cell.notes.toList()..sort();
+        final solutionValue = solution != null ? solution[r][c] : null;
+        final displayValue = cell.value ?? solutionValue;
+        final solutionAdded = _solutionAddedCells.contains(coord);
         row.add(
           CellVm(
             coord: coord,
-            value: cell.value,
-            given: cell.given,
+            value: displayValue,
+            given: cell.given && !solutionAdded,
             notes: notes,
             selected: coord == _selected,
             conflicted: _lastConflicts.contains(coord),
+            incorrect: _incorrectCells.contains(coord),
+            solutionAdded: solutionAdded,
+            correct: _correctCells.contains(coord),
           ),
         );
       }
       cells.add(row);
     }
 
-      return UiState(
-        board: BoardVm(cells: cells),
+    return UiState(
+      board: BoardVm(cells: cells),
       statusText: _statusText,
       notesMode: _notesMode,
       canUndo: _history.canUndo(),
@@ -302,10 +439,30 @@ class SudokuController extends ChangeNotifier {
       solved: _lastSolved,
       difficulty: _difficulty,
       canChangeDifficulty: !_difficultyLocked,
-        styleName: _styleName,
-        contentMode: _contentMode,
-        animalStyle: _animalStyle,
-        selected: _selected,
-      );
+      styleName: _styleName,
+      contentMode: _contentMode,
+      animalStyle: _animalStyle,
+      selected: _selected,
+      gameOver: _gameOver,
+    );
+  }
+
+  Grid _gridFromBoard(Board board) {
+    return List<List<Digit?>>.generate(
+      9,
+      (r) => List<Digit?>.generate(9, (c) => board.cellAt(r, c).value),
+      growable: false,
+    );
+  }
+
+  Grid _extractInitialGrid(History history) {
+    if (history.past.isNotEmpty) {
+      return _gridFromBoard(history.past.first.board);
+    }
+    return _gridFromBoard(history.present.board);
+  }
+
+  Grid _copyGrid(Grid grid) {
+    return grid.map((row) => row.toList(growable: false)).toList(growable: false);
   }
 }

@@ -98,10 +98,28 @@ class SudokuBoardPainter extends CustomPainter {
 
         canvas.drawRect(rect, Paint()..color = bg);
 
-        if (cell.conflicted) {
-          _drawOutline(canvas, rect, style.outlineConflict, 3);
-        } else if (cell.selected) {
-          _drawOutline(canvas, rect, style.outlineSelected, 3);
+        if (state.gameOver) {
+          Color? highlight;
+          if (cell.incorrect) {
+            highlight = style.highlightIncorrect;
+          } else if (cell.solutionAdded) {
+            highlight = style.highlightSolution;
+          } else if (cell.given) {
+            highlight = style.highlightGiven;
+          } else if (cell.correct) {
+            highlight = style.highlightCorrect;
+          }
+          if (highlight != null) {
+            canvas.drawRect(rect, Paint()..color = highlight);
+          }
+        }
+
+        if (!state.gameOver) {
+          if (cell.selected) {
+            _drawOutline(canvas, rect, style.outlineSelected, 3);
+          } else if (cell.conflicted) {
+            _drawOutline(canvas, rect, style.outlineConflict, 3);
+          }
         }
 
         if (cell.value != null) {
@@ -113,6 +131,8 @@ class SudokuBoardPainter extends CustomPainter {
         } else if (cell.notes.isNotEmpty) {
           _drawNotes(canvas, rect, cell.notes, cellSize);
         }
+
+        // Solution/correct/given outlines handled above.
       }
     }
   }
