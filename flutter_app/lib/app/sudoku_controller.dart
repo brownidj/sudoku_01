@@ -8,7 +8,7 @@ import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/application/solver.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/app/preferences_store.dart';
 
 class CellVm {
   final Coord coord;
@@ -73,12 +73,8 @@ class UiState {
 }
 
 class SudokuController extends ChangeNotifier {
-  static const _prefsKeyAnimalStyle = 'animal_style';
-  static const _prefsKeyContentMode = 'content_mode';
-  static const _prefsKeyStyleName = 'style_name';
-  static const _prefsKeyDifficulty = 'difficulty';
-
   final GameService _service = GameService();
+  final PreferencesStore _prefs;
   late History _history;
   Coord? _selected;
   bool _notesMode = false;
@@ -97,7 +93,8 @@ class SudokuController extends ChangeNotifier {
   Grid? _solutionGrid;
   Grid? _initialGrid;
 
-  SudokuController() {
+  SudokuController({PreferencesStore? preferencesStore})
+      : _prefs = preferencesStore ?? PreferencesStore() {
     _history = _service.initialHistory();
     start();
     _loadPreferences();
@@ -229,7 +226,7 @@ class SudokuController extends ChangeNotifier {
       return;
     }
     _difficulty = d;
-    _savePreference(_prefsKeyDifficulty, _difficulty);
+    _prefs.saveDifficulty(_difficulty);
     final puzzle = puzzles.generatePuzzle(_difficulty);
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
@@ -248,19 +245,19 @@ class SudokuController extends ChangeNotifier {
   void onStyleChanged(String styleName) {
     _styleName = styleName;
     _render('Style: $styleName');
-    _savePreference(_prefsKeyStyleName, _styleName);
+    _prefs.saveStyleName(_styleName);
   }
 
   void onContentModeChanged(String mode) {
     _contentMode = (mode == 'animals') ? 'animals' : 'numbers';
     _render('Mode: ${_contentMode == 'animals' ? 'Animals' : 'Numbers'}');
-    _savePreference(_prefsKeyContentMode, _contentMode);
+    _prefs.saveContentMode(_contentMode);
   }
 
   void onAnimalStyleChanged(String style) {
     _animalStyle = style == 'cute' ? 'cute' : 'simple';
     _render('Animal style: $_animalStyle');
-    _savePreference(_prefsKeyAnimalStyle, _animalStyle);
+    _prefs.saveAnimalStyle(_animalStyle);
   }
 
   void onCheckSolution() {
@@ -493,11 +490,11 @@ class SudokuController extends ChangeNotifier {
   }
 
   Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    final animalStyle = prefs.getString(_prefsKeyAnimalStyle);
-    final contentMode = prefs.getString(_prefsKeyContentMode);
-    final styleName = prefs.getString(_prefsKeyStyleName);
-    final difficulty = prefs.getString(_prefsKeyDifficulty);
+    final prefs = await _prefs.load();
+    final animalStyle = prefs.animalStyle;
+    final contentMode = prefs.contentMode;
+    final styleName = prefs.styleName;
+    final difficulty = prefs.difficulty;
 
     var changed = false;
     if (animalStyle == 'cute' || animalStyle == 'simple') {
@@ -521,8 +518,5 @@ class SudokuController extends ChangeNotifier {
     }
   }
 
-  Future<void> _savePreference(String key, String value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(key, value);
-  }
+  // Preferences are saved via PreferencesStore.
 }

@@ -8,6 +8,9 @@ import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/board_painter.dart';
 import 'package:flutter_app/ui/styles.dart';
+import 'package:flutter_app/ui/widgets/action_bar.dart';
+import 'package:flutter_app/ui/widgets/legend.dart';
+import 'package:flutter_app/ui/widgets/top_controls.dart';
 
 class SudokuScreen extends StatefulWidget {
   const SudokuScreen({super.key, required this.controller});
@@ -21,7 +24,6 @@ class SudokuScreen extends StatefulWidget {
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
   ui.Image? _pencilImage;
-  Color _pencilBgColor = Colors.white;
   Future<void>? _animalLoad;
   OverlayEntry? _tooltipEntry;
   List<int> _candidateDigits = const [];
@@ -52,10 +54,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
       final codec = await ui.instantiateImageCodec(bytes);
       final frame = await codec.getNextFrame();
       _pencilImage = frame.image;
-      _pencilBgColor = await _samplePencilBgColor(_pencilImage!);
     } catch (_) {
       _pencilImage = null;
-      _pencilBgColor = Colors.white;
     }
     if (mounted) {
       setState(() {});
@@ -126,7 +126,13 @@ class _SudokuScreenState extends State<SudokuScreen> {
           body: SafeArea(
             child: Column(
               children: [
-                _buildTopControls(state),
+                TopControls(
+                  state: state,
+                  onNewGame: widget.controller.onNewGame,
+                  onContentModeChanged: widget.controller.onContentModeChanged,
+                  onSetDifficulty: widget.controller.onSetDifficulty,
+                  onStyleChanged: widget.controller.onStyleChanged,
+                ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(12),
@@ -171,8 +177,24 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   ),
                 ),
                 _buildCandidatePanel(state, style),
-                if (state.gameOver) _buildLegend(style),
-                _buildActionBar(state),
+                if (state.gameOver) Legend(style: style),
+                ActionBar(
+                  state: state,
+                  onToggleNotesMode: widget.controller.onToggleNotesMode,
+                  onClear: widget.controller.onClearPressed,
+                  onCheckOrSolution: () {
+                    setState(() {
+                      _showCandidates = false;
+                      _candidateDigits = const [];
+                      _candidateCoord = null;
+                    });
+                    if (state.gameOver) {
+                      widget.controller.onShowSolution();
+                    } else {
+                      widget.controller.onCheckSolution();
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -181,151 +203,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
     );
   }
 
-  Widget _buildTopControls(UiState state) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: ToggleButtons(
-                  isSelected: [state.contentMode == 'animals', state.contentMode == 'numbers'],
-                  onPressed: (index) {
-                    widget.controller.onContentModeChanged(index == 0 ? 'animals' : 'numbers');
-                  },
-                  children: const [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('Animals'),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12),
-                      child: Text('Numbers'),
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
-                  onPressed: widget.controller.onNewGame,
-                  icon: const Icon(Icons.refresh),
-                  label: const Text('New Game'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: 12,
-            runSpacing: 8,
-            children: [
-              DropdownButton<String>(
-                value: state.difficulty,
-                onChanged: state.canChangeDifficulty
-                    ? (value) {
-                        if (value != null) {
-                          widget.controller.onSetDifficulty(value);
-                        }
-                      }
-                    : null,
-                items: const [
-                  DropdownMenuItem(value: 'easy', child: Text('Easy')),
-                  DropdownMenuItem(value: 'medium', child: Text('Medium')),
-                  DropdownMenuItem(value: 'hard', child: Text('Hard')),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Style'),
-                  const SizedBox(width: 8),
-                  DropdownButton<String>(
-                    value: state.styleName,
-                    onChanged: (value) {
-                      if (value != null) {
-                        widget.controller.onStyleChanged(value);
-                      }
-                    },
-                    items: const [
-                      DropdownMenuItem(value: 'Modern', child: Text('Modern')),
-                      DropdownMenuItem(value: 'Classic', child: Text('Classic')),
-                      DropdownMenuItem(value: 'High Contrast', child: Text('High Contrast')),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionBar(UiState state) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
-        children: [
-          SizedBox(
-            height: 40,
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                backgroundColor: state.notesMode
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
-                    : null,
-                side: BorderSide(
-                  color: state.notesMode
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline,
-                ),
-              ),
-              onPressed: widget.controller.onToggleNotesMode,
-              child: Text(
-                'Notes',
-                style: TextStyle(
-                  fontWeight: state.notesMode ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: OutlinedButton(
-              onPressed: widget.controller.onClearPressed,
-              child: const Text('Clear'),
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() {
-                  _showCandidates = false;
-                  _candidateDigits = const [];
-                  _candidateCoord = null;
-                });
-                if (state.gameOver) {
-                  widget.controller.onShowSolution();
-                } else {
-                  widget.controller.onCheckSolution();
-                }
-              },
-              child: Text(state.gameOver ? 'Solution' : 'Check'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _handleCellLongPress(Offset globalPosition, Coord coord) {
     final state = widget.controller.state;
@@ -547,40 +424,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
     );
   }
 
-  Widget _buildLegend(BoardStyle style) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: Wrap(
-        spacing: 12,
-        runSpacing: 8,
-        children: [
-          _legendItem(style.highlightIncorrect, 'Incorrect'),
-          _legendItem(style.highlightCorrect, 'Correct'),
-          _legendItem(style.highlightGiven, 'Starter'),
-          _legendItem(style.highlightSolution, 'Solution'),
-        ],
-      ),
-    );
-  }
-
-  Widget _legendItem(Color color, String label) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 12,
-          height: 12,
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(3),
-          ),
-        ),
-        const SizedBox(width: 6),
-        Text(label),
-      ],
-    );
-  }
-
   Set<int> _selectedNotes(UiState state) {
     final coord = _candidateCoord;
     if (coord == null) {
@@ -589,22 +432,4 @@ class _SudokuScreenState extends State<SudokuScreen> {
     return state.board.cells[coord.row][coord.col].notes.toSet();
   }
 
-  Future<Color> _samplePencilBgColor(ui.Image image) async {
-    try {
-      final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
-      if (data == null || data.lengthInBytes < 4) {
-        return Colors.white;
-      }
-      final r = data.getUint8(0);
-      final g = data.getUint8(1);
-      final b = data.getUint8(2);
-      final a = data.getUint8(3);
-      if (a == 0) {
-        return Colors.white;
-      }
-      return Color.fromARGB(a, r, g, b);
-    } catch (_) {
-      return Colors.white;
-    }
-  }
 }
