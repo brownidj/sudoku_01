@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
@@ -19,6 +20,8 @@ class SudokuScreen extends StatefulWidget {
 
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
+  ui.Image? _pencilImage;
+  Color _pencilBgColor = Colors.white;
   Future<void>? _animalLoad;
   OverlayEntry? _tooltipEntry;
   List<int> _candidateDigits = const [];
@@ -43,6 +46,17 @@ class _SudokuScreenState extends State<SudokuScreen> {
     _animalImages
       ..clear()
       ..addAll(images);
+    try {
+      final data = await rootBundle.load('assets/images/icons/pencil-icon.png');
+      final bytes = data.buffer.asUint8List();
+      final codec = await ui.instantiateImageCodec(bytes);
+      final frame = await codec.getNextFrame();
+      _pencilImage = frame.image;
+      _pencilBgColor = await _samplePencilBgColor(_pencilImage!);
+    } catch (_) {
+      _pencilImage = null;
+      _pencilBgColor = Colors.white;
+    }
     if (mounted) {
       setState(() {});
     }
@@ -146,6 +160,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                                   state: state,
                                   style: style,
                                   animalImages: _animalImages[state.animalStyle] ?? const {},
+                                  pencilImage: _pencilImage,
                                 ),
                               ),
                             ),
@@ -155,8 +170,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     ),
                   ),
                 ),
-                _buildCandidatePanel(state),
-                _buildLegend(style),
+                _buildCandidatePanel(state, style),
+                if (state.gameOver) _buildLegend(style),
                 _buildActionBar(state),
               ],
             ),
@@ -370,6 +385,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
     return Coord(row, col);
   }
 
+
   List<int> _possibleDigits(UiState state, Coord coord) {
     final used = <int>{};
     final boxRow = (coord.row ~/ 3) * 3;
@@ -469,11 +485,12 @@ class _SudokuScreenState extends State<SudokuScreen> {
     );
   }
 
-  Widget _buildCandidatePanel(UiState state) {
+  Widget _buildCandidatePanel(UiState state, BoardStyle style) {
     if (!_showCandidates || _candidateCoord == null || state.gameOver) {
       return const SizedBox.shrink();
     }
     final showAnimals = state.contentMode == 'animals';
+    final selectedNotes = _selectedNotes(state);
     return Transform.translate(
       offset: const Offset(0, -20),
       child: Container(
@@ -494,18 +511,27 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     onLongPress:
                         showAnimals ? () => tooltipKey.currentState?.ensureTooltipVisible() : null,
                     child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(padding: EdgeInsets.zero),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        backgroundColor: state.notesMode && selectedNotes.contains(digit)
+                            ? const Color(0xFFF6BABA)
+                            : (showAnimals ? Colors.white : null),
+                      ),
                       onPressed: () {
                         if (digit == 0) {
                           widget.controller.onClearPressed();
                         } else {
                           widget.controller.onDigitPressed(digit);
                         }
-                        setState(() {
-                          _showCandidates = false;
-                          _candidateDigits = const [];
-                          _candidateCoord = null;
-                        });
+                        if (!state.notesMode || digit == 0) {
+                          setState(() {
+                            _showCandidates = false;
+                            _candidateDigits = const [];
+                            _candidateCoord = null;
+                          });
+                        } else {
+                          setState(() {});
+                        }
                       },
                       child: showAnimals
                           ? _animalOption(digit, tooltipKey)
@@ -553,5 +579,32 @@ class _SudokuScreenState extends State<SudokuScreen> {
         Text(label),
       ],
     );
+  }
+
+  Set<int> _selectedNotes(UiState state) {
+    final coord = _candidateCoord;
+    if (coord == null) {
+      return {};
+    }
+    return state.board.cells[coord.row][coord.col].notes.toSet();
+  }
+
+  Future<Color> _samplePencilBgColor(ui.Image image) async {
+    try {
+      final data = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+      if (data == null || data.lengthInBytes < 4) {
+        return Colors.white;
+      }
+      final r = data.getUint8(0);
+      final g = data.getUint8(1);
+      final b = data.getUint8(2);
+      final a = data.getUint8(3);
+      if (a == 0) {
+        return Colors.white;
+      }
+      return Color.fromARGB(a, r, g, b);
+    } catch (_) {
+      return Colors.white;
+    }
   }
 }

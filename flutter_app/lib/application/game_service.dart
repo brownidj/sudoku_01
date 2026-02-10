@@ -73,6 +73,16 @@ class GameService {
     return _result(newHistory, null, 'Note toggled.');
   }
 
+  MoveResult clearNotes(History history, Coord coord) {
+    final before = history.present.board;
+    final after = ops.clearNotes(before, coord);
+    if (after == before) {
+      return _result(history, null, 'No change.');
+    }
+    final newHistory = history.push(GameState(board: after));
+    return _result(newHistory, null, 'Notes cleared.');
+  }
+
   MoveResult undo(History history) {
     if (!history.canUndo()) {
       return _result(history, null, 'Nothing to undo.');

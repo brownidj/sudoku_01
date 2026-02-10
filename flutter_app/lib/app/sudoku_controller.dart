@@ -8,6 +8,7 @@ import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/application/solver.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CellVm {
   final Coord coord;
@@ -72,6 +73,11 @@ class UiState {
 }
 
 class SudokuController extends ChangeNotifier {
+  static const _prefsKeyAnimalStyle = 'animal_style';
+  static const _prefsKeyContentMode = 'content_mode';
+  static const _prefsKeyStyleName = 'style_name';
+  static const _prefsKeyDifficulty = 'difficulty';
+
   final GameService _service = GameService();
   late History _history;
   Coord? _selected;
@@ -83,7 +89,7 @@ class SudokuController extends ChangeNotifier {
   String _statusText = 'Welcome.';
   String _styleName = 'Modern';
   String _contentMode = 'animals';
-  String _animalStyle = 'simple';
+  String _animalStyle = 'cute';
   bool _gameOver = false;
   Set<Coord> _incorrectCells = {};
   Set<Coord> _solutionAddedCells = {};
@@ -94,6 +100,7 @@ class SudokuController extends ChangeNotifier {
   SudokuController() {
     _history = _service.initialHistory();
     start();
+    _loadPreferences();
   }
 
   UiState get state => _buildState();
@@ -142,6 +149,19 @@ class SudokuController extends ChangeNotifier {
     _lockDifficultyIfFirstPlayerChange(before, _history);
   }
 
+  void onPlaceDigit(Digit digit) {
+    if (_gameOver) {
+      return;
+    }
+    if (_selected == null) {
+      return;
+    }
+    final before = _history;
+    final res = _service.placeDigit(_history, _selected!, digit);
+    _applyResult(res);
+    _lockDifficultyIfFirstPlayerChange(before, _history);
+  }
+
   void onClearPressed() {
     if (_gameOver) {
       return;
@@ -151,7 +171,9 @@ class SudokuController extends ChangeNotifier {
       return;
     }
     final before = _history;
-    final res = _service.clearCell(_history, _selected!);
+    final res = _notesMode
+        ? _service.clearNotes(_history, _selected!)
+        : _service.clearCell(_history, _selected!);
     _applyResult(res);
     _lockDifficultyIfFirstPlayerChange(before, _history);
   }
@@ -207,6 +229,7 @@ class SudokuController extends ChangeNotifier {
       return;
     }
     _difficulty = d;
+    _savePreference(_prefsKeyDifficulty, _difficulty);
     final puzzle = puzzles.generatePuzzle(_difficulty);
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
@@ -225,16 +248,19 @@ class SudokuController extends ChangeNotifier {
   void onStyleChanged(String styleName) {
     _styleName = styleName;
     _render('Style: $styleName');
+    _savePreference(_prefsKeyStyleName, _styleName);
   }
 
   void onContentModeChanged(String mode) {
     _contentMode = (mode == 'animals') ? 'animals' : 'numbers';
     _render('Mode: ${_contentMode == 'animals' ? 'Animals' : 'Numbers'}');
+    _savePreference(_prefsKeyContentMode, _contentMode);
   }
 
   void onAnimalStyleChanged(String style) {
     _animalStyle = style == 'cute' ? 'cute' : 'simple';
     _render('Animal style: $_animalStyle');
+    _savePreference(_prefsKeyAnimalStyle, _animalStyle);
   }
 
   void onCheckSolution() {
@@ -464,5 +490,39 @@ class SudokuController extends ChangeNotifier {
 
   Grid _copyGrid(Grid grid) {
     return grid.map((row) => row.toList(growable: false)).toList(growable: false);
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final animalStyle = prefs.getString(_prefsKeyAnimalStyle);
+    final contentMode = prefs.getString(_prefsKeyContentMode);
+    final styleName = prefs.getString(_prefsKeyStyleName);
+    final difficulty = prefs.getString(_prefsKeyDifficulty);
+
+    var changed = false;
+    if (animalStyle == 'cute' || animalStyle == 'simple') {
+      _animalStyle = animalStyle!;
+      changed = true;
+    }
+    if (contentMode == 'animals' || contentMode == 'numbers') {
+      _contentMode = contentMode!;
+      changed = true;
+    }
+    if (styleName != null && styleName.isNotEmpty) {
+      _styleName = styleName;
+      changed = true;
+    }
+    if (difficulty != null && ['easy', 'medium', 'hard'].contains(difficulty)) {
+      _difficulty = difficulty;
+      changed = true;
+    }
+    if (changed) {
+      notifyListeners();
+    }
+  }
+
+  Future<void> _savePreference(String key, String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(key, value);
   }
 }

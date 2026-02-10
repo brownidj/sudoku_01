@@ -38,11 +38,13 @@ class SudokuBoardPainter extends CustomPainter {
   final UiState state;
   final BoardStyle style;
   final Map<int, ui.Image> animalImages;
+  final ui.Image? pencilImage;
 
   SudokuBoardPainter({
     required this.state,
     required this.style,
     required this.animalImages,
+    required this.pencilImage,
   });
 
   @override
@@ -92,6 +94,8 @@ class SudokuBoardPainter extends CustomPainter {
           bg = style.cellPeerRowCol;
         } else if (peerBox) {
           bg = style.cellPeerBox;
+        } else if (cell.notes.isNotEmpty && state.notesMode) {
+          bg = style.cellDefault;
         } else {
           bg = style.cellDefault;
         }
@@ -168,61 +172,30 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   void _drawNotes(Canvas canvas, Rect rect, List<int> notes, double cellSize) {
-    final mini = cellSize / 3.0;
-    final fontSize = cellSize * 0.18 + 4;
-    if (state.contentMode == 'animals') {
-      final digit = notes.first;
-      final image = animalImages[digit];
-      if (image != null) {
-        final targetSize = _animalTargetSize(cellSize, digit);
-        final target = Rect.fromLTWH(
-          rect.left + (rect.width - targetSize) / 2,
-          rect.top + (rect.height - targetSize) / 2,
-          targetSize,
-          targetSize,
-        );
-        final source = Rect.fromLTWH(
-          0,
-          0,
-          image.width.toDouble(),
-          image.height.toDouble(),
-        );
-        final paint = Paint()
-          ..colorFilter = const ColorFilter.matrix([
-            0.2126, 0.7152, 0.0722, 0, 0,
-            0.2126, 0.7152, 0.0722, 0, 0,
-            0.2126, 0.7152, 0.0722, 0, 0,
-            0, 0, 0, 0.3, 0,
-          ]);
-        canvas.drawImageRect(image, source, target, paint);
-        return;
-      }
+    final notesSorted = List<int>.from(notes)..sort();
+    if (notesSorted.isEmpty) {
+      return;
     }
-    for (final digit in notes) {
-      final rr = (digit - 1) ~/ 3;
-      final cc = (digit - 1) % 3;
-      final left = rect.left + cc * mini;
-      final top = rect.top + rr * mini;
+    _drawPencilIcon(canvas, rect);
+  }
 
-      final label = digit.toString();
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: label,
-          style: TextStyle(
-            color: style.notesColor,
-            fontSize: fontSize,
-          ),
-        ),
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr,
-      )..layout(minWidth: mini, maxWidth: mini);
-
-      final offset = Offset(
-        left + 2,
-        top + mini - textPainter.height - 2,
-      );
-      textPainter.paint(canvas, offset);
+  void _drawPencilIcon(Canvas canvas, Rect rect) {
+    final image = pencilImage;
+    if (image == null) {
+      return;
     }
+    final size = rect.width * 0.9;
+    final left = rect.left + (rect.width - size) / 2;
+    final top = rect.top + (rect.height - size) / 2;
+    final target = Rect.fromLTWH(left, top, size, size);
+    canvas.drawRect(rect, Paint()..color = Colors.white);
+    paintImage(
+      canvas: canvas,
+      rect: target,
+      image: image,
+      fit: BoxFit.contain,
+      opacity: 1.0,
+    );
   }
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {

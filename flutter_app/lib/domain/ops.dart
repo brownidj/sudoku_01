@@ -19,6 +19,21 @@ Board setValue(Board board, Coord coord, Digit? value) {
   return board.withCell(coord, newCell);
 }
 
+Board clearNotes(Board board, Coord coord) {
+  final cell = board.cellAtCoord(coord);
+  if (cell.given) {
+    return board;
+  }
+  if (cell.value != null) {
+    return board;
+  }
+  if (cell.notes.isEmpty) {
+    return board;
+  }
+  final newCell = Cell(value: null, given: false, notes: const {});
+  return board.withCell(coord, newCell);
+}
+
 Board clearValue(Board board, Coord coord) {
   return setValue(board, coord, null);
 }
@@ -33,11 +48,9 @@ Board toggleNote(Board board, Coord coord, Digit digit) {
   }
   final notes = cell.notes.toSet();
   if (notes.contains(digit)) {
-    notes.clear();
+    notes.remove(digit);
   } else {
-    notes
-      ..clear()
-      ..add(digit);
+    notes.add(digit);
   }
   final newCell = Cell(value: null, given: false, notes: notes);
   if (_cellEquals(newCell, cell)) {

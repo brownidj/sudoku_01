@@ -14,6 +14,7 @@ class BoardStyle {
   final Color valueColor;
   final Color givenColor;
   final Color notesColor;
+  final Color notesMiniBg;
   final Color statusBg;
   final Color notesBadgeBg;
   final Color notesBadgeOutline;
@@ -39,6 +40,7 @@ class BoardStyle {
     required this.valueColor,
     required this.givenColor,
     required this.notesColor,
+    required this.notesMiniBg,
     required this.statusBg,
     required this.notesBadgeBg,
     required this.notesBadgeOutline,
@@ -66,6 +68,7 @@ const BoardStyle styleModern = BoardStyle(
   valueColor: Color(0xFF222222),
   givenColor: Color(0xFF111111),
   notesColor: Color(0xFF555555),
+  notesMiniBg: Color(0xFFF0E6FF),
   statusBg: Color(0xFFF5F5F5),
   notesBadgeBg: Color(0xFFCFE8FF),
   notesBadgeOutline: Color(0xFF1E5AA8),
@@ -92,6 +95,7 @@ const BoardStyle styleClassic = BoardStyle(
   valueColor: Color(0xFF2B2B2B),
   givenColor: Color(0xFF1A1A1A),
   notesColor: Color(0xFF6B6B6B),
+  notesMiniBg: Color(0xFFF0E6FF),
   statusBg: Color(0xFFEFE9DC),
   notesBadgeBg: Color(0xFFE6DDC6),
   notesBadgeOutline: Color(0xFF6B5B3E),
@@ -118,6 +122,7 @@ const BoardStyle styleHighContrast = BoardStyle(
   valueColor: Colors.black,
   givenColor: Colors.black,
   notesColor: Color(0xFF333333),
+  notesMiniBg: Color(0xFFF0E6FF),
   statusBg: Color(0xFFE0E0E0),
   notesBadgeBg: Color(0xFFFFFF99),
   notesBadgeOutline: Colors.black,
