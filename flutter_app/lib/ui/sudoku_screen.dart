@@ -1,15 +1,17 @@
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
-import 'package:flutter_app/ui/board_painter.dart';
+import 'package:flutter_app/ui/candidate_selection_controller.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
+import 'package:flutter_app/ui/widgets/candidate_panel.dart';
 import 'package:flutter_app/ui/widgets/legend.dart';
+import 'package:flutter_app/ui/widgets/sudoku_board.dart';
 import 'package:flutter_app/ui/widgets/top_controls.dart';
 
 class SudokuScreen extends StatefulWidget {
@@ -26,21 +28,29 @@ class _SudokuScreenState extends State<SudokuScreen> {
   ui.Image? _pencilImage;
   Future<void>? _animalLoad;
   OverlayEntry? _tooltipEntry;
-  List<int> _candidateDigits = const [];
-  Coord? _candidateCoord;
-  bool _showCandidates = false;
+  late final CandidateSelectionController _candidateController;
 
   @override
   void initState() {
     super.initState();
     _animalLoad = _loadAnimalImages();
+    _candidateController = CandidateSelectionController()
+      ..addListener(_onCandidateChanged);
   }
 
   @override
   void dispose() {
+    _candidateController.removeListener(_onCandidateChanged);
+    _candidateController.dispose();
     _tooltipEntry?.remove();
     _tooltipEntry = null;
     super.dispose();
+  }
+
+  void _onCandidateChanged() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _loadAnimalImages() async {
@@ -136,58 +146,45 @@ class _SudokuScreenState extends State<SudokuScreen> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(12),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final boardSize = min(constraints.maxWidth, constraints.maxHeight);
-                        return Align(
-                          alignment: Alignment.topCenter,
-                          child: SizedBox(
-                            width: boardSize,
-                            height: boardSize,
-                            child: GestureDetector(
-                              onTapDown: (details) {
-                                final local = details.localPosition;
-                                final layout = layoutForSize(Size(boardSize, boardSize));
-                                final coord = _coordFromOffset(layout, local);
-                                if (coord != null) {
-                                  _handleCellTap(coord);
-                                }
-                              },
-                              onLongPressStart: (details) {
-                                final local = details.localPosition;
-                                final layout = layoutForSize(Size(boardSize, boardSize));
-                                final coord = _coordFromOffset(layout, local);
-                                if (coord != null) {
-                                  _handleCellLongPress(details.globalPosition, coord);
-                                }
-                              },
-                              child: CustomPaint(
-                                painter: SudokuBoardPainter(
-                                  state: state,
-                                  style: style,
-                                  animalImages: _animalImages[state.animalStyle] ?? const {},
-                                  pencilImage: _pencilImage,
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                    child: SudokuBoard(
+                      state: state,
+                      style: style,
+                      animalImages: _animalImages[state.animalStyle] ?? const {},
+                      pencilImage: _pencilImage,
+                      onTapCell: _handleCellTap,
+                      onLongPressCell: _handleCellLongPress,
                     ),
                   ),
                 ),
-                _buildCandidatePanel(state, style),
+                CandidatePanel(
+                  visible: _candidateController.visible &&
+                      _candidateController.candidateCoord != null &&
+                      !state.gameOver,
+                  candidateDigits: _candidateController.candidateDigits,
+                  showAnimals: state.contentMode == 'animals',
+                  notesMode: state.notesMode,
+                  selectedNotes: _selectedNotes(state),
+                  animalImages: _animalImages[state.animalStyle] ?? const {},
+                  onDigitSelected: (digit) {
+                    if (digit == 0) {
+                      widget.controller.onClearPressed();
+                    } else {
+                      widget.controller.onDigitPressed(digit);
+                    }
+                    if (!state.notesMode || digit == 0) {
+                      _candidateController.hide();
+                    } else {
+                      _candidateController.refresh();
+                    }
+                  },
+                ),
                 if (state.gameOver) Legend(style: style),
                 ActionBar(
                   state: state,
                   onToggleNotesMode: widget.controller.onToggleNotesMode,
                   onClear: widget.controller.onClearPressed,
                   onCheckOrSolution: () {
-                    setState(() {
-                      _showCandidates = false;
-                      _candidateDigits = const [];
-                      _candidateCoord = null;
-                    });
+                    _candidateController.hide();
                     if (state.gameOver) {
                       widget.controller.onShowSolution();
                     } else {
@@ -236,32 +233,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (!mounted) {
       return;
     }
-    setState(() {
-      _showCandidates = true;
-      _candidateDigits = withClear;
-      _candidateCoord = coord;
-    });
+    _candidateController.show(coord, withClear);
   }
-
-  Coord? _coordFromOffset(BoardLayout layout, Offset offset) {
-    final x = offset.dx;
-    final y = offset.dy;
-    if (x < layout.originX || y < layout.originY) {
-      return null;
-    }
-    final relX = x - layout.originX;
-    final relY = y - layout.originY;
-    if (relX < 0 || relY < 0 || relX >= layout.boardSize || relY >= layout.boardSize) {
-      return null;
-    }
-    final col = relX ~/ layout.cellSize;
-    final row = relY ~/ layout.cellSize;
-    if (row < 0 || row > 8 || col < 0 || col > 8) {
-      return null;
-    }
-    return Coord(row, col);
-  }
-
 
   List<int> _possibleDigits(UiState state, Coord coord) {
     final used = <int>{};
@@ -337,95 +310,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
     });
   }
 
-  Widget _animalOption(int digit, GlobalKey<TooltipState> tooltipKey) {
-    if (digit == 0) {
-      return const Icon(Icons.clear);
-    }
-    final style = widget.controller.state.animalStyle;
-    final image = _animalImages[style]?[digit];
-    if (image == null) {
-      return Text('$digit');
-    }
-    final name = AnimalImageCache.nameForDigit(digit);
-    return Tooltip(
-      key: tooltipKey,
-      message: name,
-      triggerMode: TooltipTriggerMode.manual,
-      child: SizedBox(
-        width: 32,
-        height: 32,
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: RawImage(image: image),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCandidatePanel(UiState state, BoardStyle style) {
-    if (!_showCandidates || _candidateCoord == null || state.gameOver) {
-      return const SizedBox.shrink();
-    }
-    final showAnimals = state.contentMode == 'animals';
-    final selectedNotes = _selectedNotes(state);
-    return Transform.translate(
-      offset: const Offset(0, -20),
-      child: Container(
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-          for (final digit in _candidateDigits)
-            Builder(
-              builder: (context) {
-                final tooltipKey = GlobalKey<TooltipState>();
-                return SizedBox(
-                  width: 44,
-                  height: 44,
-                  child: GestureDetector(
-                    onLongPress:
-                        showAnimals ? () => tooltipKey.currentState?.ensureTooltipVisible() : null,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        backgroundColor: state.notesMode && selectedNotes.contains(digit)
-                            ? const Color(0xFFF6BABA)
-                            : (showAnimals ? Colors.white : null),
-                      ),
-                      onPressed: () {
-                        if (digit == 0) {
-                          widget.controller.onClearPressed();
-                        } else {
-                          widget.controller.onDigitPressed(digit);
-                        }
-                        if (!state.notesMode || digit == 0) {
-                          setState(() {
-                            _showCandidates = false;
-                            _candidateDigits = const [];
-                            _candidateCoord = null;
-                          });
-                        } else {
-                          setState(() {});
-                        }
-                      },
-                      child: showAnimals
-                          ? _animalOption(digit, tooltipKey)
-                          : (digit == 0 ? const Icon(Icons.clear) : Text('$digit')),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Set<int> _selectedNotes(UiState state) {
-    final coord = _candidateCoord;
+    final coord = _candidateController.candidateCoord;
     if (coord == null) {
       return {};
     }

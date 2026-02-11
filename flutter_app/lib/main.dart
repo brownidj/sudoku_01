@@ -1,9 +1,7 @@
 import 'package:flutter_app/app/sudoku_app.dart';
-import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter/material.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await AnimalImageCache.loadAll();
   runApp(const SudokuApp());
 }

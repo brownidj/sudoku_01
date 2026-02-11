@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/app/ui_state.dart';
 
 class ActionBar extends StatelessWidget {
   final UiState state;

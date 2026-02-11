@@ -1,38 +1,12 @@
-import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
+import 'package:flutter_app/ui/board_layout.dart';
+import 'package:flutter_app/ui/board_theme.dart';
 import 'package:flutter_app/ui/styles.dart';
-
-class BoardLayout {
-  final double originX;
-  final double originY;
-  final double cellSize;
-  final double boardSize;
-
-  const BoardLayout({
-    required this.originX,
-    required this.originY,
-    required this.cellSize,
-    required this.boardSize,
-  });
-}
-
-BoardLayout layoutForSize(Size size) {
-  final boardSize = min(size.width, size.height);
-  final originX = (size.width - boardSize) / 2.0;
-  final originY = (size.height - boardSize) / 2.0;
-  final cellSize = boardSize / 9.0;
-  return BoardLayout(
-    originX: originX,
-    originY: originY,
-    cellSize: cellSize,
-    boardSize: boardSize,
-  );
-}
 
 class SudokuBoardPainter extends CustomPainter {
   final UiState state;
@@ -60,12 +34,12 @@ class SudokuBoardPainter extends CustomPainter {
     final boardPaint = Paint()..color = style.boardBg;
     canvas.drawRect(boardRect, boardPaint);
 
-    _drawCells(canvas, layout);
+    _drawCells(canvas, layout, BoardTheme(style));
     _drawGrid(canvas, layout);
     // Notes badge removed; notes mode is indicated via the UI toggle.
   }
 
-  void _drawCells(Canvas canvas, BoardLayout layout) {
+  void _drawCells(Canvas canvas, BoardLayout layout, BoardTheme theme) {
     final selected = state.selected;
     final selRow = selected?.row;
     final selCol = selected?.col;
@@ -85,43 +59,33 @@ class SudokuBoardPainter extends CustomPainter {
         final peerBox = selBoxRow != null && selBoxCol != null &&
             (r ~/ 3 == selBoxRow) && (c ~/ 3 == selBoxCol);
 
-        Color bg;
-        if (cell.conflicted) {
-          bg = style.cellConflict;
-        } else if (cell.selected) {
-          bg = style.cellSelected;
-        } else if (peerRowCol) {
-          bg = style.cellPeerRowCol;
-        } else if (peerBox) {
-          bg = style.cellPeerBox;
-        } else if (cell.notes.isNotEmpty && state.notesMode) {
-          bg = style.cellDefault;
-        } else {
-          bg = style.cellDefault;
-        }
+        final model = theme.cellModel(
+          cell: cell,
+          gameOver: state.gameOver,
+          peerRowCol: peerRowCol,
+          peerBox: peerBox,
+        );
 
-        canvas.drawRect(rect, Paint()..color = bg);
+        canvas.drawRect(rect, Paint()..color = model.background);
 
         if (state.gameOver) {
           Color? highlight;
-          if (cell.incorrect) {
+          if (model.showIncorrect) {
             highlight = style.highlightIncorrect;
-          } else if (cell.solutionAdded) {
+          } else if (model.showSolution) {
             highlight = style.highlightSolution;
-          } else if (cell.given) {
+          } else if (model.showGiven) {
             highlight = style.highlightGiven;
-          } else if (cell.correct) {
+          } else if (model.showCorrect) {
             highlight = style.highlightCorrect;
           }
           if (highlight != null) {
             canvas.drawRect(rect, Paint()..color = highlight);
           }
-        }
-
-        if (!state.gameOver) {
-          if (cell.selected) {
+        } else {
+          if (model.showSelection) {
             _drawOutline(canvas, rect, style.outlineSelected, 3);
-          } else if (cell.conflicted) {
+          } else if (model.showConflict) {
             _drawOutline(canvas, rect, style.outlineConflict, 3);
           }
         }

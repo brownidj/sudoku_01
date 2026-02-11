@@ -1,4 +1,3 @@
-import 'package:flutter_app/application/persistence.dart' as persistence;
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/application/state.dart';
@@ -11,16 +10,6 @@ class GameService {
     return History.initial(GameState(board: Board.empty()));
   }
 
-  MoveResult newGameEmpty() {
-    final history = initialHistory();
-    return MoveResult(
-      history: history,
-      conflicts: const {},
-      message: 'New game.',
-      solved: false,
-    );
-  }
-
   MoveResult newGameFromGrid(Grid grid) {
     final board = Board.fromGrid(grid, givens: true);
     final history = History.initial(GameState(board: board));
@@ -30,15 +19,6 @@ class GameService {
   MoveResult newGame({String puzzleId = 'starter'}) {
     final puzzle = puzzles.getPuzzle(puzzleId);
     return newGameFromGrid(puzzle.grid);
-  }
-
-  Map<String, dynamic> exportSave(History history) {
-    return persistence.serializeHistory(history);
-  }
-
-  MoveResult importSave(Map<String, dynamic> data) {
-    final history = persistence.deserializeHistory(data);
-    return _result(history, null, 'Game loaded.');
   }
 
   MoveResult placeDigit(History history, Coord coord, Digit digit) {
@@ -81,22 +61,6 @@ class GameService {
     }
     final newHistory = history.push(GameState(board: after));
     return _result(newHistory, null, 'Notes cleared.');
-  }
-
-  MoveResult undo(History history) {
-    if (!history.canUndo()) {
-      return _result(history, null, 'Nothing to undo.');
-    }
-    final newHistory = history.undo();
-    return _result(newHistory, null, 'Undone.');
-  }
-
-  MoveResult redo(History history) {
-    if (!history.canRedo()) {
-      return _result(history, null, 'Nothing to redo.');
-    }
-    final newHistory = history.redo();
-    return _result(newHistory, null, 'Redone.');
   }
 
   MoveResult _result(History history, Coord? coord, String message) {

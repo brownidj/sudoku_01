@@ -1,91 +1,25 @@
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
-import 'package:flutter_app/application/solver.dart';
+import 'package:flutter_app/app/check_service.dart';
+import 'package:flutter_app/app/grid_utils.dart';
+import 'package:flutter_app/app/settings_controller.dart';
+import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 
-class CellVm {
-  final Coord coord;
-  final Digit? value;
-  final bool given;
-  final List<Digit> notes;
-  final bool selected;
-  final bool conflicted;
-  final bool incorrect;
-  final bool solutionAdded;
-  final bool correct;
-
-  const CellVm({
-    required this.coord,
-    required this.value,
-    required this.given,
-    required this.notes,
-    required this.selected,
-    required this.conflicted,
-    required this.incorrect,
-    required this.solutionAdded,
-    required this.correct,
-  });
-}
-
-class BoardVm {
-  final List<List<CellVm>> cells;
-
-  const BoardVm({required this.cells});
-}
-
-class UiState {
-  final BoardVm board;
-  final String statusText;
-  final bool notesMode;
-  final bool canUndo;
-  final bool canRedo;
-  final bool solved;
-  final String difficulty;
-  final bool canChangeDifficulty;
-  final String styleName;
-  final String contentMode;
-  final String animalStyle;
-  final Coord? selected;
-  final bool gameOver;
-
-  const UiState({
-    required this.board,
-    required this.statusText,
-    required this.notesMode,
-    required this.canUndo,
-    required this.canRedo,
-    required this.solved,
-    required this.difficulty,
-    required this.canChangeDifficulty,
-    required this.styleName,
-    required this.contentMode,
-    required this.animalStyle,
-    required this.selected,
-    required this.gameOver,
-  });
-}
-
 class SudokuController extends ChangeNotifier {
-  final GameService _service = GameService();
+  final GameService _service;
   final PreferencesStore _prefs;
+  late SettingsController _settings;
+  final CheckService _checkService;
+  final GridUtils _gridUtils;
   late History _history;
   Coord? _selected;
-  bool _notesMode = false;
-  String _difficulty = 'easy';
-  bool _difficultyLocked = false;
   Set<Coord> _lastConflicts = {};
-  bool _lastSolved = false;
-  String _statusText = 'Welcome.';
-  String _styleName = 'Modern';
-  String _contentMode = 'animals';
-  String _animalStyle = 'cute';
+  // Settings are managed by SettingsController.
   bool _gameOver = false;
   Set<Coord> _incorrectCells = {};
   Set<Coord> _solutionAddedCells = {};
@@ -93,28 +27,36 @@ class SudokuController extends ChangeNotifier {
   Grid? _solutionGrid;
   Grid? _initialGrid;
 
-  SudokuController({PreferencesStore? preferencesStore})
-      : _prefs = preferencesStore ?? PreferencesStore() {
+  SudokuController({
+    PreferencesStore? preferencesStore,
+    GameService? gameService,
+    CheckService? checkService,
+    GridUtils? gridUtils,
+    SettingsController? settingsController,
+  })  : _prefs = preferencesStore ?? PreferencesStore(),
+        _service = gameService ?? GameService(),
+        _checkService = checkService ?? CheckService(),
+        _gridUtils = gridUtils ?? GridUtils() {
+    _settings = settingsController ?? SettingsController(_prefs, notifyListeners);
     _history = _service.initialHistory();
     start();
-    _loadPreferences();
+    _settings.load();
   }
 
   UiState get state => _buildState();
 
   void start() {
-    final puzzle = puzzles.generatePuzzle(_difficulty);
+    final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
     _lastConflicts = {};
-    _lastSolved = false;
-    _difficultyLocked = false;
+    _settings.setDifficultyLocked(false);
     _gameOver = false;
     _incorrectCells = {};
     _solutionAddedCells = {};
     _correctCells = {};
     _solutionGrid = null;
-    _initialGrid = _copyGrid(puzzle.grid);
+    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
     _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
   }
 
@@ -139,7 +81,7 @@ class SudokuController extends ChangeNotifier {
       return;
     }
     final before = _history;
-    final res = _notesMode
+    final res = _settings.state.notesMode
         ? _service.toggleNote(_history, _selected!, digit)
         : _service.placeDigit(_history, _selected!, digit);
     _applyResult(res);
@@ -168,7 +110,7 @@ class SudokuController extends ChangeNotifier {
       return;
     }
     final before = _history;
-    final res = _notesMode
+    final res = _settings.state.notesMode
         ? _service.clearNotes(_history, _selected!)
         : _service.clearCell(_history, _selected!);
     _applyResult(res);
@@ -179,39 +121,22 @@ class SudokuController extends ChangeNotifier {
     if (_gameOver) {
       return;
     }
-    _notesMode = !_notesMode;
-    _render(_notesMode ? 'Notes mode on' : 'Notes mode off');
-  }
-
-  void onUndo() {
-    if (_gameOver) {
-      return;
-    }
-    final res = _service.undo(_history);
-    _applyResult(res);
-  }
-
-  void onRedo() {
-    if (_gameOver) {
-      return;
-    }
-    final res = _service.redo(_history);
-    _applyResult(res);
+    _settings.toggleNotesMode();
+    _render(_settings.state.notesMode ? 'Notes mode on' : 'Notes mode off');
   }
 
   void onNewGame() {
-    final puzzle = puzzles.generatePuzzle(_difficulty);
+    final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
     _lastConflicts = {};
-    _lastSolved = false;
-    _difficultyLocked = false;
+    _settings.setDifficultyLocked(false);
     _gameOver = false;
     _incorrectCells = {};
     _solutionAddedCells = {};
     _correctCells = {};
     _solutionGrid = null;
-    _initialGrid = _copyGrid(puzzle.grid);
+    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
     _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
   }
 
@@ -221,75 +146,58 @@ class SudokuController extends ChangeNotifier {
       _render('Unknown difficulty: $difficulty');
       return;
     }
-    if (_difficultyLocked) {
+    if (!_settings.state.canChangeDifficulty) {
       _render('Finish or start a new game before changing difficulty');
       return;
     }
-    _difficulty = d;
-    _prefs.saveDifficulty(_difficulty);
-    final puzzle = puzzles.generatePuzzle(_difficulty);
+    if (!_settings.setDifficulty(d)) {
+      return;
+    }
+    final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
     _lastConflicts = {};
-    _lastSolved = false;
-    _difficultyLocked = false;
+    _settings.setDifficultyLocked(false);
     _gameOver = false;
     _incorrectCells = {};
     _solutionAddedCells = {};
     _correctCells = {};
     _solutionGrid = null;
-    _initialGrid = _copyGrid(puzzle.grid);
+    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
     _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
   }
 
   void onStyleChanged(String styleName) {
-    _styleName = styleName;
+    _settings.setStyleName(styleName);
     _render('Style: $styleName');
-    _prefs.saveStyleName(_styleName);
   }
 
   void onContentModeChanged(String mode) {
-    _contentMode = (mode == 'animals') ? 'animals' : 'numbers';
-    _render('Mode: ${_contentMode == 'animals' ? 'Animals' : 'Numbers'}');
-    _prefs.saveContentMode(_contentMode);
+    final next = (mode == 'animals') ? 'animals' : 'numbers';
+    _settings.setContentMode(next);
+    _render('Mode: ${next == 'animals' ? 'Animals' : 'Numbers'}');
   }
 
   void onAnimalStyleChanged(String style) {
-    _animalStyle = style == 'cute' ? 'cute' : 'simple';
-    _render('Animal style: $_animalStyle');
-    _prefs.saveAnimalStyle(_animalStyle);
+    final next = style == 'cute' ? 'cute' : 'simple';
+    _settings.setAnimalStyle(next);
+    _render('Animal style: $next');
   }
 
   void onCheckSolution() {
     if (_gameOver) {
       return;
     }
-    final base = _initialGrid ?? _gridFromBoard(_history.present.board);
-    final solved = solveGrid(base);
-    if (solved == null) {
-      return;
-    }
-    final incorrect = <Coord>{};
-    final added = <Coord>{};
-    final correct = <Coord>{};
-    for (var r = 0; r < 9; r += 1) {
-      for (var c = 0; c < 9; c += 1) {
-        final value = _history.present.board.cellAt(r, c).value;
-        final solvedValue = solved[r][c];
-        if (value != null && solvedValue != null && value != solvedValue) {
-          incorrect.add(Coord(r, c));
-        } else if (value != null && solvedValue != null && value == solvedValue) {
-          final cell = _history.present.board.cellAt(r, c);
-          if (!cell.given) {
-            correct.add(Coord(r, c));
-          }
-        } else if (value == null && solvedValue != null) {
-          added.add(Coord(r, c));
-        }
-      }
-    }
-    _incorrectCells = incorrect;
-    _correctCells = correct;
+    final base = _initialGrid ?? _gridUtils.gridFromBoard(_history.present.board);
+    final current = _gridUtils.gridFromBoard(_history.present.board);
+    final result = _checkService.check(
+      baseGrid: base,
+      currentGrid: current,
+      givens: _givenCoords(),
+      showSolution: false,
+    );
+    _incorrectCells = result.incorrect;
+    _correctCells = result.correct;
     _solutionGrid = null;
     _solutionAddedCells = {};
     _selected = null;
@@ -301,125 +209,38 @@ class SudokuController extends ChangeNotifier {
     if (!_gameOver) {
       return;
     }
-    final base = _initialGrid ?? _gridFromBoard(_history.present.board);
-    final solved = solveGrid(base);
-    if (solved == null) {
-      return;
-    }
-    final incorrect = <Coord>{};
-    final added = <Coord>{};
-    final correct = <Coord>{};
-    for (var r = 0; r < 9; r += 1) {
-      for (var c = 0; c < 9; c += 1) {
-        final value = _history.present.board.cellAt(r, c).value;
-        final solvedValue = solved[r][c];
-        if (value != null && solvedValue != null && value != solvedValue) {
-          incorrect.add(Coord(r, c));
-        } else if (value != null && solvedValue != null && value == solvedValue) {
-          final cell = _history.present.board.cellAt(r, c);
-          if (!cell.given) {
-            correct.add(Coord(r, c));
-          }
-        } else if (value == null && solvedValue != null) {
-          added.add(Coord(r, c));
-        }
-      }
-    }
-    _incorrectCells = incorrect;
-    _correctCells = correct;
-    _solutionGrid = solved;
-    _solutionAddedCells = added;
+    final base = _initialGrid ?? _gridUtils.gridFromBoard(_history.present.board);
+    final current = _gridUtils.gridFromBoard(_history.present.board);
+    final result = _checkService.check(
+      baseGrid: base,
+      currentGrid: current,
+      givens: _givenCoords(),
+      showSolution: true,
+    );
+    _incorrectCells = result.incorrect;
+    _correctCells = result.correct;
+    _solutionGrid = result.solutionGrid;
+    _solutionAddedCells = result.solutionAdded;
     _selected = null;
     _render('Solution');
   }
 
-  Future<void> onSaveRequested(BuildContext context) async {
-    final payload = _service.exportSave(_history);
-    final jsonText = const JsonEncoder.withIndent('  ').convert(payload);
-    await Clipboard.setData(ClipboardData(text: jsonText));
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Save copied to clipboard.')),
-      );
-    }
-  }
-
-  Future<void> onLoadRequested(BuildContext context) async {
-    final controller = TextEditingController();
-    final result = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) {
-        return AlertDialog(
-          title: const Text('Load Game'),
-          content: TextField(
-            controller: controller,
-            maxLines: 8,
-            decoration: const InputDecoration(
-              hintText: 'Paste save JSON here',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(dialogContext).pop(controller.text),
-              child: const Text('Load'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (result == null || result.trim().isEmpty) {
-      return;
-    }
-
-    try {
-      final decoded = jsonDecode(result);
-      if (decoded is! Map<String, dynamic>) {
-        throw const FormatException('Save file format not recognised.');
-      }
-      final res = _service.importSave(decoded);
-      _selected = null;
-      _lastConflicts = {};
-      _lastSolved = false;
-      _difficultyLocked = res.history.canUndo();
-      _gameOver = false;
-      _incorrectCells = {};
-      _solutionAddedCells = {};
-      _correctCells = {};
-      _solutionGrid = null;
-      _initialGrid = _extractInitialGrid(res.history);
-      _applyResult(res, statusOverride: 'Game loaded.');
-    } catch (error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Load failed: $error')),
-        );
-      }
-    }
-  }
-
   void _lockDifficultyIfFirstPlayerChange(History before, History after) {
-    if (_difficultyLocked) {
+    if (!_settings.state.canChangeDifficulty) {
       return;
     }
     if (!before.canUndo() && after.canUndo()) {
-      _difficultyLocked = true;
+      _settings.setDifficultyLocked(true);
     }
   }
 
   void _applyResult(MoveResult res, {String? statusOverride}) {
     _history = res.history;
     _lastConflicts = res.conflicts;
-    _lastSolved = res.solved;
     _render(statusOverride ?? res.message);
   }
 
   void _render(String status) {
-    _statusText = status;
     notifyListeners();
   }
 
@@ -455,68 +276,29 @@ class SudokuController extends ChangeNotifier {
 
     return UiState(
       board: BoardVm(cells: cells),
-      statusText: _statusText,
-      notesMode: _notesMode,
-      canUndo: _history.canUndo(),
-      canRedo: _history.canRedo(),
-      solved: _lastSolved,
-      difficulty: _difficulty,
-      canChangeDifficulty: !_difficultyLocked,
-      styleName: _styleName,
-      contentMode: _contentMode,
-      animalStyle: _animalStyle,
+      notesMode: _settings.state.notesMode,
+      difficulty: _settings.state.difficulty,
+      canChangeDifficulty: _settings.state.canChangeDifficulty,
+      styleName: _settings.state.styleName,
+      contentMode: _settings.state.contentMode,
+      animalStyle: _settings.state.animalStyle,
       selected: _selected,
       gameOver: _gameOver,
     );
   }
 
-  Grid _gridFromBoard(Board board) {
-    return List<List<Digit?>>.generate(
-      9,
-      (r) => List<Digit?>.generate(9, (c) => board.cellAt(r, c).value),
-      growable: false,
-    );
+  Set<Coord> _givenCoords() {
+    final givens = <Coord>{};
+    final board = _history.present.board;
+    for (var r = 0; r < 9; r += 1) {
+      for (var c = 0; c < 9; c += 1) {
+        if (board.cellAt(r, c).given) {
+          givens.add(Coord(r, c));
+        }
+      }
+    }
+    return givens;
   }
 
-  Grid _extractInitialGrid(History history) {
-    if (history.past.isNotEmpty) {
-      return _gridFromBoard(history.past.first.board);
-    }
-    return _gridFromBoard(history.present.board);
-  }
-
-  Grid _copyGrid(Grid grid) {
-    return grid.map((row) => row.toList(growable: false)).toList(growable: false);
-  }
-
-  Future<void> _loadPreferences() async {
-    final prefs = await _prefs.load();
-    final animalStyle = prefs.animalStyle;
-    final contentMode = prefs.contentMode;
-    final styleName = prefs.styleName;
-    final difficulty = prefs.difficulty;
-
-    var changed = false;
-    if (animalStyle == 'cute' || animalStyle == 'simple') {
-      _animalStyle = animalStyle!;
-      changed = true;
-    }
-    if (contentMode == 'animals' || contentMode == 'numbers') {
-      _contentMode = contentMode!;
-      changed = true;
-    }
-    if (styleName != null && styleName.isNotEmpty) {
-      _styleName = styleName;
-      changed = true;
-    }
-    if (difficulty != null && ['easy', 'medium', 'hard'].contains(difficulty)) {
-      _difficulty = difficulty;
-      changed = true;
-    }
-    if (changed) {
-      notifyListeners();
-    }
-  }
-
-  // Preferences are saved via PreferencesStore.
+  // Preferences are handled by SettingsController.
 }
