@@ -1,0 +1,55 @@
+import 'package:flutter_app/domain/types.dart';
+
+class CellVm {
+  final Coord coord;
+  final Digit? value;
+  final bool given;
+  final List<Digit> notes;
+  final bool selected;
+  final bool conflicted;
+  final bool incorrect;
+  final bool solutionAdded;
+  final bool correct;
+
+  const CellVm({
+    required this.coord,
+    required this.value,
+    required this.given,
+    required this.notes,
+    required this.selected,
+    required this.conflicted,
+    required this.incorrect,
+    required this.solutionAdded,
+    required this.correct,
+  });
+}
+
+class BoardVm {
+  final List<List<CellVm>> cells;
+
+  const BoardVm({required this.cells});
+}
+
+class UiState {
+  final BoardVm board;
+  final bool notesMode;
+  final String difficulty;
+  final bool canChangeDifficulty;
+  final String styleName;
+  final String contentMode;
+  final String animalStyle;
+  final Coord? selected;
+  final bool gameOver;
+
+  const UiState({
+    required this.board,
+    required this.notesMode,
+    required this.difficulty,
+    required this.canChangeDifficulty,
+    required this.styleName,
+    required this.contentMode,
+    required this.animalStyle,
+    required this.selected,
+    required this.gameOver,
+  });
+}
