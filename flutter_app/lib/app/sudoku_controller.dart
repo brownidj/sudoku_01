@@ -125,6 +125,14 @@ class SudokuController extends ChangeNotifier {
     _render(_settings.state.notesMode ? 'Notes mode on' : 'Notes mode off');
   }
 
+  void setNotesMode(bool enabled) {
+    if (_gameOver) {
+      return;
+    }
+    _settings.setNotesMode(enabled);
+    _render(_settings.state.notesMode ? 'Notes mode on' : 'Notes mode off');
+  }
+
   void onNewGame() {
     final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
     final res = _service.newGameFromGrid(puzzle.grid);

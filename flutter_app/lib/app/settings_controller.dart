@@ -40,6 +40,13 @@ class SettingsController {
     _setState(_state.copyWith(notesMode: !_state.notesMode));
   }
 
+  void setNotesMode(bool enabled) {
+    if (_state.notesMode == enabled) {
+      return;
+    }
+    _setState(_state.copyWith(notesMode: enabled));
+  }
+
   bool setDifficulty(String difficulty) {
     if (!_state.canChangeDifficulty) {
       return false;

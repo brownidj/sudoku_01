@@ -12,7 +12,8 @@ class SudokuBoard extends StatelessWidget {
   final UiState state;
   final BoardStyle style;
   final Map<int, ui.Image> animalImages;
-  final ui.Image? pencilImage;
+  final Map<int, Map<int, ui.Image>> noteImagesBySize;
+  final double devicePixelRatio;
   final ValueChanged<Coord> onTapCell;
   final void Function(Offset, Coord) onLongPressCell;
 
@@ -21,7 +22,8 @@ class SudokuBoard extends StatelessWidget {
     required this.state,
     required this.style,
     required this.animalImages,
-    required this.pencilImage,
+    required this.noteImagesBySize,
+    required this.devicePixelRatio,
     required this.onTapCell,
     required this.onLongPressCell,
   });
@@ -58,7 +60,8 @@ class SudokuBoard extends StatelessWidget {
                   state: state,
                   style: style,
                   animalImages: animalImages,
-                  pencilImage: pencilImage,
+                  noteImagesBySize: noteImagesBySize,
+                  devicePixelRatio: devicePixelRatio,
                 ),
               ),
             ),

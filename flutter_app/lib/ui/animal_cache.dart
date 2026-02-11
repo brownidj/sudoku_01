@@ -5,10 +5,17 @@ import 'package:flutter/services.dart';
 
 class AnimalImageCache {
   static Future<Map<String, Map<int, ui.Image>>>? _future;
+  static Future<Map<String, Map<int, Map<int, ui.Image>>>>? _notesFuture;
+  static Map<String, Map<int, Map<int, ui.Image>>>? _notesCache;
 
   static Future<Map<String, Map<int, ui.Image>>> loadAll() {
     _future ??= _loadAll();
     return _future!;
+  }
+
+  static Future<Map<String, Map<int, Map<int, ui.Image>>>> loadNotesAll() {
+    _notesFuture ??= _loadNotesAll();
+    return _notesFuture!;
   }
 
   static Future<Map<int, ui.Image>> loadVariant(String variant) async {
@@ -25,6 +32,21 @@ class AnimalImageCache {
     };
   }
 
+  static Future<Map<String, Map<int, Map<int, ui.Image>>>> _loadNotesAll() async {
+    final sizes = [16, 20, 24, 32];
+    final simple = <int, Map<int, ui.Image>>{};
+    final cute = <int, Map<int, ui.Image>>{};
+    for (final size in sizes) {
+      simple[size] = await _loadNotesImages(variant: 'simple', size: size);
+      cute[size] = await _loadNotesImages(variant: 'cute', size: size);
+    }
+    _notesCache = {
+      'simple': simple,
+      'cute': cute,
+    };
+    return _notesCache!;
+  }
+
   static Future<Map<int, ui.Image>> _loadImages({required String variant}) async {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
@@ -35,6 +57,26 @@ class AnimalImageCache {
       images[d] = image;
     }
     return images;
+  }
+
+  static Future<Map<int, ui.Image>> _loadNotesImages({
+    required String variant,
+    required int size,
+  }) async {
+    final images = <int, ui.Image>{};
+    for (var d = 1; d <= 9; d += 1) {
+      final name = _animalName(d);
+      final prefix = variant == 'cute' ? 'cartoon_' : '';
+      final data =
+          await rootBundle.load('assets/images/animals/notes/$size/${d}_${prefix}$name.png');
+      final image = await _decodeImage(data.buffer.asUint8List());
+      images[d] = image;
+    }
+    return images;
+  }
+
+  static Map<int, ui.Image> notesFor(String variant, int size) {
+    return _notesCache?[variant]?[size] ?? <int, ui.Image>{};
   }
 
   static String _animalName(int digit) {

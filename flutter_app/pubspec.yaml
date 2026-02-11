@@ -69,6 +69,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/animals/
+    - assets/images/animals/notes/16/
+    - assets/images/animals/notes/20/
+    - assets/images/animals/notes/24/
+    - assets/images/animals/notes/32/
     - assets/images/icons/
     - assets/images/icons/super_granny.png
 

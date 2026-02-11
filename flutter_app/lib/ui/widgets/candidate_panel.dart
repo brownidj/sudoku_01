@@ -11,6 +11,7 @@ class CandidatePanel extends StatelessWidget {
   final Set<int> selectedNotes;
   final Map<int, ui.Image> animalImages;
   final ValueChanged<int> onDigitSelected;
+  final ValueChanged<int>? onDigitLongPressed;
 
   const CandidatePanel({
     super.key,
@@ -21,6 +22,7 @@ class CandidatePanel extends StatelessWidget {
     required this.selectedNotes,
     required this.animalImages,
     required this.onDigitSelected,
+    this.onDigitLongPressed,
   });
 
   @override
@@ -46,9 +48,12 @@ class CandidatePanel extends StatelessWidget {
                     width: 44,
                     height: 44,
                     child: GestureDetector(
-                      onLongPress: showAnimals
-                          ? () => tooltipKey.currentState?.ensureTooltipVisible()
+                      onLongPressStart: showAnimals
+                          ? (_) => tooltipKey.currentState?.ensureTooltipVisible()
                           : null,
+                      onLongPress: onDigitLongPressed == null
+                          ? null
+                          : () => onDigitLongPressed!(digit),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,

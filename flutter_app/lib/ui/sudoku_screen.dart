@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
@@ -25,7 +24,7 @@ class SudokuScreen extends StatefulWidget {
 
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
-  ui.Image? _pencilImage;
+  final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
   Future<void>? _animalLoad;
   OverlayEntry? _tooltipEntry;
   late final CandidateSelectionController _candidateController;
@@ -55,18 +54,19 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   Future<void> _loadAnimalImages() async {
     final images = await AnimalImageCache.loadAll();
+    Map<String, Map<int, Map<int, ui.Image>>> notes = const {};
+    try {
+      notes = await AnimalImageCache.loadNotesAll();
+    } catch (error) {
+      debugPrint('Failed to load notes icons: $error');
+      notes = const {};
+    }
     _animalImages
       ..clear()
       ..addAll(images);
-    try {
-      final data = await rootBundle.load('assets/images/icons/pencil-icon.png');
-      final bytes = data.buffer.asUint8List();
-      final codec = await ui.instantiateImageCodec(bytes);
-      final frame = await codec.getNextFrame();
-      _pencilImage = frame.image;
-    } catch (_) {
-      _pencilImage = null;
-    }
+    _noteImages
+      ..clear()
+      ..addAll(notes);
     if (mounted) {
       setState(() {});
     }
@@ -146,13 +146,30 @@ class _SudokuScreenState extends State<SudokuScreen> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(12),
-                    child: SudokuBoard(
-                      state: state,
-                      style: style,
-                      animalImages: _animalImages[state.animalStyle] ?? const {},
-                      pencilImage: _pencilImage,
-                      onTapCell: _handleCellTap,
-                      onLongPressCell: _handleCellLongPress,
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        final dpr = MediaQuery.of(context).devicePixelRatio;
+                        final boardW = constraints.maxWidth;
+                        final cellW = boardW / 9.0;
+                        debugPrint(
+                          'Board: ${boardW.toStringAsFixed(2)} lp, '
+                          'Cell: ${cellW.toStringAsFixed(2)} lp '
+                          '(${(cellW * dpr).toStringAsFixed(0)} px @ dpr=$dpr)',
+                        );
+                        return SizedBox(
+                          width: boardW,
+                          height: boardW,
+                          child: SudokuBoard(
+                            state: state,
+                            style: style,
+                            animalImages: _animalImages[state.animalStyle] ?? const {},
+                            noteImagesBySize: _noteImages[state.animalStyle] ?? const {},
+                            devicePixelRatio: dpr,
+                            onTapCell: _handleCellTap,
+                            onLongPressCell: _handleCellLongPress,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -177,6 +194,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
                       _candidateController.refresh();
                     }
                   },
+                  onDigitLongPressed: state.notesMode
+                      ? (digit) {
+                          if (digit == 0) {
+                            return;
+                          }
+                          widget.controller.onPlaceDigit(digit);
+                          _candidateController.hide();
+                        }
+                      : null,
                 ),
                 if (state.gameOver) Legend(style: style),
                 ActionBar(
@@ -225,7 +251,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (cell.given) {
       return;
     }
-    if (_animalLoad != null) {
+    if (cell.notes.isNotEmpty && !state.notesMode) {
+      widget.controller.setNotesMode(true);
+    }
+    if (state.contentMode == 'animals' && _animalLoad != null) {
       await _animalLoad;
     }
     final candidates = _possibleDigits(state, coord);

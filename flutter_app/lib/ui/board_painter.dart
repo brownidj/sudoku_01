@@ -12,13 +12,15 @@ class SudokuBoardPainter extends CustomPainter {
   final UiState state;
   final BoardStyle style;
   final Map<int, ui.Image> animalImages;
-  final ui.Image? pencilImage;
+  final Map<int, Map<int, ui.Image>> noteImagesBySize;
+  final double devicePixelRatio;
 
   SudokuBoardPainter({
     required this.state,
     required this.style,
     required this.animalImages,
-    required this.pencilImage,
+    required this.noteImagesBySize,
+    required this.devicePixelRatio,
   });
 
   @override
@@ -140,26 +142,49 @@ class SudokuBoardPainter extends CustomPainter {
     if (notesSorted.isEmpty) {
       return;
     }
-    _drawPencilIcon(canvas, rect);
-  }
-
-  void _drawPencilIcon(Canvas canvas, Rect rect) {
-    final image = pencilImage;
-    if (image == null) {
+    final gridSize = notesSorted.length <= 4 ? 2 : 3;
+    final subCellSize = rect.width / gridSize;
+    final logicalSize = subCellSize * 0.95;
+    final targetPx = logicalSize * devicePixelRatio;
+    final sizePx = _bestNoteSize(targetPx);
+    if (sizePx == 0) {
       return;
     }
-    final size = rect.width * 0.9;
-    final left = rect.left + (rect.width - size) / 2;
-    final top = rect.top + (rect.height - size) / 2;
-    final target = Rect.fromLTWH(left, top, size, size);
-    canvas.drawRect(rect, Paint()..color = Colors.white);
-    paintImage(
-      canvas: canvas,
-      rect: target,
-      image: image,
-      fit: BoxFit.contain,
-      opacity: 1.0,
-    );
+    if (!noteImagesBySize.containsKey(sizePx)) {
+      return;
+    }
+    final maxNotes = gridSize * gridSize;
+    for (var i = 0; i < notesSorted.length && i < maxNotes; i += 1) {
+      final digit = notesSorted[i];
+      final image = noteImagesBySize[sizePx]?[digit];
+      if (image == null) {
+        continue;
+      }
+      final row = i ~/ gridSize;
+      final col = i % gridSize;
+      final cellLeft = rect.left + col * subCellSize;
+      final cellTop = rect.top + row * subCellSize;
+      final left = cellLeft + (subCellSize - logicalSize) / 2;
+      final top = cellTop + (subCellSize - logicalSize) / 2;
+      final target = Rect.fromLTWH(left, top, logicalSize, logicalSize);
+      paintImage(canvas: canvas, rect: target, image: image, fit: BoxFit.contain);
+    }
+  }
+
+  int _bestNoteSize(double targetPx) {
+    final sizes = noteImagesBySize.keys.toList()..sort();
+    if (sizes.isEmpty) {
+      return 0;
+    }
+    var best = sizes.first;
+    for (final size in sizes) {
+      if (size <= targetPx) {
+        best = size;
+      } else {
+        break;
+      }
+    }
+    return best;
   }
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
