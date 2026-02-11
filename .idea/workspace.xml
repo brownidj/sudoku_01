@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Added splash Screen and updated app">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/board_painter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/board_painter.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -214,7 +220,7 @@
       <updated>1768618197790</updated>
       <workItem from="1768618198788" duration="32994000" />
       <workItem from="1768788726238" duration="6222000" />
-      <workItem from="1770613434125" duration="44327000" />
+      <workItem from="1770613434125" duration="50697000" />
     </task>
     <task id="LOCAL-00001" summary="Implement true Sudoku puzzle generator (solution → mask) with tests&#10;&#10;- Added randomized backtracking generator to produce full valid solutions&#10;- Implemented masking phase to create puzzles by difficulty (easy/medium/hard)&#10;- Switched generate_puzzle() to use solution→mask pipeline&#10;- Introduced target givens heuristics per difficulty&#10;- Kept seed-based randomization for backward compatibility&#10;- Added comprehensive tests for generator correctness and difficulty ranges&#10;&#10;This establishes a clean foundation for future uniqueness checks and&#10;logic-based difficulty grading.">
       <option name="closed" value="true" />
@@ -384,7 +390,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770771436276</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Added splash Screen and updated app">
+      <option name="closed" value="true" />
+      <created>1770786675485</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1770786675485</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

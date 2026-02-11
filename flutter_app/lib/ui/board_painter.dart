@@ -6,6 +6,7 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/board_layout.dart';
 import 'package:flutter_app/ui/board_theme.dart';
+import 'package:flutter_app/ui/note_layout.dart';
 import 'package:flutter_app/ui/styles.dart';
 
 class SudokuBoardPainter extends CustomPainter {
@@ -142,11 +143,11 @@ class SudokuBoardPainter extends CustomPainter {
     if (notesSorted.isEmpty) {
       return;
     }
-    final gridSize = notesSorted.length <= 4 ? 2 : 3;
+    final gridSize = noteGridSize(notesSorted.length);
     final subCellSize = rect.width / gridSize;
     final logicalSize = subCellSize * 0.95;
     final targetPx = logicalSize * devicePixelRatio;
-    final sizePx = _bestNoteSize(targetPx);
+    final sizePx = bestNoteSize(targetPx, noteImagesBySize.keys);
     if (sizePx == 0) {
       return;
     }
@@ -171,21 +172,7 @@ class SudokuBoardPainter extends CustomPainter {
     }
   }
 
-  int _bestNoteSize(double targetPx) {
-    final sizes = noteImagesBySize.keys.toList()..sort();
-    if (sizes.isEmpty) {
-      return 0;
-    }
-    var best = sizes.first;
-    for (final size in sizes) {
-      if (size <= targetPx) {
-        best = size;
-      } else {
-        break;
-      }
-    }
-    return best;
-  }
+
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
     final targetSize = _animalTargetSize(rect.width, digit);
