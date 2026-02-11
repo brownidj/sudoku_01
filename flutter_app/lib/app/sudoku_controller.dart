@@ -40,8 +40,10 @@ class SudokuController extends ChangeNotifier {
     _settings = settingsController ?? SettingsController(_prefs, notifyListeners);
     _history = _service.initialHistory();
     start();
-    _settings.load();
+    ready = _settings.load();
   }
+
+  late final Future<void> ready;
 
   UiState get state => _buildState();
 

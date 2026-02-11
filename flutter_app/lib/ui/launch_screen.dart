@@ -12,6 +12,20 @@ class LaunchScreen extends StatefulWidget {
 }
 
 class _LaunchScreenState extends State<LaunchScreen> {
+  bool _ready = false;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.ready.then((_) {
+      if (mounted) {
+        setState(() {
+          _ready = true;
+        });
+      }
+    });
+  }
+
   void _startGame() {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -81,7 +95,15 @@ class _LaunchScreenState extends State<LaunchScreen> {
                 SizedBox(
                   height: 44,
                   child: ElevatedButton(
-                    onPressed: _startGame,
+                    onPressed: () async {
+                      if (!_ready) {
+                        await widget.controller.ready;
+                      }
+                      if (!mounted) {
+                        return;
+                      }
+                      _startGame();
+                    },
                     child: const Text('Play'),
                   ),
                 ),
