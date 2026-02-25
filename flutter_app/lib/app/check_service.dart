@@ -22,7 +22,8 @@ class CheckService {
     required Set<Coord> givens,
     required bool showSolution,
   }) {
-    final solved = solveGrid(baseGrid);
+    final solvedCurrent = solveGrid(currentGrid);
+    final solved = solvedCurrent ?? solveGrid(baseGrid);
     if (solved == null) {
       return const CheckResult(
         incorrect: {},
@@ -41,7 +42,10 @@ class CheckService {
         final value = currentGrid[r][c];
         final solvedValue = solved[r][c];
         final coord = Coord(r, c);
-        if (value != null && solvedValue != null && value != solvedValue) {
+        if (value != null &&
+            solvedValue != null &&
+            value != solvedValue &&
+            solvedCurrent == null) {
           incorrect.add(coord);
         } else if (value != null && solvedValue != null && value == solvedValue) {
           if (!givens.contains(coord)) {

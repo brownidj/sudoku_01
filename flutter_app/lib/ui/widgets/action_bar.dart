@@ -56,7 +56,7 @@ class ActionBar extends StatelessWidget {
             height: 40,
             child: OutlinedButton(
               onPressed: onCheckOrSolution,
-              child: Text(state.gameOver ? 'Solution' : 'Check'),
+              child: const Text('Solution'),
             ),
           ),
         ],

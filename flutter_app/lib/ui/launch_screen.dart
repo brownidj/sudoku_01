@@ -47,7 +47,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Animal Sudoku',
+                  'Zudoku',
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),

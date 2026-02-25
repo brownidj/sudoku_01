@@ -35,9 +35,11 @@ class UiState {
   final bool notesMode;
   final String difficulty;
   final bool canChangeDifficulty;
+  final bool canChangePuzzleMode;
   final String styleName;
   final String contentMode;
   final String animalStyle;
+  final String puzzleMode;
   final Coord? selected;
   final bool gameOver;
 
@@ -46,9 +48,11 @@ class UiState {
     required this.notesMode,
     required this.difficulty,
     required this.canChangeDifficulty,
+    required this.canChangePuzzleMode,
     required this.styleName,
     required this.contentMode,
     required this.animalStyle,
+    required this.puzzleMode,
     required this.selected,
     required this.gameOver,
   });

@@ -3,5 +3,8 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.14 (Sudoku_01)" />
   </component>
+  <component name="ProjectResources">
+    <resource url="&quot;http://schemas.android.com/apk/res/android&quot;" location="$PROJECT_DIR$/flutter_app/android/app/src/profile/AndroidManifest.xml" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.14 (Sudoku_01)" project-jdk-type="Python SDK" />
 </project>

@@ -31,47 +31,43 @@ class CandidatePanel extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Transform.translate(
-      offset: const Offset(0, -20),
-      child: Container(
-        color: Theme.of(context).colorScheme.surfaceVariant,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            for (final digit in candidateDigits)
-              Builder(
-                builder: (context) {
-                  final tooltipKey = GlobalKey<TooltipState>();
-                  return SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: GestureDetector(
-                      onLongPressStart: showAnimals
-                          ? (_) => tooltipKey.currentState?.ensureTooltipVisible()
-                          : null,
-                      onLongPress: onDigitLongPressed == null
-                          ? null
-                          : () => onDigitLongPressed!(digit),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: notesMode && selectedNotes.contains(digit)
-                              ? const Color(0xFFF6BABA)
-                              : (showAnimals ? Colors.white : null),
-                        ),
-                        onPressed: () => onDigitSelected(digit),
-                        child: showAnimals
-                            ? _animalOption(digit, tooltipKey)
-                            : (digit == 0 ? const Icon(Icons.clear) : Text('$digit')),
+    return Container(
+      color: Theme.of(context).colorScheme.surfaceVariant,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          for (final digit in candidateDigits)
+            Builder(
+              builder: (context) {
+                final tooltipKey = GlobalKey<TooltipState>();
+                return SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: GestureDetector(
+                    onLongPressStart: showAnimals
+                        ? (_) => tooltipKey.currentState?.ensureTooltipVisible()
+                        : null,
+                    onLongPress:
+                        onDigitLongPressed == null ? null : () => onDigitLongPressed!(digit),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        backgroundColor: notesMode && selectedNotes.contains(digit)
+                            ? const Color(0xFFF6BABA)
+                            : (showAnimals ? Colors.white : null),
                       ),
+                      onPressed: () => onDigitSelected(digit),
+                      child: showAnimals
+                          ? _animalOption(digit, tooltipKey)
+                          : (digit == 0 ? const Icon(Icons.clear) : Text('$digit')),
                     ),
-                  );
-                },
-              ),
-          ],
-        ),
+                  ),
+                );
+              },
+            ),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ class PreferencesStore {
   static const keyContentMode = 'content_mode';
   static const keyStyleName = 'style_name';
   static const keyDifficulty = 'difficulty';
+  static const keyPuzzleMode = 'puzzle_mode';
 
   Future<AppPreferences> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -13,6 +14,7 @@ class PreferencesStore {
       contentMode: prefs.getString(keyContentMode),
       styleName: prefs.getString(keyStyleName),
       difficulty: prefs.getString(keyDifficulty),
+      puzzleMode: prefs.getString(keyPuzzleMode),
     );
   }
 
@@ -35,6 +37,11 @@ class PreferencesStore {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(keyDifficulty, value);
   }
+
+  Future<void> savePuzzleMode(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(keyPuzzleMode, value);
+  }
 }
 
 class AppPreferences {
@@ -42,11 +49,13 @@ class AppPreferences {
   final String? contentMode;
   final String? styleName;
   final String? difficulty;
+  final String? puzzleMode;
 
   const AppPreferences({
     required this.animalStyle,
     required this.contentMode,
     required this.styleName,
     required this.difficulty,
+    required this.puzzleMode,
   });
 }

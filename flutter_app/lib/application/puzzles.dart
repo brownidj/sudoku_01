@@ -76,14 +76,25 @@ Puzzle getPuzzle(String puzzleId) {
 
 List<Puzzle> listPuzzles() => puzzles.values.toList(growable: false);
 
-Puzzle generatePuzzle(String difficulty, {Random? rng}) {
+Puzzle generatePuzzle(String difficulty, {String mode = 'unique', Random? rng}) {
   final random = rng ?? Random();
   final diff = difficulty.trim().toLowerCase();
   if (!_difficultySeeds.containsKey(diff)) {
     throw ArgumentError('Unknown difficulty: $difficulty');
   }
+  final puzzleMode = mode.trim().toLowerCase();
+  if (puzzleMode != 'unique' && puzzleMode != 'multi') {
+    throw ArgumentError('Unknown puzzle mode: $mode');
+  }
+  final resolvedMode = (diff == 'hard') ? 'unique' : puzzleMode;
   final solution = _generateFullSolution(random);
-  final grid = _maskSolution(solution, diff, random);
+  final Grid grid;
+  if (resolvedMode == 'unique') {
+    // TODO: enforce uniqueness once a solver is available.
+    grid = _maskSolution(solution, diff, random);
+  } else {
+    grid = _maskSolution(solution, diff, random);
+  }
   final puzzleId = '${diff}_gen_${random.nextInt(0xffffffff).toRadixString(16).padLeft(8, '0')}';
   return Puzzle(puzzleId: puzzleId, difficulty: diff, grid: grid);
 }

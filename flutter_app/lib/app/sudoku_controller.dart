@@ -48,11 +48,15 @@ class SudokuController extends ChangeNotifier {
   UiState get state => _buildState();
 
   void start() {
-    final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
+    final puzzle = puzzles.generatePuzzle(
+      _settings.state.difficulty,
+      mode: _settings.state.puzzleMode,
+    );
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
     _lastConflicts = {};
     _settings.setDifficultyLocked(false);
+    _settings.setPuzzleModeLocked(false);
     _gameOver = false;
     _incorrectCells = {};
     _solutionAddedCells = {};
@@ -88,6 +92,7 @@ class SudokuController extends ChangeNotifier {
         : _service.placeDigit(_history, _selected!, digit);
     _applyResult(res);
     _lockDifficultyIfFirstPlayerChange(before, _history);
+    _lockPuzzleModeIfFirstPlayerChange(before, _history);
   }
 
   void onPlaceDigit(Digit digit) {
@@ -101,6 +106,7 @@ class SudokuController extends ChangeNotifier {
     final res = _service.placeDigit(_history, _selected!, digit);
     _applyResult(res);
     _lockDifficultyIfFirstPlayerChange(before, _history);
+    _lockPuzzleModeIfFirstPlayerChange(before, _history);
   }
 
   void onClearPressed() {
@@ -117,6 +123,7 @@ class SudokuController extends ChangeNotifier {
         : _service.clearCell(_history, _selected!);
     _applyResult(res);
     _lockDifficultyIfFirstPlayerChange(before, _history);
+    _lockPuzzleModeIfFirstPlayerChange(before, _history);
   }
 
   void onToggleNotesMode() {
@@ -136,11 +143,15 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onNewGame() {
-    final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
+    final puzzle = puzzles.generatePuzzle(
+      _settings.state.difficulty,
+      mode: _settings.state.puzzleMode,
+    );
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
     _lastConflicts = {};
     _settings.setDifficultyLocked(false);
+    _settings.setPuzzleModeLocked(false);
     _gameOver = false;
     _incorrectCells = {};
     _solutionAddedCells = {};
@@ -163,11 +174,17 @@ class SudokuController extends ChangeNotifier {
     if (!_settings.setDifficulty(d)) {
       return;
     }
-    final puzzle = puzzles.generatePuzzle(_settings.state.difficulty);
+    final defaultMode = _defaultPuzzleModeForDifficulty(d);
+    _settings.setPuzzleMode(defaultMode);
+    final puzzle = puzzles.generatePuzzle(
+      _settings.state.difficulty,
+      mode: _settings.state.puzzleMode,
+    );
     final res = _service.newGameFromGrid(puzzle.grid);
     _selected = null;
     _lastConflicts = {};
     _settings.setDifficultyLocked(false);
+    _settings.setPuzzleModeLocked(false);
     _gameOver = false;
     _incorrectCells = {};
     _solutionAddedCells = {};
@@ -194,6 +211,36 @@ class SudokuController extends ChangeNotifier {
     _render('Animal style: $next');
   }
 
+  void onPuzzleModeChanged(String mode) {
+    if (!_settings.state.canChangePuzzleMode) {
+      _render('Finish or check the game before changing puzzle mode');
+      return;
+    }
+    if (_settings.state.difficulty == 'hard') {
+      _settings.setPuzzleMode('unique');
+      _render('Puzzle mode: unique');
+      return;
+    }
+    final next = mode == 'unique' ? 'unique' : 'multi';
+    _settings.setPuzzleMode(next);
+    final puzzle = puzzles.generatePuzzle(
+      _settings.state.difficulty,
+      mode: _settings.state.puzzleMode,
+    );
+    final res = _service.newGameFromGrid(puzzle.grid);
+    _selected = null;
+    _lastConflicts = {};
+    _settings.setDifficultyLocked(false);
+    _settings.setPuzzleModeLocked(false);
+    _gameOver = false;
+    _incorrectCells = {};
+    _solutionAddedCells = {};
+    _correctCells = {};
+    _solutionGrid = null;
+    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
+    _applyResult(res, statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}');
+  }
+
   void onCheckSolution() {
     if (_gameOver) {
       return;
@@ -212,6 +259,7 @@ class SudokuController extends ChangeNotifier {
     _solutionAddedCells = {};
     _selected = null;
     _gameOver = true;
+    _settings.setPuzzleModeLocked(false);
     _render('Check complete');
   }
 
@@ -232,6 +280,7 @@ class SudokuController extends ChangeNotifier {
     _solutionGrid = result.solutionGrid;
     _solutionAddedCells = result.solutionAdded;
     _selected = null;
+    _settings.setPuzzleModeLocked(false);
     _render('Solution');
   }
 
@@ -241,6 +290,15 @@ class SudokuController extends ChangeNotifier {
     }
     if (!before.canUndo() && after.canUndo()) {
       _settings.setDifficultyLocked(true);
+    }
+  }
+
+  void _lockPuzzleModeIfFirstPlayerChange(History before, History after) {
+    if (!_settings.state.canChangePuzzleMode) {
+      return;
+    }
+    if (!before.canUndo() && after.canUndo()) {
+      _settings.setPuzzleModeLocked(true);
     }
   }
 
@@ -289,12 +347,21 @@ class SudokuController extends ChangeNotifier {
       notesMode: _settings.state.notesMode,
       difficulty: _settings.state.difficulty,
       canChangeDifficulty: _settings.state.canChangeDifficulty,
+      canChangePuzzleMode: _settings.state.canChangePuzzleMode,
       styleName: _settings.state.styleName,
       contentMode: _settings.state.contentMode,
       animalStyle: _settings.state.animalStyle,
+      puzzleMode: _settings.state.puzzleMode,
       selected: _selected,
       gameOver: _gameOver,
     );
+  }
+
+  String _defaultPuzzleModeForDifficulty(String difficulty) {
+    if (difficulty == 'easy') {
+      return 'multi';
+    }
+    return 'unique';
   }
 
   Set<Coord> _givenCoords() {

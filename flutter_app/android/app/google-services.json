@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "666285614529",
+    "project_id": "zudoku-2648e",
+    "storage_bucket": "zudoku-2648e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666285614529:android:1ef66ec94f271d55febb40",
+        "android_client_info": {
+          "package_name": "org.topository.animalsudoku"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQHnhS3-nBpj-rjRoLc_Az5p2lIYhjvgY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

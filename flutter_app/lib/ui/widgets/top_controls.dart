@@ -63,41 +63,6 @@ class TopControls extends StatelessWidget {
             spacing: 12,
             runSpacing: 8,
             children: [
-              DropdownButton<String>(
-                value: state.difficulty,
-                onChanged: state.canChangeDifficulty
-                    ? (value) {
-                        if (value != null) {
-                          onSetDifficulty(value);
-                        }
-                      }
-                    : null,
-                items: const [
-                  DropdownMenuItem(value: 'easy', child: Text('Easy')),
-                  DropdownMenuItem(value: 'medium', child: Text('Medium')),
-                  DropdownMenuItem(value: 'hard', child: Text('Hard')),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Style'),
-                  const SizedBox(width: 8),
-                  DropdownButton<String>(
-                    value: state.styleName,
-                    onChanged: (value) {
-                      if (value != null) {
-                        onStyleChanged(value);
-                      }
-                    },
-                    items: const [
-                      DropdownMenuItem(value: 'Modern', child: Text('Modern')),
-                      DropdownMenuItem(value: 'Classic', child: Text('Classic')),
-                      DropdownMenuItem(value: 'High Contrast', child: Text('High Contrast')),
-                    ],
-                  ),
-                ],
-              ),
             ],
           ),
         ],
