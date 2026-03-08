@@ -34,6 +34,19 @@ class _LaunchScreenState extends State<LaunchScreen> {
     );
   }
 
+  Future<void> _openGame({required bool startNewGame}) async {
+    if (!_ready) {
+      await widget.controller.ready;
+    }
+    if (!mounted) {
+      return;
+    }
+    if (startNewGame) {
+      widget.controller.onNewGame();
+    }
+    _startGame();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -47,7 +60,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'Zudoku',
+                  'ZooDoKu 0.4.1',
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
@@ -92,21 +105,35 @@ class _LaunchScreenState extends State<LaunchScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
-                SizedBox(
-                  height: 44,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if (!_ready) {
-                        await widget.controller.ready;
-                      }
-                      if (!mounted) {
-                        return;
-                      }
-                      _startGame();
-                    },
-                    child: const Text('Play'),
+                if (!widget.controller.hadSavedSessionAtLaunch)
+                  SizedBox(
+                    height: 44,
+                    child: ElevatedButton(
+                      onPressed: () => _openGame(startNewGame: false),
+                      child: const Text('Play'),
+                    ),
+                  )
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 44,
+                        child: ElevatedButton(
+                          onPressed: () => _openGame(startNewGame: false),
+                          child: const Text('Resume'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      SizedBox(
+                        height: 44,
+                        child: OutlinedButton(
+                          onPressed: () => _openGame(startNewGame: true),
+                          child: const Text('New game'),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
               ],
             ),
           ),
