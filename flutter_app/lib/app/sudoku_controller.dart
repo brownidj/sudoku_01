@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/board_edit_coordinator.dart';
+import 'package:flutter_app/app/controller_startup_coordinator.dart';
 import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
@@ -20,6 +22,8 @@ class SudokuController extends ChangeNotifier {
   late final GameSessionService _sessionService;
   late final SolutionCheckCoordinator _solutionCoordinator;
   late final UiStateMapper _uiStateMapper;
+  late final BoardEditCoordinator _boardEditCoordinator;
+  late final ControllerStartupCoordinator _startupCoordinator;
   late History _history;
   Coord? _selected;
   Set<Coord> _lastConflicts = {};
@@ -41,6 +45,8 @@ class SudokuController extends ChangeNotifier {
     GameSessionService? gameSessionService,
     SolutionCheckCoordinator? solutionCheckCoordinator,
     UiStateMapper? uiStateMapper,
+    BoardEditCoordinator? boardEditCoordinator,
+    ControllerStartupCoordinator? startupCoordinator,
   }) : _service = gameService ?? GameService() {
     final prefs = preferencesStore ?? PreferencesStore();
     final resolvedGridUtils = gridUtils ?? GridUtils();
@@ -53,6 +59,11 @@ class SudokuController extends ChangeNotifier {
         solutionCheckCoordinator ??
         SolutionCheckCoordinator(resolvedCheckService, resolvedGridUtils);
     _uiStateMapper = uiStateMapper ?? const UiStateMapper();
+    _boardEditCoordinator =
+        boardEditCoordinator ?? BoardEditCoordinator(_service);
+    _startupCoordinator =
+        startupCoordinator ??
+        ControllerStartupCoordinator(_settings, _sessionService);
     _history = _service.initialHistory();
     ready = _initialize();
   }
@@ -61,11 +72,10 @@ class SudokuController extends ChangeNotifier {
   bool get hadSavedSessionAtLaunch => _hadSavedSessionAtLaunch;
 
   Future<void> _initialize() async {
-    await _settings.load();
-    final restoredSession = await _sessionService.restore(_settings.state);
-    final restored = restoredSession != null && !restoredSession.gameOver;
-    _hadSavedSessionAtLaunch = restored;
-    if (restoredSession != null && !restoredSession.gameOver) {
+    final startup = await _startupCoordinator.initialize();
+    final restoredSession = startup.restoredSession;
+    _hadSavedSessionAtLaunch = startup.shouldResumeSession;
+    if (startup.shouldResumeSession && restoredSession != null) {
       _history = restoredSession.history;
       _lastConflicts = {};
       _incorrectCells = {};
@@ -104,51 +114,43 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onDigitPressed(Digit digit) {
-    if (_gameOver) {
-      return;
-    }
-    if (_selected == null) {
-      _render('Select a cell');
-      return;
-    }
-    final before = _history;
-    final res = _settings.state.notesMode
-        ? _service.toggleNote(_history, _selected!, digit)
-        : _service.placeDigit(_history, _selected!, digit);
-    _applyResult(res);
-    _lockDifficultyIfFirstPlayerChange(before, _history);
-    _lockPuzzleModeIfFirstPlayerChange(before, _history);
+    _applyBoardEditOutcome(
+      _boardEditCoordinator.onDigitPressed(
+        gameOver: _gameOver,
+        selected: _selected,
+        notesMode: _settings.state.notesMode,
+        history: _history,
+        digit: digit,
+        canChangeDifficulty: _settings.state.canChangeDifficulty,
+        canChangePuzzleMode: _settings.state.canChangePuzzleMode,
+      ),
+    );
   }
 
   void onPlaceDigit(Digit digit) {
-    if (_gameOver) {
-      return;
-    }
-    if (_selected == null) {
-      return;
-    }
-    final before = _history;
-    final res = _service.placeDigit(_history, _selected!, digit);
-    _applyResult(res);
-    _lockDifficultyIfFirstPlayerChange(before, _history);
-    _lockPuzzleModeIfFirstPlayerChange(before, _history);
+    _applyBoardEditOutcome(
+      _boardEditCoordinator.onPlaceDigit(
+        gameOver: _gameOver,
+        selected: _selected,
+        history: _history,
+        digit: digit,
+        canChangeDifficulty: _settings.state.canChangeDifficulty,
+        canChangePuzzleMode: _settings.state.canChangePuzzleMode,
+      ),
+    );
   }
 
   void onClearPressed() {
-    if (_gameOver) {
-      return;
-    }
-    if (_selected == null) {
-      _render('Select a cell');
-      return;
-    }
-    final before = _history;
-    final res = _settings.state.notesMode
-        ? _service.clearNotes(_history, _selected!)
-        : _service.clearCell(_history, _selected!);
-    _applyResult(res);
-    _lockDifficultyIfFirstPlayerChange(before, _history);
-    _lockPuzzleModeIfFirstPlayerChange(before, _history);
+    _applyBoardEditOutcome(
+      _boardEditCoordinator.onClearPressed(
+        gameOver: _gameOver,
+        selected: _selected,
+        notesMode: _settings.state.notesMode,
+        history: _history,
+        canChangeDifficulty: _settings.state.canChangeDifficulty,
+        canChangePuzzleMode: _settings.state.canChangePuzzleMode,
+      ),
+    );
   }
 
   void onToggleNotesMode() {
@@ -262,20 +264,20 @@ class SudokuController extends ChangeNotifier {
     _render('Solution');
   }
 
-  void _lockDifficultyIfFirstPlayerChange(History before, History after) {
-    if (!_settings.state.canChangeDifficulty) {
+  void _applyBoardEditOutcome(BoardEditOutcome outcome) {
+    if (outcome.statusMessage != null) {
+      _render(outcome.statusMessage!);
       return;
     }
-    if (!before.canUndo() && after.canUndo()) {
+    if (outcome.result == null) {
+      return;
+    }
+
+    _applyResult(outcome.result!);
+    if (outcome.lockDifficulty) {
       _settings.setDifficultyLocked(true);
     }
-  }
-
-  void _lockPuzzleModeIfFirstPlayerChange(History before, History after) {
-    if (!_settings.state.canChangePuzzleMode) {
-      return;
-    }
-    if (!before.canUndo() && after.canUndo()) {
+    if (outcome.lockPuzzleMode) {
       _settings.setPuzzleModeLocked(true);
     }
   }
