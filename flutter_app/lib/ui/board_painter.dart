@@ -58,9 +58,13 @@ class SudokuBoardPainter extends CustomPainter {
         final y0 = layout.originY + r * cellSize;
         final rect = Rect.fromLTWH(x0, y0, cellSize, cellSize);
 
-        final peerRowCol = selRow != null && selCol != null && (r == selRow || c == selCol);
-        final peerBox = selBoxRow != null && selBoxCol != null &&
-            (r ~/ 3 == selBoxRow) && (c ~/ 3 == selBoxCol);
+        final peerRowCol =
+            selRow != null && selCol != null && (r == selRow || c == selCol);
+        final peerBox =
+            selBoxRow != null &&
+            selBoxCol != null &&
+            (r ~/ 3 == selBoxRow) &&
+            (c ~/ 3 == selBoxCol);
 
         final model = theme.cellModel(
           cell: cell,
@@ -94,7 +98,8 @@ class SudokuBoardPainter extends CustomPainter {
         }
 
         if (cell.value != null) {
-          if (state.contentMode == 'animals' && animalImages.containsKey(cell.value)) {
+          if (state.contentMode == 'animals' &&
+              animalImages.containsKey(cell.value)) {
             _drawAnimal(canvas, rect, animalImages[cell.value]!, cell.value!);
           } else {
             _drawValue(canvas, rect, cell.value!, cell.given, cellSize);
@@ -116,7 +121,13 @@ class SudokuBoardPainter extends CustomPainter {
     canvas.drawRect(rect, paint);
   }
 
-  void _drawValue(Canvas canvas, Rect rect, int value, bool given, double cellSize) {
+  void _drawValue(
+    Canvas canvas,
+    Rect rect,
+    int value,
+    bool given,
+    double cellSize,
+  ) {
     final fontSize = cellSize * 0.6;
     final textPainter = TextPainter(
       text: TextSpan(
@@ -172,7 +183,12 @@ class SudokuBoardPainter extends CustomPainter {
       final left = cellLeft + (subCellSize - logicalSize) / 2;
       final top = cellTop + (subCellSize - logicalSize) / 2;
       final target = Rect.fromLTWH(left, top, logicalSize, logicalSize);
-      paintImage(canvas: canvas, rect: target, image: image, fit: BoxFit.contain);
+      paintImage(
+        canvas: canvas,
+        rect: target,
+        image: image,
+        fit: BoxFit.contain,
+      );
     }
   }
 
@@ -190,7 +206,12 @@ class SudokuBoardPainter extends CustomPainter {
       final col = i % gridSize;
       final cellLeft = rect.left + col * subCellSize;
       final cellTop = rect.top + row * subCellSize;
-      final cellRect = Rect.fromLTWH(cellLeft, cellTop, subCellSize, subCellSize);
+      final cellRect = Rect.fromLTWH(
+        cellLeft,
+        cellTop,
+        subCellSize,
+        subCellSize,
+      );
       _drawNoteDigit(canvas, cellRect, digit);
     }
   }
@@ -216,8 +237,6 @@ class SudokuBoardPainter extends CustomPainter {
     );
     textPainter.paint(canvas, offset);
   }
-
-
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
     final targetSize = _animalTargetSize(rect.width, digit);
@@ -276,6 +295,7 @@ class SudokuBoardPainter extends CustomPainter {
   bool shouldRepaint(covariant SudokuBoardPainter oldDelegate) {
     return oldDelegate.state != state ||
         oldDelegate.style != style ||
-        oldDelegate.animalImages != animalImages;
+        oldDelegate.animalImages != animalImages ||
+        oldDelegate.noteImagesBySize != noteImagesBySize;
   }
 }

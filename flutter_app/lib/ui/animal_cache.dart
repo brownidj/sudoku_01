@@ -26,33 +26,34 @@ class AnimalImageCache {
   static Future<Map<String, Map<int, ui.Image>>> _loadAll() async {
     final simple = await _loadImages(variant: 'simple');
     final cute = await _loadImages(variant: 'cute');
-    return {
-      'simple': simple,
-      'cute': cute,
-    };
+    return {'simple': simple, 'cute': cute};
   }
 
-  static Future<Map<String, Map<int, Map<int, ui.Image>>>> _loadNotesAll() async {
+  static Future<Map<String, Map<int, Map<int, ui.Image>>>>
+  _loadNotesAll() async {
     final sizes = [16, 20, 24, 32];
     final simple = <int, Map<int, ui.Image>>{};
     final cute = <int, Map<int, ui.Image>>{};
+    final simpleNotes = await _loadNotesImages(variant: 'simple');
+    final cuteNotes = await _loadNotesImages(variant: 'cute');
     for (final size in sizes) {
-      simple[size] = await _loadNotesImages(variant: 'simple', size: size);
-      cute[size] = await _loadNotesImages(variant: 'cute', size: size);
+      simple[size] = Map<int, ui.Image>.from(simpleNotes);
+      cute[size] = Map<int, ui.Image>.from(cuteNotes);
     }
-    _notesCache = {
-      'simple': simple,
-      'cute': cute,
-    };
+    _notesCache = {'simple': simple, 'cute': cute};
     return _notesCache!;
   }
 
-  static Future<Map<int, ui.Image>> _loadImages({required String variant}) async {
+  static Future<Map<int, ui.Image>> _loadImages({
+    required String variant,
+  }) async {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
       final name = _animalName(d);
       final prefix = variant == 'cute' ? 'cartoon_' : '';
-      final data = await rootBundle.load('assets/images/animals/${d}_${prefix}$name.png');
+      final data = await rootBundle.load(
+        'assets/images/animals/${d}_${prefix}$name.png',
+      );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
     }
@@ -61,14 +62,14 @@ class AnimalImageCache {
 
   static Future<Map<int, ui.Image>> _loadNotesImages({
     required String variant,
-    required int size,
   }) async {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
       final name = _animalName(d);
       final prefix = variant == 'cute' ? 'cartoon_' : '';
-      final data =
-          await rootBundle.load('assets/images/animals/notes/$size/${d}_${prefix}$name.png');
+      final data = await rootBundle.load(
+        'assets/images/animals/${d}_${prefix}${name}_notes.png',
+      );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
     }
