@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 
 class ActionBar extends StatelessWidget {
+  static const String solutionTooltip =
+      'First press stops the game and shows you what you got '
+      'correct/incorrect. Second press shows you the complete solution.';
+
   final UiState state;
   final VoidCallback onToggleNotesMode;
   final VoidCallback onClear;
@@ -40,7 +44,9 @@ class ActionBar extends StatelessWidget {
               child: Text(
                 'Notes',
                 style: TextStyle(
-                  fontWeight: state.notesMode ? FontWeight.bold : FontWeight.normal,
+                  fontWeight: state.notesMode
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                 ),
               ),
             ),
@@ -54,9 +60,12 @@ class ActionBar extends StatelessWidget {
           ),
           SizedBox(
             height: 40,
-            child: OutlinedButton(
-              onPressed: onCheckOrSolution,
-              child: const Text('Solution'),
+            child: Tooltip(
+              message: solutionTooltip,
+              child: OutlinedButton(
+                onPressed: onCheckOrSolution,
+                child: const Text('Solution'),
+              ),
             ),
           ),
         ],

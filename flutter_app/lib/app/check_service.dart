@@ -22,9 +22,8 @@ class CheckService {
     required Set<Coord> givens,
     required bool showSolution,
   }) {
-    final solvedCurrent = solveGrid(currentGrid);
-    final solved = solvedCurrent ?? solveGrid(baseGrid);
-    if (solved == null) {
+    final solvedBase = solveGrid(baseGrid);
+    if (solvedBase == null) {
       return const CheckResult(
         incorrect: {},
         correct: {},
@@ -32,6 +31,44 @@ class CheckService {
         solutionGrid: null,
       );
     }
+
+    if (showSolution) {
+      final incorrect = <Coord>{};
+      final correct = <Coord>{};
+      final added = <Coord>{};
+
+      for (var r = 0; r < 9; r += 1) {
+        for (var c = 0; c < 9; c += 1) {
+          final coord = Coord(r, c);
+          final value = currentGrid[r][c];
+          final solvedValue = solvedBase[r][c];
+          if (value == null && solvedValue != null) {
+            added.add(coord);
+            continue;
+          }
+          if (value != null && solvedValue != null && value != solvedValue) {
+            incorrect.add(coord);
+            continue;
+          }
+          if (value != null &&
+              solvedValue != null &&
+              value == solvedValue &&
+              !givens.contains(coord)) {
+            correct.add(coord);
+          }
+        }
+      }
+
+      return CheckResult(
+        incorrect: incorrect,
+        correct: correct,
+        solutionAdded: added,
+        solutionGrid: solvedBase,
+      );
+    }
+
+    final solvedCurrent = solveGrid(currentGrid);
+    final solved = solvedCurrent ?? solvedBase;
 
     final incorrect = <Coord>{};
     final correct = <Coord>{};
@@ -47,7 +84,9 @@ class CheckService {
             value != solvedValue &&
             solvedCurrent == null) {
           incorrect.add(coord);
-        } else if (value != null && solvedValue != null && value == solvedValue) {
+        } else if (value != null &&
+            solvedValue != null &&
+            value == solvedValue) {
           if (!givens.contains(coord)) {
             correct.add(coord);
           }

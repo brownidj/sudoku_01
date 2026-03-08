@@ -78,7 +78,7 @@ const BoardStyle styleModern = BoardStyle(
   highlightIncorrect: Color(0xFFFFCDD2),
   highlightCorrect: Color(0xFFC8E6C9),
   highlightGiven: Color(0xFFFFF3C0),
-  highlightSolution: Color(0xFFBBDEFB),
+  highlightSolution: Color(0xFFF8BBD0),
 );
 
 const BoardStyle styleClassic = BoardStyle(
@@ -105,7 +105,7 @@ const BoardStyle styleClassic = BoardStyle(
   highlightIncorrect: Color(0xFFFFCDD2),
   highlightCorrect: Color(0xFFC8E6C9),
   highlightGiven: Color(0xFFFFF3C0),
-  highlightSolution: Color(0xFFBBDEFB),
+  highlightSolution: Color(0xFFF8BBD0),
 );
 
 const BoardStyle styleHighContrast = BoardStyle(
@@ -132,7 +132,7 @@ const BoardStyle styleHighContrast = BoardStyle(
   highlightIncorrect: Color(0xFFFFCDD2),
   highlightCorrect: Color(0xFFC8E6C9),
   highlightGiven: Color(0xFFFFF3C0),
-  highlightSolution: Color(0xFFBBDEFB),
+  highlightSolution: Color(0xFFF8BBD0),
 );
 
 BoardStyle styleForName(String name) {
