@@ -82,6 +82,14 @@ Future<FakePreferencesStore> _buildPrefsWithSavedSession() async {
   return prefs;
 }
 
+Future<FakePreferencesStore> _buildPrefsWithCompletedSession() async {
+  final prefs = FakePreferencesStore();
+  final seed = SudokuController(preferencesStore: prefs);
+  await seed.ready;
+  seed.onShowSolution();
+  return prefs;
+}
+
 void main() {
   testWidgets('LaunchScreen shows only Play when no saved session existed', (
     WidgetTester tester,
@@ -123,6 +131,25 @@ void main() {
     expect(find.text('Resume'), findsOneWidget);
     expect(find.text('New game'), findsOneWidget);
   });
+
+  testWidgets(
+    'LaunchScreen shows only Play when saved session is already finished',
+    (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      final prefs = await _buildPrefsWithCompletedSession();
+      final controller = SudokuController(preferencesStore: prefs);
+      await controller.ready;
+
+      await tester.pumpWidget(
+        MaterialApp(home: LaunchScreen(controller: controller)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Play'), findsOneWidget);
+      expect(find.text('Resume'), findsNothing);
+      expect(find.text('New game'), findsNothing);
+    },
+  );
 
   testWidgets('Resume does not start a new game', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(1080, 1920));

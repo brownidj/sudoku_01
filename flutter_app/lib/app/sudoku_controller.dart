@@ -1,26 +1,25 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/app/check_service.dart';
 import 'package:flutter_app/app/grid_utils.dart';
 import 'package:flutter_app/app/settings_controller.dart';
+import 'package:flutter_app/app/settings_state.dart';
+import 'package:flutter_app/app/solution_check_coordinator.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/app/ui_state_mapper.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 
 class SudokuController extends ChangeNotifier {
-  static const int _sessionVersion = 1;
-
   final GameService _service;
-  final PreferencesStore _prefs;
   late SettingsController _settings;
-  final CheckService _checkService;
-  final GridUtils _gridUtils;
+  late final GameSessionService _sessionService;
+  late final SolutionCheckCoordinator _solutionCoordinator;
+  late final UiStateMapper _uiStateMapper;
   late History _history;
   Coord? _selected;
   Set<Coord> _lastConflicts = {};
@@ -39,12 +38,21 @@ class SudokuController extends ChangeNotifier {
     CheckService? checkService,
     GridUtils? gridUtils,
     SettingsController? settingsController,
-  }) : _prefs = preferencesStore ?? PreferencesStore(),
-       _service = gameService ?? GameService(),
-       _checkService = checkService ?? CheckService(),
-       _gridUtils = gridUtils ?? GridUtils() {
+    GameSessionService? gameSessionService,
+    SolutionCheckCoordinator? solutionCheckCoordinator,
+    UiStateMapper? uiStateMapper,
+  }) : _service = gameService ?? GameService() {
+    final prefs = preferencesStore ?? PreferencesStore();
+    final resolvedGridUtils = gridUtils ?? GridUtils();
+    final resolvedCheckService = checkService ?? CheckService();
     _settings =
-        settingsController ?? SettingsController(_prefs, notifyListeners);
+        settingsController ?? SettingsController(prefs, notifyListeners);
+    _sessionService =
+        gameSessionService ?? GameSessionService(prefs, resolvedGridUtils);
+    _solutionCoordinator =
+        solutionCheckCoordinator ??
+        SolutionCheckCoordinator(resolvedCheckService, resolvedGridUtils);
+    _uiStateMapper = uiStateMapper ?? const UiStateMapper();
     _history = _service.initialHistory();
     ready = _initialize();
   }
@@ -54,35 +62,33 @@ class SudokuController extends ChangeNotifier {
 
   Future<void> _initialize() async {
     await _settings.load();
-    final restored = await _restoreSavedGame();
+    final restoredSession = await _sessionService.restore(_settings.state);
+    final restored = restoredSession != null && !restoredSession.gameOver;
     _hadSavedSessionAtLaunch = restored;
-    if (!restored) {
-      start();
+    if (restoredSession != null && !restoredSession.gameOver) {
+      _history = restoredSession.history;
+      _lastConflicts = {};
+      _incorrectCells = {};
+      _correctCells = {};
+      _solutionAddedCells = {};
+      _solutionGrid = null;
+      _selected = restoredSession.selected;
+      _gameOver = restoredSession.gameOver;
+      _initialGrid = restoredSession.initialGrid;
+      _applyRestoredSettings(restoredSession.settings);
+      notifyListeners();
+      return;
     }
+    if (restoredSession != null) {
+      _applyRestoredSettings(restoredSession.settings);
+    }
+    start();
   }
 
   UiState get state => _buildState();
 
   void start() {
-    final puzzle = puzzles.generatePuzzle(
-      _settings.state.difficulty,
-      mode: _settings.state.puzzleMode,
-    );
-    final res = _service.newGameFromGrid(puzzle.grid);
-    _selected = null;
-    _lastConflicts = {};
-    _settings.setDifficultyLocked(false);
-    _settings.setPuzzleModeLocked(false);
-    _gameOver = false;
-    _incorrectCells = {};
-    _solutionAddedCells = {};
-    _correctCells = {};
-    _solutionGrid = null;
-    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
-    _applyResult(
-      res,
-      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
-    );
+    _startPuzzle();
   }
 
   void onCellTapped(Coord coord) {
@@ -162,25 +168,7 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onNewGame() {
-    final puzzle = puzzles.generatePuzzle(
-      _settings.state.difficulty,
-      mode: _settings.state.puzzleMode,
-    );
-    final res = _service.newGameFromGrid(puzzle.grid);
-    _selected = null;
-    _lastConflicts = {};
-    _settings.setDifficultyLocked(false);
-    _settings.setPuzzleModeLocked(false);
-    _gameOver = false;
-    _incorrectCells = {};
-    _solutionAddedCells = {};
-    _correctCells = {};
-    _solutionGrid = null;
-    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
-    _applyResult(
-      res,
-      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
-    );
+    _startPuzzle();
   }
 
   void onSetDifficulty(String difficulty) {
@@ -196,27 +184,8 @@ class SudokuController extends ChangeNotifier {
     if (!_settings.setDifficulty(d)) {
       return;
     }
-    final defaultMode = _defaultPuzzleModeForDifficulty(d);
-    _settings.setPuzzleMode(defaultMode);
-    final puzzle = puzzles.generatePuzzle(
-      _settings.state.difficulty,
-      mode: _settings.state.puzzleMode,
-    );
-    final res = _service.newGameFromGrid(puzzle.grid);
-    _selected = null;
-    _lastConflicts = {};
-    _settings.setDifficultyLocked(false);
-    _settings.setPuzzleModeLocked(false);
-    _gameOver = false;
-    _incorrectCells = {};
-    _solutionAddedCells = {};
-    _correctCells = {};
-    _solutionGrid = null;
-    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
-    _applyResult(
-      res,
-      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
-    );
+    _settings.setPuzzleMode(_defaultPuzzleModeForDifficulty(d));
+    _startPuzzle();
   }
 
   void onStyleChanged(String styleName) {
@@ -248,39 +217,17 @@ class SudokuController extends ChangeNotifier {
     }
     final next = mode == 'unique' ? 'unique' : 'multi';
     _settings.setPuzzleMode(next);
-    final puzzle = puzzles.generatePuzzle(
-      _settings.state.difficulty,
-      mode: _settings.state.puzzleMode,
-    );
-    final res = _service.newGameFromGrid(puzzle.grid);
-    _selected = null;
-    _lastConflicts = {};
-    _settings.setDifficultyLocked(false);
-    _settings.setPuzzleModeLocked(false);
-    _gameOver = false;
-    _incorrectCells = {};
-    _solutionAddedCells = {};
-    _correctCells = {};
-    _solutionGrid = null;
-    _initialGrid = _gridUtils.copyGrid(puzzle.grid);
-    _applyResult(
-      res,
-      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
-    );
+    _startPuzzle();
   }
 
   void onCheckSolution() {
     if (_gameOver) {
       return;
     }
-    final base =
-        _initialGrid ?? _gridUtils.gridFromBoard(_history.present.board);
-    final current = _gridUtils.gridFromBoard(_history.present.board);
-    final result = _checkService.check(
-      baseGrid: base,
-      currentGrid: current,
+    final result = _solutionCoordinator.check(
+      history: _history,
+      initialGrid: _initialGrid,
       givens: _givenCoords(),
-      showSolution: false,
     );
     _incorrectCells = result.incorrect;
     _correctCells = result.correct;
@@ -300,19 +247,15 @@ class SudokuController extends ChangeNotifier {
     if (!_gameOver) {
       return;
     }
-    final base =
-        _initialGrid ?? _gridUtils.gridFromBoard(_history.present.board);
-    final current = _gridUtils.gridFromBoard(_history.present.board);
-    final result = _checkService.check(
-      baseGrid: base,
-      currentGrid: current,
+    final result = _solutionCoordinator.showSolution(
+      history: _history,
+      initialGrid: _initialGrid,
       givens: _givenCoords(),
-      showSolution: true,
     );
-    _incorrectCells = {};
+    _incorrectCells = result.incorrect;
     _correctCells = result.correct;
     _solutionGrid = result.solutionGrid;
-    _solutionAddedCells = {...result.solutionAdded, ...result.incorrect};
+    _solutionAddedCells = result.solutionAdded;
     _selected = null;
     _settings.setPuzzleModeLocked(false);
     _saveGameSession();
@@ -349,49 +292,18 @@ class SudokuController extends ChangeNotifier {
   }
 
   UiState _buildState() {
-    final board = _history.present.board;
-    final cells = <List<CellVm>>[];
-    final solution = _solutionGrid;
-    for (var r = 0; r < 9; r += 1) {
-      final row = <CellVm>[];
-      for (var c = 0; c < 9; c += 1) {
-        final coord = Coord(r, c);
-        final cell = board.cellAt(r, c);
-        final notes = cell.notes.toList()..sort();
-        final solutionValue = solution != null ? solution[r][c] : null;
-        final solutionAdded = _solutionAddedCells.contains(coord);
-        final displayValue = solutionAdded && solutionValue != null
-            ? solutionValue
-            : (cell.value ?? solutionValue);
-        row.add(
-          CellVm(
-            coord: coord,
-            value: displayValue,
-            given: cell.given && !solutionAdded,
-            notes: notes,
-            selected: coord == _selected,
-            conflicted: _lastConflicts.contains(coord),
-            incorrect: _incorrectCells.contains(coord),
-            solutionAdded: solutionAdded,
-            correct: _correctCells.contains(coord),
-          ),
-        );
-      }
-      cells.add(row);
-    }
-
-    return UiState(
-      board: BoardVm(cells: cells),
-      notesMode: _settings.state.notesMode,
-      difficulty: _settings.state.difficulty,
-      canChangeDifficulty: _settings.state.canChangeDifficulty,
-      canChangePuzzleMode: _settings.state.canChangePuzzleMode,
-      styleName: _settings.state.styleName,
-      contentMode: _settings.state.contentMode,
-      animalStyle: _settings.state.animalStyle,
-      puzzleMode: _settings.state.puzzleMode,
-      selected: _selected,
-      gameOver: _gameOver,
+    return _uiStateMapper.map(
+      UiStateMapperInput(
+        board: _history.present.board,
+        settings: _settings.state,
+        selected: _selected,
+        conflicts: _lastConflicts,
+        incorrectCells: _incorrectCells,
+        correctCells: _correctCells,
+        solutionAddedCells: _solutionAddedCells,
+        solutionGrid: _solutionGrid,
+        gameOver: _gameOver,
+      ),
     );
   }
 
@@ -415,235 +327,58 @@ class SudokuController extends ChangeNotifier {
     return givens;
   }
 
-  // Preferences are handled by SettingsController.
-
-  Future<bool> _restoreSavedGame() async {
-    final raw = await _prefs.loadGameSession();
-    if (raw == null || raw.isEmpty) {
-      return false;
-    }
-    try {
-      final decoded = jsonDecode(raw);
-      if (decoded is! Map<String, dynamic>) {
-        return false;
-      }
-      if (decoded['version'] != _sessionVersion) {
-        return false;
-      }
-
-      final boardRaw = decoded['board'];
-      if (boardRaw is! List) {
-        return false;
-      }
-      final restoredBoard = _boardFromJson(boardRaw);
-      if (restoredBoard == null) {
-        return false;
-      }
-
-      _history = History.initial(GameState(board: restoredBoard));
-      _lastConflicts = {};
-      _solutionGrid = null;
-      _incorrectCells = {};
-      _correctCells = {};
-      _solutionAddedCells = {};
-      _selected = _coordFromJson(decoded['selected']);
-      _gameOver = decoded['gameOver'] == true;
-
-      final initialGrid = _gridFromJson(decoded['initialGrid']);
-      _initialGrid = initialGrid ?? _gridUtils.gridFromBoard(restoredBoard);
-
-      final settings = decoded['settings'];
-      if (settings is Map<String, dynamic>) {
-        _restoreSettingsFromSession(settings);
-      }
-
-      notifyListeners();
-      return true;
-    } catch (_) {
-      return false;
-    }
+  void _saveGameSession() {
+    _sessionService.save(
+      history: _history,
+      selected: _selected,
+      gameOver: _gameOver,
+      initialGrid: _initialGrid,
+      settings: _settings.state,
+    );
   }
 
-  void _restoreSettingsFromSession(Map<String, dynamic> settings) {
-    final difficulty = _difficultyOrDefault(settings['difficulty']);
-    var puzzleMode = _puzzleModeOrDefault(settings['puzzleMode'], difficulty);
-    if (difficulty == 'hard') {
-      puzzleMode = 'unique';
-    }
+  void _startPuzzle() {
+    final puzzle = puzzles.generatePuzzle(
+      _settings.state.difficulty,
+      mode: _settings.state.puzzleMode,
+    );
+    final res = _service.newGameFromGrid(puzzle.grid);
+    _resetBoardFlags();
+    _initialGrid = List<List<Digit?>>.generate(9, (r) {
+      return List<Digit?>.generate(
+        9,
+        (c) => puzzle.grid[r][c],
+        growable: false,
+      );
+    }, growable: false);
+    _applyResult(
+      res,
+      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
+    );
+  }
 
-    final styleName = _styleOrDefault(settings['styleName']);
-    final contentMode = _contentModeOrDefault(settings['contentMode']);
-    final animalStyle = _animalStyleOrDefault(settings['animalStyle']);
-    final notesMode = settings['notesMode'] == true;
-    final canChangeDifficulty = settings['canChangeDifficulty'] != false;
-    final canChangePuzzleMode = settings['canChangePuzzleMode'] != false;
-
+  void _resetBoardFlags() {
+    _selected = null;
+    _lastConflicts = {};
     _settings.setDifficultyLocked(false);
     _settings.setPuzzleModeLocked(false);
-    _settings.setStyleName(styleName);
-    _settings.setContentMode(contentMode);
-    _settings.setAnimalStyle(animalStyle);
-    _settings.setNotesMode(notesMode);
-    _settings.setDifficulty(difficulty);
-    _settings.setPuzzleMode(puzzleMode);
-    _settings.setDifficultyLocked(!canChangeDifficulty);
-    _settings.setPuzzleModeLocked(!canChangePuzzleMode);
+    _gameOver = false;
+    _incorrectCells = {};
+    _solutionAddedCells = {};
+    _correctCells = {};
+    _solutionGrid = null;
   }
 
-  void _saveGameSession() {
-    final payload = <String, dynamic>{
-      'version': _sessionVersion,
-      'board': _boardToJson(_history.present.board),
-      'initialGrid': _gridToJson(_initialGrid),
-      'selected': _coordToJson(_selected),
-      'gameOver': _gameOver,
-      'settings': <String, dynamic>{
-        'notesMode': _settings.state.notesMode,
-        'difficulty': _settings.state.difficulty,
-        'canChangeDifficulty': _settings.state.canChangeDifficulty,
-        'canChangePuzzleMode': _settings.state.canChangePuzzleMode,
-        'styleName': _settings.state.styleName,
-        'contentMode': _settings.state.contentMode,
-        'animalStyle': _settings.state.animalStyle,
-        'puzzleMode': _settings.state.puzzleMode,
-      },
-    };
-    unawaited(_prefs.saveGameSession(jsonEncode(payload)));
-  }
-
-  List<List<Map<String, dynamic>>> _boardToJson(Board board) {
-    return List<List<Map<String, dynamic>>>.generate(9, (r) {
-      return List<Map<String, dynamic>>.generate(9, (c) {
-        final cell = board.cellAt(r, c);
-        final notes = cell.notes.toList()..sort();
-        return <String, dynamic>{'v': cell.value, 'g': cell.given, 'n': notes};
-      }, growable: false);
-    }, growable: false);
-  }
-
-  Board? _boardFromJson(List<dynamic> raw) {
-    if (raw.length != 9) {
-      return null;
-    }
-    final rows = <List<Cell>>[];
-    for (var r = 0; r < 9; r += 1) {
-      final rowRaw = raw[r];
-      if (rowRaw is! List || rowRaw.length != 9) {
-        return null;
-      }
-      final row = <Cell>[];
-      for (var c = 0; c < 9; c += 1) {
-        final cellRaw = rowRaw[c];
-        if (cellRaw is! Map<String, dynamic>) {
-          return null;
-        }
-        final valueRaw = cellRaw['v'];
-        final value = valueRaw is int ? valueRaw : null;
-        final given = cellRaw['g'] == true;
-        final notesRaw = cellRaw['n'];
-        final notes = <int>{};
-        if (notesRaw is List) {
-          for (final note in notesRaw) {
-            if (note is int && note >= 1 && note <= 9) {
-              notes.add(note);
-            }
-          }
-        }
-        row.add(Cell(value: value, given: given, notes: notes));
-      }
-      rows.add(row);
-    }
-    return Board(cells: rows);
-  }
-
-  List<List<int?>>? _gridToJson(Grid? grid) {
-    if (grid == null) {
-      return null;
-    }
-    return List<List<int?>>.generate(9, (r) {
-      return List<int?>.generate(9, (c) => grid[r][c], growable: false);
-    }, growable: false);
-  }
-
-  Grid? _gridFromJson(Object? raw) {
-    if (raw is! List || raw.length != 9) {
-      return null;
-    }
-    final out = <List<int?>>[];
-    for (var r = 0; r < 9; r += 1) {
-      final rowRaw = raw[r];
-      if (rowRaw is! List || rowRaw.length != 9) {
-        return null;
-      }
-      final row = <int?>[];
-      for (var c = 0; c < 9; c += 1) {
-        final value = rowRaw[c];
-        row.add(value is int ? value : null);
-      }
-      out.add(row);
-    }
-    return out;
-  }
-
-  Map<String, int>? _coordToJson(Coord? coord) {
-    if (coord == null) {
-      return null;
-    }
-    return <String, int>{'row': coord.row, 'col': coord.col};
-  }
-
-  Coord? _coordFromJson(Object? raw) {
-    if (raw is! Map<String, dynamic>) {
-      return null;
-    }
-    final row = raw['row'];
-    final col = raw['col'];
-    if (row is! int || col is! int) {
-      return null;
-    }
-    if (row < 0 || row > 8 || col < 0 || col > 8) {
-      return null;
-    }
-    return Coord(row, col);
-  }
-
-  String _difficultyOrDefault(Object? raw) {
-    final value = (raw is String) ? raw : '';
-    if (value == 'easy' || value == 'medium' || value == 'hard') {
-      return value;
-    }
-    return _settings.state.difficulty;
-  }
-
-  String _puzzleModeOrDefault(Object? raw, String difficulty) {
-    final value = (raw is String) ? raw : '';
-    if (value == 'unique' || value == 'multi') {
-      return value;
-    }
-    return _defaultPuzzleModeForDifficulty(difficulty);
-  }
-
-  String _styleOrDefault(Object? raw) {
-    final value = (raw is String) ? raw : '';
-    if (value == 'Modern' || value == 'Classic' || value == 'High Contrast') {
-      return value;
-    }
-    return _settings.state.styleName;
-  }
-
-  String _contentModeOrDefault(Object? raw) {
-    final value = (raw is String) ? raw : '';
-    if (value == 'animals' || value == 'numbers') {
-      return value;
-    }
-    return _settings.state.contentMode;
-  }
-
-  String _animalStyleOrDefault(Object? raw) {
-    final value = (raw is String) ? raw : '';
-    if (value == 'cute' || value == 'simple') {
-      return value;
-    }
-    return _settings.state.animalStyle;
+  void _applyRestoredSettings(SettingsState settings) {
+    _settings.setDifficultyLocked(false);
+    _settings.setPuzzleModeLocked(false);
+    _settings.setStyleName(settings.styleName);
+    _settings.setContentMode(settings.contentMode);
+    _settings.setAnimalStyle(settings.animalStyle);
+    _settings.setNotesMode(settings.notesMode);
+    _settings.setDifficulty(settings.difficulty);
+    _settings.setPuzzleMode(settings.puzzleMode);
+    _settings.setDifficultyLocked(!settings.canChangeDifficulty);
+    _settings.setPuzzleModeLocked(!settings.canChangePuzzleMode);
   }
 }

@@ -14,7 +14,7 @@ from dataclasses import dataclass
 
 
 DEFAULT_ROOTS = ("flutter_app/lib", "flutter_app/test")
-LENGTH_THRESHOLD = 400
+LENGTH_THRESHOLD = 350
 
 
 @dataclass(frozen=True)
