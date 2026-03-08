@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/settings_controller.dart';
@@ -10,6 +12,10 @@ import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 
 class FakePreferencesStore extends PreferencesStore {
+  String? savedSession;
+
+  FakePreferencesStore({this.savedSession});
+
   @override
   Future<AppPreferences> load() async {
     return const AppPreferences(
@@ -35,6 +41,14 @@ class FakePreferencesStore extends PreferencesStore {
 
   @override
   Future<void> savePuzzleMode(String value) async {}
+
+  @override
+  Future<String?> loadGameSession() async => savedSession;
+
+  @override
+  Future<void> saveGameSession(String value) async {
+    savedSession = value;
+  }
 }
 
 class FakeSettingsController extends SettingsController {
@@ -123,8 +137,9 @@ Coord? _firstEditableCoord(UiState state) {
 }
 
 void main() {
-  test('SudokuController uses injected services', () {
+  test('SudokuController uses injected services', () async {
     final fakeGameService = FakeGameService();
+    final fakePrefs = FakePreferencesStore();
     final fakeSettings = FakeSettingsController(
       const SettingsState(
         notesMode: true,
@@ -139,14 +154,16 @@ void main() {
     );
 
     final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
+      preferencesStore: fakePrefs,
       gameService: fakeGameService,
       settingsController: fakeSettings,
     );
+    await controller.ready;
 
     expect(fakeGameService.initialHistoryCalls, 1);
     expect(fakeGameService.newGameCalls, 1);
     expect(fakeSettings.loadCalls, 1);
+    expect(controller.hadSavedSessionAtLaunch, isFalse);
 
     final state = controller.state;
     expect(state.difficulty, 'hard');
@@ -155,8 +172,9 @@ void main() {
     expect(state.animalStyle, 'simple');
   });
 
-  test('Puzzle mode defaults, locking, and new game flow', () {
+  test('Puzzle mode defaults, locking, and new game flow', () async {
     final fakeGameService = FakeGameService();
+    final fakePrefs = FakePreferencesStore();
     final fakeSettings = FakeSettingsController(
       const SettingsState(
         notesMode: false,
@@ -171,12 +189,14 @@ void main() {
     );
 
     final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
+      preferencesStore: fakePrefs,
       gameService: fakeGameService,
       settingsController: fakeSettings,
     );
+    await controller.ready;
 
     expect(fakeGameService.newGameCalls, 1);
+    expect(controller.hadSavedSessionAtLaunch, isFalse);
 
     controller.onSetDifficulty('medium');
     expect(fakeSettings.state.puzzleMode, 'unique');
@@ -205,5 +225,61 @@ void main() {
 
     controller.onSetDifficulty('hard');
     expect(fakeSettings.state.puzzleMode, 'unique');
+  });
+
+  test('Loads saved game session instead of starting a new game', () async {
+    final fakePrefs = FakePreferencesStore();
+    final seedSettings = FakeSettingsController(
+      const SettingsState(
+        notesMode: false,
+        difficulty: 'easy',
+        canChangeDifficulty: true,
+        canChangePuzzleMode: true,
+        styleName: 'Modern',
+        contentMode: 'numbers',
+        animalStyle: 'simple',
+        puzzleMode: 'multi',
+      ),
+    );
+    final seedController = SudokuController(
+      preferencesStore: fakePrefs,
+      settingsController: seedSettings,
+      gameService: FakeGameService(),
+    );
+    await seedController.ready;
+    final editable = _firstEditableCoord(seedController.state);
+    expect(editable, isNotNull);
+    seedController.onCellTapped(editable!);
+    seedController.onDigitPressed(1);
+    expect(fakePrefs.savedSession, isNotNull);
+
+    final restoreGameService = FakeGameService();
+    final restoreSettings = FakeSettingsController(
+      const SettingsState(
+        notesMode: false,
+        difficulty: 'easy',
+        canChangeDifficulty: true,
+        canChangePuzzleMode: true,
+        styleName: 'Modern',
+        contentMode: 'numbers',
+        animalStyle: 'simple',
+        puzzleMode: 'multi',
+      ),
+    );
+    final restoreController = SudokuController(
+      preferencesStore: fakePrefs,
+      gameService: restoreGameService,
+      settingsController: restoreSettings,
+    );
+    await restoreController.ready;
+
+    expect(restoreGameService.newGameCalls, 0);
+    expect(restoreController.hadSavedSessionAtLaunch, isTrue);
+    final restoredCell =
+        restoreController.state.board.cells[editable.row][editable.col];
+    expect(restoredCell.value, 1);
+
+    final sessionJson = jsonDecode(fakePrefs.savedSession!);
+    expect(sessionJson['version'], 1);
   });
 }

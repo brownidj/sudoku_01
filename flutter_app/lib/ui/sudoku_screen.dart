@@ -73,7 +73,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -87,7 +86,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
             automaticallyImplyLeading: false,
             title: const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Zudoku'),
+              child: Text('ZooDoKu 0.4.1'),
             ),
             actions: [
               Builder(
@@ -107,16 +106,27 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   const SizedBox(height: 12),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Zudoku', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    child: Text(
+                      'ZooDoKu',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Puzzle Mode', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Puzzle Mode',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                   Builder(
                     builder: (context) {
-                      final canEdit = state.canChangePuzzleMode && state.difficulty != 'hard';
+                      final canEdit =
+                          state.canChangePuzzleMode &&
+                          state.difficulty != 'hard';
                       return Column(
                         children: [
                           RadioListTile<String>(
@@ -125,11 +135,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
                             groupValue: state.puzzleMode,
                             dense: true,
                             visualDensity: VisualDensity.compact,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
                             onChanged: canEdit
                                 ? (value) {
                                     if (value != null) {
-                                      widget.controller.onPuzzleModeChanged(value);
+                                      widget.controller.onPuzzleModeChanged(
+                                        value,
+                                      );
                                     }
                                   }
                                 : null,
@@ -140,11 +154,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
                             groupValue: state.puzzleMode,
                             dense: true,
                             visualDensity: VisualDensity.compact,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
                             onChanged: canEdit
                                 ? (value) {
                                     if (value != null) {
-                                      widget.controller.onPuzzleModeChanged(value);
+                                      widget.controller.onPuzzleModeChanged(
+                                        value,
+                                      );
                                     }
                                   }
                                 : null,
@@ -156,7 +174,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   const Divider(height: 16),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Difficulty', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Difficulty',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                   RadioListTile<String>(
                     title: const Text('Easy'),
@@ -206,7 +227,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   const Divider(height: 16),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Animals', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Animals',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                   RadioListTile<String>(
                     title: const Text('Cute'),
@@ -237,7 +261,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   const Divider(height: 16),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Puzzle Style', style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text(
+                      'Puzzle Style',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
                   ),
                   RadioListTile<String>(
                     title: const Text('Modern'),
@@ -300,7 +327,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
                         final dpr = MediaQuery.of(context).devicePixelRatio;
                         final media = MediaQuery.of(context);
                         final isTablet = media.size.shortestSide >= 600;
-                        final showCandidates = _candidateController.visible &&
+                        final showCandidates =
+                            _candidateController.visible &&
                             _candidateController.candidateCoord != null &&
                             !state.gameOver;
                         final reservedHeight = isTablet
@@ -330,35 +358,66 @@ class _SudokuScreenState extends State<SudokuScreen> {
                                   child: SudokuBoard(
                                     state: state,
                                     style: style,
-                                    animalImages: _animalImages[state.animalStyle] ?? const {},
-                                    noteImagesBySize: _noteImages[state.animalStyle] ?? const {},
+                                    animalImages:
+                                        _animalImages[state.animalStyle] ??
+                                        const {},
+                                    noteImagesBySize:
+                                        _noteImages[state.animalStyle] ??
+                                        const {},
                                     devicePixelRatio: dpr,
                                     onTapCell: _handleCellTap,
                                     onLongPressCell: _handleCellLongPress,
                                   ),
                                 ),
-                                Positioned(
-                                  right: 0,
-                                  bottom: -18,
-                                  child: Text(
-                                    state.difficulty.toUpperCase(),
-                                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            SizedBox(
+                              width: boardW,
+                              child: Row(
+                                children: [
+                                  Text(
+                                    state.puzzleMode.toUpperCase(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
                                           fontWeight: FontWeight.w600,
-                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.6),
                                           letterSpacing: 0.6,
                                         ),
                                   ),
-                                ),
-                              ],
+                                  const Spacer(),
+                                  Text(
+                                    state.difficulty.toUpperCase(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.6),
+                                          letterSpacing: 0.6,
+                                        ),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(height: 22),
+                            const SizedBox(height: 12),
                             CandidatePanel(
                               visible: showCandidates,
-                              candidateDigits: _candidateController.candidateDigits,
+                              candidateDigits:
+                                  _candidateController.candidateDigits,
                               showAnimals: state.contentMode == 'animals',
                               notesMode: state.notesMode,
                               selectedNotes: _selectedNotes(state),
-                              animalImages: _animalImages[state.animalStyle] ?? const {},
+                              animalImages:
+                                  _animalImages[state.animalStyle] ?? const {},
                               onDigitSelected: (digit) {
                                 if (digit == 0) {
                                   widget.controller.onClearPressed();
@@ -408,7 +467,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       },
     );
   }
-
 
   void _handleCellLongPress(Offset globalPosition, Coord coord) {
     final state = widget.controller.state;
@@ -492,8 +550,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
     var left = globalPosition.dx - tooltipSize.width / 2;
     var top = globalPosition.dy - tooltipSize.height - 14;
-    left = left.clamp(tooltipMargin, size.width - tooltipSize.width - tooltipMargin);
-    top = top.clamp(tooltipMargin, size.height - tooltipSize.height - tooltipMargin);
+    left = left.clamp(
+      tooltipMargin,
+      size.width - tooltipSize.width - tooltipMargin,
+    );
+    top = top.clamp(
+      tooltipMargin,
+      size.height - tooltipSize.height - tooltipMargin,
+    );
 
     _tooltipEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -529,5 +593,4 @@ class _SudokuScreenState extends State<SudokuScreen> {
     }
     return state.board.cells[coord.row][coord.col].notes.toSet();
   }
-
 }
