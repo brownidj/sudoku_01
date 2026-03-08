@@ -73,13 +73,7 @@ class SudokuBoardPainter extends CustomPainter {
           peerBox: peerBox,
         );
 
-        final hasImageValue =
-            cell.value != null && animalImages.containsKey(cell.value);
-        final cellBackground =
-            state.contentMode == 'butterflies' && hasImageValue
-            ? Colors.white
-            : model.background;
-        canvas.drawRect(rect, Paint()..color = cellBackground);
+        canvas.drawRect(rect, Paint()..color = model.background);
 
         if (state.gameOver) {
           Color? highlight;
@@ -258,9 +252,6 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   double _animalTargetSize(double cellSize, int digit) {
-    if (state.contentMode == 'butterflies') {
-      return cellSize * 0.9;
-    }
     return cellSize * 0.7;
   }
 

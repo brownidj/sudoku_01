@@ -67,13 +67,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
     }
   }
 
-  String _imageVariantKey(UiState state) {
-    if (state.contentMode == 'butterflies') {
-      return 'butterflies';
-    }
-    return state.animalStyle;
-  }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -123,9 +116,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
                       state: state,
                       style: style,
                       animalImages:
-                          _animalImages[_imageVariantKey(state)] ?? const {},
+                          _animalImages[state.animalStyle] ?? const {},
                       noteImagesBySize:
-                          _noteImages[_imageVariantKey(state)] ?? const {},
+                          _noteImages[state.animalStyle] ?? const {},
                       devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
                       candidateVisible:
                           _candidateController.visible &&

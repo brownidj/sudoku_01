@@ -31,7 +31,6 @@ class TopControls extends StatelessWidget {
                 child: DropdownButton<String>(
                   value: switch (state.contentMode) {
                     'numbers' => 'numbers',
-                    'butterflies' => 'butterflies',
                     _ => 'animals',
                   },
                   onChanged: (value) {
@@ -48,10 +47,6 @@ class TopControls extends StatelessWidget {
                     DropdownMenuItem<String>(
                       value: 'numbers',
                       child: Text('Numbers'),
-                    ),
-                    DropdownMenuItem<String>(
-                      value: 'butterflies',
-                      child: Text('Butterflies'),
                     ),
                   ],
                 ),

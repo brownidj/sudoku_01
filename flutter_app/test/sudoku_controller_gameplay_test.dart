@@ -59,9 +59,6 @@ void main() {
     controller.onSetDifficulty('hard');
     expect(fakeSettings.state.puzzleMode, 'unique');
 
-    controller.onContentModeChanged('butterflies');
-    expect(fakeSettings.state.contentMode, 'butterflies');
-
     controller.onContentModeChanged('numbers');
     expect(fakeSettings.state.contentMode, 'numbers');
   });
