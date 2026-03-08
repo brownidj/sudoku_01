@@ -86,7 +86,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
             automaticallyImplyLeading: false,
             title: const Align(
               alignment: Alignment.centerLeft,
-              child: Text('ZooDoKu 0.4.1'),
+              child: Text('ZooDoKu 0.4.2'),
             ),
             actions: [
               Builder(

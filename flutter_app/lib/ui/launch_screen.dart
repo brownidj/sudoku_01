@@ -60,7 +60,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'ZooDoKu 0.4.1',
+                  'ZooDoKu 0.4.2',
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
