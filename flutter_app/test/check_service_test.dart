@@ -49,4 +49,27 @@ void main() {
 
     expect(result.incorrect, isEmpty);
   });
+
+  test('showSolution flags wrong prefilled value against base solution', () {
+    final baseGrid = _emptyGrid();
+    final solvedBase = solveGrid(baseGrid);
+    expect(solvedBase, isNotNull);
+
+    final baseValue = solvedBase![0][0]!;
+    final wrongValue = (baseValue % 9) + 1;
+    expect(wrongValue, isNot(baseValue));
+
+    final currentGrid = _copyGrid(baseGrid);
+    currentGrid[0][0] = wrongValue;
+
+    final result = CheckService().check(
+      baseGrid: baseGrid,
+      currentGrid: currentGrid,
+      givens: const {},
+      showSolution: true,
+    );
+
+    expect(result.solutionGrid, isNotNull);
+    expect(result.incorrect.contains(const Coord(0, 0)), isTrue);
+  });
 }

@@ -295,6 +295,9 @@ class SudokuController extends ChangeNotifier {
 
   void onShowSolution() {
     if (!_gameOver) {
+      onCheckSolution();
+    }
+    if (!_gameOver) {
       return;
     }
     final base =
@@ -306,10 +309,10 @@ class SudokuController extends ChangeNotifier {
       givens: _givenCoords(),
       showSolution: true,
     );
-    _incorrectCells = result.incorrect;
+    _incorrectCells = {};
     _correctCells = result.correct;
     _solutionGrid = result.solutionGrid;
-    _solutionAddedCells = result.solutionAdded;
+    _solutionAddedCells = {...result.solutionAdded, ...result.incorrect};
     _selected = null;
     _settings.setPuzzleModeLocked(false);
     _saveGameSession();
@@ -356,8 +359,10 @@ class SudokuController extends ChangeNotifier {
         final cell = board.cellAt(r, c);
         final notes = cell.notes.toList()..sort();
         final solutionValue = solution != null ? solution[r][c] : null;
-        final displayValue = cell.value ?? solutionValue;
         final solutionAdded = _solutionAddedCells.contains(coord);
+        final displayValue = solutionAdded && solutionValue != null
+            ? solutionValue
+            : (cell.value ?? solutionValue);
         row.add(
           CellVm(
             coord: coord,

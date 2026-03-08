@@ -136,6 +136,41 @@ Coord? _firstEditableCoord(UiState state) {
   return null;
 }
 
+int? _conflictingPeerDigit(UiState state, Coord coord) {
+  for (var c = 0; c < 9; c += 1) {
+    if (c == coord.col) {
+      continue;
+    }
+    final value = state.board.cells[coord.row][c].value;
+    if (value != null) {
+      return value;
+    }
+  }
+  for (var r = 0; r < 9; r += 1) {
+    if (r == coord.row) {
+      continue;
+    }
+    final value = state.board.cells[r][coord.col].value;
+    if (value != null) {
+      return value;
+    }
+  }
+  final boxRow = (coord.row ~/ 3) * 3;
+  final boxCol = (coord.col ~/ 3) * 3;
+  for (var r = boxRow; r < boxRow + 3; r += 1) {
+    for (var c = boxCol; c < boxCol + 3; c += 1) {
+      if (r == coord.row && c == coord.col) {
+        continue;
+      }
+      final value = state.board.cells[r][c].value;
+      if (value != null) {
+        return value;
+      }
+    }
+  }
+  return null;
+}
+
 void main() {
   test('SudokuController uses injected services', () async {
     final fakeGameService = FakeGameService();
@@ -282,4 +317,73 @@ void main() {
     final sessionJson = jsonDecode(fakePrefs.savedSession!);
     expect(sessionJson['version'], 1);
   });
+
+  test(
+    'Show solution from active game reveals unsolved tiles immediately',
+    () async {
+      final controller = SudokuController(
+        preferencesStore: FakePreferencesStore(),
+        gameService: FakeGameService(),
+        settingsController: FakeSettingsController(
+          const SettingsState(
+            notesMode: false,
+            difficulty: 'easy',
+            canChangeDifficulty: true,
+            canChangePuzzleMode: true,
+            styleName: 'Modern',
+            contentMode: 'numbers',
+            animalStyle: 'simple',
+            puzzleMode: 'multi',
+          ),
+        ),
+      );
+      await controller.ready;
+
+      controller.onShowSolution();
+      final state = controller.state;
+
+      expect(state.gameOver, isTrue);
+      final hasSolutionAdded = state.board.cells
+          .expand((row) => row)
+          .any((cell) => cell.solutionAdded);
+      expect(hasSolutionAdded, isTrue);
+    },
+  );
+
+  test(
+    'Show solution replaces incorrect tile and marks it as solution-added',
+    () async {
+      final controller = SudokuController(
+        preferencesStore: FakePreferencesStore(),
+        gameService: FakeGameService(),
+        settingsController: FakeSettingsController(
+          const SettingsState(
+            notesMode: false,
+            difficulty: 'easy',
+            canChangeDifficulty: true,
+            canChangePuzzleMode: true,
+            styleName: 'Modern',
+            contentMode: 'numbers',
+            animalStyle: 'simple',
+            puzzleMode: 'multi',
+          ),
+        ),
+      );
+      await controller.ready;
+
+      final editable = _firstEditableCoord(controller.state);
+      expect(editable, isNotNull);
+      final badDigit = _conflictingPeerDigit(controller.state, editable!);
+      expect(badDigit, isNotNull);
+
+      controller.onCellTapped(editable);
+      controller.onDigitPressed(badDigit!);
+      controller.onShowSolution();
+
+      final cell = controller.state.board.cells[editable.row][editable.col];
+      expect(cell.solutionAdded, isTrue);
+      expect(cell.incorrect, isFalse);
+      expect(cell.value, isNot(badDigit));
+    },
+  );
 }
