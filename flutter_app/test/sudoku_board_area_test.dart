@@ -45,7 +45,7 @@ UiState _state({
     gameOver: false,
     correctionsLeft: correctionsLeft,
     canUndo: false,
-    correctionPromptMoveId: null,
+    correctionPromptCoord: null,
     debugScenarioLabel: debugScenarioLabel,
   );
 }

@@ -46,7 +46,7 @@ class UiState {
   final bool gameOver;
   final int correctionsLeft;
   final bool canUndo;
-  final int? correctionPromptMoveId;
+  final Coord? correctionPromptCoord;
   final String? debugScenarioLabel;
 
   const UiState({
@@ -63,7 +63,7 @@ class UiState {
     required this.gameOver,
     required this.correctionsLeft,
     required this.canUndo,
-    required this.correctionPromptMoveId,
+    required this.correctionPromptCoord,
     required this.debugScenarioLabel,
   });
 }

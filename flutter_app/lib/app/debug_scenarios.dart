@@ -96,7 +96,7 @@ class DebugScenarios {
         currentMoveId: moveId,
         checkpoints: checkpoints,
         revertedCells: const {},
-        pendingPromptMoveId: pendingPrompt ? moveId : null,
+        pendingPromptCoord: pendingPrompt ? const Coord(6, 8) : null,
       ),
       initialGrid: _copyGrid(puzzle.grid),
       settings: currentSettings.copyWith(
@@ -105,7 +105,7 @@ class DebugScenarios {
         canChangeDifficulty: false,
         canChangePuzzleMode: false,
       ),
-      selected: const Coord(0, 8),
+      selected: pendingPrompt ? const Coord(6, 8) : const Coord(0, 8),
     );
   }
 }

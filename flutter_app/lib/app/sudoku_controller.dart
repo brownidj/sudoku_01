@@ -16,6 +16,7 @@ import 'package:flutter_app/app/solution_check_coordinator.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/app/ui_state_mapper.dart';
 import 'package:flutter_app/application/state.dart';
+import 'package:flutter_app/domain/ops.dart' as ops;
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 
@@ -127,6 +128,8 @@ class SudokuController extends ChangeNotifier {
       return;
     }
     _selected = coord;
+    _queueCorrectionPromptForSelection(coord);
+    _saveGameSession();
     _render('Cell selected');
   }
 
@@ -249,7 +252,7 @@ class SudokuController extends ChangeNotifier {
       currentMoveId: nextMoveId,
       checkpoints: _correctionState.prunedToMoveId(nextMoveId),
       revertedCells: const {},
-      pendingPromptMoveId: null,
+      pendingPromptCoord: null,
     );
     _saveGameSession();
     _render(res.message);
@@ -376,5 +379,9 @@ class SudokuController extends ChangeNotifier {
 
   Set<Coord> _changedCells(Board from, Board to) {
     return _changedCellsInternal(this, from, to);
+  }
+
+  void _queueCorrectionPromptForSelection(Coord coord) {
+    _queueCorrectionPromptForSelectionInternal(this, coord);
   }
 }

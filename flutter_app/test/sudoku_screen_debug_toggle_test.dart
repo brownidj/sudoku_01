@@ -55,4 +55,44 @@ void main() {
       expect(find.text('Load Correction Scenario'), findsOneWidget);
     },
   );
+
+  testWidgets('debug scenario notification is hidden when debug mode is off', (
+    WidgetTester tester,
+  ) async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    controller.onLoadCorrectionScenario();
+    await tester.pumpAndSettle();
+    expect(find.text('Debug scenario: correction available'), findsNothing);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    for (var i = 0; i < 7; i += 1) {
+      await tester.tap(find.text('ZuDoKu 0.5.1'));
+      await tester.pump(const Duration(milliseconds: 120));
+    }
+    await tester.pumpAndSettle();
+    expect(find.text('Debug scenario: correction available'), findsOneWidget);
+  });
 }

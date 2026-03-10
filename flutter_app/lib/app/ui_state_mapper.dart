@@ -15,7 +15,7 @@ class UiStateMapperInput {
   final Set<Coord> revertedCells;
   final int correctionsLeft;
   final bool canUndo;
-  final int? correctionPromptMoveId;
+  final Coord? correctionPromptCoord;
   final String? debugScenarioLabel;
 
   const UiStateMapperInput({
@@ -31,7 +31,7 @@ class UiStateMapperInput {
     required this.revertedCells,
     required this.correctionsLeft,
     required this.canUndo,
-    required this.correctionPromptMoveId,
+    required this.correctionPromptCoord,
     required this.debugScenarioLabel,
   });
 }
@@ -87,7 +87,7 @@ class UiStateMapper {
       gameOver: input.gameOver,
       correctionsLeft: input.correctionsLeft,
       canUndo: input.canUndo,
-      correctionPromptMoveId: input.correctionPromptMoveId,
+      correctionPromptCoord: input.correctionPromptCoord,
       debugScenarioLabel: input.debugScenarioLabel,
     );
   }

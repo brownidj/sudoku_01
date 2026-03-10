@@ -22,6 +22,7 @@ class SudokuBoardArea extends StatelessWidget {
   final ValueChanged<int>? onDigitLongPressed;
   final ValueChanged<Coord> onTapCell;
   final void Function(Offset, Coord) onLongPressCell;
+  final bool showDebugNotification;
 
   const SudokuBoardArea({
     super.key,
@@ -37,14 +38,19 @@ class SudokuBoardArea extends StatelessWidget {
     required this.onDigitLongPressed,
     required this.onTapCell,
     required this.onLongPressCell,
+    this.showDebugNotification = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final debugBannerHeight = state.debugScenarioLabel == null ? 0.0 : 42.0;
-        final metadataHeight = 6.0 + (debugBannerHeight > 0 ? 6.0 : 0.0) + 20.0;
+        final debugBannerHeight =
+            (showDebugNotification && state.debugScenarioLabel != null)
+            ? 42.0
+            : 0.0;
+        final metadataHeight =
+            6.0 + debugBannerHeight + (debugBannerHeight > 0 ? 6.0 : 0.0) + 20.0;
         final candidateHeight = candidateVisible ? (15.0 + 68.0) : 0.0;
         final reservedHeight = metadataHeight + 12.0 + candidateHeight;
         final maxBoard = max(0.0, constraints.maxHeight - reservedHeight);
@@ -73,7 +79,7 @@ class SudokuBoardArea extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            if (state.debugScenarioLabel != null) ...[
+            if (showDebugNotification && state.debugScenarioLabel != null) ...[
               SizedBox(
                 width: boardWidth,
                 child: Container(
@@ -100,35 +106,53 @@ class SudokuBoardArea extends StatelessWidget {
               width: boardWidth,
               child: Row(
                 children: [
-                  Text(
-                    state.puzzleMode.toUpperCase(),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
-                      letterSpacing: 0.6,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        state.puzzleMode.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.6),
+                          letterSpacing: 0.6,
+                        ),
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  Text(
-                    'Corrections left: ${state.correctionsLeft}',
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          'Corrections left: ${state.correctionsLeft}',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.labelSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withOpacity(0.6),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  Text(
-                    state.difficulty.toUpperCase(),
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.6),
-                      letterSpacing: 0.6,
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        state.difficulty.toUpperCase(),
+                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withOpacity(0.6),
+                          letterSpacing: 0.6,
+                        ),
+                      ),
                     ),
                   ),
                 ],

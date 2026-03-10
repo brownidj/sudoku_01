@@ -111,7 +111,7 @@ class GameSessionCodec {
     return <String, dynamic>{
       'tokensLeft': state.tokensLeft,
       'currentMoveId': state.currentMoveId,
-      'pendingPromptMoveId': state.pendingPromptMoveId,
+      'pendingPromptCoord': coordToJson(state.pendingPromptCoord),
       'revertedCells': coordsToJson(state.revertedCells),
       'checkpoints': state.checkpoints
           .map((checkpoint) {
@@ -174,9 +174,7 @@ class GameSessionCodec {
           : fallback.currentMoveId,
       checkpoints: checkpoints.isEmpty ? fallback.checkpoints : checkpoints,
       revertedCells: coordsFromJson(raw['revertedCells']),
-      pendingPromptMoveId: raw['pendingPromptMoveId'] is int
-          ? raw['pendingPromptMoveId'] as int
-          : null,
+      pendingPromptCoord: coordFromJson(raw['pendingPromptCoord']),
     );
   }
 

@@ -32,10 +32,10 @@ void main() {
     expect(state.puzzleMode, 'multi');
     expect(state.canChangeDifficulty, isFalse);
     expect(state.canChangePuzzleMode, isFalse);
-    expect(state.correctionPromptMoveId, isNotNull);
+    expect(state.correctionPromptCoord, const Coord(6, 8));
     expect(state.correctionsLeft, 5);
     expect(state.debugScenarioLabel, 'Debug scenario: correction available');
-    expect(state.selected, const Coord(0, 8));
+    expect(state.selected, const Coord(6, 8));
     expect(state.board.cells[0][8].value, 4);
     expect(state.board.cells[6][8].conflicted, isTrue);
   });
@@ -64,7 +64,7 @@ void main() {
     final state = controller.state;
     expect(state.difficulty, 'easy');
     expect(state.puzzleMode, 'multi');
-    expect(state.correctionPromptMoveId, isNull);
+    expect(state.correctionPromptCoord, isNull);
     expect(state.correctionsLeft, 0);
     expect(state.debugScenarioLabel, 'Debug scenario: corrections exhausted');
     expect(state.canUndo, isTrue);

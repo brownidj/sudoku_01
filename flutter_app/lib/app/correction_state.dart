@@ -28,14 +28,14 @@ class CorrectionState {
   final int currentMoveId;
   final List<CorrectionCheckpoint> checkpoints;
   final Set<Coord> revertedCells;
-  final int? pendingPromptMoveId;
+  final Coord? pendingPromptCoord;
 
   CorrectionState({
     required this.tokensLeft,
     required this.currentMoveId,
     required List<CorrectionCheckpoint> checkpoints,
     required Set<Coord> revertedCells,
-    required this.pendingPromptMoveId,
+    required this.pendingPromptCoord,
   }) : checkpoints = List.unmodifiable(checkpoints),
        revertedCells = Set.unmodifiable(revertedCells);
 
@@ -48,7 +48,7 @@ class CorrectionState {
       currentMoveId: 0,
       checkpoints: [CorrectionCheckpoint(history: history, moveId: 0)],
       revertedCells: const {},
-      pendingPromptMoveId: null,
+      pendingPromptCoord: null,
     );
   }
 
@@ -57,16 +57,16 @@ class CorrectionState {
     int? currentMoveId,
     List<CorrectionCheckpoint>? checkpoints,
     Set<Coord>? revertedCells,
-    Object? pendingPromptMoveId = _sentinel,
+    Object? pendingPromptCoord = _sentinel,
   }) {
     return CorrectionState(
       tokensLeft: tokensLeft ?? this.tokensLeft,
       currentMoveId: currentMoveId ?? this.currentMoveId,
       checkpoints: checkpoints ?? this.checkpoints,
       revertedCells: revertedCells ?? this.revertedCells,
-      pendingPromptMoveId: identical(pendingPromptMoveId, _sentinel)
-          ? this.pendingPromptMoveId
-          : pendingPromptMoveId as int?,
+      pendingPromptCoord: identical(pendingPromptCoord, _sentinel)
+          ? this.pendingPromptCoord
+          : pendingPromptCoord as Coord?,
     );
   }
 

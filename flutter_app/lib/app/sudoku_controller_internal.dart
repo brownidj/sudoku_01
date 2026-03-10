@@ -45,37 +45,48 @@ void _onShowSolutionInternal(SudokuController c) {
 }
 
 void _onConfirmCorrectionInternal(SudokuController c) {
-  final promptMoveId = c._correctionState.pendingPromptMoveId;
-  if (promptMoveId == null || c._correctionState.tokensLeft <= 0) {
-    return;
-  }
-  final checkpoint = c._correctionState.latestCheckpointBefore(promptMoveId);
-  if (checkpoint == null) {
-    c._clearCorrectionPromptState(clearRevertedCells: true);
-    c._saveGameSession();
-    c.notifyListeners();
+  final target = c._correctionState.pendingPromptCoord;
+  if (target == null || c._correctionState.tokensLeft <= 0) {
     return;
   }
 
-  final revertedCells = c._changedCells(
-    c._history.present.board,
-    checkpoint.board,
-  );
-  c._history = checkpoint.history;
-  c._lastConflicts = {};
+  final analysis = c._contradictionService.analyze(c._history.present.board);
+  if (!analysis.deadCells.contains(target)) {
+    c._clearCorrectionPromptState(clearRevertedCells: true);
+    c._saveGameSession();
+    c._render('No correction needed.');
+    return;
+  }
+
+  final clearSet = _cellsToClearForDeadCell(c, target);
+  if (clearSet.isEmpty) {
+    c._clearCorrectionPromptState(clearRevertedCells: true);
+    c._saveGameSession();
+    c._render('No recoverable correction found.');
+    return;
+  }
+
+  var nextBoard = c._history.present.board;
+  for (final coord in clearSet) {
+    nextBoard = ops.clearValue(nextBoard, coord);
+  }
+
+  c._history = c._history.push(GameState(board: nextBoard));
+  c._lastConflicts = c._contradictionService
+      .analyze(c._history.present.board)
+      .contradictionCells;
   c._correctionState = c._correctionState.copyWith(
     tokensLeft: c._correctionState.tokensLeft - 1,
-    currentMoveId: checkpoint.moveId,
-    checkpoints: c._correctionState.prunedToMoveId(checkpoint.moveId),
-    revertedCells: revertedCells,
-    pendingPromptMoveId: null,
+    currentMoveId: c._correctionState.currentMoveId + 1,
+    revertedCells: clearSet,
+    pendingPromptCoord: null,
   );
   c._saveGameSession();
-  c._render('Correction used.');
+  c._render('Correction used. Cleared ${clearSet.length} tile(s).');
 }
 
 void _onDismissCorrectionPromptInternal(SudokuController c) {
-  if (c._correctionState.pendingPromptMoveId == null) {
+  if (c._correctionState.pendingPromptCoord == null) {
     return;
   }
   c._clearCorrectionPromptState(clearRevertedCells: false);
@@ -134,12 +145,7 @@ void _applyPlayerResultInternal(
 
   var nextCorrection = c._correctionState.copyWith(
     currentMoveId: nextMoveId,
-    pendingPromptMoveId:
-        analysis.hasContradiction &&
-            boardChanged &&
-            c._correctionState.tokensLeft > 0
-        ? nextMoveId
-        : null,
+    pendingPromptCoord: null,
     revertedCells: boardChanged ? const {} : c._correctionState.revertedCells,
   );
 
@@ -180,7 +186,7 @@ UiState _buildStateInternal(SudokuController c) {
       revertedCells: c._correctionState.revertedCells,
       correctionsLeft: c._correctionState.tokensLeft,
       canUndo: c._history.canUndo(),
-      correctionPromptMoveId: c._correctionState.pendingPromptMoveId,
+      correctionPromptCoord: c._correctionState.pendingPromptCoord,
       debugScenarioLabel: c._debugScenarioLabel,
     ),
   );
@@ -272,10 +278,26 @@ void _clearCorrectionPromptStateInternal(
   required bool clearRevertedCells,
 }) {
   c._correctionState = c._correctionState.copyWith(
-    pendingPromptMoveId: null,
+    pendingPromptCoord: null,
     revertedCells: clearRevertedCells
         ? const {}
         : c._correctionState.revertedCells,
+  );
+}
+
+void _queueCorrectionPromptForSelectionInternal(
+  SudokuController c,
+  Coord coord,
+) {
+  final cell = c._history.present.board.cellAtCoord(coord);
+  if (cell.value != null || c._correctionState.tokensLeft <= 0) {
+    c._correctionState = c._correctionState.copyWith(pendingPromptCoord: null);
+    return;
+  }
+  final analysis = c._contradictionService.analyze(c._history.present.board);
+  c._correctionState = c._correctionState.copyWith(
+    pendingPromptCoord: analysis.deadCells.contains(coord) ? coord : null,
+    revertedCells: const {},
   );
 }
 
@@ -295,4 +317,110 @@ Set<Coord> _changedCellsInternal(SudokuController c, Board from, Board to) {
     }
   }
   return changed;
+}
+
+Set<Coord> _cellsToClearForDeadCell(SudokuController c, Coord target) {
+  final board = c._history.present.board;
+  final peers = _peerCoords(target);
+  final blockersByDigit = <int, List<Coord>>{};
+  for (final peer in peers) {
+    final value = board.cellAtCoord(peer).value;
+    if (value == null) {
+      continue;
+    }
+    blockersByDigit.putIfAbsent(value, () => <Coord>[]).add(peer);
+  }
+
+  final recencyRank = _recentValueChangeRank(c._history);
+  List<Coord>? best;
+  var bestScore = 1 << 30;
+  for (var digit = 1; digit <= 9; digit += 1) {
+    final blockers = blockersByDigit[digit];
+    if (blockers == null || blockers.isEmpty) {
+      continue;
+    }
+    if (blockers.any((coord) => board.cellAtCoord(coord).given)) {
+      continue;
+    }
+    final score = blockers.fold<int>(
+      0,
+      (sum, coord) => sum + (recencyRank[coord] ?? 1000),
+    );
+    if (best == null ||
+        blockers.length < best.length ||
+        (blockers.length == best.length && score < bestScore)) {
+      best = blockers;
+      bestScore = score;
+    }
+  }
+  if (best != null) {
+    return best.toSet();
+  }
+
+  Coord? fallback;
+  var fallbackScore = 1000;
+  for (final peer in peers) {
+    final peerCell = board.cellAtCoord(peer);
+    if (peerCell.value == null || peerCell.given) {
+      continue;
+    }
+    final score = recencyRank[peer] ?? 1000;
+    if (fallback == null || score < fallbackScore) {
+      fallback = peer;
+      fallbackScore = score;
+    }
+  }
+  return fallback == null ? <Coord>{} : <Coord>{fallback};
+}
+
+Set<Coord> _peerCoords(Coord coord) {
+  final peers = <Coord>{};
+  for (var c = 0; c < 9; c += 1) {
+    if (c != coord.col) {
+      peers.add(Coord(coord.row, c));
+    }
+  }
+  for (var r = 0; r < 9; r += 1) {
+    if (r != coord.row) {
+      peers.add(Coord(r, coord.col));
+    }
+  }
+  final br = (coord.row ~/ 3) * 3;
+  final bc = (coord.col ~/ 3) * 3;
+  for (var r = br; r < br + 3; r += 1) {
+    for (var c = bc; c < bc + 3; c += 1) {
+      if (r == coord.row && c == coord.col) {
+        continue;
+      }
+      peers.add(Coord(r, c));
+    }
+  }
+  return peers;
+}
+
+Map<Coord, int> _recentValueChangeRank(History history) {
+  final states = <GameState>[...history.past, history.present];
+  final rank = <Coord, int>{};
+  var index = 0;
+  for (var i = states.length - 1; i > 0; i -= 1) {
+    final coord = _valueChangeCoord(states[i - 1].board, states[i].board);
+    if (coord == null || rank.containsKey(coord)) {
+      continue;
+    }
+    rank[coord] = index;
+    index += 1;
+  }
+  return rank;
+}
+
+Coord? _valueChangeCoord(Board before, Board after) {
+  for (var r = 0; r < 9; r += 1) {
+    for (var c = 0; c < 9; c += 1) {
+      final coord = Coord(r, c);
+      if (before.cellAtCoord(coord).value != after.cellAtCoord(coord).value) {
+        return coord;
+      }
+    }
+  }
+  return null;
 }

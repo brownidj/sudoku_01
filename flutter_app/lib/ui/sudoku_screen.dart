@@ -34,7 +34,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final TooltipOverlayService _tooltipService = TooltipOverlayService();
   Future<void>? _animalLoad;
   late final CandidateSelectionController _candidateController;
-  int? _lastCorrectionPromptMoveId;
+  Coord? _lastCorrectionPromptCoord;
   int _versionTapCount = 0;
   bool _debugToolsEnabled = false;
   Timer? _versionTapResetTimer;
@@ -170,6 +170,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                           : null,
                       onTapCell: _handleCellTap,
                       onLongPressCell: _handleCellLongPress,
+                      showDebugNotification: kDebugMode && _debugToolsEnabled,
                     ),
                   ),
                 ),
@@ -269,15 +270,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _scheduleCorrectionPrompt(UiState state) {
-    final promptMoveId = state.correctionPromptMoveId;
-    if (promptMoveId == null) {
-      _lastCorrectionPromptMoveId = null;
+    final promptCoord = state.correctionPromptCoord;
+    if (promptCoord == null) {
+      _lastCorrectionPromptCoord = null;
       return;
     }
-    if (_lastCorrectionPromptMoveId == promptMoveId) {
+    if (_lastCorrectionPromptCoord == promptCoord) {
       return;
     }
-    _lastCorrectionPromptMoveId = promptMoveId;
+    _lastCorrectionPromptCoord = promptCoord;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) {
         return;
@@ -337,13 +338,5 @@ class _SudokuScreenState extends State<SudokuScreen> {
     setState(() {
       _debugToolsEnabled = !_debugToolsEnabled;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          _debugToolsEnabled ? 'Debug tools enabled' : 'Debug tools disabled',
-        ),
-        duration: const Duration(seconds: 1),
-      ),
-    );
   }
 }

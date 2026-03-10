@@ -40,7 +40,7 @@ UiState _state() {
     gameOver: false,
     correctionsLeft: 5,
     canUndo: false,
-    correctionPromptMoveId: null,
+    correctionPromptCoord: null,
     debugScenarioLabel: null,
   );
 }
