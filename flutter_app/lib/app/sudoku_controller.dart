@@ -19,6 +19,8 @@ import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 
+part 'sudoku_controller_internal.dart';
+
 class SudokuController extends ChangeNotifier {
   final GameService _service;
   late SettingsController _settings;
@@ -303,157 +305,31 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onCheckSolution() {
-    if (_gameOver) {
-      return;
-    }
-    final result = _solutionCoordinator.check(
-      history: _history,
-      initialGrid: _initialGrid,
-      givens: _givenCoords(),
-    );
-    _incorrectCells = result.incorrect;
-    _correctCells = result.correct;
-    _solutionGrid = null;
-    _solutionAddedCells = {};
-    _selected = null;
-    _gameOver = true;
-    _settings.setPuzzleModeLocked(false);
-    _clearCorrectionPromptState(clearRevertedCells: true);
-    _saveGameSession();
-    _render('Check complete');
+    _onCheckSolutionInternal(this);
   }
 
   void onShowSolution() {
-    if (!_gameOver) {
-      onCheckSolution();
-    }
-    if (!_gameOver) {
-      return;
-    }
-    final result = _solutionCoordinator.showSolution(
-      history: _history,
-      initialGrid: _initialGrid,
-      givens: _givenCoords(),
-    );
-    _incorrectCells = result.incorrect;
-    _correctCells = result.correct;
-    _solutionGrid = result.solutionGrid;
-    _solutionAddedCells = result.solutionAdded;
-    _selected = null;
-    _settings.setPuzzleModeLocked(false);
-    _clearCorrectionPromptState(clearRevertedCells: true);
-    _saveGameSession();
-    _render('Solution');
+    _onShowSolutionInternal(this);
   }
 
   void onConfirmCorrection() {
-    final promptMoveId = _correctionState.pendingPromptMoveId;
-    if (promptMoveId == null || _correctionState.tokensLeft <= 0) {
-      return;
-    }
-    final checkpoint = _correctionState.latestCheckpointBefore(promptMoveId);
-    if (checkpoint == null) {
-      _clearCorrectionPromptState(clearRevertedCells: true);
-      _saveGameSession();
-      notifyListeners();
-      return;
-    }
-
-    final revertedCells = _changedCells(
-      _history.present.board,
-      checkpoint.board,
-    );
-    _history = checkpoint.history;
-    _lastConflicts = {};
-    _correctionState = _correctionState.copyWith(
-      tokensLeft: _correctionState.tokensLeft - 1,
-      currentMoveId: checkpoint.moveId,
-      checkpoints: _correctionState.prunedToMoveId(checkpoint.moveId),
-      revertedCells: revertedCells,
-      pendingPromptMoveId: null,
-    );
-    _saveGameSession();
-    _render('Correction used.');
+    _onConfirmCorrectionInternal(this);
   }
 
   void onDismissCorrectionPrompt() {
-    if (_correctionState.pendingPromptMoveId == null) {
-      return;
-    }
-    _clearCorrectionPromptState(clearRevertedCells: false);
-    _saveGameSession();
-    notifyListeners();
+    _onDismissCorrectionPromptInternal(this);
   }
 
   void _applyBoardEditOutcome(BoardEditOutcome outcome) {
-    if (outcome.statusMessage != null) {
-      _render(outcome.statusMessage!);
-      return;
-    }
-    if (outcome.result == null) {
-      return;
-    }
-
-    final boardChanged =
-        outcome.result!.history.present.board != _history.present.board;
-    _applyPlayerResult(outcome.result!, boardChanged: boardChanged);
-    if (outcome.lockDifficulty) {
-      _settings.setDifficultyLocked(true);
-    }
-    if (outcome.lockPuzzleMode) {
-      _settings.setPuzzleModeLocked(true);
-    }
+    _applyBoardEditOutcomeInternal(this, outcome);
   }
 
   void _applyResult(MoveResult res, {String? statusOverride}) {
-    _history = res.history;
-    _lastConflicts = res.conflicts;
-    _saveGameSession();
-    _render(statusOverride ?? res.message);
+    _applyResultInternal(this, res, statusOverride: statusOverride);
   }
 
   void _applyPlayerResult(MoveResult res, {required bool boardChanged}) {
-    final nextMoveId = boardChanged
-        ? _correctionState.currentMoveId + 1
-        : _correctionState.currentMoveId;
-    _history = res.history;
-
-    final analysis = _contradictionService.analyze(_history.present.board);
-    _lastConflicts = analysis.hasContradiction
-        ? analysis.contradictionCells
-        : res.conflicts;
-
-    var nextCorrection = _correctionState.copyWith(
-      currentMoveId: nextMoveId,
-      pendingPromptMoveId:
-          analysis.hasContradiction &&
-              boardChanged &&
-              _correctionState.tokensLeft > 0
-          ? nextMoveId
-          : null,
-      revertedCells: boardChanged ? const {} : _correctionState.revertedCells,
-    );
-
-    if (boardChanged && !analysis.hasContradiction) {
-      final checkpoints = nextCorrection.prunedToMoveId(
-        _correctionState.currentMoveId,
-      );
-      nextCorrection = nextCorrection.copyWith(
-        checkpoints: [
-          ...checkpoints,
-          CorrectionCheckpoint(history: _history, moveId: nextMoveId),
-        ],
-      );
-    }
-
-    _correctionState = nextCorrection;
-    _saveGameSession();
-
-    if (analysis.hasContradiction && _correctionState.tokensLeft == 0) {
-      _render('Contradiction detected. Use Undo to recover.');
-      return;
-    }
-    _render(res.message);
+    _applyPlayerResultInternal(this, res, boardChanged: boardChanged);
   }
 
   void _render(String status) {
@@ -461,24 +337,7 @@ class SudokuController extends ChangeNotifier {
   }
 
   UiState _buildState() {
-    return _uiStateMapper.map(
-      UiStateMapperInput(
-        board: _history.present.board,
-        settings: _settings.state,
-        selected: _selected,
-        conflicts: _lastConflicts,
-        incorrectCells: _incorrectCells,
-        correctCells: _correctCells,
-        solutionAddedCells: _solutionAddedCells,
-        solutionGrid: _solutionGrid,
-        gameOver: _gameOver,
-        revertedCells: _correctionState.revertedCells,
-        correctionsLeft: _correctionState.tokensLeft,
-        canUndo: _history.canUndo(),
-        correctionPromptMoveId: _correctionState.pendingPromptMoveId,
-        debugScenarioLabel: _debugScenarioLabel,
-      ),
-    );
+    return _buildStateInternal(this);
   }
 
   String _defaultPuzzleModeForDifficulty(String difficulty) {
@@ -489,107 +348,33 @@ class SudokuController extends ChangeNotifier {
   }
 
   Set<Coord> _givenCoords() {
-    final givens = <Coord>{};
-    final board = _history.present.board;
-    for (var r = 0; r < 9; r += 1) {
-      for (var c = 0; c < 9; c += 1) {
-        if (board.cellAt(r, c).given) {
-          givens.add(Coord(r, c));
-        }
-      }
-    }
-    return givens;
+    return _givenCoordsInternal(this);
   }
 
   void _saveGameSession() {
-    _sessionService.save(
-      history: _history,
-      selected: _selected,
-      gameOver: _gameOver,
-      initialGrid: _initialGrid,
-      settings: _settings.state,
-      correctionState: _correctionState,
-      debugScenarioLabel: _debugScenarioLabel,
-    );
+    _saveGameSessionInternal(this);
   }
 
   void _startPuzzle() {
-    final puzzle = puzzles.generatePuzzle(
-      _settings.state.difficulty,
-      mode: _settings.state.puzzleMode,
-    );
-    final res = _service.newGameFromGrid(puzzle.grid);
-    _resetBoardFlags();
-    _initialGrid = List<List<Digit?>>.generate(9, (r) {
-      return List<Digit?>.generate(
-        9,
-        (c) => puzzle.grid[r][c],
-        growable: false,
-      );
-    }, growable: false);
-    _applyResult(
-      res,
-      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
-    );
-    _correctionState = CorrectionState.initial(
-      difficulty: puzzle.difficulty,
-      history: _history,
-    );
-    _debugScenarioLabel = null;
-    _saveGameSession();
+    _startPuzzleInternal(this);
   }
 
   void _resetBoardFlags() {
-    _selected = null;
-    _lastConflicts = {};
-    _settings.setDifficultyLocked(false);
-    _settings.setPuzzleModeLocked(false);
-    _gameOver = false;
-    _incorrectCells = {};
-    _solutionAddedCells = {};
-    _correctCells = {};
-    _solutionGrid = null;
-    _debugScenarioLabel = null;
-    _clearCorrectionPromptState(clearRevertedCells: true);
+    _resetBoardFlagsInternal(this);
   }
 
   void _applyRestoredSettings(SettingsState settings) {
-    _settings.setDifficultyLocked(false);
-    _settings.setPuzzleModeLocked(false);
-    _settings.setStyleName(settings.styleName);
-    _settings.setContentMode(settings.contentMode);
-    _settings.setAnimalStyle(settings.animalStyle);
-    _settings.setNotesMode(settings.notesMode);
-    _settings.setDifficulty(settings.difficulty);
-    _settings.setPuzzleMode(settings.puzzleMode);
-    _settings.setDifficultyLocked(!settings.canChangeDifficulty);
-    _settings.setPuzzleModeLocked(!settings.canChangePuzzleMode);
+    _applyRestoredSettingsInternal(this, settings);
   }
 
   void _clearCorrectionPromptState({required bool clearRevertedCells}) {
-    _correctionState = _correctionState.copyWith(
-      pendingPromptMoveId: null,
-      revertedCells: clearRevertedCells
-          ? const {}
-          : _correctionState.revertedCells,
+    _clearCorrectionPromptStateInternal(
+      this,
+      clearRevertedCells: clearRevertedCells,
     );
   }
 
   Set<Coord> _changedCells(Board from, Board to) {
-    final changed = <Coord>{};
-    for (var r = 0; r < 9; r += 1) {
-      for (var c = 0; c < 9; c += 1) {
-        final coord = Coord(r, c);
-        final before = from.cellAtCoord(coord);
-        final after = to.cellAtCoord(coord);
-        if (before.value != after.value ||
-            before.given != after.given ||
-            before.notes.length != after.notes.length ||
-            !before.notes.containsAll(after.notes)) {
-          changed.add(coord);
-        }
-      }
-    }
-    return changed;
+    return _changedCellsInternal(this, from, to);
   }
 }

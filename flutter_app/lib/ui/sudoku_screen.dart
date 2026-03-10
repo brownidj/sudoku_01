@@ -91,7 +91,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               alignment: Alignment.centerLeft,
               child: GestureDetector(
                 onTap: _onVersionTapped,
-                child: const Text('ZuDoKu 0.4.4'),
+                child: const Text('ZuDoKu 0.5.1'),
               ),
             ),
             actions: [

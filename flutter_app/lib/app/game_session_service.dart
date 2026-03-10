@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/correction_state.dart';
+import 'package:flutter_app/app/game_session_codec.dart';
 import 'package:flutter_app/app/grid_utils.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/settings_state.dart';
@@ -34,8 +35,13 @@ class GameSessionService {
 
   final PreferencesStore _prefs;
   final GridUtils _gridUtils;
+  final GameSessionCodec _codec;
 
-  const GameSessionService(this._prefs, this._gridUtils);
+  const GameSessionService(
+    this._prefs,
+    this._gridUtils, {
+    GameSessionCodec codec = const GameSessionCodec(),
+  }) : _codec = codec;
 
   Future<RestoredGameSession?> restore(SettingsState fallback) async {
     final raw = await _prefs.loadGameSession();
@@ -57,17 +63,17 @@ class GameSessionService {
         return null;
       }
 
-      final restoredBoard = _boardFromJson(boardRaw);
+      final restoredBoard = _codec.boardFromJson(boardRaw);
       if (restoredBoard == null) {
         return null;
       }
 
       final initialGrid =
-          _gridFromJson(decoded['initialGrid']) ??
+          _codec.gridFromJson(decoded['initialGrid']) ??
           _gridUtils.gridFromBoard(restoredBoard);
-      final settings = _settingsFromJson(decoded['settings'], fallback);
+      final settings = _codec.settingsFromJson(decoded['settings'], fallback);
       final history = History.initial(GameState(board: restoredBoard));
-      final correctionState = _correctionStateFromJson(
+      final correctionState = _codec.correctionStateFromJson(
         decoded['corrections'],
         settings.difficulty,
         history,
@@ -75,7 +81,7 @@ class GameSessionService {
 
       return RestoredGameSession(
         history: history,
-        selected: _coordFromJson(decoded['selected']),
+        selected: _codec.coordFromJson(decoded['selected']),
         gameOver: decoded['gameOver'] == true,
         initialGrid: initialGrid,
         settings: settings,
@@ -100,9 +106,9 @@ class GameSessionService {
   }) {
     final payload = <String, dynamic>{
       'version': sessionVersion,
-      'board': _boardToJson(history.present.board),
-      'initialGrid': _gridToJson(initialGrid),
-      'selected': _coordToJson(selected),
+      'board': _codec.boardToJson(history.present.board),
+      'initialGrid': _codec.gridToJson(initialGrid),
+      'selected': _codec.coordToJson(selected),
       'gameOver': gameOver,
       'debugScenarioLabel': debugScenarioLabel,
       'settings': <String, dynamic>{
@@ -115,271 +121,8 @@ class GameSessionService {
         'animalStyle': settings.animalStyle,
         'puzzleMode': settings.puzzleMode,
       },
-      'corrections': _correctionStateToJson(correctionState),
+      'corrections': _codec.correctionStateToJson(correctionState),
     };
     unawaited(_prefs.saveGameSession(jsonEncode(payload)));
-  }
-
-  SettingsState _settingsFromJson(Object? raw, SettingsState fallback) {
-    if (raw is! Map<String, dynamic>) {
-      return fallback;
-    }
-
-    final difficulty = _difficultyOrDefault(raw['difficulty'], fallback);
-    var puzzleMode = _puzzleModeOrDefault(raw['puzzleMode'], difficulty);
-    if (difficulty == 'hard') {
-      puzzleMode = 'unique';
-    }
-
-    return fallback.copyWith(
-      notesMode: raw['notesMode'] == true,
-      difficulty: difficulty,
-      canChangeDifficulty: raw['canChangeDifficulty'] != false,
-      canChangePuzzleMode: raw['canChangePuzzleMode'] != false,
-      styleName: _styleOrDefault(raw['styleName'], fallback),
-      contentMode: _contentModeOrDefault(raw['contentMode'], fallback),
-      animalStyle: _animalStyleOrDefault(raw['animalStyle'], fallback),
-      puzzleMode: puzzleMode,
-    );
-  }
-
-  List<List<Map<String, dynamic>>> _boardToJson(Board board) {
-    return List<List<Map<String, dynamic>>>.generate(9, (r) {
-      return List<Map<String, dynamic>>.generate(9, (c) {
-        final cell = board.cellAt(r, c);
-        final notes = cell.notes.toList()..sort();
-        return <String, dynamic>{'v': cell.value, 'g': cell.given, 'n': notes};
-      }, growable: false);
-    }, growable: false);
-  }
-
-  Board? _boardFromJson(List<dynamic> raw) {
-    if (raw.length != 9) {
-      return null;
-    }
-
-    final rows = <List<Cell>>[];
-    for (var r = 0; r < 9; r += 1) {
-      final rowRaw = raw[r];
-      if (rowRaw is! List || rowRaw.length != 9) {
-        return null;
-      }
-
-      final row = <Cell>[];
-      for (var c = 0; c < 9; c += 1) {
-        final cellRaw = rowRaw[c];
-        if (cellRaw is! Map<String, dynamic>) {
-          return null;
-        }
-
-        final valueRaw = cellRaw['v'];
-        final notesRaw = cellRaw['n'];
-        final notes = <int>{};
-        if (notesRaw is List) {
-          for (final note in notesRaw) {
-            if (note is int && note >= 1 && note <= 9) {
-              notes.add(note);
-            }
-          }
-        }
-
-        row.add(
-          Cell(
-            value: valueRaw is int ? valueRaw : null,
-            given: cellRaw['g'] == true,
-            notes: notes,
-          ),
-        );
-      }
-      rows.add(row);
-    }
-    return Board(cells: rows);
-  }
-
-  List<List<int?>>? _gridToJson(Grid? grid) {
-    if (grid == null) {
-      return null;
-    }
-    return List<List<int?>>.generate(9, (r) {
-      return List<int?>.generate(9, (c) => grid[r][c], growable: false);
-    }, growable: false);
-  }
-
-  Grid? _gridFromJson(Object? raw) {
-    if (raw is! List || raw.length != 9) {
-      return null;
-    }
-
-    final out = <List<int?>>[];
-    for (var r = 0; r < 9; r += 1) {
-      final rowRaw = raw[r];
-      if (rowRaw is! List || rowRaw.length != 9) {
-        return null;
-      }
-
-      final row = <int?>[];
-      for (var c = 0; c < 9; c += 1) {
-        final value = rowRaw[c];
-        row.add(value is int ? value : null);
-      }
-      out.add(row);
-    }
-    return out;
-  }
-
-  Map<String, dynamic> _correctionStateToJson(CorrectionState state) {
-    return <String, dynamic>{
-      'tokensLeft': state.tokensLeft,
-      'currentMoveId': state.currentMoveId,
-      'pendingPromptMoveId': state.pendingPromptMoveId,
-      'revertedCells': _coordsToJson(state.revertedCells),
-      'checkpoints': state.checkpoints
-          .map((checkpoint) {
-            return <String, dynamic>{
-              'moveId': checkpoint.moveId,
-              'board': _boardToJson(checkpoint.board),
-            };
-          })
-          .toList(growable: false),
-    };
-  }
-
-  CorrectionState _correctionStateFromJson(
-    Object? raw,
-    String difficulty,
-    History fallbackHistory,
-  ) {
-    if (raw is! Map<String, dynamic>) {
-      return CorrectionState.initial(
-        difficulty: difficulty,
-        history: fallbackHistory,
-      );
-    }
-
-    final checkpointsRaw = raw['checkpoints'];
-    final checkpoints = <CorrectionCheckpoint>[];
-    if (checkpointsRaw is List) {
-      for (final checkpointRaw in checkpointsRaw) {
-        if (checkpointRaw is! Map<String, dynamic>) {
-          continue;
-        }
-        final moveId = checkpointRaw['moveId'];
-        final boardRaw = checkpointRaw['board'];
-        if (moveId is! int || boardRaw is! List) {
-          continue;
-        }
-        final board = _boardFromJson(boardRaw);
-        if (board == null) {
-          continue;
-        }
-        checkpoints.add(
-          CorrectionCheckpoint(
-            history: History.initial(GameState(board: board)),
-            moveId: moveId,
-          ),
-        );
-      }
-    }
-
-    final fallback = CorrectionState.initial(
-      difficulty: difficulty,
-      history: fallbackHistory,
-    );
-    return CorrectionState(
-      tokensLeft: raw['tokensLeft'] is int
-          ? raw['tokensLeft'] as int
-          : fallback.tokensLeft,
-      currentMoveId: raw['currentMoveId'] is int
-          ? raw['currentMoveId'] as int
-          : fallback.currentMoveId,
-      checkpoints: checkpoints.isEmpty ? fallback.checkpoints : checkpoints,
-      revertedCells: _coordsFromJson(raw['revertedCells']),
-      pendingPromptMoveId: raw['pendingPromptMoveId'] is int
-          ? raw['pendingPromptMoveId'] as int
-          : null,
-    );
-  }
-
-  Map<String, int>? _coordToJson(Coord? coord) {
-    if (coord == null) {
-      return null;
-    }
-    return <String, int>{'row': coord.row, 'col': coord.col};
-  }
-
-  Coord? _coordFromJson(Object? raw) {
-    if (raw is! Map<String, dynamic>) {
-      return null;
-    }
-
-    final row = raw['row'];
-    final col = raw['col'];
-    if (row is! int || col is! int) {
-      return null;
-    }
-    if (row < 0 || row > 8 || col < 0 || col > 8) {
-      return null;
-    }
-    return Coord(row, col);
-  }
-
-  List<Map<String, int>> _coordsToJson(Set<Coord> coords) {
-    return coords
-        .map((coord) => <String, int>{'row': coord.row, 'col': coord.col})
-        .toList(growable: false);
-  }
-
-  Set<Coord> _coordsFromJson(Object? raw) {
-    if (raw is! List) {
-      return {};
-    }
-    final coords = <Coord>{};
-    for (final item in raw) {
-      final coord = _coordFromJson(item);
-      if (coord != null) {
-        coords.add(coord);
-      }
-    }
-    return coords;
-  }
-
-  String _difficultyOrDefault(Object? raw, SettingsState fallback) {
-    final value = raw is String ? raw : '';
-    if (value == 'easy' || value == 'medium' || value == 'hard') {
-      return value;
-    }
-    return fallback.difficulty;
-  }
-
-  String _puzzleModeOrDefault(Object? raw, String difficulty) {
-    final value = raw is String ? raw : '';
-    if (value == 'unique' || value == 'multi') {
-      return value;
-    }
-    return difficulty == 'easy' ? 'multi' : 'unique';
-  }
-
-  String _styleOrDefault(Object? raw, SettingsState fallback) {
-    final value = raw is String ? raw : '';
-    if (value == 'Modern' || value == 'Classic' || value == 'High Contrast') {
-      return value;
-    }
-    return fallback.styleName;
-  }
-
-  String _contentModeOrDefault(Object? raw, SettingsState fallback) {
-    final value = raw is String ? raw : '';
-    if (value == 'animals' || value == 'numbers') {
-      return value;
-    }
-    return fallback.contentMode;
-  }
-
-  String _animalStyleOrDefault(Object? raw, SettingsState fallback) {
-    final value = raw is String ? raw : '';
-    if (value == 'cute' || value == 'simple') {
-      return value;
-    }
-    return fallback.animalStyle;
   }
 }
