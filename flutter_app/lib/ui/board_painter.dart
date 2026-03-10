@@ -74,6 +74,10 @@ class SudokuBoardPainter extends CustomPainter {
         );
 
         canvas.drawRect(rect, Paint()..color = model.background);
+        if (model.showReverted) {
+          canvas.drawRect(rect, Paint()..color = style.highlightReverted);
+          _drawOutline(canvas, rect, style.outlineReverted, 2);
+        }
 
         if (state.gameOver) {
           Color? highlight;

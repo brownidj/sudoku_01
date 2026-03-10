@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/board_edit_coordinator.dart';
 import 'package:flutter_app/app/controller_startup_coordinator.dart';
+import 'package:flutter_app/app/contradiction_service.dart';
+import 'package:flutter_app/app/correction_state.dart';
+import 'package:flutter_app/app/debug_scenarios.dart';
 import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
@@ -24,7 +27,9 @@ class SudokuController extends ChangeNotifier {
   late final UiStateMapper _uiStateMapper;
   late final BoardEditCoordinator _boardEditCoordinator;
   late final ControllerStartupCoordinator _startupCoordinator;
+  late final ContradictionService _contradictionService;
   late History _history;
+  late CorrectionState _correctionState;
   Coord? _selected;
   Set<Coord> _lastConflicts = {};
   // Settings are managed by SettingsController.
@@ -35,6 +40,7 @@ class SudokuController extends ChangeNotifier {
   Grid? _solutionGrid;
   Grid? _initialGrid;
   bool _hadSavedSessionAtLaunch = false;
+  String? _debugScenarioLabel;
 
   SudokuController({
     PreferencesStore? preferencesStore,
@@ -47,6 +53,7 @@ class SudokuController extends ChangeNotifier {
     UiStateMapper? uiStateMapper,
     BoardEditCoordinator? boardEditCoordinator,
     ControllerStartupCoordinator? startupCoordinator,
+    ContradictionService? contradictionService,
   }) : _service = gameService ?? GameService() {
     final prefs = preferencesStore ?? PreferencesStore();
     final resolvedGridUtils = gridUtils ?? GridUtils();
@@ -64,7 +71,13 @@ class SudokuController extends ChangeNotifier {
     _startupCoordinator =
         startupCoordinator ??
         ControllerStartupCoordinator(_settings, _sessionService);
+    _contradictionService =
+        contradictionService ?? const ContradictionService();
     _history = _service.initialHistory();
+    _correctionState = CorrectionState.initial(
+      difficulty: _settings.state.difficulty,
+      history: _history,
+    );
     ready = _initialize();
   }
 
@@ -85,6 +98,8 @@ class SudokuController extends ChangeNotifier {
       _selected = restoredSession.selected;
       _gameOver = restoredSession.gameOver;
       _initialGrid = restoredSession.initialGrid;
+      _correctionState = restoredSession.correctionState;
+      _debugScenarioLabel = restoredSession.debugScenarioLabel;
       _applyRestoredSettings(restoredSession.settings);
       notifyListeners();
       return;
@@ -173,6 +188,71 @@ class SudokuController extends ChangeNotifier {
     _startPuzzle();
   }
 
+  void onLoadCorrectionScenario() {
+    final scenario = DebugScenarios.correctionRecovery(
+      service: _service,
+      currentSettings: _settings.state,
+    );
+    _applyDebugScenario(scenario, 'Debug correction scenario loaded');
+  }
+
+  void onLoadExhaustedCorrectionScenario() {
+    final scenario = DebugScenarios.exhaustedCorrectionRecovery(
+      service: _service,
+      currentSettings: _settings.state,
+    );
+    _applyDebugScenario(
+      scenario,
+      'Debug exhausted-corrections scenario loaded',
+    );
+  }
+
+  void _applyDebugScenario(DebugScenario scenario, String status) {
+    _debugScenarioLabel = scenario.label;
+    _history = scenario.history;
+    _correctionState = scenario.correctionState;
+    _selected = scenario.selected;
+    _initialGrid = scenario.initialGrid;
+    _lastConflicts = _contradictionService
+        .analyze(_history.present.board)
+        .contradictionCells;
+    _incorrectCells = {};
+    _solutionAddedCells = {};
+    _correctCells = {};
+    _solutionGrid = null;
+    _gameOver = false;
+    _applyRestoredSettings(scenario.settings);
+    _saveGameSession();
+    _render(status);
+  }
+
+  void onUndo() {
+    if (_gameOver) {
+      return;
+    }
+    final res = _service.undo(_history);
+    if (res.history == _history) {
+      _render(res.message);
+      return;
+    }
+
+    final nextMoveId = _correctionState.currentMoveId > 0
+        ? _correctionState.currentMoveId - 1
+        : 0;
+    _history = res.history;
+    _lastConflicts = _contradictionService
+        .analyze(_history.present.board)
+        .contradictionCells;
+    _correctionState = _correctionState.copyWith(
+      currentMoveId: nextMoveId,
+      checkpoints: _correctionState.prunedToMoveId(nextMoveId),
+      revertedCells: const {},
+      pendingPromptMoveId: null,
+    );
+    _saveGameSession();
+    _render(res.message);
+  }
+
   void onSetDifficulty(String difficulty) {
     final d = difficulty.trim().toLowerCase();
     if (!['easy', 'medium', 'hard'].contains(d)) {
@@ -238,6 +318,7 @@ class SudokuController extends ChangeNotifier {
     _selected = null;
     _gameOver = true;
     _settings.setPuzzleModeLocked(false);
+    _clearCorrectionPromptState(clearRevertedCells: true);
     _saveGameSession();
     _render('Check complete');
   }
@@ -260,8 +341,48 @@ class SudokuController extends ChangeNotifier {
     _solutionAddedCells = result.solutionAdded;
     _selected = null;
     _settings.setPuzzleModeLocked(false);
+    _clearCorrectionPromptState(clearRevertedCells: true);
     _saveGameSession();
     _render('Solution');
+  }
+
+  void onConfirmCorrection() {
+    final promptMoveId = _correctionState.pendingPromptMoveId;
+    if (promptMoveId == null || _correctionState.tokensLeft <= 0) {
+      return;
+    }
+    final checkpoint = _correctionState.latestCheckpointBefore(promptMoveId);
+    if (checkpoint == null) {
+      _clearCorrectionPromptState(clearRevertedCells: true);
+      _saveGameSession();
+      notifyListeners();
+      return;
+    }
+
+    final revertedCells = _changedCells(
+      _history.present.board,
+      checkpoint.board,
+    );
+    _history = checkpoint.history;
+    _lastConflicts = {};
+    _correctionState = _correctionState.copyWith(
+      tokensLeft: _correctionState.tokensLeft - 1,
+      currentMoveId: checkpoint.moveId,
+      checkpoints: _correctionState.prunedToMoveId(checkpoint.moveId),
+      revertedCells: revertedCells,
+      pendingPromptMoveId: null,
+    );
+    _saveGameSession();
+    _render('Correction used.');
+  }
+
+  void onDismissCorrectionPrompt() {
+    if (_correctionState.pendingPromptMoveId == null) {
+      return;
+    }
+    _clearCorrectionPromptState(clearRevertedCells: false);
+    _saveGameSession();
+    notifyListeners();
   }
 
   void _applyBoardEditOutcome(BoardEditOutcome outcome) {
@@ -273,7 +394,9 @@ class SudokuController extends ChangeNotifier {
       return;
     }
 
-    _applyResult(outcome.result!);
+    final boardChanged =
+        outcome.result!.history.present.board != _history.present.board;
+    _applyPlayerResult(outcome.result!, boardChanged: boardChanged);
     if (outcome.lockDifficulty) {
       _settings.setDifficultyLocked(true);
     }
@@ -287,6 +410,50 @@ class SudokuController extends ChangeNotifier {
     _lastConflicts = res.conflicts;
     _saveGameSession();
     _render(statusOverride ?? res.message);
+  }
+
+  void _applyPlayerResult(MoveResult res, {required bool boardChanged}) {
+    final nextMoveId = boardChanged
+        ? _correctionState.currentMoveId + 1
+        : _correctionState.currentMoveId;
+    _history = res.history;
+
+    final analysis = _contradictionService.analyze(_history.present.board);
+    _lastConflicts = analysis.hasContradiction
+        ? analysis.contradictionCells
+        : res.conflicts;
+
+    var nextCorrection = _correctionState.copyWith(
+      currentMoveId: nextMoveId,
+      pendingPromptMoveId:
+          analysis.hasContradiction &&
+              boardChanged &&
+              _correctionState.tokensLeft > 0
+          ? nextMoveId
+          : null,
+      revertedCells: boardChanged ? const {} : _correctionState.revertedCells,
+    );
+
+    if (boardChanged && !analysis.hasContradiction) {
+      final checkpoints = nextCorrection.prunedToMoveId(
+        _correctionState.currentMoveId,
+      );
+      nextCorrection = nextCorrection.copyWith(
+        checkpoints: [
+          ...checkpoints,
+          CorrectionCheckpoint(history: _history, moveId: nextMoveId),
+        ],
+      );
+    }
+
+    _correctionState = nextCorrection;
+    _saveGameSession();
+
+    if (analysis.hasContradiction && _correctionState.tokensLeft == 0) {
+      _render('Contradiction detected. Use Undo to recover.');
+      return;
+    }
+    _render(res.message);
   }
 
   void _render(String status) {
@@ -305,6 +472,11 @@ class SudokuController extends ChangeNotifier {
         solutionAddedCells: _solutionAddedCells,
         solutionGrid: _solutionGrid,
         gameOver: _gameOver,
+        revertedCells: _correctionState.revertedCells,
+        correctionsLeft: _correctionState.tokensLeft,
+        canUndo: _history.canUndo(),
+        correctionPromptMoveId: _correctionState.pendingPromptMoveId,
+        debugScenarioLabel: _debugScenarioLabel,
       ),
     );
   }
@@ -336,6 +508,8 @@ class SudokuController extends ChangeNotifier {
       gameOver: _gameOver,
       initialGrid: _initialGrid,
       settings: _settings.state,
+      correctionState: _correctionState,
+      debugScenarioLabel: _debugScenarioLabel,
     );
   }
 
@@ -357,6 +531,12 @@ class SudokuController extends ChangeNotifier {
       res,
       statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
     );
+    _correctionState = CorrectionState.initial(
+      difficulty: puzzle.difficulty,
+      history: _history,
+    );
+    _debugScenarioLabel = null;
+    _saveGameSession();
   }
 
   void _resetBoardFlags() {
@@ -369,6 +549,8 @@ class SudokuController extends ChangeNotifier {
     _solutionAddedCells = {};
     _correctCells = {};
     _solutionGrid = null;
+    _debugScenarioLabel = null;
+    _clearCorrectionPromptState(clearRevertedCells: true);
   }
 
   void _applyRestoredSettings(SettingsState settings) {
@@ -382,5 +564,32 @@ class SudokuController extends ChangeNotifier {
     _settings.setPuzzleMode(settings.puzzleMode);
     _settings.setDifficultyLocked(!settings.canChangeDifficulty);
     _settings.setPuzzleModeLocked(!settings.canChangePuzzleMode);
+  }
+
+  void _clearCorrectionPromptState({required bool clearRevertedCells}) {
+    _correctionState = _correctionState.copyWith(
+      pendingPromptMoveId: null,
+      revertedCells: clearRevertedCells
+          ? const {}
+          : _correctionState.revertedCells,
+    );
+  }
+
+  Set<Coord> _changedCells(Board from, Board to) {
+    final changed = <Coord>{};
+    for (var r = 0; r < 9; r += 1) {
+      for (var c = 0; c < 9; c += 1) {
+        final coord = Coord(r, c);
+        final before = from.cellAtCoord(coord);
+        final after = to.cellAtCoord(coord);
+        if (before.value != after.value ||
+            before.given != after.given ||
+            before.notes.length != after.notes.length ||
+            !before.notes.containsAll(after.notes)) {
+          changed.add(coord);
+        }
+      }
+    }
+    return changed;
   }
 }

@@ -63,6 +63,13 @@ class GameService {
     return _result(newHistory, null, 'Notes cleared.');
   }
 
+  MoveResult undo(History history) {
+    if (!history.canUndo()) {
+      return _result(history, null, 'Nothing to undo.');
+    }
+    return _result(history.undo(), null, 'Undo.');
+  }
+
   MoveResult _result(History history, Coord? coord, String message) {
     final board = history.present.board;
     Set<Coord> conflicts;

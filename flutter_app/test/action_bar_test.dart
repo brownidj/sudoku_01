@@ -19,6 +19,7 @@ UiState _state() {
         incorrect: false,
         solutionAdded: false,
         correct: false,
+        reverted: false,
       ),
       growable: false,
     ),
@@ -37,6 +38,10 @@ UiState _state() {
     puzzleMode: 'multi',
     selected: null,
     gameOver: false,
+    correctionsLeft: 5,
+    canUndo: false,
+    correctionPromptMoveId: null,
+    debugScenarioLabel: null,
   );
 }
 
@@ -49,6 +54,7 @@ void main() {
         home: Scaffold(
           body: ActionBar(
             state: _state(),
+            onUndo: () {},
             onToggleNotesMode: () {},
             onClear: () {},
             onCheckOrSolution: () {},

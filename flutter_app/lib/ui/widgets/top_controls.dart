@@ -68,7 +68,7 @@ class TopControls extends StatelessWidget {
             crossAxisAlignment: WrapCrossAlignment.center,
             spacing: 12,
             runSpacing: 8,
-            children: [],
+            children: const [],
           ),
         ],
       ),

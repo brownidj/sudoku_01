@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/domain/rules.dart' as rules;
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/candidate_selection_controller.dart';
@@ -31,6 +32,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final TooltipOverlayService _tooltipService = TooltipOverlayService();
   Future<void>? _animalLoad;
   late final CandidateSelectionController _candidateController;
+  int? _lastCorrectionPromptMoveId;
 
   @override
   void initState() {
@@ -74,6 +76,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
       builder: (context, _) {
         final state = widget.controller.state;
         final style = styleForName(state.styleName);
+        _scheduleCorrectionPrompt(state);
 
         return Scaffold(
           appBar: AppBar(
@@ -98,6 +101,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onSetDifficulty: widget.controller.onSetDifficulty,
             onAnimalStyleChanged: widget.controller.onAnimalStyleChanged,
             onStyleChanged: widget.controller.onStyleChanged,
+            onLoadCorrectionScenario: () {
+              Navigator.of(context).maybePop();
+              widget.controller.onLoadCorrectionScenario();
+            },
+            onLoadExhaustedCorrectionScenario: () {
+              Navigator.of(context).maybePop();
+              widget.controller.onLoadExhaustedCorrectionScenario();
+            },
           ),
           body: SafeArea(
             child: Column(
@@ -155,6 +166,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                 if (state.gameOver) Legend(style: style),
                 ActionBar(
                   state: state,
+                  onUndo: widget.controller.onUndo,
                   onToggleNotesMode: widget.controller.onToggleNotesMode,
                   onClear: widget.controller.onClearPressed,
                   onCheckOrSolution: () => _handleCheckOrSolution(state),
@@ -210,23 +222,22 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   List<int> _possibleDigits(UiState state, Coord coord) {
-    final used = <int>{};
-    final boxRow = (coord.row ~/ 3) * 3;
-    final boxCol = (coord.col ~/ 3) * 3;
-    for (var r = boxRow; r < boxRow + 3; r += 1) {
-      for (var c = boxCol; c < boxCol + 3; c += 1) {
-        final value = state.board.cells[r][c].value;
-        if (value != null) {
-          used.add(value);
-        }
-      }
-    }
-    final candidates = <int>[];
-    for (var d = 1; d <= 9; d += 1) {
-      if (!used.contains(d)) {
-        candidates.add(d);
-      }
-    }
+    final board = Board(
+      cells: state.board.cells
+          .map((row) {
+            return row
+                .map((cell) {
+                  return Cell(
+                    value: cell.value,
+                    given: cell.given,
+                    notes: cell.notes.toSet(),
+                  );
+                })
+                .toList(growable: false);
+          })
+          .toList(growable: false),
+    );
+    final candidates = rules.candidatesForCell(board, coord).toList()..sort();
     return candidates;
   }
 
@@ -245,5 +256,56 @@ class _SudokuScreenState extends State<SudokuScreen> {
       return {};
     }
     return state.board.cells[coord.row][coord.col].notes.toSet();
+  }
+
+  void _scheduleCorrectionPrompt(UiState state) {
+    final promptMoveId = state.correctionPromptMoveId;
+    if (promptMoveId == null) {
+      _lastCorrectionPromptMoveId = null;
+      return;
+    }
+    if (_lastCorrectionPromptMoveId == promptMoveId) {
+      return;
+    }
+    _lastCorrectionPromptMoveId = promptMoveId;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _showCorrectionPrompt();
+    });
+  }
+
+  Future<void> _showCorrectionPrompt() async {
+    final useCorrection = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          content: const Text(
+            'This board is unsatisfiable from an earlier move. Use 1 correction?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Use correction'),
+            ),
+          ],
+        );
+      },
+    );
+    if (!mounted) {
+      return;
+    }
+    if (useCorrection == true) {
+      widget.controller.onConfirmCorrection();
+      _candidateController.hide();
+      return;
+    }
+    widget.controller.onDismissCorrectionPrompt();
   }
 }

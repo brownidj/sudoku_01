@@ -78,6 +78,29 @@ class SudokuBoardArea extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
+            if (state.debugScenarioLabel != null) ...[
+              SizedBox(
+                width: boardWidth,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.tertiaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    state.debugScenarioLabel!,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: Theme.of(context).colorScheme.onTertiaryContainer,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+            ],
             SizedBox(
               width: boardWidth,
               child: Row(
@@ -90,6 +113,16 @@ class SudokuBoardArea extends StatelessWidget {
                         context,
                       ).colorScheme.onSurface.withOpacity(0.6),
                       letterSpacing: 0.6,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Corrections left: ${state.correctionsLeft}',
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
                     ),
                   ),
                   const Spacer(),

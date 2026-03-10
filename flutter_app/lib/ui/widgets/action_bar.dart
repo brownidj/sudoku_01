@@ -7,6 +7,7 @@ class ActionBar extends StatelessWidget {
       'correct/incorrect. Second press shows you the complete solution.';
 
   final UiState state;
+  final VoidCallback onUndo;
   final VoidCallback onToggleNotesMode;
   final VoidCallback onClear;
   final VoidCallback onCheckOrSolution;
@@ -14,6 +15,7 @@ class ActionBar extends StatelessWidget {
   const ActionBar({
     super.key,
     required this.state,
+    required this.onUndo,
     required this.onToggleNotesMode,
     required this.onClear,
     required this.onCheckOrSolution,
@@ -27,6 +29,13 @@ class ActionBar extends StatelessWidget {
         spacing: 8,
         runSpacing: 8,
         children: [
+          SizedBox(
+            height: 40,
+            child: OutlinedButton(
+              onPressed: state.canUndo ? onUndo : null,
+              child: const Text('Undo'),
+            ),
+          ),
           SizedBox(
             height: 40,
             child: OutlinedButton(

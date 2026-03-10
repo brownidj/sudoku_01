@@ -12,6 +12,11 @@ class UiStateMapperInput {
   final Set<Coord> solutionAddedCells;
   final Grid? solutionGrid;
   final bool gameOver;
+  final Set<Coord> revertedCells;
+  final int correctionsLeft;
+  final bool canUndo;
+  final int? correctionPromptMoveId;
+  final String? debugScenarioLabel;
 
   const UiStateMapperInput({
     required this.board,
@@ -23,6 +28,11 @@ class UiStateMapperInput {
     required this.solutionAddedCells,
     required this.solutionGrid,
     required this.gameOver,
+    required this.revertedCells,
+    required this.correctionsLeft,
+    required this.canUndo,
+    required this.correctionPromptMoveId,
+    required this.debugScenarioLabel,
   });
 }
 
@@ -56,6 +66,7 @@ class UiStateMapper {
             incorrect: input.incorrectCells.contains(coord),
             solutionAdded: solutionAdded,
             correct: input.correctCells.contains(coord),
+            reverted: input.revertedCells.contains(coord),
           ),
         );
       }
@@ -74,6 +85,10 @@ class UiStateMapper {
       puzzleMode: input.settings.puzzleMode,
       selected: input.selected,
       gameOver: input.gameOver,
+      correctionsLeft: input.correctionsLeft,
+      canUndo: input.canUndo,
+      correctionPromptMoveId: input.correctionPromptMoveId,
+      debugScenarioLabel: input.debugScenarioLabel,
     );
   }
 }

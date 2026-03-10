@@ -10,6 +10,7 @@ class CellRenderModel {
   final bool showCorrect;
   final bool showGiven;
   final bool showSolution;
+  final bool showReverted;
 
   const CellRenderModel({
     required this.background,
@@ -19,6 +20,7 @@ class CellRenderModel {
     required this.showCorrect,
     required this.showGiven,
     required this.showSolution,
+    required this.showReverted,
   });
 }
 
@@ -54,6 +56,7 @@ class BoardTheme {
       showCorrect: gameOver && cell.correct,
       showGiven: gameOver && cell.given,
       showSolution: gameOver && cell.solutionAdded,
+      showReverted: !gameOver && cell.reverted,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/ui_state.dart';
 
 class SudokuDrawer extends StatelessWidget {
@@ -7,6 +8,9 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onAnimalStyleChanged;
   final ValueChanged<String> onStyleChanged;
+  final VoidCallback? onLoadCorrectionScenario;
+  final VoidCallback? onLoadExhaustedCorrectionScenario;
+  final bool showDebugTools;
 
   const SudokuDrawer({
     super.key,
@@ -15,6 +19,9 @@ class SudokuDrawer extends StatelessWidget {
     required this.onSetDifficulty,
     required this.onAnimalStyleChanged,
     required this.onStyleChanged,
+    this.onLoadCorrectionScenario,
+    this.onLoadExhaustedCorrectionScenario,
+    this.showDebugTools = kDebugMode,
   });
 
   @override
@@ -163,6 +170,35 @@ class SudokuDrawer extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleStyleChanged,
             ),
+            if (showDebugTools &&
+                (onLoadCorrectionScenario != null ||
+                    onLoadExhaustedCorrectionScenario != null)) ...[
+              const Divider(height: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  'Debug',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.science_outlined),
+                title: const Text('Load Correction Scenario'),
+                subtitle: const Text(
+                  'Temporary control for assisted-recovery testing.',
+                ),
+                onTap: onLoadCorrectionScenario,
+              ),
+              if (onLoadExhaustedCorrectionScenario != null)
+                ListTile(
+                  leading: const Icon(Icons.warning_amber_outlined),
+                  title: const Text('Load Exhausted Correction Scenario'),
+                  subtitle: const Text(
+                    'Temporary control for undo-only recovery testing.',
+                  ),
+                  onTap: onLoadExhaustedCorrectionScenario,
+                ),
+            ],
           ],
         ),
       ),

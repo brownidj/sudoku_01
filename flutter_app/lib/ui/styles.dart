@@ -25,6 +25,8 @@ class BoardStyle {
   final Color highlightCorrect;
   final Color highlightGiven;
   final Color highlightSolution;
+  final Color highlightReverted;
+  final Color outlineReverted;
 
   const BoardStyle({
     required this.boardBg,
@@ -51,6 +53,8 @@ class BoardStyle {
     required this.highlightCorrect,
     required this.highlightGiven,
     required this.highlightSolution,
+    required this.highlightReverted,
+    required this.outlineReverted,
   });
 }
 
@@ -79,6 +83,8 @@ const BoardStyle styleModern = BoardStyle(
   highlightCorrect: Color(0xFFC8E6C9),
   highlightGiven: Color(0xFFFFF3C0),
   highlightSolution: Color(0xFFF8BBD0),
+  highlightReverted: Color(0xFFFFF0C2),
+  outlineReverted: Color(0xFFE49C00),
 );
 
 const BoardStyle styleClassic = BoardStyle(
@@ -106,6 +112,8 @@ const BoardStyle styleClassic = BoardStyle(
   highlightCorrect: Color(0xFFC8E6C9),
   highlightGiven: Color(0xFFFFF3C0),
   highlightSolution: Color(0xFFF8BBD0),
+  highlightReverted: Color(0xFFF8E7B8),
+  outlineReverted: Color(0xFF9A6F1A),
 );
 
 const BoardStyle styleHighContrast = BoardStyle(
@@ -133,6 +141,8 @@ const BoardStyle styleHighContrast = BoardStyle(
   highlightCorrect: Color(0xFFC8E6C9),
   highlightGiven: Color(0xFFFFF3C0),
   highlightSolution: Color(0xFFF8BBD0),
+  highlightReverted: Color(0xFFFFFF99),
+  outlineReverted: Colors.black,
 );
 
 BoardStyle styleForName(String name) {

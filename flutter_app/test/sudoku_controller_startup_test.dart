@@ -95,6 +95,6 @@ void main() {
     expect(restoredCell.value, 1);
 
     final sessionJson = jsonDecode(fakePrefs.savedSession!);
-    expect(sessionJson['version'], 1);
+    expect(sessionJson['version'], 2);
   });
 }

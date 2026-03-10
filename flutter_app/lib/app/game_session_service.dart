@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/app/grid_utils.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/settings_state.dart';
@@ -14,6 +15,8 @@ class RestoredGameSession {
   final bool gameOver;
   final Grid initialGrid;
   final SettingsState settings;
+  final CorrectionState correctionState;
+  final String? debugScenarioLabel;
 
   const RestoredGameSession({
     required this.history,
@@ -21,11 +24,13 @@ class RestoredGameSession {
     required this.gameOver,
     required this.initialGrid,
     required this.settings,
+    required this.correctionState,
+    required this.debugScenarioLabel,
   });
 }
 
 class GameSessionService {
-  static const int sessionVersion = 1;
+  static const int sessionVersion = 2;
 
   final PreferencesStore _prefs;
   final GridUtils _gridUtils;
@@ -61,13 +66,21 @@ class GameSessionService {
           _gridFromJson(decoded['initialGrid']) ??
           _gridUtils.gridFromBoard(restoredBoard);
       final settings = _settingsFromJson(decoded['settings'], fallback);
+      final history = History.initial(GameState(board: restoredBoard));
+      final correctionState = _correctionStateFromJson(
+        decoded['corrections'],
+        settings.difficulty,
+        history,
+      );
 
       return RestoredGameSession(
-        history: History.initial(GameState(board: restoredBoard)),
+        history: history,
         selected: _coordFromJson(decoded['selected']),
         gameOver: decoded['gameOver'] == true,
         initialGrid: initialGrid,
         settings: settings,
+        correctionState: correctionState,
+        debugScenarioLabel: decoded['debugScenarioLabel'] as String?,
       );
     } on FormatException {
       return null;
@@ -82,6 +95,8 @@ class GameSessionService {
     required bool gameOver,
     required Grid? initialGrid,
     required SettingsState settings,
+    required CorrectionState correctionState,
+    required String? debugScenarioLabel,
   }) {
     final payload = <String, dynamic>{
       'version': sessionVersion,
@@ -89,6 +104,7 @@ class GameSessionService {
       'initialGrid': _gridToJson(initialGrid),
       'selected': _coordToJson(selected),
       'gameOver': gameOver,
+      'debugScenarioLabel': debugScenarioLabel,
       'settings': <String, dynamic>{
         'notesMode': settings.notesMode,
         'difficulty': settings.difficulty,
@@ -99,6 +115,7 @@ class GameSessionService {
         'animalStyle': settings.animalStyle,
         'puzzleMode': settings.puzzleMode,
       },
+      'corrections': _correctionStateToJson(correctionState),
     };
     unawaited(_prefs.saveGameSession(jsonEncode(payload)));
   }
@@ -210,6 +227,79 @@ class GameSessionService {
     return out;
   }
 
+  Map<String, dynamic> _correctionStateToJson(CorrectionState state) {
+    return <String, dynamic>{
+      'tokensLeft': state.tokensLeft,
+      'currentMoveId': state.currentMoveId,
+      'pendingPromptMoveId': state.pendingPromptMoveId,
+      'revertedCells': _coordsToJson(state.revertedCells),
+      'checkpoints': state.checkpoints
+          .map((checkpoint) {
+            return <String, dynamic>{
+              'moveId': checkpoint.moveId,
+              'board': _boardToJson(checkpoint.board),
+            };
+          })
+          .toList(growable: false),
+    };
+  }
+
+  CorrectionState _correctionStateFromJson(
+    Object? raw,
+    String difficulty,
+    History fallbackHistory,
+  ) {
+    if (raw is! Map<String, dynamic>) {
+      return CorrectionState.initial(
+        difficulty: difficulty,
+        history: fallbackHistory,
+      );
+    }
+
+    final checkpointsRaw = raw['checkpoints'];
+    final checkpoints = <CorrectionCheckpoint>[];
+    if (checkpointsRaw is List) {
+      for (final checkpointRaw in checkpointsRaw) {
+        if (checkpointRaw is! Map<String, dynamic>) {
+          continue;
+        }
+        final moveId = checkpointRaw['moveId'];
+        final boardRaw = checkpointRaw['board'];
+        if (moveId is! int || boardRaw is! List) {
+          continue;
+        }
+        final board = _boardFromJson(boardRaw);
+        if (board == null) {
+          continue;
+        }
+        checkpoints.add(
+          CorrectionCheckpoint(
+            history: History.initial(GameState(board: board)),
+            moveId: moveId,
+          ),
+        );
+      }
+    }
+
+    final fallback = CorrectionState.initial(
+      difficulty: difficulty,
+      history: fallbackHistory,
+    );
+    return CorrectionState(
+      tokensLeft: raw['tokensLeft'] is int
+          ? raw['tokensLeft'] as int
+          : fallback.tokensLeft,
+      currentMoveId: raw['currentMoveId'] is int
+          ? raw['currentMoveId'] as int
+          : fallback.currentMoveId,
+      checkpoints: checkpoints.isEmpty ? fallback.checkpoints : checkpoints,
+      revertedCells: _coordsFromJson(raw['revertedCells']),
+      pendingPromptMoveId: raw['pendingPromptMoveId'] is int
+          ? raw['pendingPromptMoveId'] as int
+          : null,
+    );
+  }
+
   Map<String, int>? _coordToJson(Coord? coord) {
     if (coord == null) {
       return null;
@@ -231,6 +321,26 @@ class GameSessionService {
       return null;
     }
     return Coord(row, col);
+  }
+
+  List<Map<String, int>> _coordsToJson(Set<Coord> coords) {
+    return coords
+        .map((coord) => <String, int>{'row': coord.row, 'col': coord.col})
+        .toList(growable: false);
+  }
+
+  Set<Coord> _coordsFromJson(Object? raw) {
+    if (raw is! List) {
+      return {};
+    }
+    final coords = <Coord>{};
+    for (final item in raw) {
+      final coord = _coordFromJson(item);
+      if (coord != null) {
+        coords.add(coord);
+      }
+    }
+    return coords;
   }
 
   String _difficultyOrDefault(Object? raw, SettingsState fallback) {

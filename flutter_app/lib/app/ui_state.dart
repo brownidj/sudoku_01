@@ -10,6 +10,7 @@ class CellVm {
   final bool incorrect;
   final bool solutionAdded;
   final bool correct;
+  final bool reverted;
 
   const CellVm({
     required this.coord,
@@ -21,6 +22,7 @@ class CellVm {
     required this.incorrect,
     required this.solutionAdded,
     required this.correct,
+    required this.reverted,
   });
 }
 
@@ -42,6 +44,10 @@ class UiState {
   final String puzzleMode;
   final Coord? selected;
   final bool gameOver;
+  final int correctionsLeft;
+  final bool canUndo;
+  final int? correctionPromptMoveId;
+  final String? debugScenarioLabel;
 
   const UiState({
     required this.board,
@@ -55,5 +61,9 @@ class UiState {
     required this.puzzleMode,
     required this.selected,
     required this.gameOver,
+    required this.correctionsLeft,
+    required this.canUndo,
+    required this.correctionPromptMoveId,
+    required this.debugScenarioLabel,
   });
 }
