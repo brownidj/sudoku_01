@@ -43,17 +43,12 @@ class SudokuBoardArea extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final media = MediaQuery.of(context);
-        final isTablet = media.size.shortestSide >= 600;
-        final reservedHeight = isTablet
-            ? (candidateVisible ? 15 + 68 : 0)
-            : 0.0;
-        final maxBoard = isTablet
-            ? (constraints.maxHeight - reservedHeight)
-            : constraints.maxHeight;
-        final boardWidth = isTablet
-            ? max(0.0, min(constraints.maxWidth, maxBoard))
-            : constraints.maxWidth;
+        final debugBannerHeight = state.debugScenarioLabel == null ? 0.0 : 42.0;
+        final metadataHeight = 6.0 + (debugBannerHeight > 0 ? 6.0 : 0.0) + 20.0;
+        final candidateHeight = candidateVisible ? (15.0 + 68.0) : 0.0;
+        final reservedHeight = metadataHeight + 12.0 + candidateHeight;
+        final maxBoard = max(0.0, constraints.maxHeight - reservedHeight);
+        final boardWidth = max(0.0, min(constraints.maxWidth, maxBoard));
         final cellWidth = boardWidth / 9.0;
         AppDebug.log(
           'Board: ${boardWidth.toStringAsFixed(2)} lp, '

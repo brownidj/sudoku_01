@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
@@ -33,6 +35,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
   Future<void>? _animalLoad;
   late final CandidateSelectionController _candidateController;
   int? _lastCorrectionPromptMoveId;
+  int _versionTapCount = 0;
+  bool _debugToolsEnabled = false;
+  Timer? _versionTapResetTimer;
 
   @override
   void initState() {
@@ -44,6 +49,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   @override
   void dispose() {
+    _versionTapResetTimer?.cancel();
     _candidateController.removeListener(_onCandidateChanged);
     _candidateController.dispose();
     _tooltipService.dispose();
@@ -81,9 +87,12 @@ class _SudokuScreenState extends State<SudokuScreen> {
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            title: const Align(
+            title: Align(
               alignment: Alignment.centerLeft,
-              child: Text('ZuDoKu 0.4.4'),
+              child: GestureDetector(
+                onTap: _onVersionTapped,
+                child: const Text('ZuDoKu 0.4.4'),
+              ),
             ),
             actions: [
               Builder(
@@ -109,6 +118,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               Navigator.of(context).maybePop();
               widget.controller.onLoadExhaustedCorrectionScenario();
             },
+            showDebugTools: kDebugMode && _debugToolsEnabled,
           ),
           body: SafeArea(
             child: Column(
@@ -307,5 +317,33 @@ class _SudokuScreenState extends State<SudokuScreen> {
       return;
     }
     widget.controller.onDismissCorrectionPrompt();
+  }
+
+  void _onVersionTapped() {
+    if (!kDebugMode) {
+      return;
+    }
+    _versionTapCount += 1;
+    _versionTapResetTimer?.cancel();
+    _versionTapResetTimer = Timer(const Duration(seconds: 3), () {
+      _versionTapCount = 0;
+    });
+    if (_versionTapCount < 7) {
+      return;
+    }
+
+    _versionTapResetTimer?.cancel();
+    _versionTapCount = 0;
+    setState(() {
+      _debugToolsEnabled = !_debugToolsEnabled;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          _debugToolsEnabled ? 'Debug tools enabled' : 'Debug tools disabled',
+        ),
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 }
