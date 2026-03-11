@@ -9,7 +9,8 @@ import 'package:flutter_app/ui/widgets/sudoku_board.dart';
 Future<void> _tapCell(WidgetTester tester, int row, int col) async {
   final rect = tester.getRect(find.byType(SudokuBoard));
   final cellSize = rect.width / 9.0;
-  final offset = rect.topLeft + Offset(cellSize * (col + 0.5), cellSize * (row + 0.5));
+  final offset =
+      rect.topLeft + Offset(cellSize * (col + 0.5), cellSize * (row + 0.5));
   await tester.tapAt(offset);
   await tester.pumpAndSettle();
 }
@@ -42,8 +43,59 @@ Finder _candidateButtonFor(Finder textFinder) {
   return find.ancestor(of: textFinder, matching: find.byType(ElevatedButton));
 }
 
+Set<int> _remainingBlockDigits(SudokuController controller, Coord coord) {
+  final used = <int>{};
+  final cells = controller.state.board.cells;
+  final blockRowStart = (coord.row ~/ 3) * 3;
+  final blockColStart = (coord.col ~/ 3) * 3;
+  for (var row = blockRowStart; row < blockRowStart + 3; row += 1) {
+    for (var col = blockColStart; col < blockColStart + 3; col += 1) {
+      final value = cells[row][col].value;
+      if (value != null) {
+        used.add(value);
+      }
+    }
+  }
+  return {
+    for (var digit = 1; digit <= 9; digit += 1)
+      if (!used.contains(digit)) digit,
+  };
+}
+
 void main() {
-  testWidgets('tapping a noted cell enables notes mode', (WidgetTester tester) async {
+  testWidgets(
+    'tapping a blank cell shows remaining digits from its 3x3 block',
+    (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(600, 900));
+      final controller = SudokuController();
+      controller.onContentModeChanged('numbers');
+
+      await tester.pumpWidget(
+        MaterialApp(home: SudokuScreen(controller: controller)),
+      );
+      await tester.pumpAndSettle();
+
+      final coord = _findEditableCell(controller);
+      final expected = _remainingBlockDigits(controller, coord);
+      await _tapCell(tester, coord.row, coord.col);
+
+      for (var digit = 1; digit <= 9; digit += 1) {
+        final finder = find.descendant(
+          of: find.byType(CandidatePanel),
+          matching: find.text('$digit'),
+        );
+        if (expected.contains(digit)) {
+          expect(finder, findsOneWidget);
+        } else {
+          expect(finder, findsNothing);
+        }
+      }
+    },
+  );
+
+  testWidgets('tapping a noted cell enables notes mode', (
+    WidgetTester tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(600, 900));
     final controller = SudokuController();
     controller.onContentModeChanged('numbers');
@@ -53,7 +105,9 @@ void main() {
     controller.onDigitPressed(1);
     controller.setNotesMode(false);
 
-    await tester.pumpWidget(MaterialApp(home: SudokuScreen(controller: controller)));
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
     await tester.pumpAndSettle();
 
     expect(find.byType(SudokuBoard), findsOneWidget);
@@ -62,14 +116,17 @@ void main() {
     expect(controller.state.notesMode, isTrue);
   });
 
-  testWidgets('long-pressing a candidate inserts the value in notes mode',
-      (WidgetTester tester) async {
+  testWidgets('long-pressing a candidate inserts the value in notes mode', (
+    WidgetTester tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(600, 900));
     final controller = SudokuController();
     controller.onContentModeChanged('numbers');
     controller.setNotesMode(true);
 
-    await tester.pumpWidget(MaterialApp(home: SudokuScreen(controller: controller)));
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
     await tester.pumpAndSettle();
 
     final coord = _findEditableCell(controller);

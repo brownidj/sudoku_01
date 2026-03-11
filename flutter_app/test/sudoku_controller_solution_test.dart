@@ -73,4 +73,41 @@ void main() {
       expect(cell.value, isNot(badDigit));
     },
   );
+
+  test('Duplicate placement is highlighted and can be cleared', () async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+
+    final editable = firstEditableCoord(controller.state);
+    expect(editable, isNotNull);
+    final badDigit = conflictingPeerDigit(controller.state, editable!);
+    expect(badDigit, isNotNull);
+
+    controller.onCellTapped(editable);
+    controller.onDigitPressed(badDigit!);
+
+    final conflicted = controller.state.board.cells[editable.row][editable.col];
+    expect(conflicted.value, badDigit);
+    expect(conflicted.conflicted, isTrue);
+
+    controller.onClearPressed();
+    final cleared = controller.state.board.cells[editable.row][editable.col];
+    expect(cleared.value, isNull);
+    expect(cleared.conflicted, isFalse);
+  });
 }

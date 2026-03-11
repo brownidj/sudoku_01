@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
-import 'package:flutter_app/domain/rules.dart' as rules;
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/candidate_selection_controller.dart';
@@ -152,12 +151,26 @@ class _SudokuScreenState extends State<SudokuScreen> {
                       candidateDigits: _candidateController.candidateDigits,
                       selectedNotes: _selectedNotes(state),
                       onDigitSelected: (digit) {
+                        final candidateCoord =
+                            _candidateController.candidateCoord;
                         if (digit == 0) {
                           widget.controller.onClearPressed();
                         } else {
                           widget.controller.onDigitPressed(digit);
                         }
-                        if (!state.notesMode || digit == 0) {
+                        final nextState = widget.controller.state;
+                        final selectedCellConflicted =
+                            candidateCoord != null &&
+                            nextState
+                                .board
+                                .cells[candidateCoord.row][candidateCoord.col]
+                                .conflicted;
+                        if ((digit != 0 && selectedCellConflicted) ||
+                            (nextState.notesMode && digit != 0)) {
+                          _candidateController.refresh();
+                          return;
+                        }
+                        if (digit == 0 || !nextState.notesMode) {
                           _candidateController.hide();
                         } else {
                           _candidateController.refresh();
@@ -228,7 +241,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (state.contentMode != 'numbers' && _animalLoad != null) {
       await _animalLoad;
     }
-    final candidates = _possibleDigits(state, coord);
+    final candidates = cell.value == null
+        ? _remainingDigitsForBlock(state, coord)
+        : <int>[];
     final withClear = [...candidates, 0];
     if (!mounted) {
       return;
@@ -236,24 +251,23 @@ class _SudokuScreenState extends State<SudokuScreen> {
     _candidateController.show(coord, withClear);
   }
 
-  List<int> _possibleDigits(UiState state, Coord coord) {
-    final board = Board(
-      cells: state.board.cells
-          .map((row) {
-            return row
-                .map((cell) {
-                  return Cell(
-                    value: cell.value,
-                    given: cell.given,
-                    notes: cell.notes.toSet(),
-                  );
-                })
-                .toList(growable: false);
-          })
-          .toList(growable: false),
-    );
-    final candidates = rules.candidatesForCell(board, coord).toList()..sort();
-    return candidates;
+  List<int> _remainingDigitsForBlock(UiState state, Coord coord) {
+    final used = <int>{};
+    final blockRowStart = (coord.row ~/ 3) * 3;
+    final blockColStart = (coord.col ~/ 3) * 3;
+    for (var row = blockRowStart; row < blockRowStart + 3; row += 1) {
+      for (var col = blockColStart; col < blockColStart + 3; col += 1) {
+        final value = state.board.cells[row][col].value;
+        if (value != null) {
+          used.add(value);
+        }
+      }
+    }
+
+    return [
+      for (var digit = 1; digit <= 9; digit += 1)
+        if (!used.contains(digit)) digit,
+    ];
   }
 
   void _handleCheckOrSolution(UiState state) {

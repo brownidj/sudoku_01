@@ -23,30 +23,31 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final compactStyle = OutlinedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      minimumSize: const Size(0, 34),
+      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      visualDensity: VisualDensity.compact,
+      textStyle: const TextStyle(fontSize: 13),
+    );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Wrap(
-        spacing: 8,
-        runSpacing: 8,
+      child: Row(
         children: [
-          SizedBox(
-            height: 40,
+          Expanded(
             child: OutlinedButton(
-              onPressed: state.canUndo ? onUndo : null,
-              child: const Text('Undo'),
-            ),
-          ),
-          SizedBox(
-            height: 40,
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                backgroundColor: state.notesMode
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
-                    : null,
-                side: BorderSide(
-                  color: state.notesMode
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline,
+              style: compactStyle.copyWith(
+                backgroundColor: WidgetStatePropertyAll(
+                  state.notesMode
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                      : null,
+                ),
+                side: WidgetStatePropertyAll(
+                  BorderSide(
+                    color: state.notesMode
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ),
               onPressed: onToggleNotesMode,
@@ -60,18 +61,28 @@ class ActionBar extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(
-            height: 40,
+          const SizedBox(width: 6),
+          Expanded(
             child: OutlinedButton(
+              style: compactStyle,
+              onPressed: state.canUndo ? onUndo : null,
+              child: const Text('Undo'),
+            ),
+          ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: OutlinedButton(
+              style: compactStyle,
               onPressed: onClear,
               child: const Text('Clear'),
             ),
           ),
-          SizedBox(
-            height: 40,
+          const SizedBox(width: 6),
+          Expanded(
             child: Tooltip(
               message: solutionTooltip,
               child: OutlinedButton(
+                style: compactStyle,
                 onPressed: onCheckOrSolution,
                 child: const Text('Solution'),
               ),
