@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:666285614529:android:1ef66ec94f271d55febb40",
         "android_client_info": {
-          "package_name": "org.topository.animalsudoku"
+          "package_name": "org.topository.zudoku"
         }
       },
       "oauth_client": [],

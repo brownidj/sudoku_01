@@ -1,4 +1,4 @@
-package org.topository.animalsudoku
+package org.topository.zudoku
 
 import io.flutter.embedding.android.FlutterActivity
 

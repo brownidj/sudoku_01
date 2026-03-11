@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -35,9 +34,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
   Future<void>? _animalLoad;
   late final CandidateSelectionController _candidateController;
   Coord? _lastCorrectionPromptCoord;
-  int _versionTapCount = 0;
+  final List<DateTime> _versionTapTimestamps = <DateTime>[];
   bool _debugToolsEnabled = false;
-  Timer? _versionTapResetTimer;
 
   @override
   void initState() {
@@ -49,7 +47,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   @override
   void dispose() {
-    _versionTapResetTimer?.cancel();
     _candidateController.removeListener(_onCandidateChanged);
     _candidateController.dispose();
     _tooltipService.dispose();
@@ -90,8 +87,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
             title: Align(
               alignment: Alignment.centerLeft,
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: _onVersionTapped,
-                child: const Text('ZuDoKu 0.5.1'),
+                child: const SizedBox(
+                  height: kToolbarHeight,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('ZuDoKu 0.5.1'),
+                  ),
+                ),
               ),
             ),
             actions: [
@@ -321,20 +325,18 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _onVersionTapped() {
-    if (!kDebugMode) {
+    if (kReleaseMode) {
       return;
     }
-    _versionTapCount += 1;
-    _versionTapResetTimer?.cancel();
-    _versionTapResetTimer = Timer(const Duration(seconds: 3), () {
-      _versionTapCount = 0;
-    });
-    if (_versionTapCount < 7) {
+    final now = DateTime.now();
+    _versionTapTimestamps.add(now);
+    _versionTapTimestamps.removeWhere(
+      (tapTime) => now.difference(tapTime) > const Duration(seconds: 4),
+    );
+    if (_versionTapTimestamps.length < 7) {
       return;
     }
-
-    _versionTapResetTimer?.cancel();
-    _versionTapCount = 0;
+    _versionTapTimestamps.clear();
     setState(() {
       _debugToolsEnabled = !_debugToolsEnabled;
     });
