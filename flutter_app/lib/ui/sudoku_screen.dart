@@ -88,11 +88,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _onVersionTapped,
-                child: const SizedBox(
+                    child: const SizedBox(
                   height: kToolbarHeight,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('ZuDoKu 0.5.1'),
+                    child: Text('ZuDoKu 0.5.3 build 143'),
                   ),
                 ),
               ),

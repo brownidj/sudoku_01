@@ -8,9 +8,9 @@ int correctionsForDifficulty(String difficulty) {
     case 'hard':
       return 1;
     case 'medium':
-      return 3;
+      return 2;
     default:
-      return 5;
+      return 3;
   }
 }
 

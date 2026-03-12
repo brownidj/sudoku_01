@@ -13,7 +13,7 @@ _ANIMALS_DIR = Path(__file__).resolve().parents[1] / "assets" / "images" / "anim
 ANIMAL_BY_DIGIT: dict[int, str] = {
     1: "ape",
     2: "buffalo",
-    3: "camel",
+    3: "cheetah",
     4: "dolphin",
     5: "elephant",
     6: "frog",

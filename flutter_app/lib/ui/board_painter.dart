@@ -197,6 +197,7 @@ class SudokuBoardPainter extends CustomPainter {
         rect: target,
         image: image,
         fit: BoxFit.contain,
+        colorFilter: _animalColorFilter(digit),
       );
     }
   }
@@ -252,7 +253,20 @@ class SudokuBoardPainter extends CustomPainter {
     final left = rect.left + (rect.width - targetSize) / 2;
     final top = rect.top + (rect.height - targetSize) / 2;
     final target = Rect.fromLTWH(left, top, targetSize, targetSize);
-    paintImage(canvas: canvas, rect: target, image: image, fit: BoxFit.contain);
+    paintImage(
+      canvas: canvas,
+      rect: target,
+      image: image,
+      fit: BoxFit.contain,
+      colorFilter: _animalColorFilter(digit),
+    );
+  }
+
+  ColorFilter? _animalColorFilter(int digit) {
+    if (digit == 3) {
+      return const ColorFilter.mode(Color(0xFFF8F0E2), BlendMode.modulate);
+    }
+    return null;
   }
 
   double _animalTargetSize(double cellSize, int digit) {

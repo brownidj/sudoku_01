@@ -40,7 +40,7 @@ void main() {
 
       controller.onCellTapped(const Coord(6, 8));
       expect(controller.state.correctionPromptCoord, const Coord(6, 8));
-      expect(controller.state.correctionsLeft, 5);
+      expect(controller.state.correctionsLeft, 3);
 
       controller.onConfirmCorrection();
 
@@ -48,7 +48,7 @@ void main() {
       expect(corrected.value, isNull);
       expect(corrected.reverted, isTrue);
       expect(controller.state.correctionPromptCoord, isNull);
-      expect(controller.state.correctionsLeft, 4);
+      expect(controller.state.correctionsLeft, 2);
       expect(controller.state.canUndo, isTrue);
     },
   );
@@ -96,7 +96,7 @@ void main() {
     );
     await restored.ready;
 
-    expect(restored.state.correctionsLeft, 4);
+    expect(restored.state.correctionsLeft, 2);
     expect(restored.state.board.cells[0][8].reverted, isTrue);
   });
 }

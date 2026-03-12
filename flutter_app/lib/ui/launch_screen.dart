@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 
 class LaunchScreen extends StatefulWidget {
   final SudokuController controller;
+  final AnimalAssetService animalAssetService;
 
-  const LaunchScreen({super.key, required this.controller});
+  const LaunchScreen({
+    super.key,
+    required this.controller,
+    this.animalAssetService = const AnimalAssetService(),
+  });
 
   @override
   State<LaunchScreen> createState() => _LaunchScreenState();
@@ -13,6 +19,7 @@ class LaunchScreen extends StatefulWidget {
 
 class _LaunchScreenState extends State<LaunchScreen> {
   bool _ready = false;
+  bool _openingGame = false;
 
   @override
   void initState() {
@@ -35,6 +42,12 @@ class _LaunchScreenState extends State<LaunchScreen> {
   }
 
   Future<void> _openGame({required bool startNewGame}) async {
+    if (_openingGame) {
+      return;
+    }
+    setState(() {
+      _openingGame = true;
+    });
     if (!_ready) {
       await widget.controller.ready;
     }
@@ -43,6 +56,13 @@ class _LaunchScreenState extends State<LaunchScreen> {
     }
     if (startNewGame) {
       widget.controller.onNewGame();
+    }
+    final contentMode = widget.controller.state.contentMode;
+    if (contentMode != 'numbers') {
+      await widget.animalAssetService.load();
+    }
+    if (!mounted) {
+      return;
     }
     _startGame();
   }
@@ -60,7 +80,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'ZuDoKu 0.5.1',
+                  'ZuDoKu 0.5.3 build 143',
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
@@ -109,7 +129,9 @@ class _LaunchScreenState extends State<LaunchScreen> {
                   SizedBox(
                     height: 44,
                     child: ElevatedButton(
-                      onPressed: () => _openGame(startNewGame: false),
+                      onPressed: _openingGame
+                          ? null
+                          : () => _openGame(startNewGame: false),
                       child: const Text('Play'),
                     ),
                   )
@@ -120,7 +142,9 @@ class _LaunchScreenState extends State<LaunchScreen> {
                       SizedBox(
                         height: 44,
                         child: ElevatedButton(
-                          onPressed: () => _openGame(startNewGame: false),
+                          onPressed: _openingGame
+                              ? null
+                              : () => _openGame(startNewGame: false),
                           child: const Text('Resume'),
                         ),
                       ),
@@ -128,12 +152,22 @@ class _LaunchScreenState extends State<LaunchScreen> {
                       SizedBox(
                         height: 44,
                         child: OutlinedButton(
-                          onPressed: () => _openGame(startNewGame: true),
+                          onPressed: _openingGame
+                              ? null
+                              : () => _openGame(startNewGame: true),
                           child: const Text('New game'),
                         ),
                       ),
                     ],
                   ),
+                if (_openingGame) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Please wait...',
+                    style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ],
             ),
           ),

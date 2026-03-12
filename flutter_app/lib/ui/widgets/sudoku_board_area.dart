@@ -50,7 +50,10 @@ class SudokuBoardArea extends StatelessWidget {
             ? 42.0
             : 0.0;
         final metadataHeight =
-            6.0 + debugBannerHeight + (debugBannerHeight > 0 ? 6.0 : 0.0) + 20.0;
+            6.0 +
+            debugBannerHeight +
+            (debugBannerHeight > 0 ? 6.0 : 0.0) +
+            20.0;
         final candidateHeight = candidateVisible ? (15.0 + 68.0) : 0.0;
         final reservedHeight = metadataHeight + 12.0 + candidateHeight;
         final maxBoard = max(0.0, constraints.maxHeight - reservedHeight);
@@ -127,15 +130,14 @@ class SudokuBoardArea extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         child: Text(
-                          'Corrections left: ${state.correctionsLeft}',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.labelSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSurface.withOpacity(0.6),
-                          ),
+                          'Corrections: ${state.correctionsLeft}',
+                          style: Theme.of(context).textTheme.labelSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSurface.withOpacity(0.6),
+                              ),
                         ),
                       ),
                     ),

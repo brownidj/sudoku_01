@@ -96,9 +96,22 @@ class CandidatePanel extends StatelessWidget {
         height: 32,
         child: FittedBox(
           fit: BoxFit.contain,
-          child: RawImage(image: image),
+          child: RawImage(
+            image: image,
+            color: _animalTintColor(digit),
+            colorBlendMode: _animalTintColor(digit) != null
+                ? BlendMode.modulate
+                : null,
+          ),
         ),
       ),
     );
+  }
+
+  Color? _animalTintColor(int digit) {
+    if (digit == 3) {
+      return const Color(0xFFF8F0E2);
+    }
+    return null;
   }
 }

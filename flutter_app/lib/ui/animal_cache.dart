@@ -87,7 +87,7 @@ class AnimalImageCache {
       case 2:
         return 'buffalo';
       case 3:
-        return 'camel';
+        return 'cheetah';
       case 4:
         return 'dolphin';
       case 5:

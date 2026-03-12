@@ -24,7 +24,7 @@ IMAGE_SIZE: Literal[
 ORDERED_ANIMALS = [
     "ape",
     "buffalo",
-    "camel",
+    "cheetah",
     "dolphin",
     "elephant",
     "frog",
@@ -44,9 +44,9 @@ Create a single cute cartoon buffalo head in a glossy, kid-friendly mobile game 
 Output: buffalo head only, centered, no text, no grid, no frame, no numbers, no other animals, transparent background (PNG), high resolution, crisp lines suitable for an app tile.
 """.strip(),
 
-    "camel": """
-Create a single cute cartoon camel head in a polished, kid-friendly mobile game icon style. The camel should have a rounded head, big glossy friendly eyes, and a soft smiling mouth. Include a small rounded snout, simple nostrils, and a hint of fluffy forelock. Add small ears and a warm sandy/tan palette with slightly darker shading around the cheeks and jaw. Use thick clean dark outlines, smooth gradients, and a gentle 3D sticker-like finish with subtle highlights.
-Output: camel head only, centered, no extra objects, transparent background (PNG), high resolution, crisp lines.
+    "cheetah": """
+Create a single cute cartoon cheetah head in a polished, kid-friendly mobile game icon style. The cheetah should have a rounded face, big glossy friendly eyes, and a soft smiling mouth. Include small rounded ears, a light cream muzzle, and simplified black tear marks from the inner eye area toward the muzzle. Add a warm golden-tan palette with subtle clean spots and slightly darker shading around the cheeks and jaw. Use thick clean dark outlines, smooth gradients, and a gentle 3D sticker-like finish with subtle highlights.
+Output: cheetah head only, centered, no extra objects, transparent background (PNG), high resolution, crisp lines.
 """.strip(),
 
     "dolphin": """

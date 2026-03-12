@@ -33,7 +33,7 @@ void main() {
     expect(state.canChangeDifficulty, isFalse);
     expect(state.canChangePuzzleMode, isFalse);
     expect(state.correctionPromptCoord, const Coord(6, 8));
-    expect(state.correctionsLeft, 5);
+    expect(state.correctionsLeft, 3);
     expect(state.debugScenarioLabel, 'Debug scenario: correction available');
     expect(state.selected, const Coord(6, 8));
     expect(state.board.cells[0][8].value, 4);

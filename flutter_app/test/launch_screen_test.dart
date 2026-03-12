@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/preferences_store.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/launch_screen.dart';
+import 'package:flutter_app/ui/services/animal_asset_service.dart';
 
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
@@ -55,6 +58,27 @@ class SpyGameService extends GameService {
   MoveResult newGameFromGrid(Grid grid) {
     newGameCalls += 1;
     return super.newGameFromGrid(grid);
+  }
+}
+
+class DelayedAnimalAssetService extends AnimalAssetService {
+  final Completer<AnimalAssetBundle> _completer =
+      Completer<AnimalAssetBundle>();
+  int loadCalls = 0;
+
+  @override
+  Future<AnimalAssetBundle> load() {
+    loadCalls += 1;
+    return _completer.future;
+  }
+
+  void complete() {
+    if (_completer.isCompleted) {
+      return;
+    }
+    _completer.complete(
+      const AnimalAssetBundle(animalImages: {}, noteImages: {}),
+    );
   }
 }
 
@@ -191,4 +215,40 @@ void main() {
     await tester.pumpAndSettle();
     expect(newGameService.newGameCalls, 1);
   });
+
+  testWidgets(
+    'Play waits on splash for animal assets when content mode is animals',
+    (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      final controller = SudokuController(
+        preferencesStore: FakePreferencesStore(),
+      );
+      await controller.ready;
+      controller.onContentModeChanged('animals');
+      final service = DelayedAnimalAssetService();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LaunchScreen(
+            controller: controller,
+            animalAssetService: service,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Play'));
+      await tester.pump();
+
+      expect(service.loadCalls, 1);
+      expect(find.text('Please wait...'), findsOneWidget);
+      expect(find.text('Play'), findsOneWidget);
+      expect(find.text('ZuDoKu 0.5.3 build 143'), findsOneWidget);
+
+      service.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LaunchScreen), findsNothing);
+    },
+  );
 }
