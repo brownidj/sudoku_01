@@ -36,6 +36,17 @@
       <excludeFolder url="file://$MODULE_DIR$/flutter_app/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/flutter_app/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/flutter_app/windows/flutter/ephemeral/.plugin_symlinks/shared_preferences_windows/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/android/.gradle" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/ios/.symlinks" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/ios/Flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/ios/Pods" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/ios/Runner.xcworkspace/xcuserdata" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/linux/flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/macos/Flutter/ephemeral" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/macos/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm" />
+      <excludeFolder url="file://$MODULE_DIR$/flutter_app/windows/flutter/ephemeral" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.14 (Sudoku_01)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

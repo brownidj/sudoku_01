@@ -6,6 +6,7 @@ import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/app/correction_recovery_service.dart';
 import 'package:flutter_app/app/debug_scenarios.dart';
 import 'package:flutter_app/app/game_session_service.dart';
+import 'package:flutter_app/app/sudoku_runtime_state.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
@@ -32,19 +33,8 @@ class SudokuController extends ChangeNotifier {
   late final ControllerStartupCoordinator _startupCoordinator;
   late final ContradictionService _contradictionService;
   late final CorrectionRecoveryService _correctionRecoveryService;
-  late History _history;
-  late CorrectionState _correctionState;
-  Coord? _selected;
-  Set<Coord> _lastConflicts = {};
-  // Settings are managed by SettingsController.
-  bool _gameOver = false;
-  Set<Coord> _incorrectCells = {};
-  Set<Coord> _solutionAddedCells = {};
-  Set<Coord> _correctCells = {};
-  Grid? _solutionGrid;
-  Grid? _initialGrid;
+  late SudokuRuntimeState _runtime;
   bool _hadSavedSessionAtLaunch = false;
-  String? _debugScenarioLabel;
 
   SudokuController({
     PreferencesStore? preferencesStore,
@@ -81,10 +71,13 @@ class SudokuController extends ChangeNotifier {
     _correctionRecoveryService =
         correctionRecoveryService ??
         CorrectionRecoveryService(contradictionService: _contradictionService);
-    _history = _service.initialHistory();
-    _correctionState = CorrectionState.initial(
-      difficulty: _settings.state.difficulty,
-      history: _history,
+    final history = _service.initialHistory();
+    _runtime = SudokuRuntimeState(
+      history: history,
+      correctionState: CorrectionState.initial(
+        difficulty: _settings.state.difficulty,
+        history: history,
+      ),
     );
     ready = _initialize();
   }
@@ -97,17 +90,14 @@ class SudokuController extends ChangeNotifier {
     final restoredSession = startup.restoredSession;
     _hadSavedSessionAtLaunch = startup.shouldResumeSession;
     if (startup.shouldResumeSession && restoredSession != null) {
-      _history = restoredSession.history;
-      _lastConflicts = {};
-      _incorrectCells = {};
-      _correctCells = {};
-      _solutionAddedCells = {};
-      _solutionGrid = null;
-      _selected = restoredSession.selected;
-      _gameOver = restoredSession.gameOver;
-      _initialGrid = restoredSession.initialGrid;
-      _correctionState = restoredSession.correctionState;
-      _debugScenarioLabel = restoredSession.debugScenarioLabel;
+      _runtime = SudokuRuntimeState(
+        history: restoredSession.history,
+        correctionState: restoredSession.correctionState,
+        selected: restoredSession.selected,
+        gameOver: restoredSession.gameOver,
+        initialGrid: restoredSession.initialGrid,
+        debugScenarioLabel: restoredSession.debugScenarioLabel,
+      );
       _applyRestoredSettings(restoredSession.settings);
       notifyListeners();
       return;
@@ -125,14 +115,14 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onCellTapped(Coord coord) {
-    if (_gameOver) {
+    if (_runtime.gameOver) {
       return;
     }
-    final cell = _history.present.board.cellAtCoord(coord);
+    final cell = _runtime.history.present.board.cellAtCoord(coord);
     if (cell.given) {
       return;
     }
-    _selected = coord;
+    _runtime.selected = coord;
     _queueCorrectionPromptForSelection(coord);
     _saveGameSession();
     _render('Cell selected');
@@ -141,10 +131,10 @@ class SudokuController extends ChangeNotifier {
   void onDigitPressed(Digit digit) {
     _applyBoardEditOutcome(
       _boardEditCoordinator.onDigitPressed(
-        gameOver: _gameOver,
-        selected: _selected,
+        gameOver: _runtime.gameOver,
+        selected: _runtime.selected,
         notesMode: _settings.state.notesMode,
-        history: _history,
+        history: _runtime.history,
         digit: digit,
         canChangeDifficulty: _settings.state.canChangeDifficulty,
         canChangePuzzleMode: _settings.state.canChangePuzzleMode,
@@ -155,9 +145,9 @@ class SudokuController extends ChangeNotifier {
   void onPlaceDigit(Digit digit) {
     _applyBoardEditOutcome(
       _boardEditCoordinator.onPlaceDigit(
-        gameOver: _gameOver,
-        selected: _selected,
-        history: _history,
+        gameOver: _runtime.gameOver,
+        selected: _runtime.selected,
+        history: _runtime.history,
         digit: digit,
         canChangeDifficulty: _settings.state.canChangeDifficulty,
         canChangePuzzleMode: _settings.state.canChangePuzzleMode,
@@ -168,10 +158,10 @@ class SudokuController extends ChangeNotifier {
   void onClearPressed() {
     _applyBoardEditOutcome(
       _boardEditCoordinator.onClearPressed(
-        gameOver: _gameOver,
-        selected: _selected,
+        gameOver: _runtime.gameOver,
+        selected: _runtime.selected,
         notesMode: _settings.state.notesMode,
-        history: _history,
+        history: _runtime.history,
         canChangeDifficulty: _settings.state.canChangeDifficulty,
         canChangePuzzleMode: _settings.state.canChangePuzzleMode,
       ),
@@ -179,7 +169,7 @@ class SudokuController extends ChangeNotifier {
   }
 
   void onToggleNotesMode() {
-    if (_gameOver) {
+    if (_runtime.gameOver) {
       return;
     }
     _settings.toggleNotesMode();
@@ -187,7 +177,7 @@ class SudokuController extends ChangeNotifier {
   }
 
   void setNotesMode(bool enabled) {
-    if (_gameOver) {
+    if (_runtime.gameOver) {
       return;
     }
     _settings.setNotesMode(enabled);
@@ -202,8 +192,9 @@ class SudokuController extends ChangeNotifier {
     final scenario = DebugScenarios.correctionRecovery(
       service: _service,
       currentSettings: _settings.state,
-      tokensLeft: _debugScenarioLabel == 'Debug scenario: correction available'
-          ? _correctionState.tokensLeft
+      tokensLeft:
+          _runtime.debugScenarioLabel == 'Debug scenario: correction available'
+          ? _runtime.correctionState.tokensLeft
           : null,
     );
     _applyDebugScenario(scenario, 'Debug correction scenario loaded');
@@ -221,44 +212,45 @@ class SudokuController extends ChangeNotifier {
   }
 
   void _applyDebugScenario(DebugScenario scenario, String status) {
-    _debugScenarioLabel = scenario.label;
-    _history = scenario.history;
-    _correctionState = scenario.correctionState;
-    _selected = scenario.selected;
-    _initialGrid = scenario.initialGrid;
-    _lastConflicts = _contradictionService
-        .analyze(_history.present.board)
-        .contradictionCells;
-    _incorrectCells = {};
-    _solutionAddedCells = {};
-    _correctCells = {};
-    _solutionGrid = null;
-    _gameOver = false;
+    _runtime
+      ..debugScenarioLabel = scenario.label
+      ..history = scenario.history
+      ..correctionState = scenario.correctionState
+      ..selected = scenario.selected
+      ..initialGrid = scenario.initialGrid
+      ..lastConflicts = _contradictionService
+          .analyze(scenario.history.present.board)
+          .contradictionCells
+      ..incorrectCells = {}
+      ..solutionAddedCells = {}
+      ..correctCells = {}
+      ..solutionGrid = null
+      ..gameOver = false;
     _applyRestoredSettings(scenario.settings);
     _saveGameSession();
     _render(status);
   }
 
   void onUndo() {
-    if (_gameOver) {
+    if (_runtime.gameOver) {
       return;
     }
-    final res = _service.undo(_history);
-    if (res.history == _history) {
+    final res = _service.undo(_runtime.history);
+    if (res.history == _runtime.history) {
       _render(res.message);
       return;
     }
 
-    final nextMoveId = _correctionState.currentMoveId > 0
-        ? _correctionState.currentMoveId - 1
+    final nextMoveId = _runtime.correctionState.currentMoveId > 0
+        ? _runtime.correctionState.currentMoveId - 1
         : 0;
-    _history = res.history;
-    _lastConflicts = _contradictionService
-        .analyze(_history.present.board)
+    _runtime.history = res.history;
+    _runtime.lastConflicts = _contradictionService
+        .analyze(_runtime.history.present.board)
         .contradictionCells;
-    _correctionState = _correctionState.copyWith(
+    _runtime.correctionState = _runtime.correctionState.copyWith(
       currentMoveId: nextMoveId,
-      checkpoints: _correctionState.prunedToMoveId(nextMoveId),
+      checkpoints: _runtime.correctionState.prunedToMoveId(nextMoveId),
       revertedCells: const {},
       pendingPromptCoord: null,
     );

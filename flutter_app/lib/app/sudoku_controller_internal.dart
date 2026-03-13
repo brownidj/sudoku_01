@@ -1,20 +1,21 @@
 part of 'sudoku_controller.dart';
 
 void _onCheckSolutionInternal(SudokuController c) {
-  if (c._gameOver) {
+  if (c._runtime.gameOver) {
     return;
   }
   final result = c._solutionCoordinator.check(
-    history: c._history,
-    initialGrid: c._initialGrid,
+    history: c._runtime.history,
+    initialGrid: c._runtime.initialGrid,
     givens: c._givenCoords(),
   );
-  c._incorrectCells = result.incorrect;
-  c._correctCells = result.correct;
-  c._solutionGrid = null;
-  c._solutionAddedCells = {};
-  c._selected = null;
-  c._gameOver = true;
+  c._runtime
+    ..incorrectCells = result.incorrect
+    ..correctCells = result.correct
+    ..solutionGrid = null
+    ..solutionAddedCells = {}
+    ..selected = null
+    ..gameOver = true;
   c._settings.setPuzzleModeLocked(false);
   c._clearCorrectionPromptState(clearRevertedCells: true);
   c._saveGameSession();
@@ -22,22 +23,23 @@ void _onCheckSolutionInternal(SudokuController c) {
 }
 
 void _onShowSolutionInternal(SudokuController c) {
-  if (!c._gameOver) {
+  if (!c._runtime.gameOver) {
     c.onCheckSolution();
   }
-  if (!c._gameOver) {
+  if (!c._runtime.gameOver) {
     return;
   }
   final result = c._solutionCoordinator.showSolution(
-    history: c._history,
-    initialGrid: c._initialGrid,
+    history: c._runtime.history,
+    initialGrid: c._runtime.initialGrid,
     givens: c._givenCoords(),
   );
-  c._incorrectCells = result.incorrect;
-  c._correctCells = result.correct;
-  c._solutionGrid = result.solutionGrid;
-  c._solutionAddedCells = result.solutionAdded;
-  c._selected = null;
+  c._runtime
+    ..incorrectCells = result.incorrect
+    ..correctCells = result.correct
+    ..solutionGrid = result.solutionGrid
+    ..solutionAddedCells = result.solutionAdded
+    ..selected = null;
   c._settings.setPuzzleModeLocked(false);
   c._clearCorrectionPromptState(clearRevertedCells: true);
   c._saveGameSession();
@@ -45,23 +47,24 @@ void _onShowSolutionInternal(SudokuController c) {
 }
 
 void _onConfirmCorrectionInternal(SudokuController c) {
-  if (c._correctionState.pendingPromptCoord == null ||
-      c._correctionState.tokensLeft <= 0) {
+  if (c._runtime.correctionState.pendingPromptCoord == null ||
+      c._runtime.correctionState.tokensLeft <= 0) {
     return;
   }
   final result = c._correctionRecoveryService.confirmCorrection(
-    history: c._history,
-    correctionState: c._correctionState,
+    history: c._runtime.history,
+    correctionState: c._runtime.correctionState,
   );
-  c._history = result.history;
-  c._lastConflicts = result.conflicts;
-  c._correctionState = result.correctionState;
+  c._runtime
+    ..history = result.history
+    ..lastConflicts = result.conflicts
+    ..correctionState = result.correctionState;
   c._saveGameSession();
   c._render(result.status);
 }
 
 void _onDismissCorrectionPromptInternal(SudokuController c) {
-  if (c._correctionState.pendingPromptCoord == null) {
+  if (c._runtime.correctionState.pendingPromptCoord == null) {
     return;
   }
   c._clearCorrectionPromptState(clearRevertedCells: false);
@@ -82,7 +85,7 @@ void _applyBoardEditOutcomeInternal(
   }
 
   final boardChanged =
-      outcome.result!.history.present.board != c._history.present.board;
+      outcome.result!.history.present.board != c._runtime.history.present.board;
   c._applyPlayerResult(outcome.result!, boardChanged: boardChanged);
   if (outcome.lockDifficulty) {
     c._settings.setDifficultyLocked(true);
@@ -97,8 +100,9 @@ void _applyResultInternal(
   MoveResult res, {
   String? statusOverride,
 }) {
-  c._history = res.history;
-  c._lastConflicts = res.conflicts;
+  c._runtime
+    ..history = res.history
+    ..lastConflicts = res.conflicts;
   c._saveGameSession();
   c._render(statusOverride ?? res.message);
 }
@@ -109,37 +113,41 @@ void _applyPlayerResultInternal(
   required bool boardChanged,
 }) {
   final nextMoveId = boardChanged
-      ? c._correctionState.currentMoveId + 1
-      : c._correctionState.currentMoveId;
-  c._history = res.history;
+      ? c._runtime.correctionState.currentMoveId + 1
+      : c._runtime.correctionState.currentMoveId;
+  c._runtime.history = res.history;
 
-  final analysis = c._contradictionService.analyze(c._history.present.board);
-  c._lastConflicts = analysis.hasContradiction
+  final analysis = c._contradictionService.analyze(
+    c._runtime.history.present.board,
+  );
+  c._runtime.lastConflicts = analysis.hasContradiction
       ? analysis.contradictionCells
       : res.conflicts;
 
-  var nextCorrection = c._correctionState.copyWith(
+  var nextCorrection = c._runtime.correctionState.copyWith(
     currentMoveId: nextMoveId,
     pendingPromptCoord: null,
-    revertedCells: boardChanged ? const {} : c._correctionState.revertedCells,
+    revertedCells: boardChanged
+        ? const {}
+        : c._runtime.correctionState.revertedCells,
   );
 
   if (boardChanged && !analysis.hasContradiction) {
     final checkpoints = nextCorrection.prunedToMoveId(
-      c._correctionState.currentMoveId,
+      c._runtime.correctionState.currentMoveId,
     );
     nextCorrection = nextCorrection.copyWith(
       checkpoints: [
         ...checkpoints,
-        CorrectionCheckpoint(history: c._history, moveId: nextMoveId),
+        CorrectionCheckpoint(history: c._runtime.history, moveId: nextMoveId),
       ],
     );
   }
 
-  c._correctionState = nextCorrection;
+  c._runtime.correctionState = nextCorrection;
   c._saveGameSession();
 
-  if (analysis.hasContradiction && c._correctionState.tokensLeft == 0) {
+  if (analysis.hasContradiction && c._runtime.correctionState.tokensLeft == 0) {
     c._render('Contradiction detected. Use Undo to recover.');
     return;
   }
@@ -149,27 +157,27 @@ void _applyPlayerResultInternal(
 UiState _buildStateInternal(SudokuController c) {
   return c._uiStateMapper.map(
     UiStateMapperInput(
-      board: c._history.present.board,
+      board: c._runtime.history.present.board,
       settings: c._settings.state,
-      selected: c._selected,
-      conflicts: c._lastConflicts,
-      incorrectCells: c._incorrectCells,
-      correctCells: c._correctCells,
-      solutionAddedCells: c._solutionAddedCells,
-      solutionGrid: c._solutionGrid,
-      gameOver: c._gameOver,
-      revertedCells: c._correctionState.revertedCells,
-      correctionsLeft: c._correctionState.tokensLeft,
-      canUndo: c._history.canUndo(),
-      correctionPromptCoord: c._correctionState.pendingPromptCoord,
-      debugScenarioLabel: c._debugScenarioLabel,
+      selected: c._runtime.selected,
+      conflicts: c._runtime.lastConflicts,
+      incorrectCells: c._runtime.incorrectCells,
+      correctCells: c._runtime.correctCells,
+      solutionAddedCells: c._runtime.solutionAddedCells,
+      solutionGrid: c._runtime.solutionGrid,
+      gameOver: c._runtime.gameOver,
+      revertedCells: c._runtime.correctionState.revertedCells,
+      correctionsLeft: c._runtime.correctionState.tokensLeft,
+      canUndo: c._runtime.history.canUndo(),
+      correctionPromptCoord: c._runtime.correctionState.pendingPromptCoord,
+      debugScenarioLabel: c._runtime.debugScenarioLabel,
     ),
   );
 }
 
 Set<Coord> _givenCoordsInternal(SudokuController c) {
   final givens = <Coord>{};
-  final board = c._history.present.board;
+  final board = c._runtime.history.present.board;
   for (var r = 0; r < 9; r += 1) {
     for (var col = 0; col < 9; col += 1) {
       if (board.cellAt(r, col).given) {
@@ -182,13 +190,13 @@ Set<Coord> _givenCoordsInternal(SudokuController c) {
 
 void _saveGameSessionInternal(SudokuController c) {
   c._sessionService.save(
-    history: c._history,
-    selected: c._selected,
-    gameOver: c._gameOver,
-    initialGrid: c._initialGrid,
+    history: c._runtime.history,
+    selected: c._runtime.selected,
+    gameOver: c._runtime.gameOver,
+    initialGrid: c._runtime.initialGrid,
     settings: c._settings.state,
-    correctionState: c._correctionState,
-    debugScenarioLabel: c._debugScenarioLabel,
+    correctionState: c._runtime.correctionState,
+    debugScenarioLabel: c._runtime.debugScenarioLabel,
   );
 }
 
@@ -199,7 +207,7 @@ void _startPuzzleInternal(SudokuController c) {
   );
   final res = c._service.newGameFromGrid(puzzle.grid);
   c._resetBoardFlags();
-  c._initialGrid = List<List<Digit?>>.generate(9, (r) {
+  c._runtime.initialGrid = List<List<Digit?>>.generate(9, (r) {
     return List<Digit?>.generate(
       9,
       (col) => puzzle.grid[r][col],
@@ -210,25 +218,27 @@ void _startPuzzleInternal(SudokuController c) {
     res,
     statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
   );
-  c._correctionState = CorrectionState.initial(
-    difficulty: puzzle.difficulty,
-    history: c._history,
-  );
-  c._debugScenarioLabel = null;
+  c._runtime
+    ..correctionState = CorrectionState.initial(
+      difficulty: puzzle.difficulty,
+      history: c._runtime.history,
+    )
+    ..debugScenarioLabel = null;
   c._saveGameSession();
 }
 
 void _resetBoardFlagsInternal(SudokuController c) {
-  c._selected = null;
-  c._lastConflicts = {};
+  c._runtime
+    ..selected = null
+    ..lastConflicts = {}
+    ..gameOver = false
+    ..incorrectCells = {}
+    ..solutionAddedCells = {}
+    ..correctCells = {}
+    ..solutionGrid = null
+    ..debugScenarioLabel = null;
   c._settings.setDifficultyLocked(false);
   c._settings.setPuzzleModeLocked(false);
-  c._gameOver = false;
-  c._incorrectCells = {};
-  c._solutionAddedCells = {};
-  c._correctCells = {};
-  c._solutionGrid = null;
-  c._debugScenarioLabel = null;
   c._clearCorrectionPromptState(clearRevertedCells: true);
 }
 
@@ -252,11 +262,11 @@ void _clearCorrectionPromptStateInternal(
   SudokuController c, {
   required bool clearRevertedCells,
 }) {
-  c._correctionState = c._correctionState.copyWith(
+  c._runtime.correctionState = c._runtime.correctionState.copyWith(
     pendingPromptCoord: null,
     revertedCells: clearRevertedCells
         ? const {}
-        : c._correctionState.revertedCells,
+        : c._runtime.correctionState.revertedCells,
   );
 }
 
@@ -264,11 +274,12 @@ void _queueCorrectionPromptForSelectionInternal(
   SudokuController c,
   Coord coord,
 ) {
-  c._correctionState = c._correctionRecoveryService.queuePromptForSelection(
-    history: c._history,
-    correctionState: c._correctionState,
-    coord: coord,
-  );
+  c._runtime.correctionState = c._correctionRecoveryService
+      .queuePromptForSelection(
+        history: c._runtime.history,
+        correctionState: c._runtime.correctionState,
+        coord: coord,
+      );
 }
 
 Set<Coord> _changedCellsInternal(SudokuController c, Board from, Board to) {
