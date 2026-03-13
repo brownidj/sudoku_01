@@ -1,168 +1,256 @@
-# Animal Sudoku Flutter App – Architecture Overview
+# Animal Sudoku Flutter App – Current Architecture State
 
-## 1. High‑Level Structure
-The app is organized into clear layers to keep responsibilities separated:
+## 1. High-Level Structure
+The app is currently organized into four clear layers:
 
-- **Application/Domain Services**: Pure logic for game rules, moves, and puzzle generation.
-- **State Management**: Controllers + immutable state models that bridge domain logic to UI.
-- **UI Widgets**: Composable widgets that render state and forward user actions.
-- **Rendering**: Custom painter + layout helpers for board visuals and hit‑testing.
-- **Assets/Media**: Cached images (animals + notes variants), icons, and style definitions.
+- **Domain/Application**: pure game rules, solver, puzzle generation, and board mutation
+- **App/State**: orchestration, session persistence, settings, UI-facing state mapping
+- **UI**: screens, widgets, UI-only coordinators/services, rendering
+- **Assets/Rendering**: animal image loading, board painting, style/theme selection
 
-This layered approach makes the app maintainable and reduces cross‑cutting concerns.
+The structure now matches the original architecture goals more closely than before:
+
+- `main.dart` composition remains thin
+- domain code does not import UI or persistence
+- UI side effects are mostly behind small coordinators/services
+- files are kept under the 400-line cap enforced by script
 
 ---
 
-## 2. Application & Domain Layer
+## 2. Domain and Application Layer
 **Location:** `lib/application/*`, `lib/domain/*`
 
 ### Key Components
-- **`GameService`**  
-  Orchestrates game actions: place digit, toggle note, clear notes, validation, history.
+- **`GameService`**
+  Owns board-edit operations, history transitions, undo, and new-game creation.
+- **`CheckService`**
+  Computes correctness markers used by check/solution flows.
+- **`solver.dart`**
+  Backtracking solver used by check/solution and puzzle support.
+- **Domain ops**
+  Pure board mutation functions for note toggling, clearing, and digit placement.
 
-- **`CheckService`**  
-  Verifies board correctness, identifies incorrect/correct/given/solution cells.
-
-- **`GridUtils`**  
-  Utility functions for grid extraction/copy (kept small and focused).
-
-- **Domain Ops (`domain/ops.dart`)**  
-  Pure functions for board state mutation (e.g., `toggleNote`, `clearNotes`).
-
-- **Solver (`application/solver.dart`)**  
-  Backtracking solver used for check/solution.
-
-### Maintainability Notes
-- All logic is stateless and side‑effect free.
-- Easy to test, and changes won’t impact UI rendering.
+### Current Assessment
+- This layer remains the cleanest part of the codebase.
+- Logic is still mostly pure and testable.
+- Dependencies remain one-way: domain/application does not depend on app/UI code.
 
 ---
 
-## 3. State Management
+## 3. App/State Layer
 **Location:** `lib/app/*`
 
-### Controllers
+This layer has improved substantially since the earlier assessment.
+
+### Controller Split
 - **`SudokuController`**
-  - The orchestration hub for gameplay.
-  - Holds `History`, selection, conflicts, solution grids.
-  - Builds `UiState` for UI consumption.
-  - Dependencies injectable for testability.
+  Now a thin facade and compatibility surface for the UI/tests.
+  It wires dependencies and delegates to smaller controllers.
+- **`GameController`**
+  Owns runtime game/session flow:
+  - startup/resume
+  - history ownership
+  - check/solution
+  - correction flows
+  - difficulty and puzzle mode transitions
+  - debug scenario loading
+- **`UiController`**
+  Owns UI-driven interaction flow:
+  - cell selection
+  - digit/clear/place dispatch
+  - notes mode toggling
+  - content/style/animal-style changes
+
+### Supporting Services
+- **`SudokuControllerActionService`**
+  Encapsulates gameplay actions that mutate runtime state.
+- **`SudokuRuntimeStateService`**
+  Encapsulates runtime-state helpers such as state mapping, reset helpers, and restored-settings application.
+- **`CorrectionRecoveryService`**
+  Owns dead-cell correction analysis and recovery selection.
+- **`CandidateSelectionService`**
+  App-layer holder for candidate-panel selection state; moved out of UI.
+- **`ControllerStartupCoordinator`**
+  Handles initial load/resume orchestration.
+- **`GameSessionService` / `GameSessionCodec`**
+  Persist and restore session state, including queued save flushing.
 - **`SettingsController`**
-  - Manages content mode (animals/numbers), style, difficulty, and notes mode.
-  - Persists to `PreferencesStore`.
+  Persists and exposes user settings.
 
 ### State Models
-- **`UiState` (lib/app/ui_state.dart)**  
-  Immutable state snapshot for UI.
-- **`SettingsState`**  
-  Persistent user settings.
+- **`SudokuRuntimeState`**
+  Explicit mutable runtime bag for game/session state.
+- **`UiState`**
+  Immutable UI-facing snapshot.
+- **`SettingsState`**
+  Immutable user-settings snapshot.
 
-### Maintainability Notes
-- `SudokuController` remains the largest class but now isolated from UI widget logic.
-- Injection makes unit tests feasible without heavy setup.
+### Current Assessment
+This layer now aligns much better with the intended architecture:
+
+- orchestration is split into focused controllers/services
+- explicit dependencies replaced most reach-through and `part`-file mutation patterns
+- the old `sudoku_controller_internal.dart` split is gone
+- the main facade is small again
+
+Remaining weakness:
+- `GameController` is improved, but it is still the densest orchestration class and the next likely place to accumulate policy if left unchecked
 
 ---
 
-## 4. UI & Widgets
+## 4. UI Layer
 **Location:** `lib/ui/*`
 
-### Screen & Components
+### Main Screen
 - **`SudokuScreen`**
-  - Main game screen.
-  - Coordinates controller + UI widgets.
-  - Handles candidate panel lifecycle (via `CandidateSelectionController`).
+  Now acts primarily as a composition/orchestration widget.
+  It still owns some UI-only coordination:
+  - candidate panel lifecycle hookup
+  - tooltip overlays
+  - debug tap gesture
+  - correction prompt scheduling
 
-- **Extracted Widgets**
-  - `TopControls`, `ActionBar`, `Legend`
-  - `CandidatePanel`
-  - `SudokuBoard` (board gestures + painting)
-  - `LaunchScreen`
+### UI Helpers and Coordinators
+- **`CandidatePanelCoordinator`**
+  UI-only behavior for showing/hiding/refreshing the candidate panel.
+- **`CorrectionPromptService`**
+  Dialog scheduling/display for correction prompts.
+- **`DebugToggleService`**
+  Version-tap debug unlock logic.
+- **`TooltipOverlayService`**
+  Overlay tooltip behavior.
+- **`AnimalAssetService`**
+  Loads/caches the UI image bundle used by the screen.
 
-### Maintainability Notes
-- Large UI responsibilities have been broken into focused, reusable widgets.
-- `SudokuScreen` is now primarily orchestration, not UI complexity.
+### Widgets
+- `SudokuBoardArea`
+- `SudokuDrawer`
+- `TopControls`
+- `ActionBar`
+- `Legend`
+- `LaunchScreen`
+- `HelpDialog`
+
+### Current Assessment
+- `SudokuScreen` is much smaller and cleaner than before.
+- Candidate selection state is no longer incorrectly owned by the UI layer.
+- UI logic is now mostly coordination rather than business logic.
+
+Remaining weakness:
+- `SudokuScreen` still coordinates several UI services directly, so it is not completely “dumb”
 
 ---
 
-## 5. Rendering Layer
-**Location:** `lib/ui/board_*`
+## 5. Rendering and Assets
+**Location:** `lib/ui/board_*`, `lib/ui/animal_cache.dart`, `lib/ui/styles.dart`
 
 ### Key Parts
 - **`BoardPainter`**
-  - Responsible for rendering board cells, values, notes, and highlights.
-  - Uses `BoardTheme` to isolate styling logic.
-
+  Renders values, notes, selection, corrections, correctness states, and animals.
 - **`BoardLayout`**
-  - Converts gesture offsets into board coordinates.
-
+  Converts screen offsets to board coordinates.
 - **`BoardTheme`**
-  - Centralized decision model for background colors and highlights.
+  Encapsulates board visual styling decisions.
+- **`AnimalCache`**
+  Resolves animal display names and cached image access patterns.
 
-### Notes Rendering
-- Notes are rendered using pre‑generated image variants:
-  - `16/20/24/32 px` grayscale assets.
-  - Rendered in 2x2 or 3x3 grid depending on note count.
-
-### Maintainability Notes
-- Rendering logic is cleanly separated from controller state.
-- Reusable layout utilities reduce duplication.
+### Current Assessment
+- Rendering remains well separated from state orchestration.
+- Custom painting concerns have not leaked back into controllers.
+- Asset loading is handled through dedicated UI services/cache paths.
 
 ---
 
-## 6. Assets & Caching
-**Location:** `lib/ui/animal_cache.dart`
-
-### Cache Responsibilities
-- Loads full‑size animal icons (cute/simple).
-- Loads note icons (multi‑size monochrome).
-- Provides per‑variant maps for fast rendering.
-
-### Maintainability Notes
-- Cache centralization avoids repeated decoding.
-- Notes icons are decoupled to avoid blocking main image load.
-
----
-
-## 7. Tests
+## 6. Testing
 **Location:** `test/*`
 
-### Coverage
-- **Domain ops**: `notes_ops_test.dart`
-- **Solver**: `solver_test.dart`
-- **Preferences**: `preferences_test.dart`
-- **UI + Notes**: `notes_ui_test.dart`
-- **Note layout selection**: `note_layout_test.dart`
-- **Notes asset presence**: `notes_assets_test.dart`
+### Coverage Strengths
+- domain mutation behavior
+- solver behavior
+- preferences persistence
+- session persistence and save flushing
+- correction recovery
+- startup/resume flows
+- gameplay flows
+- notes UI behavior
+- candidate panel behavior
+- runtime-state helper behavior
 
-### Maintainability Notes
-- Critical game logic and state behaviors are tested.
-- UI behavior tested in a minimal widget environment.
+### Current Assessment
+- The refactors were supported by small focused tests rather than only large widget tests.
+- New helper/service layers now have direct coverage.
+- The codebase is in a better position for test-driven extractions than it was previously.
 
 ---
 
-## 8. Maintainability Strengths
-- **Separation of concerns** is clear and intentional.
-- **Testability** improved via dependency injection and pure functions.
-- **Rendering** isolated from state (painter + theme).
-- **Caching** centralized and predictable.
+## 7. File Size and Structural Guardrails
+The repo now has an explicit file-size guard:
+
+- `scripts/check_flutter_file_sizes.sh`
+
+This enforces the agreed `> 400 lines` failure threshold and is currently passing for `flutter_app`.
+
+### Current Assessment
+- This is an important improvement because the architecture is now supported by an enforcement mechanism, not just convention.
+
+---
+
+## 8. Current Strengths
+- Layering is materially better than the earlier state.
+- `SudokuController` is now a thin facade instead of a large orchestration hub.
+- `GameController` / `UiController` separation is in place.
+- Candidate selection state has been moved into the app/state layer.
+- The old controller `part` split has been replaced by explicit services.
+- Runtime state is explicit rather than spread across many private controller fields.
+- Session persistence is more robust because pending saves can be flushed.
+- Test coverage followed the refactors instead of being left behind.
 
 ---
 
 ## 9. Remaining Pressure Points
-- `SudokuController` still aggregates many responsibilities (selection, history, game flow).
-- `SudokuScreen` retains candidate panel orchestration and tooltip overlays.
+These are the main areas to watch next:
 
-These are manageable now, but should be the first refactor targets if complexity grows.
+### `GameController`
+It is now within the size cap and clearly better structured, but it still concentrates:
+- startup flow
+- debug scenario flow
+- undo behavior
+- difficulty/puzzle-mode transitions
+- save/render triggering
+
+If complexity grows further, this should be split by workflow rather than by arbitrary file split.
+
+### `SudokuScreen`
+The screen is much cleaner, but it still wires together:
+- candidate panel interactions
+- correction prompt scheduling
+- tooltip display
+- debug gesture handling
+
+This is acceptable today, but future UI features should continue to land in focused services/coordinators rather than back into the screen.
+
+### Settings/UI action overlap
+`UiController` is appropriately small, but some “display setting” actions still directly proxy `SettingsController`. That is fine for now, though if settings-related UI flows grow, they may deserve a dedicated app-layer coordinator.
 
 ---
 
-## 10. Suggested Future Refactors (Optional)
-- Extract a **CandidateSelectionService** into app/state layer.
-- Further split `SudokuController` into:
-  - `GameController` (history, check/solution)
-  - `UiController` (selection + note display logic)
+## 10. Recommended Next Refactors
+Only if complexity continues to grow:
+
+1. Extract a small `GameFlowEffects` or similarly named helper from `GameController` for save/render/status triggering.
+2. Move more `SudokuScreen` prompt/overlay orchestration behind a single screen-level coordinator if additional overlays or dialogs are added.
+3. Add direct tests for `UiController` and `GameController` behavior if those classes grow significantly.
 
 ---
 
 ## Summary
-The current architecture is clean, layered, and maintainable. It supports feature growth without major rewrites, and core logic is isolated from UI details. The codebase is in strong shape for continued development.
+The architecture is in a meaningfully better state than the previous snapshot.
+
+The biggest earlier issues have been addressed:
+- thin facade controller restored
+- app-layer candidate selection service added
+- controller responsibilities split into `GameController` and `UiController`
+- explicit services replace internal mutation helpers
+- file-size guard is active
+
+The codebase is now aligned with the intended architecture to a much greater degree. The main remaining concern is not structural failure, but preventing `GameController` and `SudokuScreen` from becoming the next aggregation points as new features are added.

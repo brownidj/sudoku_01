@@ -40,6 +40,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
+  patrol: ^4.3.0
 
 flutter_launcher_icons:
   android: true
@@ -98,3 +99,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+patrol:
+  android:
+    package_name: org.topository.zudoku
+  ios:
+    bundle_id: org.topository.animalsudoku

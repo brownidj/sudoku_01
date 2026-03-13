@@ -2,12 +2,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/candidate_panel_coordinator.dart';
-import 'package:flutter_app/ui/candidate_selection_controller.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/correction_prompt_service.dart';
 import 'package:flutter_app/ui/services/debug_toggle_service.dart';
@@ -38,7 +38,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final DebugToggleService _debugToggleService = DebugToggleService();
   final TooltipOverlayService _tooltipService = TooltipOverlayService();
   Future<void>? _animalLoad;
-  late final CandidateSelectionController _candidateController;
+  late final CandidateSelectionService _candidateSelectionService;
   late final CandidatePanelCoordinator _candidatePanelCoordinator;
   bool _debugToolsEnabled = false;
 
@@ -46,17 +46,17 @@ class _SudokuScreenState extends State<SudokuScreen> {
   void initState() {
     super.initState();
     _animalLoad = _loadAnimalImages();
-    _candidateController = CandidateSelectionController();
+    _candidateSelectionService = CandidateSelectionService();
     _candidatePanelCoordinator = CandidatePanelCoordinator(
-      _candidateController,
+      _candidateSelectionService,
     );
-    _candidateController.addListener(_onCandidateChanged);
+    _candidateSelectionService.addListener(_onCandidateChanged);
   }
 
   @override
   void dispose() {
-    _candidateController.removeListener(_onCandidateChanged);
-    _candidateController.dispose();
+    _candidateSelectionService.removeListener(_onCandidateChanged);
+    _candidateSelectionService.dispose();
     _tooltipService.dispose();
     super.dispose();
   }
@@ -164,7 +164,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                           !state.gameOver,
                       candidateDigits:
                           _candidatePanelCoordinator.candidateDigits,
-                      selectedNotes: _candidatePanelCoordinator.selectedNotes(
+                      selectedNotes: _candidateSelectionService.selectedNotes(
                         state,
                       ),
                       onDigitSelected: (digit) {

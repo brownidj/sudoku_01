@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/domain/types.dart';
-import 'package:flutter_app/ui/candidate_selection_controller.dart';
 
 void main() {
-  test('CandidateSelectionController manages visibility and selection state', () {
-    final controller = CandidateSelectionController();
+  test('CandidateSelectionService manages visibility and selection state', () {
+    final controller = CandidateSelectionService();
     var notifyCount = 0;
     controller.addListener(() => notifyCount += 1);
 

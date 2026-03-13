@@ -1,15 +1,15 @@
+import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
-import 'package:flutter_app/ui/candidate_selection_controller.dart';
 
 class CandidatePanelCoordinator {
-  final CandidateSelectionController controller;
+  final CandidateSelectionService selectionService;
 
-  CandidatePanelCoordinator(this.controller);
+  CandidatePanelCoordinator(this.selectionService);
 
-  bool get visible => controller.visible;
-  List<int> get candidateDigits => controller.candidateDigits;
-  Coord? get candidateCoord => controller.candidateCoord;
+  bool get visible => selectionService.visible;
+  List<int> get candidateDigits => selectionService.candidateDigits;
+  Coord? get candidateCoord => selectionService.candidateCoord;
 
   Future<void> onCellTapped({
     required UiState state,
@@ -33,11 +33,11 @@ class CandidatePanelCoordinator {
     final candidates = cell.value == null
         ? _remainingDigitsForBlock(state, coord)
         : <int>[];
-    controller.show(coord, [...candidates, 0]);
+    selectionService.show(coord, [...candidates, 0]);
   }
 
   void onDigitApplied({required int digit, required UiState nextState}) {
-    final candidateCoord = controller.candidateCoord;
+    final candidateCoord = selectionService.candidateCoord;
     final selectedCellConflicted =
         candidateCoord != null &&
         nextState
@@ -46,34 +46,26 @@ class CandidatePanelCoordinator {
             .conflicted;
     if ((digit != 0 && selectedCellConflicted) ||
         (nextState.notesMode && digit != 0)) {
-      controller.refresh();
+      selectionService.refresh();
       return;
     }
     if (digit == 0 || !nextState.notesMode) {
-      controller.hide();
+      selectionService.hide();
       return;
     }
-    controller.refresh();
+    selectionService.refresh();
   }
 
   void onPlacedDigitViaLongPress() {
-    controller.hide();
+    selectionService.hide();
   }
 
   void onCheckOrSolution() {
-    controller.hide();
+    selectionService.hide();
   }
 
   void onCorrectionConfirmed() {
-    controller.hide();
-  }
-
-  Set<int> selectedNotes(UiState state) {
-    final coord = controller.candidateCoord;
-    if (coord == null) {
-      return {};
-    }
-    return state.board.cells[coord.row][coord.col].notes.toSet();
+    selectionService.hide();
   }
 
   List<int> _remainingDigitsForBlock(UiState state, Coord coord) {

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/candidate_panel_coordinator.dart';
-import 'package:flutter_app/ui/candidate_selection_controller.dart';
 
 UiState _state({
   bool notesMode = false,
@@ -81,8 +81,8 @@ void main() {
   test(
     'CandidatePanelCoordinator shows panel and enables notes mode when needed',
     () async {
-      final controller = CandidateSelectionController();
-      final coordinator = CandidatePanelCoordinator(controller);
+      final service = CandidateSelectionService();
+      final coordinator = CandidatePanelCoordinator(service);
       var notesEnabled = false;
 
       await coordinator.onCellTapped(
@@ -93,31 +93,31 @@ void main() {
       );
 
       expect(notesEnabled, isTrue);
-      expect(controller.visible, isTrue);
-      expect(controller.candidateCoord, const Coord(0, 0));
-      expect(controller.candidateDigits, contains(0));
+      expect(service.visible, isTrue);
+      expect(service.candidateCoord, const Coord(0, 0));
+      expect(service.candidateDigits, contains(0));
     },
   );
 
   test('CandidatePanelCoordinator hides panel after clear', () {
-    final controller = CandidateSelectionController();
-    final coordinator = CandidatePanelCoordinator(controller);
-    controller.show(const Coord(0, 0), const [2, 3, 0]);
+    final service = CandidateSelectionService();
+    final coordinator = CandidatePanelCoordinator(service);
+    service.show(const Coord(0, 0), const [2, 3, 0]);
 
     coordinator.onDigitApplied(digit: 0, nextState: _state());
 
-    expect(controller.visible, isFalse);
-    expect(controller.candidateCoord, isNull);
+    expect(service.visible, isFalse);
+    expect(service.candidateCoord, isNull);
   });
 
   test(
     'CandidatePanelCoordinator refreshes for notes-mode digit placement',
     () {
-      final controller = CandidateSelectionController();
-      final coordinator = CandidatePanelCoordinator(controller);
+      final service = CandidateSelectionService();
+      final coordinator = CandidatePanelCoordinator(service);
       var notifyCount = 0;
-      controller.addListener(() => notifyCount += 1);
-      controller.show(const Coord(0, 0), const [2, 3, 0]);
+      service.addListener(() => notifyCount += 1);
+      service.show(const Coord(0, 0), const [2, 3, 0]);
       notifyCount = 0;
 
       coordinator.onDigitApplied(
@@ -125,7 +125,7 @@ void main() {
         nextState: _state(notesMode: true, selected: const Coord(0, 0)),
       );
 
-      expect(controller.visible, isTrue);
+      expect(service.visible, isTrue);
       expect(notifyCount, 1);
     },
   );

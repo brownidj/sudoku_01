@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 
-class CandidateSelectionController extends ChangeNotifier {
+class CandidateSelectionService extends ChangeNotifier {
   bool _visible = false;
   List<int> _candidateDigits = const [];
   Coord? _candidateCoord;
@@ -29,5 +30,13 @@ class CandidateSelectionController extends ChangeNotifier {
 
   void refresh() {
     notifyListeners();
+  }
+
+  Set<int> selectedNotes(UiState state) {
+    final coord = _candidateCoord;
+    if (coord == null) {
+      return {};
+    }
+    return state.board.cells[coord.row][coord.col].notes.toSet();
   }
 }
