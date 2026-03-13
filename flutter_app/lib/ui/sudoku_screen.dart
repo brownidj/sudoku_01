@@ -88,7 +88,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: _onVersionTapped,
-                    child: const SizedBox(
+                child: const SizedBox(
                   height: kToolbarHeight,
                   child: Align(
                     alignment: Alignment.centerLeft,
@@ -113,6 +113,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onSetDifficulty: widget.controller.onSetDifficulty,
             onAnimalStyleChanged: widget.controller.onAnimalStyleChanged,
             onStyleChanged: widget.controller.onStyleChanged,
+            onHelpPressed: () {
+              Navigator.of(context).maybePop();
+              _showHelpDialog();
+            },
             onLoadCorrectionScenario: () {
               Navigator.of(context).maybePop();
               widget.controller.onLoadCorrectionScenario();
@@ -249,6 +253,30 @@ class _SudokuScreenState extends State<SudokuScreen> {
       return;
     }
     _candidateController.show(coord, withClear);
+  }
+
+  Future<void> _showHelpDialog() async {
+    if (!mounted) {
+      return;
+    }
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Help'),
+          content: const Text(
+            'Use the menu to change puzzle solution mode, difficulty, animals, and style. '
+            'Long-press "Corrections" on the board screen for correction details.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   List<int> _remainingDigitsForBlock(UiState state, Coord coord) {

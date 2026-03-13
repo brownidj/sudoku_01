@@ -97,4 +97,54 @@ void main() {
     final sessionJson = jsonDecode(fakePrefs.savedSession!);
     expect(sessionJson['version'], 2);
   });
+
+  test(
+    'Restored easy session clamps legacy correction count to new max',
+    () async {
+      final fakePrefs = FakePreferencesStore();
+      final seedSettings = FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      );
+      final seedController = SudokuController(
+        preferencesStore: fakePrefs,
+        settingsController: seedSettings,
+        gameService: FakeGameService(),
+      );
+      await seedController.ready;
+
+      final saved = jsonDecode(fakePrefs.savedSession!) as Map<String, dynamic>;
+      final correction = (saved['corrections'] as Map<String, dynamic>);
+      correction['tokensLeft'] = 5;
+      fakePrefs.savedSession = jsonEncode(saved);
+
+      final restoreController = SudokuController(
+        preferencesStore: fakePrefs,
+        gameService: FakeGameService(),
+        settingsController: FakeSettingsController(
+          const SettingsState(
+            notesMode: false,
+            difficulty: 'easy',
+            canChangeDifficulty: true,
+            canChangePuzzleMode: true,
+            styleName: 'Modern',
+            contentMode: 'numbers',
+            animalStyle: 'simple',
+            puzzleMode: 'multi',
+          ),
+        ),
+      );
+      await restoreController.ready;
+
+      expect(restoreController.state.correctionsLeft, 3);
+    },
+  );
 }

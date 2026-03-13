@@ -51,6 +51,7 @@ void main() {
   ) async {
     var correctionTapped = false;
     var exhaustedTapped = false;
+    var helpTapped = false;
 
     await tester.pumpWidget(
       MaterialApp(
@@ -60,6 +61,9 @@ void main() {
           onSetDifficulty: (_) {},
           onAnimalStyleChanged: (_) {},
           onStyleChanged: (_) {},
+          onHelpPressed: () {
+            helpTapped = true;
+          },
           onLoadCorrectionScenario: () {
             correctionTapped = true;
           },
@@ -76,12 +80,16 @@ void main() {
 
     expect(find.text('Load Correction Scenario'), findsOneWidget);
     expect(find.text('Load Exhausted Correction Scenario'), findsOneWidget);
+    expect(find.text('Help'), findsOneWidget);
 
+    await tester.tap(find.text('Help'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Load Correction Scenario'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Load Exhausted Correction Scenario'));
     await tester.pumpAndSettle();
 
+    expect(helpTapped, isTrue);
     expect(correctionTapped, isTrue);
     expect(exhaustedTapped, isTrue);
   });

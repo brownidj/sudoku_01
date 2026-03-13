@@ -89,6 +89,52 @@ void main() {
     },
   );
 
+  testWidgets('long press on corrections label shows tooltip details', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 420,
+            height: 620,
+            child: SudokuBoardArea(
+              state: _state(
+                puzzleMode: 'unique',
+                difficulty: 'medium',
+                correctionsLeft: 2,
+              ),
+              style: styleModern,
+              animalImages: const {},
+              noteImagesBySize: const {},
+              devicePixelRatio: 2.0,
+              candidateVisible: false,
+              candidateDigits: const [],
+              selectedNotes: const {},
+              onDigitSelected: (_) {},
+              onDigitLongPressed: null,
+              onTapCell: (_) {},
+              onLongPressCell: (_, __) {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.longPress(find.text('Corrections: 2'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'In this mode you have 2 corrections opportunities. '
+        'When you select a tile that has no valid solution, because of an '
+        'earlier error, a box will open that allows you to use an automatic '
+        'correction.',
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('shows debug scenario label when one is loaded', (
     WidgetTester tester,
   ) async {

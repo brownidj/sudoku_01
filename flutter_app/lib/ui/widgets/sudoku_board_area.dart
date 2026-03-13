@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/widgets/candidate_panel.dart';
@@ -43,6 +44,12 @@ class SudokuBoardArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final correctionLimit = correctionsForDifficulty(state.difficulty);
+    final correctionsTooltipMessage =
+        'In this mode you have $correctionLimit corrections opportunities. '
+        'When you select a tile that has no valid solution, because of an '
+        'earlier error, a box will open that allows you to use an automatic '
+        'correction.';
     return LayoutBuilder(
       builder: (context, constraints) {
         final debugBannerHeight =
@@ -129,15 +136,31 @@ class SudokuBoardArea extends StatelessWidget {
                       alignment: Alignment.center,
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
-                        child: Text(
-                          'Corrections: ${state.correctionsLeft}',
-                          style: Theme.of(context).textTheme.labelSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSurface.withOpacity(0.6),
+                        child: Builder(
+                          builder: (context) {
+                            final tooltipKey = GlobalKey<TooltipState>();
+                            return Tooltip(
+                              key: tooltipKey,
+                              message: correctionsTooltipMessage,
+                              triggerMode: TooltipTriggerMode.manual,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onLongPress: () => tooltipKey.currentState
+                                    ?.ensureTooltipVisible(),
+                                child: Text(
+                                  'Corrections: ${state.correctionsLeft}',
+                                  style: Theme.of(context).textTheme.labelSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
+                                      ),
+                                ),
                               ),
+                            );
+                          },
                         ),
                       ),
                     ),

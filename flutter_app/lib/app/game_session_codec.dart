@@ -165,10 +165,12 @@ class GameSessionCodec {
       difficulty: difficulty,
       history: fallbackHistory,
     );
+    final maxTokens = correctionsForDifficulty(difficulty);
+    final rawTokensLeft = raw['tokensLeft'] is int
+        ? raw['tokensLeft'] as int
+        : fallback.tokensLeft;
     return CorrectionState(
-      tokensLeft: raw['tokensLeft'] is int
-          ? raw['tokensLeft'] as int
-          : fallback.tokensLeft,
+      tokensLeft: _clampCorrectionTokens(rawTokensLeft, maxTokens),
       currentMoveId: raw['currentMoveId'] is int
           ? raw['currentMoveId'] as int
           : fallback.currentMoveId,
@@ -258,5 +260,15 @@ class GameSessionCodec {
       return value;
     }
     return fallback.animalStyle;
+  }
+
+  int _clampCorrectionTokens(int value, int maxTokens) {
+    if (value < 0) {
+      return 0;
+    }
+    if (value > maxTokens) {
+      return maxTokens;
+    }
+    return value;
   }
 }

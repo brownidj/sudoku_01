@@ -8,6 +8,7 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onAnimalStyleChanged;
   final ValueChanged<String> onStyleChanged;
+  final VoidCallback? onHelpPressed;
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final bool showDebugTools;
@@ -19,6 +20,7 @@ class SudokuDrawer extends StatelessWidget {
     required this.onSetDifficulty,
     required this.onAnimalStyleChanged,
     required this.onStyleChanged,
+    this.onHelpPressed,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
     this.showDebugTools = kDebugMode,
@@ -46,7 +48,7 @@ class SudokuDrawer extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Puzzle Mode',
+                'Puzzle Solution Mode',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -169,6 +171,12 @@ class SudokuDrawer extends StatelessWidget {
               visualDensity: VisualDensity.compact,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleStyleChanged,
+            ),
+            const Divider(height: 16),
+            ListTile(
+              leading: const Icon(Icons.help_outline),
+              title: const Text('Help'),
+              onTap: onHelpPressed,
             ),
             if (showDebugTools &&
                 (onLoadCorrectionScenario != null ||
