@@ -33,6 +33,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   Future<void>? _animalLoad;
   late final CandidateSelectionController _candidateController;
   Coord? _lastCorrectionPromptCoord;
+  int _lastCorrectionNoticeSerial = 0;
   final List<DateTime> _versionTapTimestamps = <DateTime>[];
   bool _debugToolsEnabled = false;
 
@@ -79,6 +80,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         final state = widget.controller.state;
         final style = styleForName(state.styleName);
         _scheduleCorrectionPrompt(state);
+        _scheduleCorrectionNotice(state);
 
         return Scaffold(
           appBar: AppBar(
@@ -92,7 +94,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   height: kToolbarHeight,
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('ZuDoKu 0.5.3 build 143'),
+                    child: Text('ZuDoKu 0.6.0 build 149'),
                   ),
                 ),
               ),
@@ -333,6 +335,37 @@ class _SudokuScreenState extends State<SudokuScreen> {
     });
   }
 
+  void _scheduleCorrectionNotice(UiState state) {
+    final message = state.correctionNoticeMessage;
+    if (message == null || state.correctionNoticeSerial == 0) {
+      return;
+    }
+    if (_lastCorrectionNoticeSerial == state.correctionNoticeSerial) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showCorrectionNotice(state);
+    });
+  }
+
+  void _showCorrectionNotice(UiState state) {
+    final message = state.correctionNoticeMessage;
+    if (!mounted || message == null || state.correctionNoticeSerial == 0) {
+      return;
+    }
+    if (_lastCorrectionNoticeSerial == state.correctionNoticeSerial) {
+      return;
+    }
+    _lastCorrectionNoticeSerial = state.correctionNoticeSerial;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    if (messenger == null) {
+      return;
+    }
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
   Future<void> _showCorrectionPrompt() async {
     final useCorrection = await showDialog<bool>(
       context: context,
@@ -361,6 +394,12 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (useCorrection == true) {
       widget.controller.onConfirmCorrection();
       _candidateController.hide();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        _showCorrectionNotice(widget.controller.state);
+      });
       return;
     }
     widget.controller.onDismissCorrectionPrompt();

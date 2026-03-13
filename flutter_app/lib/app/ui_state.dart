@@ -48,6 +48,8 @@ class UiState {
   final bool canUndo;
   final Coord? correctionPromptCoord;
   final String? debugScenarioLabel;
+  final int correctionNoticeSerial;
+  final String? correctionNoticeMessage;
 
   const UiState({
     required this.board,
@@ -65,5 +67,7 @@ class UiState {
     required this.canUndo,
     required this.correctionPromptCoord,
     required this.debugScenarioLabel,
+    required this.correctionNoticeSerial,
+    required this.correctionNoticeMessage,
   });
 }

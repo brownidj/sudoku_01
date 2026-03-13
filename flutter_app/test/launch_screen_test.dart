@@ -243,7 +243,7 @@ void main() {
       expect(service.loadCalls, 1);
       expect(find.text('Please wait...'), findsOneWidget);
       expect(find.text('Play'), findsOneWidget);
-      expect(find.text('ZuDoKu 0.5.3 build 143'), findsOneWidget);
+      expect(find.text('ZuDoKu 0.6.0 build 149'), findsOneWidget);
 
       service.complete();
       await tester.pumpAndSettle();

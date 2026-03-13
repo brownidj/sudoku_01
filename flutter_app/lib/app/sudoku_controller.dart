@@ -8,6 +8,7 @@ import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
+import 'package:flutter_app/application/solver.dart';
 import 'package:flutter_app/app/check_service.dart';
 import 'package:flutter_app/app/grid_utils.dart';
 import 'package:flutter_app/app/settings_controller.dart';
@@ -44,6 +45,8 @@ class SudokuController extends ChangeNotifier {
   Grid? _initialGrid;
   bool _hadSavedSessionAtLaunch = false;
   String? _debugScenarioLabel;
+  int _correctionNoticeSerial = 0;
+  String? _correctionNoticeMessage;
 
   SudokuController({
     PreferencesStore? preferencesStore,
@@ -214,6 +217,7 @@ class SudokuController extends ChangeNotifier {
 
   void _applyDebugScenario(DebugScenario scenario, String status) {
     _debugScenarioLabel = scenario.label;
+    _correctionNoticeMessage = null;
     _history = scenario.history;
     _correctionState = scenario.correctionState;
     _selected = scenario.selected;

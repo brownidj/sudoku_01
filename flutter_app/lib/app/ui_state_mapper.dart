@@ -17,6 +17,8 @@ class UiStateMapperInput {
   final bool canUndo;
   final Coord? correctionPromptCoord;
   final String? debugScenarioLabel;
+  final int correctionNoticeSerial;
+  final String? correctionNoticeMessage;
 
   const UiStateMapperInput({
     required this.board,
@@ -33,6 +35,8 @@ class UiStateMapperInput {
     required this.canUndo,
     required this.correctionPromptCoord,
     required this.debugScenarioLabel,
+    required this.correctionNoticeSerial,
+    required this.correctionNoticeMessage,
   });
 }
 
@@ -89,6 +93,8 @@ class UiStateMapper {
       canUndo: input.canUndo,
       correctionPromptCoord: input.correctionPromptCoord,
       debugScenarioLabel: input.debugScenarioLabel,
+      correctionNoticeSerial: input.correctionNoticeSerial,
+      correctionNoticeMessage: input.correctionNoticeMessage,
     );
   }
 }

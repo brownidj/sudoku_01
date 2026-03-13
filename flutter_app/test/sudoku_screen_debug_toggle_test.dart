@@ -43,7 +43,7 @@ void main() {
       await tester.pumpAndSettle();
 
       for (var i = 0; i < 7; i += 1) {
-        await tester.tap(find.text('ZuDoKu 0.5.3 build 143'));
+        await tester.tap(find.text('ZuDoKu 0.6.0 build 149'));
         await tester.pump(const Duration(milliseconds: 120));
       }
       await tester.pumpAndSettle();
@@ -89,10 +89,50 @@ void main() {
     await tester.pumpAndSettle();
 
     for (var i = 0; i < 7; i += 1) {
-      await tester.tap(find.text('ZuDoKu 0.5.3 build 143'));
+      await tester.tap(find.text('ZuDoKu 0.6.0 build 149'));
       await tester.pump(const Duration(milliseconds: 120));
     }
     await tester.pumpAndSettle();
     expect(find.text('Debug scenario: correction available'), findsOneWidget);
+  });
+
+  testWidgets('confirming a correction shows corrected tiles snackbar', (
+    WidgetTester tester,
+  ) async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    controller.onLoadCorrectionScenario();
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'This board is unsatisfiable from an earlier move. Use 1 correction?',
+      ),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Use correction'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('1 tile(s) corrected.'), findsOneWidget);
   });
 }
