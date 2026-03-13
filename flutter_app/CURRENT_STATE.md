@@ -162,7 +162,7 @@ Remaining weakness:
 ---
 
 ## 6. Testing
-**Location:** `test/*`
+**Location:** `test/*`, `integration_test/*`, `patrol_test/*`
 
 ### Coverage Strengths
 - domain mutation behavior
@@ -175,11 +175,44 @@ Remaining weakness:
 - notes UI behavior
 - candidate panel behavior
 - runtime-state helper behavior
+- launch/play flows
+- drawer/help flows
+- board tooltip flows
+- resume vs new-game flows
 
 ### Current Assessment
 - The refactors were supported by small focused tests rather than only large widget tests.
 - New helper/service layers now have direct coverage.
 - The codebase is in a better position for test-driven extractions than it was previously.
+
+### Current Regime
+- **Unit and widget tests** remain in `test/*` and cover most pure logic, controller/services behavior, and focused widget interactions.
+- **Flutter integration tests** now live in `integration_test/*` and are the primary end-to-end regression layer for normal app behavior on both Android and iOS.
+  Current coverage includes:
+  - launch and play
+  - drawer and help
+  - board tooltips
+  - resume saved session
+  - new game vs saved session
+- **Patrol tests** remain in `patrol_test/*`, but their role is narrower:
+  - Android coverage remains supported
+  - iOS Patrol is reserved for flows that must touch native/system UI
+  - for ordinary Flutter UI flows, `integration_test` is the preferred path because it is more stable on iOS
+
+### Execution
+- The repo now supports a single full-run script from `flutter_app/`:
+  - `./scripts/run_everything.sh`
+- That script runs:
+  - file-size checks
+  - `flutter clean`
+  - `flutter pub get`
+  - `pod install`
+  - `flutter test`
+  - Flutter integration tests
+  - Patrol tests for Android and iOS
+- iOS execution is intentionally split:
+  - Flutter integration tests run on the normal working simulator
+  - iOS Patrol runs on a latest-runtime simulator, because Patrol’s iOS destination handling is stricter and more brittle than standard Flutter integration testing
 
 ---
 
@@ -187,6 +220,8 @@ Remaining weakness:
 The repo now has an explicit file-size guard:
 
 - `scripts/check_flutter_file_sizes.sh`
+- `flutter_app/scripts/check_file_sizes.sh` (local wrapper for running from `flutter_app/`)
+- `flutter_app/scripts/run_everything.sh` (full verification entrypoint)
 
 This enforces the agreed `> 400 lines` failure threshold and is currently passing for `flutter_app`.
 
