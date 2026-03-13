@@ -202,6 +202,9 @@ class SudokuController extends ChangeNotifier {
     final scenario = DebugScenarios.correctionRecovery(
       service: _service,
       currentSettings: _settings.state,
+      tokensLeft: _debugScenarioLabel == 'Debug scenario: correction available'
+          ? _correctionState.tokensLeft
+          : null,
     );
     _applyDebugScenario(scenario, 'Debug correction scenario loaded');
   }
@@ -361,6 +364,10 @@ class SudokuController extends ChangeNotifier {
 
   void _saveGameSession() {
     _saveGameSessionInternal(this);
+  }
+
+  Future<void> flushGameSession() {
+    return _sessionService.flushPendingSave();
   }
 
   void _startPuzzle() {

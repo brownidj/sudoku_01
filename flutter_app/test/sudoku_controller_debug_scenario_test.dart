@@ -72,4 +72,37 @@ void main() {
     expect(state.board.cells[0][8].value, 4);
     expect(state.board.cells[6][8].conflicted, isTrue);
   });
+
+  test(
+    'reloading correction debug scenario preserves reduced corrections',
+    () async {
+      final controller = SudokuController(
+        preferencesStore: FakePreferencesStore(),
+        gameService: FakeGameService(),
+        settingsController: FakeSettingsController(
+          const SettingsState(
+            notesMode: false,
+            difficulty: 'easy',
+            canChangeDifficulty: true,
+            canChangePuzzleMode: true,
+            styleName: 'Modern',
+            contentMode: 'numbers',
+            animalStyle: 'simple',
+            puzzleMode: 'multi',
+          ),
+        ),
+      );
+      await controller.ready;
+
+      controller.onLoadCorrectionScenario();
+      controller.onConfirmCorrection();
+      expect(controller.state.correctionsLeft, 2);
+
+      controller.onLoadCorrectionScenario();
+      expect(controller.state.correctionsLeft, 2);
+
+      controller.onConfirmCorrection();
+      expect(controller.state.correctionsLeft, 1);
+    },
+  );
 }

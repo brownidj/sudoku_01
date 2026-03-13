@@ -36,8 +36,11 @@ class GameSessionService {
   final PreferencesStore _prefs;
   final GridUtils _gridUtils;
   final GameSessionCodec _codec;
+  Future<void> _pendingSave = Future<void>.value();
+  String? _queuedPayload;
+  bool _saveRunning = false;
 
-  const GameSessionService(
+  GameSessionService(
     this._prefs,
     this._gridUtils, {
     GameSessionCodec codec = const GameSessionCodec(),
@@ -95,7 +98,7 @@ class GameSessionService {
     }
   }
 
-  void save({
+  Future<void> save({
     required History history,
     required Coord? selected,
     required bool gameOver,
@@ -123,6 +126,29 @@ class GameSessionService {
       },
       'corrections': _codec.correctionStateToJson(correctionState),
     };
-    unawaited(_prefs.saveGameSession(jsonEncode(payload)));
+    _queuedPayload = jsonEncode(payload);
+    if (_saveRunning) {
+      return _pendingSave;
+    }
+    _saveRunning = true;
+    _pendingSave = _drainSaveQueue();
+    return _pendingSave;
+  }
+
+  Future<void> flushPendingSave() {
+    return _pendingSave;
+  }
+
+  Future<void> _drainSaveQueue() async {
+    while (_queuedPayload != null) {
+      final payload = _queuedPayload!;
+      _queuedPayload = null;
+      try {
+        await _prefs.saveGameSession(payload);
+      } catch (_) {
+        // Best-effort persistence; callers continue from in-memory state.
+      }
+    }
+    _saveRunning = false;
   }
 }

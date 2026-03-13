@@ -29,11 +29,12 @@ class DebugScenarios {
   static DebugScenario correctionRecovery({
     required GameService service,
     required SettingsState currentSettings,
+    int? tokensLeft,
   }) {
     return _buildCorrectionScenario(
       service: service,
       currentSettings: currentSettings,
-      tokensLeft: correctionsForDifficulty('easy'),
+      tokensLeft: tokensLeft ?? correctionsForDifficulty('easy'),
       pendingPrompt: true,
     );
   }
