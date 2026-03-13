@@ -5,10 +5,40 @@ import 'package:patrol/patrol.dart';
 import 'package:flutter_app/main.dart' as app;
 
 Future<void> _launchGame(PatrolIntegrationTester $) async {
+  await $.pumpAndSettle();
+
+  for (var i = 0; i < 10; i += 1) {
+    if ($('Notes').evaluate().isNotEmpty) {
+      return;
+    }
+
+    if ($('Play').evaluate().isNotEmpty) {
+      await $('Play').tap();
+      await $('Notes').waitUntilVisible();
+      return;
+    }
+
+    await $.pump(const Duration(milliseconds: 500));
+  }
+
   app.main();
   await $.pumpAndSettle();
-  await $('Play').tap();
-  await $('Notes').waitUntilVisible();
+
+  for (var i = 0; i < 20; i += 1) {
+    if ($('Notes').evaluate().isNotEmpty) {
+      return;
+    }
+
+    if ($('Play').evaluate().isNotEmpty) {
+      await $('Play').tap();
+      await $('Notes').waitUntilVisible();
+      return;
+    }
+
+    await $.pump(const Duration(milliseconds: 500));
+  }
+
+  throw StateError('Neither the start screen nor the board became visible.');
 }
 
 Future<void> _openDrawer(PatrolIntegrationTester $) async {
