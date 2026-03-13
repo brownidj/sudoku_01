@@ -3,6 +3,7 @@ import 'package:flutter_app/app/board_edit_coordinator.dart';
 import 'package:flutter_app/app/controller_startup_coordinator.dart';
 import 'package:flutter_app/app/contradiction_service.dart';
 import 'package:flutter_app/app/correction_state.dart';
+import 'package:flutter_app/app/correction_recovery_service.dart';
 import 'package:flutter_app/app/debug_scenarios.dart';
 import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/application/game_service.dart';
@@ -16,7 +17,6 @@ import 'package:flutter_app/app/solution_check_coordinator.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/app/ui_state_mapper.dart';
 import 'package:flutter_app/application/state.dart';
-import 'package:flutter_app/domain/ops.dart' as ops;
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 
@@ -31,6 +31,7 @@ class SudokuController extends ChangeNotifier {
   late final BoardEditCoordinator _boardEditCoordinator;
   late final ControllerStartupCoordinator _startupCoordinator;
   late final ContradictionService _contradictionService;
+  late final CorrectionRecoveryService _correctionRecoveryService;
   late History _history;
   late CorrectionState _correctionState;
   Coord? _selected;
@@ -57,6 +58,7 @@ class SudokuController extends ChangeNotifier {
     BoardEditCoordinator? boardEditCoordinator,
     ControllerStartupCoordinator? startupCoordinator,
     ContradictionService? contradictionService,
+    CorrectionRecoveryService? correctionRecoveryService,
   }) : _service = gameService ?? GameService() {
     final prefs = preferencesStore ?? PreferencesStore();
     final resolvedGridUtils = gridUtils ?? GridUtils();
@@ -76,6 +78,9 @@ class SudokuController extends ChangeNotifier {
         ControllerStartupCoordinator(_settings, _sessionService);
     _contradictionService =
         contradictionService ?? const ContradictionService();
+    _correctionRecoveryService =
+        correctionRecoveryService ??
+        CorrectionRecoveryService(contradictionService: _contradictionService);
     _history = _service.initialHistory();
     _correctionState = CorrectionState.initial(
       difficulty: _settings.state.difficulty,
