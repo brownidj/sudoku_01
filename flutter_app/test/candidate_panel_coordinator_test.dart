@@ -74,6 +74,8 @@ UiState _state({
     canUndo: false,
     correctionPromptCoord: null,
     debugScenarioLabel: null,
+    correctionNoticeSerial: 0,
+    correctionNoticeMessage: null,
   );
 }
 

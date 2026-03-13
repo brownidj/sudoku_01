@@ -40,7 +40,7 @@ class SudokuDrawer extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'ZuDoKu',
+                'ZuDoKu+',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
               ),
             ),
