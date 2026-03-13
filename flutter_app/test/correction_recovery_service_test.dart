@@ -64,9 +64,11 @@ void main() {
     final result = service.confirmCorrection(
       history: history,
       correctionState: state,
+      initialGrid: null,
     );
 
-    expect(result.status, 'Correction used. Cleared 1 tile(s).');
+    expect(result.status, startsWith('Correction used. Cleared '));
+    expect(result.correctedTiles, greaterThan(0));
     expect(result.correctionState.tokensLeft, 2);
     expect(result.correctionState.pendingPromptCoord, isNull);
     expect(

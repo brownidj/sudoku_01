@@ -31,6 +31,8 @@ class SudokuRuntimeStateService {
         canUndo: runtime.history.canUndo(),
         correctionPromptCoord: runtime.correctionState.pendingPromptCoord,
         debugScenarioLabel: runtime.debugScenarioLabel,
+        correctionNoticeSerial: runtime.correctionNoticeSerial,
+        correctionNoticeMessage: runtime.correctionNoticeMessage,
       ),
     );
   }
@@ -72,7 +74,8 @@ class SudokuRuntimeStateService {
       ..solutionAddedCells = {}
       ..correctCells = {}
       ..solutionGrid = null
-      ..debugScenarioLabel = null;
+      ..debugScenarioLabel = null
+      ..correctionNoticeMessage = null;
     settings.setDifficultyLocked(false);
     settings.setPuzzleModeLocked(false);
     clearCorrectionPromptState(runtime, clearRevertedCells: true);

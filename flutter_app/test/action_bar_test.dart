@@ -42,6 +42,8 @@ UiState _state({bool canUndo = false}) {
     canUndo: canUndo,
     correctionPromptCoord: null,
     debugScenarioLabel: null,
+    correctionNoticeSerial: 0,
+    correctionNoticeMessage: null,
   );
 }
 

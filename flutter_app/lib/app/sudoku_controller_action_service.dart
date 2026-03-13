@@ -110,11 +110,18 @@ class SudokuControllerActionService {
     final result = _correctionRecoveryService.confirmCorrection(
       history: runtime.history,
       correctionState: runtime.correctionState,
+      initialGrid: runtime.initialGrid,
     );
     runtime
       ..history = result.history
       ..lastConflicts = result.conflicts
       ..correctionState = result.correctionState;
+    if (result.correctedTiles > 0) {
+      runtime
+        ..correctionNoticeSerial = runtime.correctionNoticeSerial + 1
+        ..correctionNoticeMessage =
+            '${result.correctedTiles} tile(s) corrected.';
+    }
     saveGameSession();
     render(result.status);
   }
@@ -222,6 +229,9 @@ class SudokuControllerActionService {
     }
 
     runtime.correctionState = nextCorrection;
+    if (boardChanged) {
+      runtime.correctionNoticeMessage = null;
+    }
     saveGameSession();
 
     if (analysis.hasContradiction && runtime.correctionState.tokensLeft == 0) {

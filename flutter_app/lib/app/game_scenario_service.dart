@@ -115,7 +115,8 @@ class GameScenarioService {
       ..solutionAddedCells = {}
       ..correctCells = {}
       ..solutionGrid = null
-      ..gameOver = false;
+      ..gameOver = false
+      ..correctionNoticeMessage = null;
     _runtimeStateService.applyRestoredSettings(settings, scenario.settings);
     saveGameSession();
     render(status);

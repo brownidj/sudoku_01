@@ -14,6 +14,8 @@ class SudokuRuntimeState {
   Grid? solutionGrid;
   Grid? initialGrid;
   String? debugScenarioLabel;
+  int correctionNoticeSerial;
+  String? correctionNoticeMessage;
 
   SudokuRuntimeState({
     required this.history,
@@ -27,6 +29,8 @@ class SudokuRuntimeState {
     this.solutionGrid,
     this.initialGrid,
     this.debugScenarioLabel,
+    this.correctionNoticeSerial = 0,
+    this.correctionNoticeMessage,
   }) : lastConflicts = lastConflicts ?? <Coord>{},
        incorrectCells = incorrectCells ?? <Coord>{},
        solutionAddedCells = solutionAddedCells ?? <Coord>{},
