@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 
 class ActionBar extends StatelessWidget {
+  static const String undoTooltip =
+      'Use Undo to step back through the selections you made previously. '
+      'Undo clears each previous selection, one at a time. '
+      'You can also do this if you run out of Corrections';
   static const String solutionTooltip =
       'First press stops the game and shows you what you got '
       'correct/incorrect. Second press shows you the complete solution.';
@@ -63,10 +67,13 @@ class ActionBar extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Expanded(
-            child: OutlinedButton(
-              style: compactStyle,
-              onPressed: state.canUndo ? onUndo : null,
-              child: const Text('Undo'),
+            child: Tooltip(
+              message: undoTooltip,
+              child: OutlinedButton(
+                style: compactStyle,
+                onPressed: state.canUndo ? onUndo : null,
+                child: const Text('Undo'),
+              ),
             ),
           ),
           const SizedBox(width: 6),

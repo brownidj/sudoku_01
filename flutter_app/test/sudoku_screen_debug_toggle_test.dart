@@ -33,7 +33,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('Menu'));
+      await tester.tap(find.byIcon(Icons.menu));
       await tester.pumpAndSettle();
       await tester.drag(find.byType(ListView), const Offset(0, -1200));
       await tester.pumpAndSettle();
@@ -48,7 +48,7 @@ void main() {
       }
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('Menu'));
+      await tester.tap(find.byIcon(Icons.menu));
       await tester.pumpAndSettle();
       await tester.drag(find.byType(ListView), const Offset(0, -1200));
       await tester.pumpAndSettle();
