@@ -8,6 +8,7 @@ APP_DIR="${REPO_DIR}/flutter_app"
 IOS_INTEGRATION_DEVICE="${IOS_INTEGRATION_DEVICE:-A1D4B926-7DB8-436F-B648-16E26157B06B}"
 PATROL_TARGET="${PATROL_TARGET:-patrol_test/smoke_test.dart}"
 INTEGRATION_TARGET="${INTEGRATION_TARGET:-integration_test/app_flow_test.dart}"
+PATROL_DEVICES_TIMEOUT_SECONDS="${PATROL_DEVICES_TIMEOUT_SECONDS:-15}"
 
 require_command() {
   local cmd="$1"
@@ -65,7 +66,7 @@ wait_for_patrol_device() {
   local devices_output
 
   for ((i = 1; i <= attempts; i += 1)); do
-    devices_output="$(patrol devices 2>/dev/null || true)"
+    devices_output="$(patrol_devices_with_timeout || true)"
     if grep -Fq "$device_id" <<<"$devices_output"; then
       return 0
     fi
@@ -73,8 +74,35 @@ wait_for_patrol_device() {
   done
 
   echo "Timed out waiting for Patrol device: $device_id" >&2
-  patrol devices || true
+  patrol_devices_with_timeout || true
   exit 1
+}
+
+patrol_devices_with_timeout() {
+  python3 - <<'PY'
+import os
+import subprocess
+import sys
+
+timeout = int(os.environ.get("PATROL_DEVICES_TIMEOUT_SECONDS", "15"))
+try:
+    result = subprocess.run(
+        ["patrol", "devices"],
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        check=False,
+    )
+except subprocess.TimeoutExpired:
+    sys.stderr.write(f"patrol devices timed out after {timeout}s\n")
+    sys.exit(124)
+
+if result.stdout:
+    sys.stdout.write(result.stdout)
+if result.stderr:
+    sys.stderr.write(result.stderr)
+sys.exit(result.returncode)
+PY
 }
 
 run_step() {

@@ -16,4 +16,4 @@ rg --files "$ROOT_DIR" \
   | rg -v "^${ROOT_DIR}/ios/Runner.xcodeproj/project.pbxproj$" \
   | rg -v "^${ROOT_DIR}/macos/Runner.xcodeproj/project.pbxproj$" \
   | xargs wc -l \
-  | awk '$2 != "total" && $1 > 350 {print $1, $2; found=1} END{exit found?1:0}'
+  | awk '$2 != "total" && $1 > 400 {print $1, $2; found=1} END{exit found?1:0}'

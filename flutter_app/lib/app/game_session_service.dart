@@ -145,7 +145,9 @@ class GameSessionService {
       _queuedPayload = null;
       try {
         await _prefs.saveGameSession(payload);
-      } catch (_) {
+      } on Exception {
+        // Best-effort persistence; callers continue from in-memory state.
+      } on Error {
         // Best-effort persistence; callers continue from in-memory state.
       }
     }

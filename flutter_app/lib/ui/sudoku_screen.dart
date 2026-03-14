@@ -47,6 +47,13 @@ class _SudokuScreenState extends State<SudokuScreen> {
   void initState() {
     super.initState();
     _animalLoad = _loadAnimalImages();
+    widget.controller.addListener(_onControllerChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _onControllerChanged();
+    });
     _candidateSelectionService = CandidateSelectionService();
     _candidatePanelCoordinator = CandidatePanelCoordinator(
       _candidateSelectionService,
@@ -55,7 +62,24 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   @override
+  void didUpdateWidget(covariant SudokuScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller == widget.controller) {
+      return;
+    }
+    oldWidget.controller.removeListener(_onControllerChanged);
+    widget.controller.addListener(_onControllerChanged);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _onControllerChanged();
+    });
+  }
+
+  @override
   void dispose() {
+    widget.controller.removeListener(_onControllerChanged);
     _candidateSelectionService.removeListener(_onCandidateChanged);
     _candidateSelectionService.dispose();
     _tooltipService.dispose();
@@ -66,6 +90,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _onControllerChanged() {
+    if (!mounted) {
+      return;
+    }
+    final state = widget.controller.state;
+    _scheduleCorrectionPrompt(state);
+    _scheduleCorrectionNotice(state);
   }
 
   Future<void> _loadAnimalImages() async {
@@ -94,8 +127,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
           debugToolsEnabled: _debugToolsEnabled,
         );
         final style = styleForName(state.styleName);
-        _scheduleCorrectionPrompt(state);
-        _scheduleCorrectionNotice(state);
 
         return Scaffold(
           appBar: AppBar(
