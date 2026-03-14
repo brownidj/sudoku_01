@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/ui_state.dart';
 
 class SudokuDrawer extends StatelessWidget {
@@ -23,7 +23,7 @@ class SudokuDrawer extends StatelessWidget {
     this.onHelpPressed,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
-    this.showDebugTools = kDebugMode,
+    this.showDebugTools = AppDebug.enabled,
   });
 
   @override

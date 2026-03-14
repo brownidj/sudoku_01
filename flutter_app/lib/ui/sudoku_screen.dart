@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
@@ -9,8 +9,9 @@ import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/candidate_panel_coordinator.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
-import 'package:flutter_app/ui/services/correction_prompt_service.dart';
 import 'package:flutter_app/ui/services/debug_toggle_service.dart';
+import 'package:flutter_app/ui/services/sudoku_screen_effects_service.dart';
+import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
@@ -33,14 +34,13 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
   final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
   final AnimalAssetService _animalAssetService = const AnimalAssetService();
-  final CorrectionPromptService _correctionPromptService =
-      CorrectionPromptService();
+  final SudokuScreenEffectsService _effectsService =
+      SudokuScreenEffectsService();
   final DebugToggleService _debugToggleService = DebugToggleService();
   final TooltipOverlayService _tooltipService = TooltipOverlayService();
   Future<void>? _animalLoad;
   late final CandidateSelectionService _candidateSelectionService;
   late final CandidatePanelCoordinator _candidatePanelCoordinator;
-  int _lastCorrectionNoticeSerial = 0;
   bool _debugToolsEnabled = false;
 
   @override
@@ -87,6 +87,12 @@ class _SudokuScreenState extends State<SudokuScreen> {
       animation: widget.controller,
       builder: (context, _) {
         final state = widget.controller.state;
+        final viewModel = SudokuScreenViewModel.from(
+          state: state,
+          coordinator: _candidatePanelCoordinator,
+          selectionService: _candidateSelectionService,
+          debugToolsEnabled: _debugToolsEnabled,
+        );
         final style = styleForName(state.styleName);
         _scheduleCorrectionPrompt(state);
         _scheduleCorrectionNotice(state);
@@ -125,19 +131,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onSetDifficulty: widget.controller.onSetDifficulty,
             onAnimalStyleChanged: widget.controller.onAnimalStyleChanged,
             onStyleChanged: widget.controller.onStyleChanged,
-            onHelpPressed: () {
-              Navigator.of(context).maybePop();
-              showSudokuHelpDialog(context);
-            },
-            onLoadCorrectionScenario: () {
-              Navigator.of(context).maybePop();
-              widget.controller.onLoadCorrectionScenario();
-            },
-            onLoadExhaustedCorrectionScenario: () {
-              Navigator.of(context).maybePop();
-              widget.controller.onLoadExhaustedCorrectionScenario();
-            },
-            showDebugTools: kDebugMode && _debugToolsEnabled,
+            onHelpPressed: _onHelpPressed,
+            onLoadCorrectionScenario: _onLoadCorrectionScenario,
+            onLoadExhaustedCorrectionScenario:
+                _onLoadExhaustedCorrectionScenario,
+            showDebugTools: viewModel.showDebugTools,
           ),
           body: SafeArea(
             child: Column(
@@ -160,39 +158,16 @@ class _SudokuScreenState extends State<SudokuScreen> {
                       noteImagesBySize:
                           _noteImages[state.animalStyle] ?? const {},
                       devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
-                      candidateVisible:
-                          _candidatePanelCoordinator.visible &&
-                          _candidatePanelCoordinator.candidateCoord != null &&
-                          !state.gameOver,
-                      candidateDigits:
-                          _candidatePanelCoordinator.candidateDigits,
-                      selectedNotes: _candidateSelectionService.selectedNotes(
-                        state,
-                      ),
-                      onDigitSelected: (digit) {
-                        if (digit == 0) {
-                          widget.controller.onClearPressed();
-                        } else {
-                          widget.controller.onDigitPressed(digit);
-                        }
-                        _candidatePanelCoordinator.onDigitApplied(
-                          digit: digit,
-                          nextState: widget.controller.state,
-                        );
-                      },
+                      candidateVisible: viewModel.candidateVisible,
+                      candidateDigits: viewModel.candidateDigits,
+                      selectedNotes: viewModel.selectedNotes,
+                      onDigitSelected: _onCandidateDigitSelected,
                       onDigitLongPressed: state.notesMode
-                          ? (digit) {
-                              if (digit == 0) {
-                                return;
-                              }
-                              widget.controller.onPlaceDigit(digit);
-                              _candidatePanelCoordinator
-                                  .onPlacedDigitViaLongPress();
-                            }
+                          ? _onCandidateDigitLongPressed
                           : null,
                       onTapCell: _handleCellTap,
                       onLongPressCell: _handleCellLongPress,
-                      showDebugNotification: kDebugMode && _debugToolsEnabled,
+                      showDebugNotification: viewModel.showDebugNotification,
                     ),
                   ),
                 ),
@@ -202,7 +177,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   onUndo: widget.controller.onUndo,
                   onToggleNotesMode: widget.controller.onToggleNotesMode,
                   onClear: widget.controller.onClearPressed,
-                  onCheckOrSolution: () => _handleCheckOrSolution(state),
+                  onCheckOrSolution: _onCheckOrSolutionPressed,
                 ),
               ],
             ),
@@ -244,6 +219,45 @@ class _SudokuScreenState extends State<SudokuScreen> {
     }
   }
 
+  void _onCandidateDigitSelected(int digit) {
+    if (digit == 0) {
+      widget.controller.onClearPressed();
+    } else {
+      widget.controller.onDigitPressed(digit);
+    }
+    _candidatePanelCoordinator.onDigitApplied(
+      digit: digit,
+      nextState: widget.controller.state,
+    );
+  }
+
+  void _onCandidateDigitLongPressed(int digit) {
+    if (digit == 0) {
+      return;
+    }
+    widget.controller.onPlaceDigit(digit);
+    _candidatePanelCoordinator.onPlacedDigitViaLongPress();
+  }
+
+  void _onCheckOrSolutionPressed() {
+    _handleCheckOrSolution(widget.controller.state);
+  }
+
+  void _onHelpPressed() {
+    Navigator.of(context).maybePop();
+    showSudokuHelpDialog(context);
+  }
+
+  void _onLoadCorrectionScenario() {
+    Navigator.of(context).maybePop();
+    widget.controller.onLoadCorrectionScenario();
+  }
+
+  void _onLoadExhaustedCorrectionScenario() {
+    Navigator.of(context).maybePop();
+    widget.controller.onLoadExhaustedCorrectionScenario();
+  }
+
   void _handleCheckOrSolution(UiState state) {
     _candidatePanelCoordinator.onCheckOrSolution();
     if (state.gameOver) {
@@ -254,7 +268,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _scheduleCorrectionPrompt(UiState state) {
-    if (!_correctionPromptService.shouldSchedule(state.correctionPromptCoord)) {
+    if (!_effectsService.shouldScheduleCorrectionPrompt(
+      state.correctionPromptCoord,
+    )) {
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -266,35 +282,22 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _scheduleCorrectionNotice(UiState state) {
-    final message = state.correctionNoticeMessage;
-    if (message == null || state.correctionNoticeSerial == 0) {
+    if (!_effectsService.shouldScheduleCorrectionNotice(
+      serial: state.correctionNoticeSerial,
+      message: state.correctionNoticeMessage,
+    )) {
       return;
     }
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _showCorrectionNotice(state);
+      if (!mounted) {
+        return;
+      }
+      _effectsService.showCorrectionNotice(context, state);
     });
   }
 
-  void _showCorrectionNotice(UiState state) {
-    final message = state.correctionNoticeMessage;
-    if (!mounted || message == null || state.correctionNoticeSerial == 0) {
-      return;
-    }
-    if (_lastCorrectionNoticeSerial == state.correctionNoticeSerial) {
-      return;
-    }
-    _lastCorrectionNoticeSerial = state.correctionNoticeSerial;
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    if (messenger == null) {
-      return;
-    }
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
-  }
-
   Future<void> _showCorrectionPrompt() async {
-    final useCorrection = await _correctionPromptService.showPrompt(context);
+    final useCorrection = await _effectsService.showCorrectionPrompt(context);
     if (!mounted) {
       return;
     }
@@ -305,7 +308,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         if (!mounted) {
           return;
         }
-        _showCorrectionNotice(widget.controller.state);
+        _effectsService.showCorrectionNotice(context, widget.controller.state);
       });
       return;
     }
@@ -313,7 +316,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   }
 
   void _onVersionTapped() {
-    if (kReleaseMode) {
+    if (!AppDebug.enabled) {
       return;
     }
     if (!_debugToggleService.registerVersionTap(DateTime.now())) {

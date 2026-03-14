@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 class AppDebug {
   static const bool enabled = bool.fromEnvironment(
     'APP_DEBUG',
-    defaultValue: false,
+    defaultValue: kDebugMode,
   );
 
   static void log(String message) {
