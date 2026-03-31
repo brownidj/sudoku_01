@@ -26,6 +26,7 @@ class SudokuRuntimeStateService {
         solutionAddedCells: runtime.solutionAddedCells,
         solutionGrid: runtime.solutionGrid,
         gameOver: runtime.gameOver,
+        puzzleSolved: runtime.puzzleSolved,
         revertedCells: runtime.correctionState.revertedCells,
         correctionsLeft: runtime.correctionState.tokensLeft,
         canUndo: runtime.history.canUndo(),
@@ -70,6 +71,7 @@ class SudokuRuntimeStateService {
       ..selected = null
       ..lastConflicts = {}
       ..gameOver = false
+      ..puzzleSolved = false
       ..incorrectCells = {}
       ..solutionAddedCells = {}
       ..correctCells = {}

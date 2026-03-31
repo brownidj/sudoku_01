@@ -16,6 +16,7 @@ class GameControllerEffects {
       history: runtime.history,
       selected: runtime.selected,
       gameOver: runtime.gameOver,
+      puzzleSolved: runtime.puzzleSolved,
       initialGrid: runtime.initialGrid,
       settings: settings,
       correctionState: runtime.correctionState,

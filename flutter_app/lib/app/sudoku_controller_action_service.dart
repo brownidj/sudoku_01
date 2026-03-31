@@ -62,6 +62,20 @@ class SudokuControllerActionService {
     );
   }
 
+  void completePuzzleWithSolution({
+    required SudokuRuntimeState runtime,
+    required SettingsController settings,
+    required VoidCallback saveGameSession,
+    required ValueChanged<String> render,
+  }) {
+    _resolutionActions.completePuzzleWithSolution(
+      runtime: runtime,
+      settings: settings,
+      saveGameSession: saveGameSession,
+      render: render,
+    );
+  }
+
   void confirmCorrection({
     required SudokuRuntimeState runtime,
     required VoidCallback saveGameSession,

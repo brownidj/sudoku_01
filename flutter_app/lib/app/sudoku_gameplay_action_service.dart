@@ -117,6 +117,16 @@ class SudokuGameplayActionService {
     if (boardChanged) {
       runtime.correctionNoticeMessage = null;
     }
+    if (result.solved) {
+      runtime
+        ..gameOver = true
+        ..puzzleSolved = true
+        ..selected = null;
+      _runtimeStateService.clearCorrectionPromptState(
+        runtime,
+        clearRevertedCells: true,
+      );
+    }
     saveGameSession();
 
     if (analysis.hasContradiction && runtime.correctionState.tokensLeft == 0) {

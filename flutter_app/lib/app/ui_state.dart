@@ -44,6 +44,7 @@ class UiState {
   final String puzzleMode;
   final Coord? selected;
   final bool gameOver;
+  final bool puzzleSolved;
   final int correctionsLeft;
   final bool canUndo;
   final Coord? correctionPromptCoord;
@@ -63,6 +64,7 @@ class UiState {
     required this.puzzleMode,
     required this.selected,
     required this.gameOver,
+    this.puzzleSolved = false,
     required this.correctionsLeft,
     required this.canUndo,
     required this.correctionPromptCoord,

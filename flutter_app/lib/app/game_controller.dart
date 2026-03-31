@@ -207,6 +207,18 @@ class GameController {
     );
   }
 
+  void onCompletePuzzleWithSolution(VoidCallback notifyListeners) {
+    _actionService.completePuzzleWithSolution(
+      runtime: _runtime,
+      settings: _settings,
+      saveGameSession: () => _effects.saveGameSession(
+        runtime: _runtime,
+        settings: _settings.state,
+      ),
+      render: (status) => _effects.render(notifyListeners, status),
+    );
+  }
+
   void onConfirmCorrection(VoidCallback notifyListeners) {
     _actionService.confirmCorrection(
       runtime: _runtime,

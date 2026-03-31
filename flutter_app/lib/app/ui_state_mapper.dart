@@ -12,6 +12,7 @@ class UiStateMapperInput {
   final Set<Coord> solutionAddedCells;
   final Grid? solutionGrid;
   final bool gameOver;
+  final bool puzzleSolved;
   final Set<Coord> revertedCells;
   final int correctionsLeft;
   final bool canUndo;
@@ -30,6 +31,7 @@ class UiStateMapperInput {
     required this.solutionAddedCells,
     required this.solutionGrid,
     required this.gameOver,
+    this.puzzleSolved = false,
     required this.revertedCells,
     required this.correctionsLeft,
     required this.canUndo,
@@ -89,6 +91,7 @@ class UiStateMapper {
       puzzleMode: input.settings.puzzleMode,
       selected: input.selected,
       gameOver: input.gameOver,
+      puzzleSolved: input.puzzleSolved,
       correctionsLeft: input.correctionsLeft,
       canUndo: input.canUndo,
       correctionPromptCoord: input.correctionPromptCoord,

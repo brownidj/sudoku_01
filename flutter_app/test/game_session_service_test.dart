@@ -43,6 +43,7 @@ void main() {
       history: history,
       selected: null,
       gameOver: false,
+      puzzleSolved: false,
       initialGrid: null,
       settings: settings,
       correctionState: CorrectionState.initial(

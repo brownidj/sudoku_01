@@ -41,6 +41,7 @@ class GameStartupService {
           correctionState: restoredSession.correctionState,
           selected: restoredSession.selected,
           gameOver: restoredSession.gameOver,
+          puzzleSolved: restoredSession.puzzleSolved,
           initialGrid: restoredSession.initialGrid,
           debugScenarioLabel: restoredSession.debugScenarioLabel,
         ),

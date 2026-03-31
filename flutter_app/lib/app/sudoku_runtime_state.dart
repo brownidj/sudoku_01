@@ -8,6 +8,7 @@ class SudokuRuntimeState {
   Coord? selected;
   Set<Coord> lastConflicts;
   bool gameOver;
+  bool puzzleSolved;
   Set<Coord> incorrectCells;
   Set<Coord> solutionAddedCells;
   Set<Coord> correctCells;
@@ -23,6 +24,7 @@ class SudokuRuntimeState {
     this.selected,
     Set<Coord>? lastConflicts,
     this.gameOver = false,
+    this.puzzleSolved = false,
     Set<Coord>? incorrectCells,
     Set<Coord>? solutionAddedCells,
     Set<Coord>? correctCells,

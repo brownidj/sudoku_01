@@ -38,6 +38,7 @@ class SudokuResolutionActionService {
       ..solutionGrid = null
       ..solutionAddedCells = {}
       ..selected = null
+      ..puzzleSolved = false
       ..gameOver = true;
     settings.setPuzzleModeLocked(false);
     _runtimeStateService.clearCorrectionPromptState(
@@ -83,6 +84,34 @@ class SudokuResolutionActionService {
     );
     saveGameSession();
     render('Solution');
+  }
+
+  void completePuzzleWithSolution({
+    required SudokuRuntimeState runtime,
+    required SettingsController settings,
+    required VoidCallback saveGameSession,
+    required ValueChanged<String> render,
+  }) {
+    final result = _solutionCoordinator.showSolution(
+      history: runtime.history,
+      initialGrid: runtime.initialGrid,
+      givens: _runtimeStateService.givenCoords(runtime.history),
+    );
+    runtime
+      ..incorrectCells = {}
+      ..correctCells = result.correct
+      ..solutionGrid = result.solutionGrid
+      ..solutionAddedCells = result.solutionAdded
+      ..selected = null
+      ..gameOver = true
+      ..puzzleSolved = true;
+    settings.setPuzzleModeLocked(false);
+    _runtimeStateService.clearCorrectionPromptState(
+      runtime,
+      clearRevertedCells: true,
+    );
+    saveGameSession();
+    render('Solved.');
   }
 
   void confirmCorrection({

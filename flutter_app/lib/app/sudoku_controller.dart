@@ -144,6 +144,8 @@ class SudokuController extends ChangeNotifier {
       _gameController.onPuzzleModeChanged(mode, notifyListeners);
   void onCheckSolution() => _gameController.onCheckSolution(notifyListeners);
   void onShowSolution() => _gameController.onShowSolution(notifyListeners);
+  void onCompletePuzzleWithSolution() =>
+      _gameController.onCompletePuzzleWithSolution(notifyListeners);
   void onConfirmCorrection() =>
       _gameController.onConfirmCorrection(notifyListeners);
   void onDismissCorrectionPrompt() =>

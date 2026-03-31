@@ -14,6 +14,7 @@ class RestoredGameSession {
   final History history;
   final Coord? selected;
   final bool gameOver;
+  final bool puzzleSolved;
   final Grid initialGrid;
   final SettingsState settings;
   final CorrectionState correctionState;
@@ -23,6 +24,7 @@ class RestoredGameSession {
     required this.history,
     required this.selected,
     required this.gameOver,
+    required this.puzzleSolved,
     required this.initialGrid,
     required this.settings,
     required this.correctionState,
@@ -86,6 +88,7 @@ class GameSessionService {
         history: history,
         selected: _codec.coordFromJson(decoded['selected']),
         gameOver: decoded['gameOver'] == true,
+        puzzleSolved: decoded['puzzleSolved'] == true,
         initialGrid: initialGrid,
         settings: settings,
         correctionState: correctionState,
@@ -102,6 +105,7 @@ class GameSessionService {
     required History history,
     required Coord? selected,
     required bool gameOver,
+    required bool puzzleSolved,
     required Grid? initialGrid,
     required SettingsState settings,
     required CorrectionState correctionState,
@@ -113,6 +117,7 @@ class GameSessionService {
       'initialGrid': _codec.gridToJson(initialGrid),
       'selected': _codec.coordToJson(selected),
       'gameOver': gameOver,
+      'puzzleSolved': puzzleSolved,
       'debugScenarioLabel': debugScenarioLabel,
       'settings': <String, dynamic>{
         'notesMode': settings.notesMode,
