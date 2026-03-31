@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter_app/application/solver.dart';
 import 'package:flutter_app/domain/types.dart';
 
 class Puzzle {
@@ -56,11 +57,7 @@ const Map<String, List<Grid>> _difficultySeeds = {
   'hard': [_hardGrid01],
 };
 
-const Map<String, int> _targetGivens = {
-  'easy': 40,
-  'medium': 32,
-  'hard': 26,
-};
+const Map<String, int> _targetGivens = {'easy': 40, 'medium': 32, 'hard': 26};
 
 final Map<String, Puzzle> puzzles = {
   'starter': Puzzle(puzzleId: 'starter', difficulty: 'easy', grid: _easyGrid01),
@@ -76,7 +73,11 @@ Puzzle getPuzzle(String puzzleId) {
 
 List<Puzzle> listPuzzles() => puzzles.values.toList(growable: false);
 
-Puzzle generatePuzzle(String difficulty, {String mode = 'unique', Random? rng}) {
+Puzzle generatePuzzle(
+  String difficulty, {
+  String mode = 'unique',
+  Random? rng,
+}) {
   final random = rng ?? Random();
   final diff = difficulty.trim().toLowerCase();
   if (!_difficultySeeds.containsKey(diff)) {
@@ -90,12 +91,12 @@ Puzzle generatePuzzle(String difficulty, {String mode = 'unique', Random? rng}) 
   final solution = _generateFullSolution(random);
   final Grid grid;
   if (resolvedMode == 'unique') {
-    // TODO: enforce uniqueness once a solver is available.
-    grid = _maskSolution(solution, diff, random);
+    grid = _maskSolutionUnique(solution, diff, random);
   } else {
     grid = _maskSolution(solution, diff, random);
   }
-  final puzzleId = '${diff}_gen_${random.nextInt(0xffffffff).toRadixString(16).padLeft(8, '0')}';
+  final puzzleId =
+      '${diff}_gen_${random.nextInt(0xffffffff).toRadixString(16).padLeft(8, '0')}';
   return Puzzle(puzzleId: puzzleId, difficulty: diff, grid: grid);
 }
 
@@ -181,10 +182,7 @@ Grid _generateFullSolution(Random rng) {
       .toList(growable: false);
 }
 
-Grid _maskSolution(Grid solution, String difficulty, Random rng) {
-  final diff = difficulty.trim().toLowerCase();
-  final target = _targetGivens[diff] ?? _targetGivens['easy']!;
-  final work = solution.map((row) => row.toList()).toList();
+List<List<int>> _symmetricCoords(Random rng) {
   final coords = <List<int>>[];
   for (var r = 0; r < 9; r += 1) {
     for (var c = 0; c < 9; c += 1) {
@@ -194,6 +192,14 @@ Grid _maskSolution(Grid solution, String difficulty, Random rng) {
     }
   }
   coords.shuffle(rng);
+  return coords;
+}
+
+Grid _maskSolution(Grid solution, String difficulty, Random rng) {
+  final diff = difficulty.trim().toLowerCase();
+  final target = _targetGivens[diff] ?? _targetGivens['easy']!;
+  final work = solution.map((row) => row.toList()).toList();
+  final coords = _symmetricCoords(rng);
 
   var givens = 81;
   for (final coord in coords) {
@@ -215,6 +221,47 @@ Grid _maskSolution(Grid solution, String difficulty, Random rng) {
     work[r2][c2] = null;
     givens -= removal;
   }
+  return work
+      .map((row) => row.map((cell) => cell).toList(growable: false))
+      .toList(growable: false);
+}
+
+Grid _maskSolutionUnique(Grid solution, String difficulty, Random rng) {
+  final diff = difficulty.trim().toLowerCase();
+  final target = _targetGivens[diff] ?? _targetGivens['easy']!;
+  final work = solution.map((row) => row.toList()).toList();
+  final coords = _symmetricCoords(rng);
+
+  var givens = 81;
+  for (final coord in coords) {
+    if (givens <= target) {
+      break;
+    }
+    final r = coord[0];
+    final c = coord[1];
+    final r2 = 8 - r;
+    final c2 = 8 - c;
+    final removal = (r == r2 && c == c2) ? 1 : 2;
+    if (givens - removal < target) {
+      continue;
+    }
+
+    final prevA = work[r][c];
+    final prevB = work[r2][c2];
+    if (prevA == null && prevB == null) {
+      continue;
+    }
+
+    work[r][c] = null;
+    work[r2][c2] = null;
+    if (countSolutions(work, limit: 2) == 1) {
+      givens -= removal;
+    } else {
+      work[r][c] = prevA;
+      work[r2][c2] = prevB;
+    }
+  }
+
   return work
       .map((row) => row.map((cell) => cell).toList(growable: false))
       .toList(growable: false);

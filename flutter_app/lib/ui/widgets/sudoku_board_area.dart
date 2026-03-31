@@ -148,7 +148,7 @@ class SudokuBoardArea extends StatelessWidget {
                                 onLongPress: () => tooltipKey.currentState
                                     ?.ensureTooltipVisible(),
                                 child: Text(
-                                  'Corrections: ${state.correctionsLeft}',
+                                  '${state.correctionsLeft} auto-corrects left',
                                   style: Theme.of(context).textTheme.labelSmall
                                       ?.copyWith(
                                         fontWeight: FontWeight.w600,

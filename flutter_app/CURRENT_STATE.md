@@ -200,7 +200,7 @@ Remaining weakness:
   - for ordinary Flutter UI flows, `integration_test` is the preferred path because it is more stable on iOS
 
 ### Execution
-- The repo now supports a single full-run script from `flutter_app/`:
+- The repo now supports a single full-run script from the repo root:
   - `./scripts/run_everything.sh`
 - That script runs:
   - file-size checks
@@ -208,20 +208,17 @@ Remaining weakness:
   - `flutter pub get`
   - `pod install`
   - `flutter test`
-  - Flutter integration tests
-  - Patrol tests for Android and iOS
-- iOS execution is intentionally split:
-  - Flutter integration tests run on the normal working simulator
-  - iOS Patrol runs on a latest-runtime simulator, because Patrol’s iOS destination handling is stricter and more brittle than standard Flutter integration testing
+  - Flutter integration tests on Android and iOS
+  - Patrol tests on Android
+- iOS is validated through Flutter integration tests in this main path.
 
 ---
 
 ## 7. File Size and Structural Guardrails
 The repo now has an explicit file-size guard:
 
-- `scripts/check_flutter_file_sizes.sh`
-- `flutter_app/scripts/check_file_sizes.sh` (local wrapper for running from `flutter_app/`)
-- `flutter_app/scripts/run_everything.sh` (full verification entrypoint)
+- `scripts/check_file_sizes.sh`
+- `scripts/run_everything.sh` (full verification entrypoint)
 
 This enforces the agreed `> 400 lines` failure threshold and is currently passing for `flutter_app`.
 

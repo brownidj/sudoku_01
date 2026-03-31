@@ -86,7 +86,7 @@ void main() {
       );
 
       expect(find.text('UNIQUE'), findsOneWidget);
-      expect(find.text('Corrections: 1'), findsOneWidget);
+      expect(find.text('1 auto-corrects left'), findsOneWidget);
       expect(find.text('HARD'), findsOneWidget);
     },
   );
@@ -123,7 +123,7 @@ void main() {
       ),
     );
 
-    await tester.longPress(find.text('Corrections: 2'));
+    await tester.longPress(find.text('2 auto-corrects left'));
     await tester.pumpAndSettle();
 
     expect(

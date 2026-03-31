@@ -21,4 +21,13 @@ void main() {
       expect(row.contains(null), isFalse);
     }
   });
+
+  test('countSolutions respects limit for underconstrained grid', () {
+    final empty = List<List<int?>>.generate(
+      9,
+      (_) => List<int?>.filled(9, null, growable: false),
+      growable: false,
+    );
+    expect(countSolutions(empty, limit: 2), 2);
+  });
 }

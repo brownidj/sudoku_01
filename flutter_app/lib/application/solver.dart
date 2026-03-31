@@ -1,7 +1,32 @@
 import 'package:flutter_app/domain/types.dart';
 
 Grid? solveGrid(Grid grid) {
+  final result = _searchSolutions(grid, solutionLimit: 1);
+  if (result.solutions.isEmpty) {
+    return null;
+  }
+  return result.solutions.first;
+}
+
+int countSolutions(Grid grid, {int limit = 2}) {
+  if (limit < 1) {
+    throw ArgumentError.value(limit, 'limit', 'Must be >= 1');
+  }
+  final result = _searchSolutions(grid, solutionLimit: limit);
+  return result.count;
+}
+
+class _SearchResult {
+  final int count;
+  final List<Grid> solutions;
+
+  const _SearchResult({required this.count, required this.solutions});
+}
+
+_SearchResult _searchSolutions(Grid grid, {required int solutionLimit}) {
   final work = grid.map((row) => row.toList()).toList();
+  var count = 0;
+  final solutions = <Grid>[];
 
   bool isLegal(int r, int c, int val) {
     for (var cc = 0; cc < 9; cc += 1) {
@@ -37,6 +62,9 @@ Grid? solveGrid(Grid grid) {
   }
 
   bool solve() {
+    if (count >= solutionLimit) {
+      return true;
+    }
     int? bestR;
     int? bestC;
     List<int>? bestCandidates;
@@ -49,7 +77,8 @@ Grid? solveGrid(Grid grid) {
         if (candidates.isEmpty) {
           return false;
         }
-        if (bestCandidates == null || candidates.length < bestCandidates.length) {
+        if (bestCandidates == null ||
+            candidates.length < bestCandidates.length) {
           bestCandidates = candidates;
           bestR = r;
           bestC = c;
@@ -63,20 +92,27 @@ Grid? solveGrid(Grid grid) {
       }
     }
     if (bestCandidates == null || bestR == null || bestC == null) {
-      return true;
+      count += 1;
+      if (solutions.length < solutionLimit) {
+        solutions.add(
+          work
+              .map((row) => row.toList(growable: false))
+              .toList(growable: false),
+        );
+      }
+      return count >= solutionLimit;
     }
     for (final val in bestCandidates) {
       work[bestR][bestC] = val;
-      if (solve()) {
+      solve();
+      work[bestR][bestC] = null;
+      if (count >= solutionLimit) {
         return true;
       }
-      work[bestR][bestC] = null;
     }
     return false;
   }
 
-  if (!solve()) {
-    return null;
-  }
-  return work.map((row) => row.toList(growable: false)).toList(growable: false);
+  solve();
+  return _SearchResult(count: count, solutions: solutions);
 }

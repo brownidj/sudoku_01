@@ -80,7 +80,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'ZuDoKu 0.6.0 build 149',
+                  'ZuDoKu 0.6.2 build 159',
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
