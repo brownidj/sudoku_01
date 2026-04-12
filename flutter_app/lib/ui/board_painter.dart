@@ -5,8 +5,8 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/board_layout.dart';
+import 'package:flutter_app/ui/board_note_painter.dart';
 import 'package:flutter_app/ui/board_theme.dart';
-import 'package:flutter_app/ui/note_layout.dart';
 import 'package:flutter_app/ui/styles.dart';
 
 class SudokuBoardPainter extends CustomPainter {
@@ -50,6 +50,13 @@ class SudokuBoardPainter extends CustomPainter {
     final selBoxCol = selCol == null ? null : selCol ~/ 3;
 
     final cellSize = layout.cellSize;
+    final notePainter = BoardNotePainter(
+      style: style,
+      contentMode: state.contentMode,
+      noteImagesBySize: noteImagesBySize,
+      devicePixelRatio: devicePixelRatio,
+      animalColorFilterResolver: _animalColorFilter,
+    );
     for (var r = 0; r < 9; r += 1) {
       final row = state.board.cells[r];
       for (var c = 0; c < 9; c += 1) {
@@ -109,7 +116,7 @@ class SudokuBoardPainter extends CustomPainter {
             _drawValue(canvas, rect, cell.value!, cell.given, cellSize);
           }
         } else if (cell.notes.isNotEmpty) {
-          _drawNotes(canvas, rect, cell.notes, cellSize);
+          notePainter.drawNotes(canvas, rect, cell.notes);
         }
 
         // Solution/correct/given outlines handled above.
@@ -139,101 +146,6 @@ class SudokuBoardPainter extends CustomPainter {
         style: TextStyle(
           color: given ? style.givenColor : style.valueColor,
           fontWeight: given ? FontWeight.bold : FontWeight.normal,
-          fontSize: fontSize,
-        ),
-      ),
-      textAlign: TextAlign.center,
-      textDirection: TextDirection.ltr,
-    )..layout(minWidth: 0, maxWidth: rect.width);
-
-    final offset = Offset(
-      rect.left + (rect.width - textPainter.width) / 2,
-      rect.top + (rect.height - textPainter.height) / 2,
-    );
-    textPainter.paint(canvas, offset);
-  }
-
-  void _drawNotes(Canvas canvas, Rect rect, List<int> notes, double cellSize) {
-    final notesSorted = List<int>.from(notes)..sort();
-    if (notesSorted.isEmpty) {
-      return;
-    }
-    final gridSize = noteGridSize(notesSorted.length);
-    final subCellSize = rect.width / gridSize;
-    if (state.contentMode == 'numbers') {
-      _drawNumberNotes(canvas, rect, notesSorted, gridSize, subCellSize);
-      return;
-    }
-    final logicalSize = subCellSize * 0.95;
-    final targetPx = logicalSize * devicePixelRatio;
-    final sizePx = bestNoteSize(targetPx, noteImagesBySize.keys);
-    if (sizePx == 0 || !noteImagesBySize.containsKey(sizePx)) {
-      _drawNumberNotes(canvas, rect, notesSorted, gridSize, subCellSize);
-      return;
-    }
-    final maxNotes = gridSize * gridSize;
-    for (var i = 0; i < notesSorted.length && i < maxNotes; i += 1) {
-      final digit = notesSorted[i];
-      final row = i ~/ gridSize;
-      final col = i % gridSize;
-      final cellLeft = rect.left + col * subCellSize;
-      final cellTop = rect.top + row * subCellSize;
-      final cellRect = Rect.fromLTWH(
-        cellLeft,
-        cellTop,
-        subCellSize,
-        subCellSize,
-      );
-      final image = noteImagesBySize[sizePx]?[digit];
-      if (image == null) {
-        _drawNoteDigit(canvas, cellRect, digit);
-        continue;
-      }
-      final left = cellLeft + (subCellSize - logicalSize) / 2;
-      final top = cellTop + (subCellSize - logicalSize) / 2;
-      final target = Rect.fromLTWH(left, top, logicalSize, logicalSize);
-      paintImage(
-        canvas: canvas,
-        rect: target,
-        image: image,
-        fit: BoxFit.contain,
-        colorFilter: _animalColorFilter(digit),
-      );
-    }
-  }
-
-  void _drawNumberNotes(
-    Canvas canvas,
-    Rect rect,
-    List<int> notesSorted,
-    int gridSize,
-    double subCellSize,
-  ) {
-    final maxNotes = gridSize * gridSize;
-    for (var i = 0; i < notesSorted.length && i < maxNotes; i += 1) {
-      final digit = notesSorted[i];
-      final row = i ~/ gridSize;
-      final col = i % gridSize;
-      final cellLeft = rect.left + col * subCellSize;
-      final cellTop = rect.top + row * subCellSize;
-      final cellRect = Rect.fromLTWH(
-        cellLeft,
-        cellTop,
-        subCellSize,
-        subCellSize,
-      );
-      _drawNoteDigit(canvas, cellRect, digit);
-    }
-  }
-
-  void _drawNoteDigit(Canvas canvas, Rect rect, int digit) {
-    final fontSize = rect.width * 0.6;
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: digit.toString(),
-        style: TextStyle(
-          color: style.valueColor.withOpacity(0.7),
-          fontWeight: FontWeight.w500,
           fontSize: fontSize,
         ),
       ),

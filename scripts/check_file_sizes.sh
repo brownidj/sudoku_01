@@ -10,10 +10,13 @@ fi
 
 rg --files "$ROOT_DIR" \
   | rg -v "^${ROOT_DIR}/assets/" \
+  | rg -v "^${ROOT_DIR}/android/app/src/main/res/" \
   | rg -v "^${ROOT_DIR}/ios/Runner/Assets.xcassets/" \
+  | rg -v "^${ROOT_DIR}/ios/Runner/Base.lproj/" \
   | rg -v "^${ROOT_DIR}/macos/Runner/Assets.xcassets/" \
+  | rg -v "^${ROOT_DIR}/macos/Runner/Base.lproj/" \
   | rg -v "^${ROOT_DIR}/pubspec.lock$" \
   | rg -v "^${ROOT_DIR}/ios/Runner.xcodeproj/project.pbxproj$" \
   | rg -v "^${ROOT_DIR}/macos/Runner.xcodeproj/project.pbxproj$" \
   | xargs wc -l \
-  | awk '$2 != "total" && $1 > 400 {print $1, $2; found=1} END{exit found?1:0}'
+  | awk '$2 != "total" && $1 > 300 {print $1, $2; found=1} END{exit found?1:0}'
