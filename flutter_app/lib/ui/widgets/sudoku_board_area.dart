@@ -8,6 +8,7 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/widgets/candidate_panel.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board.dart';
+import 'package:flutter_app/ui/widgets/sudoku_board_metadata_row.dart';
 import 'package:flutter_app/ui/styles.dart';
 
 class SudokuBoardArea extends StatelessWidget {
@@ -24,6 +25,8 @@ class SudokuBoardArea extends StatelessWidget {
   final ValueChanged<Coord> onTapCell;
   final void Function(Offset, Coord) onLongPressCell;
   final bool showDebugNotification;
+  final ValueChanged<String>? onPuzzleModeChanged;
+  final ValueChanged<String>? onDifficultyChanged;
 
   const SudokuBoardArea({
     super.key,
@@ -40,6 +43,8 @@ class SudokuBoardArea extends StatelessWidget {
     required this.onTapCell,
     required this.onLongPressCell,
     this.showDebugNotification = true,
+    this.onPuzzleModeChanged,
+    this.onDifficultyChanged,
   });
 
   @override
@@ -120,107 +125,12 @@ class SudokuBoardArea extends StatelessWidget {
             ],
             SizedBox(
               width: boardWidth,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        state.puzzleMode.toUpperCase(),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withOpacity(0.6),
-                          letterSpacing: 0.6,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Builder(
-                          builder: (context) {
-                            final tooltipKey = GlobalKey<TooltipState>();
-                            return Tooltip(
-                              key: tooltipKey,
-                              message: hintsTooltipMessage,
-                              triggerMode: TooltipTriggerMode.manual,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onLongPress: () => tooltipKey.currentState
-                                    ?.ensureTooltipVisible(),
-                                child: Text(
-                                  'Hints: ${state.conflictHintsLeft}',
-                                  style: Theme.of(context).textTheme.labelSmall
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.6),
-                                      ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Builder(
-                          builder: (context) {
-                            final tooltipKey = GlobalKey<TooltipState>();
-                            return Tooltip(
-                              key: tooltipKey,
-                              message: correctionsTooltipMessage,
-                              triggerMode: TooltipTriggerMode.manual,
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onLongPress: () => tooltipKey.currentState
-                                    ?.ensureTooltipVisible(),
-                                child: Text(
-                                  'Corrections: ${state.correctionsLeft}',
-                                  style: Theme.of(context).textTheme.labelSmall
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withOpacity(0.6),
-                                      ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        state.difficulty.toUpperCase(),
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withOpacity(0.6),
-                          letterSpacing: 0.6,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+              child: SudokuBoardMetadataRow(
+                state: state,
+                hintsTooltipMessage: hintsTooltipMessage,
+                correctionsTooltipMessage: correctionsTooltipMessage,
+                onPuzzleModeChanged: onPuzzleModeChanged,
+                onDifficultyChanged: onDifficultyChanged,
               ),
             ),
             const SizedBox(height: 12),

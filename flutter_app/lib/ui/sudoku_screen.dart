@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
+import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_service_registry.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
@@ -28,6 +30,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
   final AnimalAssetService _animalAssetService = const AnimalAssetService();
   late final SudokuScreenServiceRegistry _services;
+  final SudokuNewGameConfirmationService _newGameConfirmationService =
+      const SudokuNewGameConfirmationService();
   Future<void>? _animalLoad;
   final GlobalKey _overlayStackKey = GlobalKey();
   final GlobalKey _tilesPanelKey = GlobalKey();
@@ -108,8 +112,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
           ),
           drawer: SudokuDrawer(
             state: state,
-            onPuzzleModeChanged: widget.controller.onPuzzleModeChanged,
-            onSetDifficulty: widget.controller.onSetDifficulty,
             onAnimalStyleChanged: widget.controller.onAnimalStyleChanged,
             onStyleChanged: widget.controller.onStyleChanged,
             audioEnabled: _audioEnabled,
@@ -161,7 +163,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     onNewGame: widget.controller.onNewGame,
                     onContentModeChanged:
                         widget.controller.onContentModeChanged,
-                    onSetDifficulty: widget.controller.onSetDifficulty,
+                    onPuzzleModeChanged: _onPuzzleModeRequested,
+                    onSetDifficulty: _onDifficultyRequested,
                     onStyleChanged: widget.controller.onStyleChanged,
                     onUndo: widget.controller.onUndo,
                     onToggleNotesMode: widget.controller.onToggleNotesMode,
@@ -242,6 +245,38 @@ class _SudokuScreenState extends State<SudokuScreen> {
       tilesPanelKey: _tilesPanelKey,
       bottomControlsKey: _bottomControlsKey,
       isMounted: () => mounted,
+    );
+  }
+
+  void _onPuzzleModeRequested(String mode) {
+    if (mode == widget.controller.state.puzzleMode) {
+      return;
+    }
+    unawaited(
+      _newGameConfirmationService.confirmAndRun(
+        context: context,
+        isMounted: () => mounted,
+        title: 'Start New Game?',
+        message:
+            'Change puzzle mode to ${mode.toUpperCase()} and start a new game?',
+        onConfirm: () => widget.controller.onPuzzleModeChanged(mode),
+      ),
+    );
+  }
+
+  void _onDifficultyRequested(String difficulty) {
+    if (difficulty == widget.controller.state.difficulty) {
+      return;
+    }
+    unawaited(
+      _newGameConfirmationService.confirmAndRun(
+        context: context,
+        isMounted: () => mounted,
+        title: 'Start New Game?',
+        message:
+            'Change difficulty to ${difficulty.toUpperCase()} and start a new game?',
+        onConfirm: () => widget.controller.onSetDifficulty(difficulty),
+      ),
     );
   }
 }

@@ -116,7 +116,7 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
             onPressed: () => Scaffold.of(context).openDrawer(),
             icon: const Icon(Icons.menu),
             tooltip:
-                'Press this to open a drawer. Use the drawer menu to change puzzle solution mode, difficulty, animals, and style.',
+                'Press this to open a drawer. Use the drawer menu to change animals and style.',
           ),
         ),
       ],

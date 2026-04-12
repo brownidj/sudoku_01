@@ -15,7 +15,7 @@ import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/main.dart' as app;
 
 const _menuTooltip =
-    'Press this to open a drawer. Use the drawer menu to change puzzle solution mode, difficulty, animals, and style.';
+    'Press this to open a drawer. Use the drawer menu to change animals and style.';
 const _correctionsTooltipPrefix = 'In this mode you have ';
 const _undoTooltip =
     'Use Undo to step back through the selections you made previously. '
@@ -53,8 +53,8 @@ void main() {
     expect(find.text(_menuTooltip), findsOneWidget);
 
     await _openDrawer(tester);
-    expect(find.text('Puzzle Solution Mode'), findsOneWidget);
-    expect(find.text('Difficulty'), findsOneWidget);
+    expect(find.text('Puzzle Solution Mode'), findsNothing);
+    expect(find.text('Difficulty'), findsNothing);
     expect(find.text('Help'), findsOneWidget);
 
     await tester.tap(find.text('Help'));
@@ -64,6 +64,15 @@ void main() {
     expect(find.text('OK'), findsOneWidget);
     await tester.tap(find.text('OK'));
     await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('board tooltips are reachable', (tester) async {

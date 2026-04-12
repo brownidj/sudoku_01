@@ -50,7 +50,7 @@ except json.JSONDecodeError:
     sys.exit(1)
 
 for d in devices:
-    if d.get("targetPlatform") == "ios":
+    if d.get("targetPlatform") == "ios" and d.get("emulator") is True:
         print(d.get("id", ""))
         sys.exit(0)
 

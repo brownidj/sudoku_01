@@ -67,13 +67,15 @@ void main() {
     await _launchGame($);
     await _openDrawer($);
 
-    await $('Puzzle Solution Mode').waitUntilVisible();
-    await $('Difficulty').waitUntilVisible();
+    await $('Animals').waitUntilVisible();
+    await $('Puzzle Style').waitUntilVisible();
+    await $('Audio').waitUntilVisible();
     await $('Help').waitUntilVisible();
 
-    expect($('Puzzle Solution Mode'), findsOneWidget);
-    expect($('Difficulty'), findsOneWidget);
-    expect($('Help'), findsOneWidget);
+    expect($('Animals'), findsWidgets);
+    expect($('Puzzle Style'), findsWidgets);
+    expect($('Audio'), findsWidgets);
+    expect($('Help'), findsWidgets);
   });
 
   patrolTest('shows main action bar controls', ($) async {

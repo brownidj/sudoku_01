@@ -5,7 +5,6 @@ class TopControls extends StatelessWidget {
   final UiState state;
   final VoidCallback onNewGame;
   final ValueChanged<String> onContentModeChanged;
-  final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onStyleChanged;
 
   const TopControls({
@@ -13,7 +12,6 @@ class TopControls extends StatelessWidget {
     required this.state,
     required this.onNewGame,
     required this.onContentModeChanged,
-    required this.onSetDifficulty,
     required this.onStyleChanged,
   });
 

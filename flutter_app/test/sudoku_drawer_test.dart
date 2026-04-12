@@ -57,8 +57,6 @@ void main() {
       MaterialApp(
         home: SudokuDrawer(
           state: _state(),
-          onPuzzleModeChanged: (_) {},
-          onSetDifficulty: (_) {},
           onAnimalStyleChanged: (_) {},
           onStyleChanged: (_) {},
           audioEnabled: true,
@@ -83,8 +81,6 @@ void main() {
       MaterialApp(
         home: SudokuDrawer(
           state: _state(),
-          onPuzzleModeChanged: (_) {},
-          onSetDifficulty: (_) {},
           onAnimalStyleChanged: (_) {},
           onStyleChanged: (_) {},
           audioEnabled: false,
@@ -114,8 +110,6 @@ void main() {
       MaterialApp(
         home: SudokuDrawer(
           state: _state(),
-          onPuzzleModeChanged: (_) {},
-          onSetDifficulty: (_) {},
           onAnimalStyleChanged: (_) {},
           onStyleChanged: (_) {},
           onHelpPressed: () {

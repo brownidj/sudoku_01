@@ -30,6 +30,7 @@ class SudokuGameContent extends StatelessWidget {
   final GlobalKey bottomControlsKey;
   final VoidCallback onNewGame;
   final ValueChanged<String> onContentModeChanged;
+  final ValueChanged<String> onPuzzleModeChanged;
   final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onStyleChanged;
   final VoidCallback onUndo;
@@ -60,6 +61,7 @@ class SudokuGameContent extends StatelessWidget {
     required this.bottomControlsKey,
     required this.onNewGame,
     required this.onContentModeChanged,
+    required this.onPuzzleModeChanged,
     required this.onSetDifficulty,
     required this.onStyleChanged,
     required this.onUndo,
@@ -84,7 +86,6 @@ class SudokuGameContent extends StatelessWidget {
                 state: state,
                 onNewGame: onNewGame,
                 onContentModeChanged: onContentModeChanged,
-                onSetDifficulty: onSetDifficulty,
                 onStyleChanged: onStyleChanged,
               ),
               Expanded(
@@ -105,6 +106,8 @@ class SudokuGameContent extends StatelessWidget {
                     onTapCell: onTapCell,
                     onLongPressCell: onLongPressCell,
                     showDebugNotification: showDebugNotification,
+                    onPuzzleModeChanged: onPuzzleModeChanged,
+                    onDifficultyChanged: onSetDifficulty,
                   ),
                 ),
               ),

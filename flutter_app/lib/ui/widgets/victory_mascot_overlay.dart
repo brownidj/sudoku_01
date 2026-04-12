@@ -78,7 +78,7 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
             Positioned(
               left: 0,
               right: 0,
-              top: top + 96,
+              top: top + 96 + 6,
               child: const Center(
                 child: Text(
                   "Play again! Play again!''",

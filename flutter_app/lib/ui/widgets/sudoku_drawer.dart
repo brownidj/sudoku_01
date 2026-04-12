@@ -4,8 +4,6 @@ import 'package:flutter_app/app/ui_state.dart';
 
 class SudokuDrawer extends StatelessWidget {
   final UiState state;
-  final ValueChanged<String> onPuzzleModeChanged;
-  final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onAnimalStyleChanged;
   final ValueChanged<String> onStyleChanged;
   final bool audioEnabled;
@@ -18,8 +16,6 @@ class SudokuDrawer extends StatelessWidget {
   const SudokuDrawer({
     super.key,
     required this.state,
-    required this.onPuzzleModeChanged,
-    required this.onSetDifficulty,
     required this.onAnimalStyleChanged,
     required this.onStyleChanged,
     this.audioEnabled = true,
@@ -32,9 +28,6 @@ class SudokuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final canEditPuzzleMode =
-        state.canChangePuzzleMode && state.difficulty != 'hard';
-
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -49,73 +42,6 @@ class SudokuDrawer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Puzzle Solution Mode',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            RadioListTile<String>(
-              title: const Text('Unique'),
-              value: 'unique',
-              groupValue: state.puzzleMode,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: canEditPuzzleMode ? _handleModeChanged : null,
-            ),
-            RadioListTile<String>(
-              title: const Text('Multi'),
-              value: 'multi',
-              groupValue: state.puzzleMode,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: canEditPuzzleMode ? _handleModeChanged : null,
-            ),
-            const Divider(height: 16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Difficulty',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            RadioListTile<String>(
-              title: const Text('Easy'),
-              value: 'easy',
-              groupValue: state.difficulty,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: state.canChangeDifficulty
-                  ? _handleDifficultyChanged
-                  : null,
-            ),
-            RadioListTile<String>(
-              title: const Text('Medium'),
-              value: 'medium',
-              groupValue: state.difficulty,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: state.canChangeDifficulty
-                  ? _handleDifficultyChanged
-                  : null,
-            ),
-            RadioListTile<String>(
-              title: const Text('Hard'),
-              value: 'hard',
-              groupValue: state.difficulty,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: state.canChangeDifficulty
-                  ? _handleDifficultyChanged
-                  : null,
-            ),
-            const Divider(height: 16),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -239,20 +165,6 @@ class SudokuDrawer extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _handleModeChanged(String? value) {
-    if (value == null) {
-      return;
-    }
-    onPuzzleModeChanged(value);
-  }
-
-  void _handleDifficultyChanged(String? value) {
-    if (value == null) {
-      return;
-    }
-    onSetDifficulty(value);
   }
 
   void _handleAnimalStyleChanged(String? value) {

@@ -20,15 +20,6 @@ class AppVersionService {
       buildName: _buildName,
       buildNumber: _buildNumber,
     );
-    assert(() {
-      if (_buildName.isEmpty || _buildNumber.isEmpty) {
-        debugPrint(
-          'AppVersionService: FLUTTER_BUILD_NAME/NUMBER missing; '
-          'falling back to platform package info.',
-        );
-      }
-      return true;
-    }());
     return label;
   }
 

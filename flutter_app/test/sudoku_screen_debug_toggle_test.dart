@@ -139,4 +139,114 @@ void main() {
 
     expect(find.text('1 tile(s) corrected.'), findsOneWidget);
   });
+
+  testWidgets('changing difficulty prompts before starting a new game', (
+    WidgetTester tester,
+  ) async {
+    final gameService = FakeGameService();
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: gameService,
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    final baselineNewGameCalls = gameService.newGameCalls;
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('HARD').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Start New Game?'), findsOneWidget);
+    expect(
+      find.text('Change difficulty to HARD and start a new game?'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('EASY'), findsOneWidget);
+    expect(gameService.newGameCalls, baselineNewGameCalls);
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('HARD').last);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Start New Game'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('HARD'), findsOneWidget);
+    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+  });
+
+  testWidgets('changing puzzle mode prompts before starting a new game', (
+    WidgetTester tester,
+  ) async {
+    final gameService = FakeGameService();
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: gameService,
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    final baselineNewGameCalls = gameService.newGameCalls;
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('UNIQUE').last);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Start New Game?'), findsOneWidget);
+    expect(
+      find.text('Change puzzle mode to UNIQUE and start a new game?'),
+      findsOneWidget,
+    );
+
+    await tester.tap(find.text('Start New Game'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('UNIQUE'), findsOneWidget);
+    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+  });
 }

@@ -50,14 +50,28 @@ class AnimalImageCache {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
       final name = _animalName(d);
-      final prefix = variant == 'cute' ? 'cartoon_' : '';
       final data = await rootBundle.load(
-        'assets/images/animals/${d}_${prefix}$name.png',
+        _tileAssetPath(
+          digit: d,
+          name: name,
+          variant: variant,
+        ),
       );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
     }
     return images;
+  }
+
+  static String _tileAssetPath({
+    required int digit,
+    required String name,
+    required String variant,
+  }) {
+    if (variant == 'cute') {
+      return 'assets/images/animals/${digit}_cartoon_${name}_s.png';
+    }
+    return 'assets/images/animals/${digit}_${name}.png';
   }
 
   static Future<Map<int, ui.Image>> _loadNotesImages({
