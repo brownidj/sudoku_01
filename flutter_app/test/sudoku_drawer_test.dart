@@ -48,6 +48,61 @@ UiState _state() {
 }
 
 void main() {
+  testWidgets('audio row toggles between on and off', (
+    WidgetTester tester,
+  ) async {
+    bool? audioEnabled;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SudokuDrawer(
+          state: _state(),
+          onPuzzleModeChanged: (_) {},
+          onSetDifficulty: (_) {},
+          onAnimalStyleChanged: (_) {},
+          onStyleChanged: (_) {},
+          audioEnabled: true,
+          onAudioEnabledChanged: (enabled) {
+            audioEnabled = enabled;
+          },
+        ),
+      ),
+    );
+
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Audio'), findsOneWidget);
+    expect(find.text('On'), findsOneWidget);
+
+    await tester.tap(find.text('Audio'));
+    await tester.pumpAndSettle();
+    expect(audioEnabled, isFalse);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SudokuDrawer(
+          state: _state(),
+          onPuzzleModeChanged: (_) {},
+          onSetDifficulty: (_) {},
+          onAnimalStyleChanged: (_) {},
+          onStyleChanged: (_) {},
+          audioEnabled: false,
+          onAudioEnabledChanged: (enabled) {
+            audioEnabled = enabled;
+          },
+        ),
+      ),
+    );
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Off'), findsOneWidget);
+    await tester.tap(find.text('Audio'));
+    await tester.pumpAndSettle();
+    expect(audioEnabled, isTrue);
+  });
+
   testWidgets('shows temporary debug scenario controls in debug builds', (
     WidgetTester tester,
   ) async {

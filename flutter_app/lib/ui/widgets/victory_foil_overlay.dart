@@ -88,6 +88,9 @@ class _VictoryFoilPainter extends CustomPainter {
           ) -
           piece.width * 0.5;
       final angle = piece.rotationOffset + piece.rotationSpeed * seconds;
+      final xTiltAngle =
+          (math.pi / 4) *
+          math.sin(piece.tiltFrequency * seconds + piece.tiltPhase);
       _paintFoilPiece(
         canvas: canvas,
         x: x,
@@ -95,6 +98,7 @@ class _VictoryFoilPainter extends CustomPainter {
         width: piece.width,
         height: piece.height,
         angle: angle,
+        xTiltAngle: xTiltAngle,
       );
     }
   }
@@ -106,9 +110,16 @@ class _VictoryFoilPainter extends CustomPainter {
     required double width,
     required double height,
     required double angle,
+    required double xTiltAngle,
   }) {
     canvas.save();
     canvas.translate(x + width / 2, y + height / 2);
+    canvas.transform(
+      (Matrix4.identity()
+            ..setEntry(3, 2, 0.003)
+            ..rotateX(xTiltAngle))
+          .storage,
+    );
     canvas.rotate(angle);
     final rect = Rect.fromCenter(
       center: Offset.zero,
@@ -155,6 +166,8 @@ class _FoilPieceSpec {
   final double flutterPhase;
   final double rotationOffset;
   final double rotationSpeed;
+  final double tiltFrequency;
+  final double tiltPhase;
 
   const _FoilPieceSpec({
     required this.width,
@@ -167,6 +180,8 @@ class _FoilPieceSpec {
     required this.flutterPhase,
     required this.rotationOffset,
     required this.rotationSpeed,
+    required this.tiltFrequency,
+    required this.tiltPhase,
   });
 
   factory _FoilPieceSpec.random(math.Random random) {
@@ -181,6 +196,8 @@ class _FoilPieceSpec {
       flutterPhase: random.nextDouble() * math.pi * 2,
       rotationOffset: random.nextDouble() * math.pi * 2,
       rotationSpeed: -0.7 + random.nextDouble() * 1.4,
+      tiltFrequency: 2.5 + random.nextDouble() * 2.5,
+      tiltPhase: random.nextDouble() * math.pi * 2,
     );
   }
 }

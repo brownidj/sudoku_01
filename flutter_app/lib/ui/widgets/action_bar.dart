@@ -67,13 +67,25 @@ class ActionBar extends StatelessWidget {
           ),
           const SizedBox(width: 6),
           Expanded(
-            child: Tooltip(
-              message: undoTooltip,
-              child: OutlinedButton(
-                style: compactStyle,
-                onPressed: state.canUndo ? onUndo : null,
-                child: const Text('Undo'),
-              ),
+            child: Builder(
+              builder: (context) {
+                final tooltipKey = GlobalKey<TooltipState>();
+                return Tooltip(
+                  key: tooltipKey,
+                  message: undoTooltip,
+                  triggerMode: TooltipTriggerMode.manual,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onLongPress: () =>
+                        tooltipKey.currentState?.ensureTooltipVisible(),
+                    child: OutlinedButton(
+                      style: compactStyle,
+                      onPressed: state.canUndo ? onUndo : null,
+                      child: const Text('Undo'),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 6),

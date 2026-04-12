@@ -105,7 +105,7 @@ void main() {
     expect(find.byType(VictoryFoilOverlay), findsNothing);
   });
 
-  testWidgets('triple-tapping version title solves and celebrates', (
+  testWidgets('holding version title >1.5s solves and celebrates', (
     tester,
   ) async {
     final controller = SudokuController(
@@ -131,15 +131,16 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final titleFinder = find.text('ZuDoKu 0.6.2 build 159');
+    final titleFinder = find.byKey(
+      const ValueKey<String>('version-title-text'),
+    );
     expect(titleFinder, findsOneWidget);
 
-    await tester.tap(titleFinder);
-    await tester.pump(const Duration(milliseconds: 150));
-    await tester.tap(titleFinder);
-    await tester.pump(const Duration(milliseconds: 150));
-    await tester.tap(titleFinder);
-    await tester.pump(const Duration(milliseconds: 300));
+    final center = tester.getCenter(titleFinder);
+    final gesture = await tester.startGesture(center);
+    await tester.pump(const Duration(milliseconds: 1600));
+    await gesture.up();
+    await tester.pump();
 
     expect(controller.state.gameOver, isTrue);
     expect(controller.state.puzzleSolved, isTrue);

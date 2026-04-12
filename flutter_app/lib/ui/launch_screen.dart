@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
+import 'package:flutter_app/ui/services/app_version_service.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 
 class LaunchScreen extends StatefulWidget {
   final SudokuController controller;
   final AnimalAssetService animalAssetService;
+  final AppVersionService appVersionService;
 
   const LaunchScreen({
     super.key,
     required this.controller,
     this.animalAssetService = const AnimalAssetService(),
+    this.appVersionService = const AppVersionService(),
   });
 
   @override
@@ -20,16 +23,27 @@ class LaunchScreen extends StatefulWidget {
 class _LaunchScreenState extends State<LaunchScreen> {
   bool _ready = false;
   bool _openingGame = false;
+  String? _launchError;
+  String _versionLabel = 'ZuDoKu';
 
   @override
   void initState() {
     super.initState();
+    _versionLabel = widget.appVersionService.initialDisplayVersion();
     widget.controller.ready.then((_) {
       if (mounted) {
         setState(() {
           _ready = true;
         });
       }
+    });
+    widget.appVersionService.loadDisplayVersion().then((label) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _versionLabel = label;
+      });
     });
   }
 
@@ -47,24 +61,42 @@ class _LaunchScreenState extends State<LaunchScreen> {
     }
     setState(() {
       _openingGame = true;
+      _launchError = null;
     });
-    if (!_ready) {
-      await widget.controller.ready;
+    try {
+      if (!_ready) {
+        await widget.controller.ready;
+      }
+      if (!mounted) {
+        return;
+      }
+      if (startNewGame) {
+        widget.controller.onNewGame();
+      }
+      final contentMode = widget.controller.state.contentMode;
+      if (contentMode != 'numbers') {
+        await widget.animalAssetService.load();
+      }
+      if (!mounted) {
+        return;
+      }
+      _startGame();
+    } catch (error, stackTrace) {
+      debugPrint('Failed to open game: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _launchError = 'Could not open game. Please try again.';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _openingGame = false;
+        });
+      }
     }
-    if (!mounted) {
-      return;
-    }
-    if (startNewGame) {
-      widget.controller.onNewGame();
-    }
-    final contentMode = widget.controller.state.contentMode;
-    if (contentMode != 'numbers') {
-      await widget.animalAssetService.load();
-    }
-    if (!mounted) {
-      return;
-    }
-    _startGame();
   }
 
   @override
@@ -80,7 +112,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'ZuDoKu 0.6.2 build 159',
+                  _versionLabel,
+                  key: const ValueKey<String>('launch-version-title'),
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
                 ),
@@ -165,6 +198,16 @@ class _LaunchScreenState extends State<LaunchScreen> {
                   Text(
                     'Please wait...',
                     style: theme.textTheme.bodySmall,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+                if (_launchError != null) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _launchError!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],

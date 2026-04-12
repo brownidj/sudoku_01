@@ -50,19 +50,25 @@ class SudokuBoardArea extends StatelessWidget {
         'When you select a tile that has no valid solution, because of an '
         'earlier error, a box will open that allows you to use an automatic '
         'correction.';
+    const hintsTooltipMessage =
+        'Hints reveal conflicting peer cells (same row, column, or 3x3 box) '
+        'when you place a conflicting value. Hints count down each time peers are revealed.';
     return LayoutBuilder(
       builder: (context, constraints) {
         final debugBannerHeight =
             (showDebugNotification && state.debugScenarioLabel != null)
             ? 42.0
             : 0.0;
+        const metadataRowHeight = 32.0;
         final metadataHeight =
             6.0 +
             debugBannerHeight +
             (debugBannerHeight > 0 ? 6.0 : 0.0) +
-            20.0;
+            metadataRowHeight;
         final candidateHeight = candidateVisible ? (15.0 + 68.0) : 0.0;
-        final reservedHeight = metadataHeight + 12.0 + candidateHeight;
+        const layoutSafetyPadding = 4.0;
+        final reservedHeight =
+            metadataHeight + 12.0 + candidateHeight + layoutSafetyPadding;
         final maxBoard = max(0.0, constraints.maxHeight - reservedHeight);
         final boardWidth = max(0.0, min(constraints.maxWidth, maxBoard));
         final cellWidth = boardWidth / 9.0;
@@ -141,6 +147,40 @@ class SudokuBoardArea extends StatelessWidget {
                             final tooltipKey = GlobalKey<TooltipState>();
                             return Tooltip(
                               key: tooltipKey,
+                              message: hintsTooltipMessage,
+                              triggerMode: TooltipTriggerMode.manual,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onLongPress: () => tooltipKey.currentState
+                                    ?.ensureTooltipVisible(),
+                                child: Text(
+                                  'Hints: ${state.conflictHintsLeft}',
+                                  style: Theme.of(context).textTheme.labelSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
+                                      ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Builder(
+                          builder: (context) {
+                            final tooltipKey = GlobalKey<TooltipState>();
+                            return Tooltip(
+                              key: tooltipKey,
                               message: correctionsTooltipMessage,
                               triggerMode: TooltipTriggerMode.manual,
                               child: GestureDetector(
@@ -148,7 +188,7 @@ class SudokuBoardArea extends StatelessWidget {
                                 onLongPress: () => tooltipKey.currentState
                                     ?.ensureTooltipVisible(),
                                 child: Text(
-                                  '${state.correctionsLeft} auto-corrects left',
+                                  'Corrections: ${state.correctionsLeft}',
                                   style: Theme.of(context).textTheme.labelSmall
                                       ?.copyWith(
                                         fontWeight: FontWeight.w600,

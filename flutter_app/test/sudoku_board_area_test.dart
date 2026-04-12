@@ -9,6 +9,7 @@ UiState _state({
   String puzzleMode = 'multi',
   String difficulty = 'easy',
   int correctionsLeft = 3,
+  int conflictHintsLeft = 3,
   String? debugScenarioLabel,
 }) {
   final cells = List<List<CellVm>>.generate(
@@ -49,12 +50,13 @@ UiState _state({
     debugScenarioLabel: debugScenarioLabel,
     correctionNoticeSerial: 0,
     correctionNoticeMessage: null,
+    conflictHintsLeft: conflictHintsLeft,
   );
 }
 
 void main() {
   testWidgets(
-    'main metadata row shows puzzle mode, corrections left, and difficulty',
+    'main metadata row shows puzzle mode, hints, corrections left, and difficulty',
     (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -66,6 +68,7 @@ void main() {
                 state: _state(
                   puzzleMode: 'unique',
                   difficulty: 'hard',
+                  conflictHintsLeft: 2,
                   correctionsLeft: 1,
                 ),
                 style: styleModern,
@@ -86,7 +89,8 @@ void main() {
       );
 
       expect(find.text('UNIQUE'), findsOneWidget);
-      expect(find.text('1 auto-corrects left'), findsOneWidget);
+      expect(find.text('Hints: 2'), findsOneWidget);
+      expect(find.text('Corrections: 1'), findsOneWidget);
       expect(find.text('HARD'), findsOneWidget);
     },
   );
@@ -123,7 +127,7 @@ void main() {
       ),
     );
 
-    await tester.longPress(find.text('2 auto-corrects left'));
+    await tester.longPress(find.text('Corrections: 2'));
     await tester.pumpAndSettle();
 
     expect(
@@ -132,6 +136,49 @@ void main() {
         'When you select a tile that has no valid solution, because of an '
         'earlier error, a box will open that allows you to use an automatic '
         'correction.',
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('long press on hints label shows tooltip details', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 420,
+            height: 620,
+            child: SudokuBoardArea(
+              state: _state(
+                puzzleMode: 'unique',
+                difficulty: 'easy',
+                conflictHintsLeft: 3,
+              ),
+              style: styleModern,
+              animalImages: const {},
+              noteImagesBySize: const {},
+              devicePixelRatio: 2.0,
+              candidateVisible: false,
+              candidateDigits: const [],
+              selectedNotes: const {},
+              onDigitSelected: (_) {},
+              onDigitLongPressed: null,
+              onTapCell: (_) {},
+              onLongPressCell: (_, __) {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.longPress(find.text('Hints: 3'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text(
+        'Hints reveal conflicting peer cells (same row, column, or 3x3 box) when you place a conflicting value. Hints count down each time peers are revealed.',
       ),
       findsOneWidget,
     );

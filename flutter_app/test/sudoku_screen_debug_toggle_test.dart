@@ -43,7 +43,9 @@ void main() {
       await tester.pumpAndSettle();
 
       for (var i = 0; i < 7; i += 1) {
-        await tester.tap(find.text('ZuDoKu 0.6.2 build 159'));
+        await tester.tap(
+          find.byKey(const ValueKey<String>('version-title-text')),
+        );
         await tester.pump(const Duration(milliseconds: 120));
       }
       await tester.pumpAndSettle();
@@ -89,7 +91,9 @@ void main() {
     await tester.pumpAndSettle();
 
     for (var i = 0; i < 7; i += 1) {
-      await tester.tap(find.text('ZuDoKu 0.6.2 build 159'));
+      await tester.tap(
+        find.byKey(const ValueKey<String>('version-title-text')),
+      );
       await tester.pump(const Duration(milliseconds: 120));
     }
     await tester.pumpAndSettle();

@@ -21,7 +21,8 @@ const _undoTooltip =
     'Use Undo to step back through the selections you made previously. '
     'Undo clears each previous selection, one at a time. '
     'You can also do this if you run out of Corrections';
-const _helpSnippet = 'Long-press "Corrections" on the board for a quick explanation.';
+const _helpSnippet =
+    'Long-press "Corrections" on the board for a quick explanation.';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -74,7 +75,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining(_correctionsTooltipPrefix), findsOneWidget);
 
-    await tester.longPress(find.text('Undo'));
+    await tester.longPress(find.widgetWithText(OutlinedButton, 'Undo'));
     await tester.pumpAndSettle();
     expect(find.text(_undoTooltip), findsOneWidget);
   });
@@ -105,6 +106,10 @@ void main() {
 }
 
 Future<void> _launchApp(WidgetTester tester) async {
+  await tester.binding.setSurfaceSize(const Size(1000, 1400));
+  addTearDown(() async {
+    await tester.binding.setSurfaceSize(null);
+  });
   await app.main();
   await tester.pumpAndSettle();
   await _pumpUntilVisible(
@@ -179,11 +184,13 @@ Future<void> _seedSavedSession({required int tokensLeft}) async {
   final payload = jsonEncode(<String, dynamic>{
     'version': GameSessionService.sessionVersion,
     'board': codec.boardToJson(board),
-    'initialGrid': codec.gridToJson(List<List<int?>>.generate(
-      9,
-      (_) => List<int?>.filled(9, null, growable: false),
-      growable: false,
-    )),
+    'initialGrid': codec.gridToJson(
+      List<List<int?>>.generate(
+        9,
+        (_) => List<int?>.filled(9, null, growable: false),
+        growable: false,
+      ),
+    ),
     'selected': null,
     'gameOver': false,
     'debugScenarioLabel': null,

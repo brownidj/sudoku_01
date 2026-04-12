@@ -8,6 +8,8 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onAnimalStyleChanged;
   final ValueChanged<String> onStyleChanged;
+  final bool audioEnabled;
+  final ValueChanged<bool>? onAudioEnabledChanged;
   final VoidCallback? onHelpPressed;
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
@@ -20,6 +22,8 @@ class SudokuDrawer extends StatelessWidget {
     required this.onSetDifficulty,
     required this.onAnimalStyleChanged,
     required this.onStyleChanged,
+    this.audioEnabled = true,
+    this.onAudioEnabledChanged,
     this.onHelpPressed,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
@@ -174,6 +178,30 @@ class SudokuDrawer extends StatelessWidget {
             ),
             const Divider(height: 16),
             ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              title: const Text(
+                'Audio',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(audioEnabled ? 'On' : 'Off'),
+                  Radio<bool?>(
+                    value: true,
+                    groupValue: audioEnabled ? true : null,
+                    toggleable: true,
+                    visualDensity: VisualDensity.compact,
+                    onChanged: _handleAudioChanged,
+                  ),
+                ],
+              ),
+              onTap: onAudioEnabledChanged == null
+                  ? null
+                  : () => onAudioEnabledChanged!(!audioEnabled),
+            ),
+            const Divider(height: 16),
+            ListTile(
               leading: const Icon(Icons.help_outline),
               title: const Text('Help'),
               onTap: onHelpPressed,
@@ -239,5 +267,12 @@ class SudokuDrawer extends StatelessWidget {
       return;
     }
     onStyleChanged(value);
+  }
+
+  void _handleAudioChanged(bool? enabled) {
+    if (onAudioEnabledChanged == null) {
+      return;
+    }
+    onAudioEnabledChanged!(enabled == true);
   }
 }
