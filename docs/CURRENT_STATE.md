@@ -122,222 +122,83 @@ rg --files "$ROOT_DIR" \
 
 ## Code base architecture state
 
-- **Architecture**: Planning-phase desktop app (Tkinter) with dual data backends:
-  - SQLite via `TripRepository` (legacy/local workflows and tests)
-  - PostgreSQL via `PostgresTripRepository` (primary runtime path)
-  - Optional backend API auth (`/v1/auth/*`) with JWT access/refresh tokens
-  - Tabs: `Trips`, `Collection Plan`, `Location`, `Collection Events`, `Finds`, `Team Members`, `Geology`
-  - **Infrastructure/Init**:
-    - `scripts/db/bootstrap.py`: thin bootstrap/orchestration + API re-export layer for seed/init scripts.
-      - Uses explicit stepwise schema migrations via `PRAGMA user_version` (`SCHEMA_VERSION = 7`).
-    - `scripts/db/schema_helpers.py`: schema creation helpers (`Team_members`, `Trips`, `Locations`, `Finds`) and field normalization.
-    - `scripts/db/migration_helpers.py`: legacy migration/rebuild helpers for trips/locations/trip-locations.
-    - `scripts/checks/ci_checks.sh`: strict local/CI quality gate (import-boundary check + `PYTHONWARNINGS=error::ResourceWarning` tests + file-size check).
-    - `scripts/checks/check_import_boundaries.py`: lightweight AST-based import-boundary enforcement.
-      - Rules are config-driven via `scripts/checks/import_boundary_rules.json` for easier evolution as modules/layers change.
-    - `scripts/checks/check_types.sh` + `config/mypy.ini`: expanded static typing gate covering backend/runtime, repository, UI controllers/windows, and scripts (`db`, `checks`, `accounts`, `data_ops`, `dev_seed`).
-    - `docs/adr/0001-architecture-boundaries.md`: architecture boundary decision record.
-    - `scripts/README.md`: scripts layout guide (`db/`, `checks/`, `backend/`, `dev_seed/`, `accounts/`, `data_ops/`).
-    - `scripts/db/init_db.py`: CLI initializer.
-    - Deployment/runtime files moved out of project root:
-      - `deploy/docker/docker-compose.yml`
-      - `deploy/docker/docker-compose.internet.yml`
-      - `deploy/docker/docker-compose.dbtool.yml`
-      - `deploy/caddy/Caddyfile`
-      - `deploy/caddy/Caddyfile.internet`
-      - `config/env/local.env(.example)`, `config/env/staging.env(.example)`, `config/env/prod.env(.example)`
-  - **Repository**:
-    - `repository/trip_repository.py`: thin façade that composes focused modules; external `TripRepository` API remains unchanged.
-    - `repository/trip_crud.py`: trip and user CRUD/list domain surface.
-    - `repository/location_geology.py`: location + geology data access surface.
-    - `repository/finds_collection_events.py`: finds and collection-event query surface.
-    - `repository/migrations_schema.py`: schema setup and legacy migration surface.
-    - Supporting internal modules:
-      - `repository/repository_base.py`: connection/transaction lifecycle (`commit`/`rollback` + guaranteed `close`) and shared constants.
-      - `repository/repository_trip_user.py`, `repository/repository_location.py`, `repository/repository_finds.py`, `repository/repository_geology_schema.py`, `repository/repository_geology_data.py`, `repository/repository_migrations.py`.
-    - `repository/domain_types.py`: typed payload/row structures for core entities (Trip, Location/CollectionEvent, Find, Geology).
-  - **UI Entrypoints**:
-    - `main.py` at project root is the canonical executable entrypoint and launches login + `PlanningPhaseWindow`.
-    - Shared IDE run config points to `$PROJECT_DIR$/main.py`.
-  - **UI Modules**:
-    - `ui/planning_phase_window.py`: composition root for tabs, dialog controller, navigation coordinator, and app palette.
-    - `ui/planning_phase_window_palette.py`: palette/theme application extracted from `planning_phase_window`.
-    - `ui/planning_phase_window_selection.py`: trip selection persistence/toast/path helpers extracted from `planning_phase_window`.
-    - `ui/planning_tabs_controller.py`: notebook tab construction and initial tab-data loading.
-    - `ui/trip_navigation_coordinator.py`: Trips ↔ Collection Events/Finds/Team Members handoff, tab-change loading, hidden dialog restore, trip row reselection.
-    - `ui/trip_dialog_controller.py`: trip dialog orchestration (new/edit/copy and open-dialog lifecycle).
-    - `ui/trip_form_dialog.py`: Trip edit form with guarded edit mode (`Edit` toggle), icon chip actions, and cross-tab handoff hooks for `Collection Events`, `Finds`, and `Team`.
-    - `ui/trip_form_dialog_pickers.py`: team/location picker helpers extracted from `trip_form_dialog`.
-    - `ui/geology_tab.py`, `ui/geology_form_dialog.py`: geology listing/details and edit dialog.
-    - `ui/trip_filter_tree_tab.py`: shared base for list tabs with `Trip filter` radio behavior + tree population.
-    - `ui/collection_events_tab.py`: collection event listing; now uses shared trip-filter/tree base.
-    - `ui/finds_tab.py`: finds listing; now uses shared trip-filter/tree base.
-    - `ui/team_editor_dialog.py`: active-user selector for team assignment.
-    - `ui/location_picker_dialog.py`: location selector for trip location list.
-    - `ui/location_tab.py`, `ui/location_form_dialog.py`: location CRUD + collection-events editing.
-    - `ui/team_members_tab.py`, `ui/team_member_form_dialog.py`: team-members CRUD (no delete in UI flow) with optional trip-scoped filter mode.
-  - **Seeding**:
-    - `scripts/dev_seed/seed_users.py`: development-only synthetic team-member seeding (fixed AU phone + active split).
-    - `scripts/dev_seed/seed_locations.py`: development-only synthetic location seeding; supports `--truncate`; optional one-time cardinal variants from first-pass records.
-    - `scripts/dev_seed/seed_trips.py`: development-only synthetic trip seeding from existing locations; writes `TripLocations`; optional second-pass multi-location trip generation.
-    - `scripts/accounts/seed_user_accounts_from_team_members.py`: creates/updates `User_Accounts` from `Team_members`.
-  - **Migration/Sync**:
-    - `scripts/db/migrate_sqlite_to_postgres.py`: bulk migration from SQLite to PostgreSQL with schema prep and identity sync.
-    - `scripts/db/migrate_sqlite_to_postgres_schema_helpers.py`: schema/truncate/upsert/sequence helpers extracted from migrate script.
-    - `scripts/db/sync_postgres_to_sqlite.py`: one-way mirror sync (PostgreSQL -> SQLite) with null/default coercion and column mapping.
-  - **Postgres Repository Split**:
-    - `repository/postgres_trip_repository.py`: connection + trip/team core surface.
-    - `repository/postgres_trip_repository_domain.py`: location/finds/geology/collection-event domain operations.
-  - **Auth Split**:
-    - `backend/app/auth.py`: auth endpoints and token/database orchestration.
-    - `backend/app/auth_models.py`: auth request/response/dataclass models.
-  - **Bootstrap Imports**:
-    - `scripts/db/*` modules now use stable package imports (`scripts.db.*`) with fallback import branches removed.
-- **Planning Database (`data/paleo_trips_01.db`)**:
-  - `Team_members(id, name, phone_number, institution, recruitment_date, retirement_date, active)`
-  - `Trips(id, trip_name, start_date, end_date, team, location, notes)` (`region` removed)
-  - `Locations(id, name, latitude, longitude, altitude_value, altitude_unit, country_code, state, lga, basin, proterozoic_province, orogen, geogscale, geography_comments, geology_id)`
-  - `CollectionEvents(id, trip_id, location_id, collection_name, collection_subset, event_year)` (0..many per location, trip-linked, single-year events)
-  - `TripLocations(id, location_id)` (many-to-many between trips and locations)
-  - `GeologyContext(id, location_id, location_name, source_system, source_reference_no, early_interval, late_interval, max_ma, min_ma, environment, geogscale, geology_comments, formation, stratigraphy_group, member, stratscale, stratigraphy_comments, geoplate, paleomodel, paleolat, paleolng, created_at, updated_at)`
-  - `Lithology(id, geology_context_id, slot, lithology, lithification, minor_lithology, lithology_adjectives, fossils_from, created_at, updated_at)`
-  - `Finds(id, location_id, collection_event_id, source_system, source_occurrence_no, identified_name, accepted_name, identified_rank, accepted_rank, difference, identified_no, accepted_no, phylum, class_name, taxon_order, family, genus, abund_value, abund_unit, reference_no, taxonomy_comments, occurrence_comments, research_group, notes, collection_year_latest_estimate, created_at, updated_at)`
-- **Behavioral Notes**:
-  - Trips use integer `id` auto-increment; no `trip_code`.
-  - `team` and `location` list values are semicolon-separated.
-  - `region -> location` migration exists; `region` column is removed in migration rebuild.
-  - UI palette/theme is applied centrally in `PlanningPhaseWindow`.
-  - Trip Record editability is gated by `Edit` (off by default): with `Edit` off, fields are read-only and team/location editor chips are disabled.
-  - Closing Trip Record auto-saves changed fields; turning `Edit` from on to off also auto-saves changed fields.
-  - From Trip Record, `Collection Events`/`Finds` chips switch tabs, turn trip filter on, and apply trip-specific filtering; returning to `Trips` restores the hidden Trip Record and reselects that trip.
-  - From Trip Record, `Team` chip switches to `Team Members`, turns Trip filter on, and filters members to names listed in that trip’s `team` value.
-  - Trip filtering in `Collection Events`/`Finds` is now event-owned: trip context is derived via `CollectionEvents.trip_id` (legacy `Finds.trip_id` removed).
-  - Full PBDB re-import is currently loaded in the working DB (`Finds = 2068`) with all finds linked to `Locations` and `CollectionEvents`.
-  - `collection_year_latest_estimate` is populated from inferred publication year minus a random 2..6 year offset.
-  - Team-member bulk population from `data/team_members_from_pbdb_data-2_publication_enriched.csv` is currently loaded (`Team_members = 142`), with recruitment/retirement date rules applied and later date-window widening for mandatory trip assignments.
-  - Team-member assignment to trips has been generated from publication authors plus random eligible additions; no trips are currently left without `team` members.
-  - Publication-mandatory team assignments are now date-consistent after widening affected team-member recruitment/retirement windows (`mandatory_assignments_outside_date_window = 0`).
-  - QLD structural framework backfill has been applied for location context fields using point-in-polygon attribution from the official Queensland structural framework layer.
-    - `Locations.basin`, `Locations.proterozoic_province`, `Locations.orogen` now populated where coverage intersects framework polygons.
-  - Finds UI now supports both `New Find` and `Edit Find` flows:
-    - New find requires an existing Collection Event.
-    - New/Edit dialogs are trip-scoped for Collection Event choices based on currently selected trip.
-    - Double-click on a find opens edit dialog.
-    - Find dialog edit semantics now align with Trip dialog semantics:
-      - `Edit` defaults off.
-      - turning `Edit` off performs save-if-changed.
-      - closing performs save-if-changed.
-      - system fields remain read-only.
-  - Generated initial trip candidates from grouped collection-event CSV and inserted ~50 historical trips with date-derived naming conventions.
-  - Reassigned a subset of finds to generated trips using strict location + year-window matching (`trip start_year` in `[estimated_year-6, estimated_year-1]`).
-  - Collection events carry `trip_id` and `event_year`; trip->collection-events and trip->finds listing/count are wired via `CollectionEvents.trip_id`.
-  - Applied location+date-proximity event ownership reassignment (`same location`, `event_year within ±5 years of trip year`): 33 event-owner changes; orphan trips reduced from 36 to 16.
-  - Added auto-hiding list scrollbars for all tab list panels; scrollbars appear only when rows/columns overflow.
-  - Collection Plan tab now supports:
-    - Trip filter default-on behavior.
-    - One row per Collection Event (grouped by Trip).
-    - Team column in list view (currently sourced from `Trips.team`).
-    - Event-bound boundary editing flow with explicit active-event tracking.
-  - Collection Events tab now supports `Duplicate Event`:
-    - visible only when Trip filter is on
-    - enabled only when a Collection Event row is selected
-    - duplicate excludes vertices (`boundary_geojson` reset/null)
-    - Save remains disabled until name is changed.
-  - **Fallbacks and Workarounds to be aware of**:
-    - Collection Plan boundary persistence is capability-checked (`getattr(self.repo, "update_collection_event_boundary", None)`); if unavailable, boundary save is skipped without crashing.
-    - Collection Events duplication is capability-checked (`getattr(self.repo, "duplicate_collection_event", None)`); if unavailable, the UI raises a controlled error.
-    - Collection Plan map UI degrades gracefully when map dependencies/coordinates are unavailable (`tkintermapview` missing or no resolved location coordinates).
-    - Collection Plan dialog close uses a safe fallback path (`locals().get("_close_dialog_safe", dialog.destroy)`) to avoid stale-canvas teardown crashes.
-    - Trip-filter views fall back to broader datasets when no active provider trip id is available.
-    - Type-gate enforcement is intentionally incremental: `check_types.sh` is green for enforced files, while broader full-repo mypy still surfaces issues in non-gated modules.
-    - Team-assignment identity quality remains source-constrained; stronger canonical alias/provenance quality is unlikely without additional publicly available sources.
-  - Type-gate widening and tightening pass (2026-03-30):
-    - `scripts/checks/check_types.sh` scope increased from 51 to 61 files to include additional split UI modules (`planning_phase_window_selection`, `planning_phase_window_palette`, `trip_filter_tree_tab`, `trip_form_dialog`, `trip_form_dialog_pickers`, `collection_events_tab`, `finds_tab`, `location_tab`, `geology_tab`, `team_members_tab`).
-    - targeted mypy overrides were reduced by removing per-module suppressions for `ui.collection_events_tab` and `ui.finds_tab` after code-level typing fixes.
-  - **Prompt Compliance Snapshot (2026-03-30, updated)**:
-  - Architecture boundaries (UI/domain/infra separation): **mostly compliant**.
-  - Root clutter minimization (`main.py` only at root): **partially compliant** (major infra/env files moved; IDE artifacts still present).
-  - `main.py` thin/no wiring rule: **compliant** (`main.py` now delegates to `app/bootstrap_runtime.py`).
-  - DB safety (parameterized SQL + safe connection handling): **compliant**.
-  - File size <= 300 lines: **not compliant** (current notable oversize files include `ui/planning_tabs_controller.py` (865), `repository/repository_finds.py` (839), `ui/location_form_dialog.py` (831), `repository/postgres_trip_repository_domain.py` (713), `ui/collection_events_tab.py` (381), plus several others).
+Assessment date: 2026-04-12
 
-## Codebase Goodness Assessment (vs prompt)
+### Overall status
+- The architecture is in a good state overall and largely follows the target layering (`lib/domain`, `lib/application`, `lib/app`, `lib/ui`).
+- Core gaps against this prompt remain around the file-size rule (300 lines), script enforcement threshold (currently 400), and a few broad/untyped catches.
 
-- **Overall rating**: **Strong (about 9.2/10)** for runtime behavior, DB safety, and refactor progress.
-  - Non-target legacy modules/tests over 300 lines are explicitly excluded from this score.
-  - **Strong areas**:
-  - Postgres-first runtime with SQLite compatibility/mirroring is in place and operational.
-  - Core DB work is pragmatic and robust (parameterized SQL, explicit transaction/close handling, schema/migration separation).
-  - High-change UI behavior is now isolated via dedicated controllers/coordinator and covered by regression tests.
-  - Recent targeted test runs are stable and now include a broader New/Edit Find full-window journey.
-  - Internal repository/controller interfaces now use typed payload structures, reducing `dict[str, Any]` usage.
-  - Deployment/env layout is cleaner (`deploy/` + `config/env/`) and bootstrap scripts were updated accordingly.
-  - Mypy coverage has been widened and is green for 61 enforced files via `scripts/checks/check_types.sh`.
-- **Weak areas / debt**:
-  - Full-repo mypy run remains intentionally broader than enforced gate and still reports issues in non-gated UI modules.
-  - Mypy remains policy-scoped by command selection (tests are still out of scope), though current runtime/script module coverage is broad and green.
-  - Team-member publication-name matching is currently heuristic/string-based; further meaningful identity-quality improvement is unlikely without additional publicly available source data.
+### Architecture and separation of concerns
+- `main.dart` is thin and only does framework setup + `runApp`:
+  - `flutter_app/lib/main.dart`
+- Composition is primarily done in app-level wiring (`SudokuApp` and `SudokuController`), not in UI builders:
+  - `flutter_app/lib/app/sudoku_app.dart`
+  - `flutter_app/lib/app/sudoku_controller.dart`
+- Domain/application imports remain one-way; no domain imports from UI/infra were found in `lib/domain` or `lib/application`.
+- UI side effects are now mostly encapsulated behind UI services/coordinators (`SudokuScreenEffectsCoordinator`, `SudokuCorrectionFlowCoordinator`, `SudokuVictoryAudioService`, etc.), but `SudokuScreen` still coordinates many services directly.
 
-## Recommendations
+### Readability and maintainability
+- Naming is consistent with the requested patterns (`*Service`, `*Controller`, `*Coordinator`).
+- Helper extraction is materially improved versus earlier snapshots.
+- Remaining readability pressure points:
+  - `flutter_app/lib/ui/sudoku_screen.dart` still acts as a heavy screen orchestrator.
+  - `flutter_app/lib/ui/board_painter.dart` is still dense.
+- Error handling is partially compliant:
+  - Typed catch exists in some places (`on Exception catch` in `animal_asset_service.dart`).
+  - Broad catches remain (`catch (_)`) in:
+    - `flutter_app/lib/ui/services/app_version_service.dart`
+    - `flutter_app/lib/ui/services/sudoku_victory_audio_service.dart`
 
-1. Keep event-owned integrity checks mandatory.
-2. Continue incremental type tightening and widen mypy scope for newly split modules with targeted overrides reduced over time.
-3. Maintain canonical author-alias + provenance fields, but treat identity-quality lift as data-source constrained unless new public sources become available.
+### File-size constraint compliance
+- Prompt target: each file must be under 300 lines.
+- Current largest files:
+  - `324` lines: `flutter_app/lib/ui/board_painter.dart`
+  - `310` lines: `flutter_app/lib/ui/sudoku_screen.dart`
+- Result: current codebase does **not** fully comply with the 300-line rule.
+- Additional mismatch: `scripts/check_file_sizes.sh` currently fails only above `400` lines, so guardrail does not enforce the prompt requirement yet.
 
-## ToDo
+### Testing and refactor posture
+- Test coverage remains broad across unit/widget tests, with additional integration/patrol paths available via:
+  - `scripts/run_everything.sh`
+- The script includes file-size check, `flutter test`, Android+iOS integration test, and Android patrol test.
+- Integration/device-dependent suites were not run in this pass.
 
-1. Add a reusable `--dry-run/--apply` script for event-ownership normalization with CSV diff output.
-2. Add an explicit team-assignment rebuild script (`--dry-run/--apply`) that can regenerate `Trips.team` deterministically from publication + date-window rules.
-3. Implement Search + partial/fuzzy matching for location resolution (for example when trip location text and `Locations.name` are close but not exact).
-4. Type-coverage next slice: consider bringing selected test modules into a separate `mypy` target once cost/benefit is clear.
+### Debug gating status
+- Central debug gate exists:
+  - `flutter_app/lib/app/app_debug.dart` (`APP_DEBUG` + `kDebugMode`)
+- Some debug output remains outside `AppDebug.log`:
+  - `flutter_app/lib/ui/launch_screen.dart`
+  - `flutter_app/lib/ui/services/app_version_service.dart`
+- This is functional but not fully unified under one debug logging path.
 
-## ToDo: Team Institution Backfill
+## Tests run
 
-1. Schema field changes for `Team_members`:
-   - rename `institution` -> `institution_name`
-   - add `institution_source`
-   - add `institution_confidence`
-   - add `institution_verified_date`
-   - add `notes`
-2. Backfill source order (strict priority):
-   - Official institutional profile page
-   - ORCID record
-   - Google Scholar profile
-   - Recent paper affiliations / Crossref metadata
-   - Manual review when still ambiguous
-3. Backfill workflow per team member:
-   - Start from `team_member_name`
-   - Check official lab/university/museum page first
-   - Use ORCID to confirm current employment/affiliation
-   - Use Google Scholar only as supporting evidence
-   - Use most recent paper affiliation only when stronger sources are unavailable
-   - Persist `institution_name`, `institution_source`, `institution_confidence`, `institution_verified_date`, `notes`
-4. Confidence rubric:
-   - `high`: official institution page or ORCID employment/affiliation
-   - `medium`: public Google Scholar profile or recent consistent paper affiliations
-   - `low`: inferred from publication history only
-5. Implementation notes:
-   - Add migration script for rename/add columns and backward-compatible reads during rollout.
-   - Add deterministic backfill script with `--dry-run` and `--apply`.
-   - Record provenance URL/text in `institution_source` and audit notes in `notes`.
+Run date: 2026-04-12
 
-## Test run report
+1. `./scripts/check_file_sizes.sh flutter_app`
+- Result: pass (no files above the current script threshold of 400 lines).
 
-- **2026-03-26 (latest full local gate run)**:
-  - `bash scripts/checks/ci_checks.sh`: **FAILED at file-size gate**.
-    - Checks before file-size gate: import boundaries, canonical DB path, trip/event integrity, mypy, and unittest suite all **PASSED**.
-  - `python3 -m unittest -v` (via `ci_checks.sh`): **PASSED** (`75 passed`).
-  - `bash scripts/checks/check_file_sizes.sh .`: **FAILED** with current oversized files:
-    - `repository/repository_finds.py` (379)
-    - `repository/repository_geology_data.py` (320)
-    - `tests/test_collection_plan_tab_behavior.py` (330)
-    - `tests/test_trip_repository_location_finds.py` (411)
-- **2026-03-26 (targeted verification)**:
-  - `pytest -q tests/test_db_bootstrap.py tests/test_trip_event_integrity_check.py tests/test_ui_user_flow_integration.py`: **PASSED** (`9 passed`).
-  - `bash scripts/checks/check_types.sh`: **PASSED** (`Success: no issues found in 51 source files`).
-  - `python3 -m mypy --config-file config/mypy.ini --explicit-package-bases app backend/app repository ui scripts/db scripts/checks scripts/accounts scripts/data_ops scripts/dev_seed`: **PASSED** (`Success: no issues found in 74 source files`).
-- **2026-03-30 (targeted UI regression check, after test alignment)**:
-  - `pytest -q tests/test_collection_plan_tab_behavior.py tests/test_tab_filter_regression.py`: **PASSED** (`11 passed`).
-- **2026-03-30 (type-gate tightening pass)**:
-  - `bash scripts/checks/check_types.sh`: **PASSED** (`Success: no issues found in 61 source files`).
-  - Expanded scope and override reduction were applied incrementally in this pass (see architecture/behavior notes above).
+2. `flutter test test/sudoku_board_area_test.dart`
+- Result: pass (`4` tests passed).
+
+3. `flutter test test/sudoku_victory_overlay_test.dart`
+- Result: pass (`3` tests passed).
+
+4. `flutter test test/sudoku_screen_debug_toggle_test.dart`
+- Result: pass (`3` tests passed).
+
+Notes:
+- `flutter test` runs reported dependency update notices (`15 packages have newer versions incompatible with dependency constraints`), but test execution completed successfully.
+- Full integration and patrol runs were not executed in this assessment pass.
+
+## Shorebird
+```zsh
+cd /Users/david/PycharmProjects/Sudoku_01/flutter_app
+flutter clean
+flutter pub get
+cd ios
+pod install
+cd ..
+shorebird release android
+shorebird release ios
+```

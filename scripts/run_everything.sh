@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 APP_DIR="${REPO_DIR}/flutter_app"
 
-IOS_INTEGRATION_DEVICE="${IOS_INTEGRATION_DEVICE:-A1D4B926-7DB8-436F-B648-16E26157B06B}"
+IOS_INTEGRATION_DEVICE="${IOS_INTEGRATION_DEVICE:-}"
 PATROL_TARGET="${PATROL_TARGET:-patrol_test/smoke_test.dart}"
 INTEGRATION_TARGET="${INTEGRATION_TARGET:-integration_test/app_flow_test.dart}"
 PATROL_DEVICES_TIMEOUT_SECONDS="${PATROL_DEVICES_TIMEOUT_SECONDS:-15}"
@@ -23,6 +23,42 @@ detect_android_device() {
   device="$(adb devices | awk 'NR > 1 && $2 == "device" { print $1; exit }')"
   if [[ -z "$device" ]]; then
     echo "No attached Android device found." >&2
+    exit 1
+  fi
+  printf '%s\n' "$device"
+}
+
+detect_ios_simulator() {
+  local device
+  device="$(python3 - <<'PY'
+import json
+import subprocess
+import sys
+
+result = subprocess.run(
+    ["flutter", "devices", "--machine"],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+if result.returncode != 0:
+    sys.exit(1)
+
+try:
+    devices = json.loads(result.stdout)
+except json.JSONDecodeError:
+    sys.exit(1)
+
+for d in devices:
+    if d.get("targetPlatform") == "ios":
+        print(d.get("id", ""))
+        sys.exit(0)
+
+sys.exit(1)
+PY
+)"
+  if [[ -z "$device" ]]; then
+    echo "No available iOS simulator found via 'flutter devices'." >&2
     exit 1
   fi
   printf '%s\n' "$device"
@@ -88,6 +124,9 @@ require_command pod
 require_command python3
 
 ANDROID_DEVICE="${ANDROID_DEVICE:-$(detect_android_device)}"
+if [[ -z "$IOS_INTEGRATION_DEVICE" ]]; then
+  IOS_INTEGRATION_DEVICE="$(detect_ios_simulator)"
+fi
 
 printf '==> using Android device: %s\n' "$ANDROID_DEVICE"
 printf '==> using iOS integration simulator: %s\n' "$IOS_INTEGRATION_DEVICE"
