@@ -89,9 +89,16 @@ class SudokuGameplayActionService {
     final analysis = _contradictionService.analyze(
       runtime.history.present.board,
     );
-    runtime.lastConflicts = analysis.hasContradiction
-        ? analysis.contradictionCells
-        : result.conflicts;
+    if (result.conflicts.isNotEmpty) {
+      runtime.lastConflicts = _resolveConflictsForDisplay(
+        runtime: runtime,
+        conflicts: result.conflicts,
+      );
+    } else if (analysis.hasContradiction) {
+      runtime.lastConflicts = analysis.contradictionCells;
+    } else {
+      runtime.lastConflicts = const <Coord>{};
+    }
 
     var nextCorrection = runtime.correctionState.copyWith(
       currentMoveId: nextMoveId,
@@ -134,6 +141,30 @@ class SudokuGameplayActionService {
       return;
     }
     render(result.message);
+  }
+
+  Set<Coord> _resolveConflictsForDisplay({
+    required SudokuRuntimeState runtime,
+    required Set<Coord> conflicts,
+  }) {
+    if (conflicts.isEmpty) {
+      return const <Coord>{};
+    }
+
+    if (conflicts.length <= 1) {
+      return conflicts;
+    }
+
+    if (runtime.conflictHintsLeft > 0) {
+      runtime.conflictHintsLeft -= 1;
+      return conflicts;
+    }
+
+    final selected = runtime.selected;
+    if (selected != null && conflicts.contains(selected)) {
+      return <Coord>{selected};
+    }
+    return <Coord>{conflicts.first};
   }
 
   void startPuzzle({

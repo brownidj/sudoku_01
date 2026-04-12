@@ -14,6 +14,17 @@ int correctionsForDifficulty(String difficulty) {
   }
 }
 
+int conflictHintsForDifficulty(String difficulty) {
+  switch (difficulty) {
+    case 'hard':
+      return 1;
+    case 'medium':
+      return 2;
+    default:
+      return 3;
+  }
+}
+
 class CorrectionCheckpoint {
   final History history;
   final int moveId;

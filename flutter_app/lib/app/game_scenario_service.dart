@@ -4,6 +4,7 @@ import 'package:flutter_app/app/debug_scenarios.dart';
 import 'package:flutter_app/app/settings_controller.dart';
 import 'package:flutter_app/app/sudoku_runtime_state.dart';
 import 'package:flutter_app/app/sudoku_runtime_state_service.dart';
+import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/application/game_service.dart';
 
 class GameScenarioService {
@@ -117,7 +118,10 @@ class GameScenarioService {
       ..solutionGrid = null
       ..gameOver = false
       ..puzzleSolved = false
-      ..correctionNoticeMessage = null;
+      ..correctionNoticeMessage = null
+      ..conflictHintsLeft = conflictHintsForDifficulty(
+        scenario.settings.difficulty,
+      );
     _runtimeStateService.applyRestoredSettings(settings, scenario.settings);
     saveGameSession();
     render(status);

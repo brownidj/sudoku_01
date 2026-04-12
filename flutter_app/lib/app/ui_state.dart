@@ -51,6 +51,7 @@ class UiState {
   final String? debugScenarioLabel;
   final int correctionNoticeSerial;
   final String? correctionNoticeMessage;
+  final int conflictHintsLeft;
 
   const UiState({
     required this.board,
@@ -71,5 +72,6 @@ class UiState {
     required this.debugScenarioLabel,
     required this.correctionNoticeSerial,
     required this.correctionNoticeMessage,
+    this.conflictHintsLeft = 0,
   });
 }

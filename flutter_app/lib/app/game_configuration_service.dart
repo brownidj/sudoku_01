@@ -22,7 +22,7 @@ class GameConfigurationService {
     if (!settings.setDifficulty(nextDifficulty)) {
       return;
     }
-    settings.setPuzzleMode(nextDifficulty == 'easy' ? 'multi' : 'unique');
+    settings.setPuzzleMode('unique');
     startGame();
   }
 

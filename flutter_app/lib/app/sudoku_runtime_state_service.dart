@@ -34,6 +34,7 @@ class SudokuRuntimeStateService {
         debugScenarioLabel: runtime.debugScenarioLabel,
         correctionNoticeSerial: runtime.correctionNoticeSerial,
         correctionNoticeMessage: runtime.correctionNoticeMessage,
+        conflictHintsLeft: runtime.conflictHintsLeft,
       ),
     );
   }
@@ -77,7 +78,10 @@ class SudokuRuntimeStateService {
       ..correctCells = {}
       ..solutionGrid = null
       ..debugScenarioLabel = null
-      ..correctionNoticeMessage = null;
+      ..correctionNoticeMessage = null
+      ..conflictHintsLeft = conflictHintsForDifficulty(
+        settings.state.difficulty,
+      );
     settings.setDifficultyLocked(false);
     settings.setPuzzleModeLocked(false);
     clearCorrectionPromptState(runtime, clearRevertedCells: true);

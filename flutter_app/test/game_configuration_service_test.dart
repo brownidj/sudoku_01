@@ -30,7 +30,7 @@ void main() {
     );
 
     expect(settings.state.difficulty, 'easy');
-    expect(settings.state.puzzleMode, 'multi');
+    expect(settings.state.puzzleMode, 'unique');
     expect(startCalls, 1);
     expect(status, isNull);
   });

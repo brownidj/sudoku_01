@@ -19,6 +19,7 @@ class RestoredGameSession {
   final SettingsState settings;
   final CorrectionState correctionState;
   final String? debugScenarioLabel;
+  final int conflictHintsLeft;
 
   const RestoredGameSession({
     required this.history,
@@ -29,6 +30,7 @@ class RestoredGameSession {
     required this.settings,
     required this.correctionState,
     required this.debugScenarioLabel,
+    required this.conflictHintsLeft,
   });
 }
 
@@ -83,6 +85,11 @@ class GameSessionService {
         settings.difficulty,
         history,
       );
+      final conflictHintsRaw = decoded['conflictHintsLeft'];
+      final maxConflictHints = conflictHintsForDifficulty(settings.difficulty);
+      final conflictHintsLeft = conflictHintsRaw is int
+          ? conflictHintsRaw.clamp(0, maxConflictHints) as int
+          : maxConflictHints;
 
       return RestoredGameSession(
         history: history,
@@ -93,6 +100,7 @@ class GameSessionService {
         settings: settings,
         correctionState: correctionState,
         debugScenarioLabel: decoded['debugScenarioLabel'] as String?,
+        conflictHintsLeft: conflictHintsLeft,
       );
     } on FormatException {
       return null;
@@ -110,6 +118,7 @@ class GameSessionService {
     required SettingsState settings,
     required CorrectionState correctionState,
     required String? debugScenarioLabel,
+    required int conflictHintsLeft,
   }) {
     final payload = <String, dynamic>{
       'version': sessionVersion,
@@ -119,6 +128,7 @@ class GameSessionService {
       'gameOver': gameOver,
       'puzzleSolved': puzzleSolved,
       'debugScenarioLabel': debugScenarioLabel,
+      'conflictHintsLeft': conflictHintsLeft,
       'settings': <String, dynamic>{
         'notesMode': settings.notesMode,
         'difficulty': settings.difficulty,

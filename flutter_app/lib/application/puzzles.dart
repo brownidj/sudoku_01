@@ -57,7 +57,7 @@ const Map<String, List<Grid>> _difficultySeeds = {
   'hard': [_hardGrid01],
 };
 
-const Map<String, int> _targetGivens = {'easy': 40, 'medium': 32, 'hard': 26};
+const Map<String, int> _targetGivens = {'easy': 40, 'medium': 32, 'hard': 25};
 
 final Map<String, Puzzle> puzzles = {
   'starter': Puzzle(puzzleId: 'starter', difficulty: 'easy', grid: _easyGrid01),

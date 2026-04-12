@@ -13,7 +13,7 @@ class SettingsController {
     styleName: 'Modern',
     contentMode: 'animals',
     animalStyle: 'cute',
-    puzzleMode: 'multi',
+    puzzleMode: 'unique',
   );
 
   SettingsController(this._prefs, this._onChange);
@@ -103,9 +103,6 @@ class SettingsController {
   }
 
   String _defaultPuzzleModeForDifficulty(String difficulty) {
-    if (difficulty == 'easy') {
-      return 'multi';
-    }
     return 'unique';
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/sudoku_controller_action_service.dart';
 import 'package:flutter_app/app/sudoku_runtime_state.dart';
 import 'package:flutter_app/app/sudoku_runtime_state_service.dart';
+import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/app/ui_state_mapper.dart';
 import 'package:flutter_app/application/game_service.dart';
@@ -52,6 +53,7 @@ class GameController {
         difficulty: _settings.state.difficulty,
         history: history,
       ),
+      conflictHintsLeft: conflictHintsForDifficulty(_settings.state.difficulty),
     );
   }
 

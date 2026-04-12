@@ -20,6 +20,7 @@ class UiStateMapperInput {
   final String? debugScenarioLabel;
   final int correctionNoticeSerial;
   final String? correctionNoticeMessage;
+  final int conflictHintsLeft;
 
   const UiStateMapperInput({
     required this.board,
@@ -39,6 +40,7 @@ class UiStateMapperInput {
     required this.debugScenarioLabel,
     required this.correctionNoticeSerial,
     required this.correctionNoticeMessage,
+    this.conflictHintsLeft = 0,
   });
 }
 
@@ -98,6 +100,7 @@ class UiStateMapper {
       debugScenarioLabel: input.debugScenarioLabel,
       correctionNoticeSerial: input.correctionNoticeSerial,
       correctionNoticeMessage: input.correctionNoticeMessage,
+      conflictHintsLeft: input.conflictHintsLeft,
     );
   }
 }

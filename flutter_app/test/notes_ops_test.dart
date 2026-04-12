@@ -31,4 +31,25 @@ void main() {
     expect(cell.value, isNull);
     expect(cell.notes.isEmpty, isTrue);
   });
+
+  test(
+    'placing a value removes that digit from notes in row, column and box',
+    () {
+      var board = Board.empty();
+
+      board = ops.toggleNote(board, const Coord(0, 1), 5); // same row
+      board = ops.toggleNote(board, const Coord(1, 0), 5); // same col
+      board = ops.toggleNote(board, const Coord(1, 1), 5); // same box
+      board = ops.toggleNote(board, const Coord(4, 4), 5); // unrelated
+      board = ops.toggleNote(board, const Coord(0, 1), 7); // keep other note
+
+      final updated = ops.setValue(board, const Coord(0, 0), 5);
+
+      expect(updated.cellAtCoord(const Coord(0, 1)).notes.contains(5), isFalse);
+      expect(updated.cellAtCoord(const Coord(1, 0)).notes.contains(5), isFalse);
+      expect(updated.cellAtCoord(const Coord(1, 1)).notes.contains(5), isFalse);
+      expect(updated.cellAtCoord(const Coord(4, 4)).notes.contains(5), isTrue);
+      expect(updated.cellAtCoord(const Coord(0, 1)).notes.contains(7), isTrue);
+    },
+  );
 }

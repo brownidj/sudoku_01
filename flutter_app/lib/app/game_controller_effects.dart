@@ -21,6 +21,7 @@ class GameControllerEffects {
       settings: settings,
       correctionState: runtime.correctionState,
       debugScenarioLabel: runtime.debugScenarioLabel,
+      conflictHintsLeft: runtime.conflictHintsLeft,
     );
   }
 

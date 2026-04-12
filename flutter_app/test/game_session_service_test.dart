@@ -51,6 +51,7 @@ void main() {
         history: history,
       ),
       debugScenarioLabel: null,
+      conflictHintsLeft: 3,
     );
 
     var flushed = false;

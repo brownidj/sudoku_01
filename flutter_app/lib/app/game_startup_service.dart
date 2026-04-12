@@ -44,6 +44,7 @@ class GameStartupService {
           puzzleSolved: restoredSession.puzzleSolved,
           initialGrid: restoredSession.initialGrid,
           debugScenarioLabel: restoredSession.debugScenarioLabel,
+          conflictHintsLeft: restoredSession.conflictHintsLeft,
         ),
         hadSavedSessionAtLaunch: true,
         shouldNotifyListeners: true,

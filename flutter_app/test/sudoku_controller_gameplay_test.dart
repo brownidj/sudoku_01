@@ -62,4 +62,56 @@ void main() {
     controller.onContentModeChanged('numbers');
     expect(fakeSettings.state.contentMode, 'numbers');
   });
+
+  test('conflict peer hints are limited per game by difficulty', () async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'unique',
+        ),
+      ),
+    );
+    await controller.ready;
+
+    final target = firstEditableCoord(controller.state);
+    expect(target, isNotNull);
+    final conflictDigit = conflictingPeerDigit(controller.state, target!);
+    expect(conflictDigit, isNotNull);
+
+    int conflictedCount() {
+      return controller.state.board.cells
+          .expand((row) => row)
+          .where((cell) => cell.conflicted)
+          .length;
+    }
+
+    controller.onCellTapped(target);
+    controller.onDigitPressed(conflictDigit!);
+    expect(controller.state.conflictHintsLeft, 2);
+    expect(conflictedCount(), greaterThan(1));
+
+    controller.onClearPressed();
+    controller.onDigitPressed(conflictDigit);
+    expect(controller.state.conflictHintsLeft, 1);
+    expect(conflictedCount(), greaterThan(1));
+
+    controller.onClearPressed();
+    controller.onDigitPressed(conflictDigit);
+    expect(controller.state.conflictHintsLeft, 0);
+    expect(conflictedCount(), greaterThan(1));
+
+    controller.onClearPressed();
+    controller.onDigitPressed(conflictDigit);
+    expect(controller.state.conflictHintsLeft, 0);
+    expect(conflictedCount(), 1);
+  });
 }

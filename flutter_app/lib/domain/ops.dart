@@ -16,7 +16,8 @@ Board setValue(Board board, Coord coord, Digit? value) {
   if (_cellEquals(newCell, cell)) {
     return board;
   }
-  return board.withCell(coord, newCell);
+  final withValue = board.withCell(coord, newCell);
+  return removePeerNotesForDigit(withValue, coord, value);
 }
 
 Board clearNotes(Board board, Coord coord) {
@@ -57,6 +58,48 @@ Board toggleNote(Board board, Coord coord, Digit digit) {
     return board;
   }
   return board.withCell(coord, newCell);
+}
+
+Board removePeerNotesForDigit(Board board, Coord coord, Digit digit) {
+  var next = board;
+  final seen = <Coord>{};
+
+  void removeAt(Coord peer) {
+    if (peer == coord || !seen.add(peer)) {
+      return;
+    }
+    final cell = next.cellAtCoord(peer);
+    if (cell.value != null ||
+        cell.notes.isEmpty ||
+        !cell.notes.contains(digit)) {
+      return;
+    }
+    final updatedNotes = cell.notes.toSet()..remove(digit);
+    final updatedCell = Cell(
+      value: null,
+      given: cell.given,
+      notes: updatedNotes,
+    );
+    next = next.withCell(peer, updatedCell);
+  }
+
+  for (var c = 0; c < 9; c += 1) {
+    removeAt(Coord(coord.row, c));
+  }
+
+  for (var r = 0; r < 9; r += 1) {
+    removeAt(Coord(r, coord.col));
+  }
+
+  final boxRowStart = (coord.row ~/ 3) * 3;
+  final boxColStart = (coord.col ~/ 3) * 3;
+  for (var r = boxRowStart; r < boxRowStart + 3; r += 1) {
+    for (var c = boxColStart; c < boxColStart + 3; c += 1) {
+      removeAt(Coord(r, c));
+    }
+  }
+
+  return next;
 }
 
 bool _cellEquals(Cell a, Cell b) {
