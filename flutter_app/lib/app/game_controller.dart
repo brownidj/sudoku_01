@@ -27,6 +27,7 @@ class GameController {
   final UiStateMapper _uiStateMapper;
   late SudokuRuntimeState _runtime;
   bool _hadSavedSessionAtLaunch = false;
+  bool _isCurrentGameResumed = false;
 
   GameController({
     required SettingsController settingsController,
@@ -64,6 +65,7 @@ class GameController {
   );
   SettingsState get settingsState => _settings.state;
   bool get hadSavedSessionAtLaunch => _hadSavedSessionAtLaunch;
+  bool get isCurrentGameResumed => _isCurrentGameResumed;
   bool get gameOver => _runtime.gameOver;
   History get history => _runtime.history;
   Coord? get selected => _runtime.selected;
@@ -73,6 +75,7 @@ class GameController {
     _hadSavedSessionAtLaunch = startup.hadSavedSessionAtLaunch;
     if (startup.restoredRuntime != null) {
       _runtime = startup.restoredRuntime!;
+      _isCurrentGameResumed = true;
     }
     if (startup.shouldNotifyListeners) {
       _effects.render(notifyListeners, 'Session restored');
@@ -117,6 +120,7 @@ class GameController {
   }
 
   void start(VoidCallback notifyListeners) {
+    _isCurrentGameResumed = false;
     _actionService.startPuzzle(
       runtime: _runtime,
       settings: _settings,
@@ -178,6 +182,24 @@ class GameController {
 
   void onPuzzleModeChanged(String mode, VoidCallback notifyListeners) {
     _configurationService.setPuzzleMode(
+      settings: _settings,
+      mode: mode,
+      startGame: () => start(notifyListeners),
+      render: (status) => _effects.render(notifyListeners, status),
+    );
+  }
+
+  void onConfirmSetDifficulty(String difficulty, VoidCallback notifyListeners) {
+    _configurationService.confirmDifficultyAndStartNewGame(
+      settings: _settings,
+      difficulty: difficulty,
+      startGame: () => start(notifyListeners),
+      render: (status) => _effects.render(notifyListeners, status),
+    );
+  }
+
+  void onConfirmPuzzleModeChanged(String mode, VoidCallback notifyListeners) {
+    _configurationService.confirmPuzzleModeAndStartNewGame(
       settings: _settings,
       mode: mode,
       startGame: () => start(notifyListeners),

@@ -162,14 +162,15 @@ class SudokuBoardPainter extends CustomPainter {
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
     final targetSize = _animalTargetSize(rect.width, digit);
+    final targetHeight = digit == 5 ? targetSize * 1.15 : targetSize;
     final left = rect.left + (rect.width - targetSize) / 2;
-    final top = rect.top + (rect.height - targetSize) / 2;
-    final target = Rect.fromLTWH(left, top, targetSize, targetSize);
+    final top = rect.top + (rect.height - targetHeight) / 2;
+    final target = Rect.fromLTWH(left, top, targetSize, targetHeight);
     paintImage(
       canvas: canvas,
       rect: target,
       image: image,
-      fit: BoxFit.contain,
+      fit: digit == 5 ? BoxFit.fill : BoxFit.contain,
       colorFilter: _animalColorFilter(digit),
     );
   }

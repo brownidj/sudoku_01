@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
@@ -15,16 +14,12 @@ import 'package:flutter_app/ui/widgets/help_dialog.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 import 'package:flutter_app/ui/widgets/sudoku_game_content.dart';
 import 'package:flutter_app/ui/widgets/sudoku_version_app_bar.dart';
-
 class SudokuScreen extends StatefulWidget {
   const SudokuScreen({super.key, required this.controller});
-
   final SudokuController controller;
-
   @override
   State<SudokuScreen> createState() => _SudokuScreenState();
 }
-
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
   final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
@@ -38,7 +33,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final GlobalKey _bottomControlsKey = GlobalKey();
   bool _debugToolsEnabled = false;
   bool _audioEnabled = true;
-
   @override
   void initState() {
     super.initState();
@@ -49,19 +43,16 @@ class _SudokuScreenState extends State<SudokuScreen> {
       onVictoryOverlayChanged: _onVictoryOverlayChanged,
     );
   }
-
   @override
   void didUpdateWidget(covariant SudokuScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     _services.updateController(widget.controller);
   }
-
   @override
   void dispose() {
     _services.dispose();
     super.dispose();
   }
-
   void _onControllerChanged() {
     if (!mounted) {
       return;
@@ -74,7 +65,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       showCorrectionPrompt: _showCorrectionPrompt,
     );
   }
-
   Future<void> _loadAnimalImages() async {
     final bundle = await _animalAssetService.load();
     _animalImages
@@ -87,7 +77,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       setState(() {});
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
@@ -104,7 +93,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
           debugToolsEnabled: _debugToolsEnabled,
         );
         final style = styleForName(state.styleName);
-
         return Scaffold(
           appBar: SudokuVersionAppBar(
             onVersionTapped: _onVersionTapped,
@@ -160,7 +148,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     overlayStackKey: _overlayStackKey,
                     tilesPanelKey: _tilesPanelKey,
                     bottomControlsKey: _bottomControlsKey,
-                    onNewGame: widget.controller.onNewGame,
+                    onNewGame: _onNewGameRequested,
                     onContentModeChanged:
                         widget.controller.onContentModeChanged,
                     onPuzzleModeChanged: _onPuzzleModeRequested,
@@ -183,7 +171,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       },
     );
   }
-
   void _handleCellLongPress(Offset globalPosition, Coord coord) {
     _services.showCellTooltip(
       context: context,
@@ -192,7 +179,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       globalPosition: globalPosition,
     );
   }
-
   Future<void> _handleCellTap(Coord coord) async {
     final state = widget.controller.state;
     await _services.interactionController.onCellTapped(
@@ -201,7 +187,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       animalLoad: _animalLoad,
     );
   }
-
   Future<void> _showCorrectionPrompt() async {
     await _services.showCorrectionPrompt(
       context: context,
@@ -213,7 +198,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
       currentState: () => widget.controller.state,
     );
   }
-
   void _onVersionTapped() {
     final result = _services.interactionController.onVersionTapped(
       appDebugEnabled: AppDebug.enabled,
@@ -224,11 +208,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
       });
     }
   }
-
   void _onVersionLongPressed() {
     _services.interactionController.onVersionLongPressed();
   }
-
   void _onAudioEnabledChanged(bool enabled) {
     if (_audioEnabled == enabled) {
       return;
@@ -238,7 +220,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
     });
     _services.onAudioEnabledChanged(enabled);
   }
-
   void _onVictoryOverlayChanged() {
     _services.onVictoryOverlayChanged(
       overlayStackKey: _overlayStackKey,
@@ -247,9 +228,13 @@ class _SudokuScreenState extends State<SudokuScreen> {
       isMounted: () => mounted,
     );
   }
-
   void _onPuzzleModeRequested(String mode) {
-    if (mode == widget.controller.state.puzzleMode) {
+    final state = widget.controller.state;
+    if (mode == state.puzzleMode) {
+      return;
+    }
+    if (state.gameOver) {
+      widget.controller.onConfirmPuzzleModeChanged(mode);
       return;
     }
     unawaited(
@@ -259,13 +244,35 @@ class _SudokuScreenState extends State<SudokuScreen> {
         title: 'Start New Game?',
         message:
             'Change puzzle mode to ${mode.toUpperCase()} and start a new game?',
-        onConfirm: () => widget.controller.onPuzzleModeChanged(mode),
+        onConfirm: () => widget.controller.onConfirmPuzzleModeChanged(mode),
       ),
     );
   }
-
+  void _onNewGameRequested() {
+    final state = widget.controller.state;
+    final shouldRequireConfirmation =
+        widget.controller.isCurrentGameResumed || state.canUndo;
+    if (!shouldRequireConfirmation) {
+      widget.controller.onNewGame();
+      return;
+    }
+    unawaited(
+      _newGameConfirmationService.confirmAndRun(
+        context: context,
+        isMounted: () => mounted,
+        title: 'Start New Game?',
+        message: 'Start a new game?',
+        onConfirm: widget.controller.onNewGame,
+      ),
+    );
+  }
   void _onDifficultyRequested(String difficulty) {
-    if (difficulty == widget.controller.state.difficulty) {
+    final state = widget.controller.state;
+    if (difficulty == state.difficulty) {
+      return;
+    }
+    if (state.gameOver) {
+      widget.controller.onConfirmSetDifficulty(difficulty);
       return;
     }
     unawaited(
@@ -275,7 +282,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         title: 'Start New Game?',
         message:
             'Change difficulty to ${difficulty.toUpperCase()} and start a new game?',
-        onConfirm: () => widget.controller.onSetDifficulty(difficulty),
+        onConfirm: () => widget.controller.onConfirmSetDifficulty(difficulty),
       ),
     );
   }

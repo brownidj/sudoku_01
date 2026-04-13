@@ -196,7 +196,9 @@ void main() {
     expect(resumeService.newGameCalls, 0);
   });
 
-  testWidgets('New game starts a new game', (WidgetTester tester) async {
+  testWidgets('New game asks for confirmation before starting', (
+    WidgetTester tester,
+  ) async {
     await tester.binding.setSurfaceSize(const Size(1080, 1920));
     final prefs = await _buildPrefsWithSavedSession();
     final newGameService = SpyGameService();
@@ -212,6 +214,18 @@ void main() {
     );
     await tester.pumpAndSettle();
     await tester.tap(find.text('New game'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Start New Game?'), findsOneWidget);
+    expect(newGameService.newGameCalls, 0);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(newGameService.newGameCalls, 0);
+
+    await tester.tap(find.text('New game'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Start New Game'));
     await tester.pumpAndSettle();
     expect(newGameService.newGameCalls, 1);
   });

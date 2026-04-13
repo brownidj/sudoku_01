@@ -84,7 +84,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining(_correctionsTooltipPrefix), findsOneWidget);
 
-    await tester.longPress(find.widgetWithText(OutlinedButton, 'Undo'));
+    await tester.longPress(find.text('Undo'));
     await tester.pumpAndSettle();
     expect(find.text(_undoTooltip), findsOneWidget);
   });

@@ -60,8 +60,8 @@ class SettingsController {
     _setState(_state.copyWith(notesMode: enabled));
   }
 
-  bool setDifficulty(String difficulty) {
-    if (!_state.canChangeDifficulty) {
+  bool setDifficulty(String difficulty, {bool force = false}) {
+    if (!force && !_state.canChangeDifficulty) {
       return false;
     }
     _setState(_state.copyWith(difficulty: difficulty));

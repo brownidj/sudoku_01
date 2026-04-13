@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
+import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 
 class LaunchScreen extends StatefulWidget {
@@ -25,6 +26,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
   bool _openingGame = false;
   String? _launchError;
   String _versionLabel = 'ZuDoKu';
+  final SudokuNewGameConfirmationService _newGameConfirmationService =
+      const SudokuNewGameConfirmationService();
 
   @override
   void initState() {
@@ -97,6 +100,18 @@ class _LaunchScreenState extends State<LaunchScreen> {
         });
       }
     }
+  }
+
+  Future<void> _confirmAndStartNewGame() {
+    return _newGameConfirmationService.confirmAndRun(
+      context: context,
+      isMounted: () => mounted,
+      title: 'Start New Game?',
+      message: 'Start a new game?',
+      onConfirm: () {
+        _openGame(startNewGame: true);
+      },
+    );
   }
 
   @override
@@ -187,7 +202,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                         child: OutlinedButton(
                           onPressed: _openingGame
                               ? null
-                              : () => _openGame(startNewGame: true),
+                              : _confirmAndStartNewGame,
                           child: const Text('New game'),
                         ),
                       ),
