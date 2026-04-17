@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class ActionBar extends StatelessWidget {
   static const String undoTooltip =
@@ -27,83 +28,73 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const controlWidth = 52.0;
+    const controlHeight = 52.0;
+    const notesWidth = 100.0;
+    const notesHeight = 52.0;
+
     final compactStyle = OutlinedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      minimumSize: const Size(0, 34),
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      visualDensity: VisualDensity.compact,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      minimumSize: const Size(controlWidth, controlHeight),
+      tapTargetSize: MaterialTapTargetSize.padded,
       textStyle: const TextStyle(fontSize: 13),
     );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Expanded(
-            child: OutlinedButton(
-              style: compactStyle.copyWith(
-                backgroundColor: WidgetStatePropertyAll(
-                  state.notesMode
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
-                      : null,
-                ),
-                side: WidgetStatePropertyAll(
-                  BorderSide(
-                    color: state.notesMode
-                        ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.outline,
-                  ),
-                ),
-              ),
-              onPressed: onToggleNotesMode,
-              child: Text(
-                'Notes',
-                style: TextStyle(
-                  fontWeight: state.notesMode
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Builder(
-              builder: (context) {
-                final tooltipKey = GlobalKey<TooltipState>();
-                return Tooltip(
-                  key: tooltipKey,
-                  message: undoTooltip,
-                  triggerMode: TooltipTriggerMode.manual,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onLongPress: () =>
-                        tooltipKey.currentState?.ensureTooltipVisible(),
-                    child: OutlinedButton(
-                      style: compactStyle,
-                      onPressed: state.canUndo ? onUndo : null,
-                      child: const Text('Undo'),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
+          LongPressTooltip(
+            message: solutionTooltip,
             child: OutlinedButton(
               style: compactStyle,
-              onPressed: onClear,
-              child: const Text('Clear'),
+              onPressed: onCheckOrSolution,
+              child: const Text('Solution'),
             ),
           ),
+          const SizedBox(width: 24),
+          OutlinedButton(
+            style: compactStyle,
+            onPressed: onClear,
+            child: const Text('Clear'),
+          ),
           const SizedBox(width: 6),
-          Expanded(
-            child: Tooltip(
-              message: solutionTooltip,
-              child: OutlinedButton(
-                style: compactStyle,
-                onPressed: onCheckOrSolution,
-                child: const Text('Solution'),
+          LongPressTooltip(
+            message: undoTooltip,
+            child: OutlinedButton(
+              style: compactStyle,
+              onPressed: state.canUndo ? onUndo : null,
+              child: const Text('Undo'),
+            ),
+          ),
+          const Spacer(),
+          OutlinedButton(
+            style: compactStyle.copyWith(
+              fixedSize: const WidgetStatePropertyAll(
+                Size(notesWidth, notesHeight),
+              ),
+              minimumSize: const WidgetStatePropertyAll(
+                Size(notesWidth, notesHeight),
+              ),
+              backgroundColor: WidgetStatePropertyAll(
+                state.notesMode
+                    ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                    : null,
+              ),
+              side: WidgetStatePropertyAll(
+                BorderSide(
+                  color: state.notesMode
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.outline,
+                ),
+              ),
+            ),
+            onPressed: onToggleNotesMode,
+            child: Text(
+              'Notes',
+              style: TextStyle(
+                fontWeight: state.notesMode
+                    ? FontWeight.bold
+                    : FontWeight.normal,
               ),
             ),
           ),
