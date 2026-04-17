@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
+
+class SudokuConfigurationFlowService {
+  final SudokuNewGameConfirmationService _confirmationService;
+
+  const SudokuConfigurationFlowService({
+    SudokuNewGameConfirmationService? confirmationService,
+  }) : _confirmationService =
+           confirmationService ?? const SudokuNewGameConfirmationService();
+
+  String lockedSettingsMessage(UiState state) {
+    final difficultyLocked = !state.canChangeDifficulty;
+    final puzzleModeLocked = !state.canChangePuzzleMode;
+    return switch ((difficultyLocked, puzzleModeLocked)) {
+      (true, true) =>
+        'Difficulty and puzzle mode are locked for this board. Start a new game when you are ready to change them.',
+      (true, false) =>
+        'Difficulty is locked for this board. Start a new game when you are ready to change it.',
+      (false, true) =>
+        'Puzzle mode is locked for this board. Start a new game when you are ready to change it.',
+      (false, false) =>
+        'Some board settings are currently locked. Start a new game to change them.',
+    };
+  }
+
+  Future<void> requestPuzzleModeChange({
+    required BuildContext context,
+    required bool Function() isMounted,
+    required UiState state,
+    required String mode,
+    required ValueChanged<String> onConfirmChange,
+  }) async {
+    if (mode == state.puzzleMode) {
+      return;
+    }
+    if (state.gameOver) {
+      onConfirmChange(mode);
+      return;
+    }
+    await _confirmationService.confirmAndRun(
+      context: context,
+      isMounted: isMounted,
+      title: 'Start New Game?',
+      message:
+          'Change puzzle mode to ${mode.toUpperCase()} and start a new game?',
+      onConfirm: () => onConfirmChange(mode),
+    );
+  }
+
+  Future<void> requestDifficultyChange({
+    required BuildContext context,
+    required bool Function() isMounted,
+    required UiState state,
+    required String difficulty,
+    required ValueChanged<String> onConfirmChange,
+  }) async {
+    if (difficulty == state.difficulty) {
+      return;
+    }
+    if (state.gameOver) {
+      onConfirmChange(difficulty);
+      return;
+    }
+    await _confirmationService.confirmAndRun(
+      context: context,
+      isMounted: isMounted,
+      title: 'Start New Game?',
+      message:
+          'Change difficulty to ${difficulty.toUpperCase()} and start a new game?',
+      onConfirm: () => onConfirmChange(difficulty),
+    );
+  }
+
+  Future<void> requestNewGame({
+    required BuildContext context,
+    required bool Function() isMounted,
+    required UiState state,
+    required bool isCurrentGameResumed,
+    required VoidCallback onConfirmNewGame,
+  }) async {
+    final shouldRequireConfirmation =
+        !state.gameOver && (isCurrentGameResumed || state.canUndo);
+    if (!shouldRequireConfirmation) {
+      onConfirmNewGame();
+      return;
+    }
+    await _confirmationService.confirmAndRun(
+      context: context,
+      isMounted: isMounted,
+      title: 'Start New Game?',
+      message: 'Start a fresh game and reset this board?',
+      onConfirm: onConfirmNewGame,
+    );
+  }
+}

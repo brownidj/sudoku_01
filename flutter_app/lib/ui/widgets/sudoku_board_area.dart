@@ -104,7 +104,7 @@ class SudokuBoardArea extends StatelessWidget {
         final instructionHeight = showStartInstruction
             ? instructionBubbleHeight + gapBeforeInstruction
             : 0.0;
-        const layoutSafetyPadding = 8.0;
+        const layoutSafetyPadding = 9.0;
         final reservedHeight =
             metadataHeight +
             instructionHeight +
@@ -176,7 +176,7 @@ class SudokuBoardArea extends StatelessWidget {
                 child: _InlineTooltipMessage(message: startInstructionMessage),
               ),
             ],
-            const SizedBox(height: 12),
+            if (candidateVisible) const SizedBox(height: 12),
             CandidatePanel(
               visible: candidateVisible,
               candidateDigits: candidateDigits,
@@ -207,7 +207,7 @@ class _InlineTooltipMessage extends StatelessWidget {
       padding:
           tooltipTheme.padding ??
           const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      margin: tooltipTheme.margin,
+      margin: EdgeInsets.zero,
       decoration:
           tooltipTheme.decoration ??
           BoxDecoration(
