@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class SudokuBoardMetadataRow extends StatelessWidget {
   final UiState state;
@@ -26,7 +27,8 @@ class SudokuBoardMetadataRow extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: _MetadataDropdown(
               tooltipMessage:
-                  'One unique solution or several possible solutions',
+                  'UNIQUE has one solution. MULTI may have more than one valid solution. '
+                  'Choose the mode that supports your regular puzzle routine.',
               value: state.puzzleMode,
               dropdownKey: const ValueKey<String>('board-puzzle-mode-dropdown'),
               items: const [
@@ -62,7 +64,8 @@ class SudokuBoardMetadataRow extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerRight,
             child: _MetadataDropdown(
-              tooltipMessage: 'Difficulty level',
+              tooltipMessage:
+                  'Choose the challenge level that feels right for steady daily progress.',
               value: state.difficulty,
               dropdownKey: const ValueKey<String>('board-difficulty-dropdown'),
               items: const [
@@ -99,27 +102,33 @@ class _MetadataDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
+    return LongPressTooltip(
       message: tooltipMessage,
       child: DropdownButtonHideUnderline(
         child: FittedBox(
           fit: BoxFit.scaleDown,
-          child: DropdownButton<String>(
-            key: dropdownKey,
-            value: value,
-            isDense: true,
-            icon: const Icon(Icons.expand_more, size: 14),
-            onChanged: (nextValue) {
-              if (nextValue == null) {
-                return;
-              }
-              onChanged?.call(nextValue);
-            },
-            items: items,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              letterSpacing: 0.6,
+          child: SizedBox(
+            height: 40,
+            child: DropdownButton<String>(
+              key: dropdownKey,
+              value: value,
+              isDense: false,
+              itemHeight: 48,
+              icon: const Icon(Icons.expand_more, size: 18),
+              onChanged: (nextValue) {
+                if (nextValue == null) {
+                  return;
+                }
+                onChanged?.call(nextValue);
+              },
+              items: items,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withOpacity(0.72),
+                letterSpacing: 0.5,
+              ),
             ),
           ),
         ),
@@ -141,29 +150,18 @@ class _ManualTooltipLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return FittedBox(
       fit: BoxFit.scaleDown,
-      child: Builder(
-        builder: (context) {
-          final tooltipKey = GlobalKey<TooltipState>();
-          return Tooltip(
-            key: tooltipKey,
-            message: tooltipMessage,
-            triggerMode: TooltipTriggerMode.manual,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onLongPress: () =>
-                  tooltipKey.currentState?.ensureTooltipVisible(),
-              child: Text(
-                label,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withOpacity(0.6),
-                ),
-              ),
+      child: LongPressTooltip(
+        message: tooltipMessage,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+          child: Text(
+            label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.72),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }

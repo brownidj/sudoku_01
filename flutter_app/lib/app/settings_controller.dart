@@ -26,7 +26,9 @@ class SettingsController {
     if (prefs.animalStyle == 'cute' || prefs.animalStyle == 'simple') {
       next = next.copyWith(animalStyle: prefs.animalStyle);
     }
-    if (prefs.contentMode == 'animals' || prefs.contentMode == 'numbers') {
+    if (prefs.contentMode == 'animals' ||
+        prefs.contentMode == 'instruments' ||
+        prefs.contentMode == 'numbers') {
       next = next.copyWith(contentMode: prefs.contentMode);
     }
     if (prefs.styleName != null && prefs.styleName!.isNotEmpty) {
@@ -60,8 +62,8 @@ class SettingsController {
     _setState(_state.copyWith(notesMode: enabled));
   }
 
-  bool setDifficulty(String difficulty) {
-    if (!_state.canChangeDifficulty) {
+  bool setDifficulty(String difficulty, {bool force = false}) {
+    if (!force && !_state.canChangeDifficulty) {
       return false;
     }
     _setState(_state.copyWith(difficulty: difficulty));

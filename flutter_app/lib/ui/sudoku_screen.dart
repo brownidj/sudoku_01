@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/ui/sudoku_content_asset_selector.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
@@ -12,15 +12,14 @@ import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/help_dialog.dart';
+import 'package:flutter_app/ui/widgets/info_sheet.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 import 'package:flutter_app/ui/widgets/sudoku_game_content.dart';
 import 'package:flutter_app/ui/widgets/sudoku_version_app_bar.dart';
 
 class SudokuScreen extends StatefulWidget {
   const SudokuScreen({super.key, required this.controller});
-
   final SudokuController controller;
-
   @override
   State<SudokuScreen> createState() => _SudokuScreenState();
 }
@@ -38,7 +37,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final GlobalKey _bottomControlsKey = GlobalKey();
   bool _debugToolsEnabled = false;
   bool _audioEnabled = true;
-
   @override
   void initState() {
     super.initState();
@@ -104,7 +102,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
           debugToolsEnabled: _debugToolsEnabled,
         );
         final style = styleForName(state.styleName);
-
         return Scaffold(
           appBar: SudokuVersionAppBar(
             onVersionTapped: _onVersionTapped,
@@ -139,9 +136,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   return SudokuGameContent(
                     state: state,
                     style: style,
-                    animalImages: _animalImages[state.animalStyle] ?? const {},
-                    noteImagesBySize:
-                        _noteImages[state.animalStyle] ?? const {},
+                    animalImages: SudokuContentAssetSelector.imagesForState(
+                      state,
+                      imagesByVariant: _animalImages,
+                    ),
+                    noteImagesBySize: SudokuContentAssetSelector.notesForState(
+                      state,
+                      notesByVariant: _noteImages,
+                    ),
                     devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
                     candidateVisible: viewModel.candidateVisible,
                     candidateDigits: viewModel.candidateDigits,
@@ -160,9 +162,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
                     overlayStackKey: _overlayStackKey,
                     tilesPanelKey: _tilesPanelKey,
                     bottomControlsKey: _bottomControlsKey,
-                    onNewGame: widget.controller.onNewGame,
+                    onNewGame: _onNewGameRequested,
                     onContentModeChanged:
                         widget.controller.onContentModeChanged,
+                    onConfigurationLockTapped: _onConfigurationLockTapped,
                     onPuzzleModeChanged: _onPuzzleModeRequested,
                     onSetDifficulty: _onDifficultyRequested,
                     onStyleChanged: widget.controller.onStyleChanged,
@@ -248,8 +251,37 @@ class _SudokuScreenState extends State<SudokuScreen> {
     );
   }
 
+  void _onConfigurationLockTapped() {
+    final state = widget.controller.state;
+    final difficultyLocked = !state.canChangeDifficulty;
+    final puzzleModeLocked = !state.canChangePuzzleMode;
+    final message = switch ((difficultyLocked, puzzleModeLocked)) {
+      (true, true) =>
+        'Difficulty and puzzle mode are locked for this board. Start a new game when you are ready to change them.',
+      (true, false) =>
+        'Difficulty is locked for this board. Start a new game when you are ready to change it.',
+      (false, true) =>
+        'Puzzle mode is locked for this board. Start a new game when you are ready to change it.',
+      (false, false) =>
+        'Some board settings are currently locked. Start a new game to change them.',
+    };
+    _showLockedFeatureSheet(title: 'Board Settings Locked', message: message);
+  }
+
+  Future<void> _showLockedFeatureSheet({
+    required String title,
+    required String message,
+  }) {
+    return showInfoSheet(context: context, title: title, message: message);
+  }
+
   void _onPuzzleModeRequested(String mode) {
-    if (mode == widget.controller.state.puzzleMode) {
+    final state = widget.controller.state;
+    if (mode == state.puzzleMode) {
+      return;
+    }
+    if (state.gameOver) {
+      widget.controller.onConfirmPuzzleModeChanged(mode);
       return;
     }
     unawaited(
@@ -258,14 +290,39 @@ class _SudokuScreenState extends State<SudokuScreen> {
         isMounted: () => mounted,
         title: 'Start New Game?',
         message:
-            'Change puzzle mode to ${mode.toUpperCase()} and start a new game?',
-        onConfirm: () => widget.controller.onPuzzleModeChanged(mode),
+            'Switch puzzle mode to ${mode.toUpperCase()} and start a fresh game?',
+        onConfirm: () => widget.controller.onConfirmPuzzleModeChanged(mode),
+      ),
+    );
+  }
+
+  void _onNewGameRequested() {
+    final state = widget.controller.state;
+    final shouldRequireConfirmation =
+        !state.gameOver &&
+        (widget.controller.isCurrentGameResumed || state.canUndo);
+    if (!shouldRequireConfirmation) {
+      widget.controller.onNewGame();
+      return;
+    }
+    unawaited(
+      _newGameConfirmationService.confirmAndRun(
+        context: context,
+        isMounted: () => mounted,
+        title: 'Start New Game?',
+        message: 'Start a fresh game and reset this board?',
+        onConfirm: widget.controller.onNewGame,
       ),
     );
   }
 
   void _onDifficultyRequested(String difficulty) {
-    if (difficulty == widget.controller.state.difficulty) {
+    final state = widget.controller.state;
+    if (difficulty == state.difficulty) {
+      return;
+    }
+    if (state.gameOver) {
+      widget.controller.onConfirmSetDifficulty(difficulty);
       return;
     }
     unawaited(
@@ -274,8 +331,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
         isMounted: () => mounted,
         title: 'Start New Game?',
         message:
-            'Change difficulty to ${difficulty.toUpperCase()} and start a new game?',
-        onConfirm: () => widget.controller.onSetDifficulty(difficulty),
+            'Switch difficulty to ${difficulty.toUpperCase()} and start a fresh game?',
+        onConfirm: () => widget.controller.onConfirmSetDifficulty(difficulty),
       ),
     );
   }

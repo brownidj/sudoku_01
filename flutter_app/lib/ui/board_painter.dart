@@ -39,6 +39,7 @@ class SudokuBoardPainter extends CustomPainter {
 
     _drawCells(canvas, layout, BoardTheme(style));
     _drawGrid(canvas, layout);
+    _drawSelectionOverlay(canvas, layout);
     // Notes badge removed; notes mode is indicated via the UI toggle.
   }
 
@@ -100,12 +101,6 @@ class SudokuBoardPainter extends CustomPainter {
           if (highlight != null) {
             canvas.drawRect(rect, Paint()..color = highlight);
           }
-        } else {
-          if (model.showSelection) {
-            _drawOutline(canvas, rect, style.outlineSelected, 3);
-          } else if (model.showConflict) {
-            _drawOutline(canvas, rect, style.outlineConflict, 3);
-          }
         }
 
         if (cell.value != null) {
@@ -161,28 +156,35 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
-    final targetSize = _animalTargetSize(rect.width, digit);
+    final minPadding = state.contentMode == 'instruments' ? 5.0 : 2.0;
+    final targetSize = _animalTargetSize(rect.width, digit, minPadding);
+    final useElephantStretch = state.contentMode == 'animals' && digit == 5;
+    final maxTargetHeight = rect.height - (minPadding * 2);
+    final targetHeight = useElephantStretch
+        ? (targetSize * 1.15).clamp(0.0, maxTargetHeight)
+        : targetSize;
     final left = rect.left + (rect.width - targetSize) / 2;
-    final top = rect.top + (rect.height - targetSize) / 2;
-    final target = Rect.fromLTWH(left, top, targetSize, targetSize);
+    final top = rect.top + (rect.height - targetHeight) / 2;
+    final target = Rect.fromLTWH(left, top, targetSize, targetHeight);
     paintImage(
       canvas: canvas,
       rect: target,
       image: image,
-      fit: BoxFit.contain,
+      fit: useElephantStretch ? BoxFit.fill : BoxFit.contain,
       colorFilter: _animalColorFilter(digit),
     );
   }
 
   ColorFilter? _animalColorFilter(int digit) {
-    if (digit == 3) {
+    if (state.contentMode == 'animals' && digit == 3) {
       return const ColorFilter.mode(Color(0xFFF8F0E2), BlendMode.modulate);
     }
     return null;
   }
 
-  double _animalTargetSize(double cellSize, int digit) {
-    return cellSize * 0.7;
+  double _animalTargetSize(double cellSize, int digit, double minPadding) {
+    final maxSize = cellSize - (minPadding * 2);
+    return maxSize > 0 ? maxSize : cellSize;
   }
 
   void _drawGrid(Canvas canvas, BoardLayout layout) {
@@ -221,6 +223,46 @@ class SudokuBoardPainter extends CustomPainter {
         Offset(x, layout.originY + layout.boardSize),
         thickPaint,
       );
+    }
+  }
+
+  void _drawSelectionOverlay(Canvas canvas, BoardLayout layout) {
+    if (state.gameOver) {
+      return;
+    }
+
+    const selectedOverlayColor = Color(0xFF1E90FF);
+    const selectedOverlayWidth = 2.0;
+    const conflictOverlayWidth = 2.0;
+
+    final cellSize = layout.cellSize;
+    for (var r = 0; r < 9; r += 1) {
+      final row = state.board.cells[r];
+      for (var c = 0; c < 9; c += 1) {
+        final cell = row[c];
+        final rect = Rect.fromLTWH(
+          layout.originX + c * cellSize,
+          layout.originY + r * cellSize,
+          cellSize,
+          cellSize,
+        );
+
+        if (cell.selected) {
+          _drawOutline(
+            canvas,
+            rect,
+            selectedOverlayColor,
+            selectedOverlayWidth,
+          );
+        } else if (cell.conflicted) {
+          _drawOutline(
+            canvas,
+            rect,
+            style.outlineConflict,
+            conflictOverlayWidth,
+          );
+        }
+      }
     }
   }
 

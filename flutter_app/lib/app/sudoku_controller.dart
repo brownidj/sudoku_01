@@ -114,6 +114,7 @@ class SudokuController extends ChangeNotifier {
 
   UiState get state => _gameController.state;
   bool get hadSavedSessionAtLaunch => _gameController.hadSavedSessionAtLaunch;
+  bool get isCurrentGameResumed => _gameController.isCurrentGameResumed;
 
   void start() => _gameController.start(notifyListeners);
   void onCellTapped(Coord coord) =>
@@ -134,6 +135,8 @@ class SudokuController extends ChangeNotifier {
   void onUndo() => _gameController.onUndo(notifyListeners);
   void onSetDifficulty(String difficulty) =>
       _gameController.onSetDifficulty(difficulty, notifyListeners);
+  void onConfirmSetDifficulty(String difficulty) =>
+      _gameController.onConfirmSetDifficulty(difficulty, notifyListeners);
   void onStyleChanged(String styleName) =>
       _uiController.onStyleChanged(styleName, notifyListeners);
   void onContentModeChanged(String mode) =>
@@ -142,6 +145,8 @@ class SudokuController extends ChangeNotifier {
       _uiController.onAnimalStyleChanged(style, notifyListeners);
   void onPuzzleModeChanged(String mode) =>
       _gameController.onPuzzleModeChanged(mode, notifyListeners);
+  void onConfirmPuzzleModeChanged(String mode) =>
+      _gameController.onConfirmPuzzleModeChanged(mode, notifyListeners);
   void onCheckSolution() => _gameController.onCheckSolution(notifyListeners);
   void onShowSolution() => _gameController.onShowSolution(notifyListeners);
   void onCompletePuzzleWithSolution() =>

@@ -1,0 +1,23 @@
+Dear OpenAI Support Team,
+
+I am writing to request a refund of image generation credits used during a recent session where the outputs did not comply with clearly specified requirements.
+
+Summary of the Issue:
+	•	On 13 April 2026 at approximately 13:20 AEST, I requested a series of individual musical instrument illustrations with strict specifications, including:
+	•	Pure white background (#FFFFFF)
+	•	No shadows of any kind (cast, drop, ambient, or contact)
+	•	One image per instrument with no duplicates
+	•	Despite these explicit instructions, several generated images:
+	•	Contained visible shadows, rendering them unusable.
+	•	Included duplicate instruments, resulting in unnecessary credit usage.
+	•	Multiple regeneration attempts were required to correct these issues, which:
+	•	Consumed additional credits.
+	•	Triggered rate limits, preventing timely resolution.
+	•	Led to significant time loss and workflow disruption.
+
+Request:
+Given that the generated images did not meet the stated criteria and required repeated attempts to rectify, I respectfully request a refund of the credits consumed during this session.
+
+I am happy to provide any additional details required to facilitate this review, including timestamps and conversation excerpts.
+
+Thank you for your assistance in resolving this matter.
