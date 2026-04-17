@@ -18,7 +18,7 @@ class VictoryOverlayState {
 }
 
 class SudokuVictoryOverlayService {
-  static const List<String> animalCelebrationAssets = <String>[
+  static const List<String> cartoonAssets = <String>[
     'assets/images/animals_chatGpT/1_cartoon_ape.png',
     'assets/images/animals_chatGpT/2_cartoon_buffalo.png',
     'assets/images/animals_chatGpT/3_cartoon_camel.png',
@@ -28,21 +28,6 @@ class SudokuVictoryOverlayService {
     'assets/images/animals_chatGpT/7_cartoon_giraffe.png',
     'assets/images/animals_chatGpT/8_cartoon_hippo.png',
     'assets/images/animals_chatGpT/9_cartoon_iguana.png',
-  ];
-  static const List<String> instrumentCelebrationAssets = <String>[
-    'assets/images/music/maracas.png',
-    'assets/images/music/drum.png',
-    'assets/images/music/horn.png',
-    'assets/images/music/piano.png',
-    'assets/images/music/saxaphone.png',
-    'assets/images/music/tambourine.png',
-    'assets/images/music/trumpet.png',
-    'assets/images/music/ukelele.png',
-    'assets/images/music/violin.png',
-  ];
-  static const List<String> numberCelebrationAssets = <String>[
-    ...animalCelebrationAssets,
-    ...instrumentCelebrationAssets,
   ];
 
   final Duration duration;
@@ -60,7 +45,7 @@ class SudokuVictoryOverlayService {
 
   void onUiStateChanged(UiState uiState) {
     if (uiState.puzzleSolved && !_wasPuzzleSolved) {
-      _start(uiState.contentMode);
+      _start();
     } else if (!uiState.puzzleSolved && state.value.visible) {
       _hide();
     }
@@ -72,18 +57,9 @@ class SudokuVictoryOverlayService {
     state.dispose();
   }
 
-  void _start(String contentMode) {
+  void _start() {
     _timer?.cancel();
-    final assets = switch (contentMode) {
-      'animals' => animalCelebrationAssets,
-      'instruments' => instrumentCelebrationAssets,
-      _ => numberCelebrationAssets,
-    };
-    if (assets.isEmpty) {
-      state.value = VictoryOverlayState.hidden;
-      return;
-    }
-    final asset = assets[_random.nextInt(assets.length)];
+    final asset = cartoonAssets[_random.nextInt(cartoonAssets.length)];
     state.value = VictoryOverlayState(visible: true, assetPath: asset);
     _timer = Timer(duration, _hide);
   }

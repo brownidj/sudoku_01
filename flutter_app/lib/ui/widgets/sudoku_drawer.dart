@@ -28,11 +28,6 @@ class SudokuDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sectionStyle = Theme.of(
-      context,
-    ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600);
-    final optionStyle = Theme.of(context).textTheme.bodyLarge;
-
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -47,54 +42,73 @@ class SudokuDrawer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Animals', style: sectionStyle),
+              child: Text(
+                'Animals',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
             RadioListTile<String>(
-              title: Text('Cute', style: optionStyle),
+              title: const Text('Cute'),
               value: 'cute',
               groupValue: state.animalStyle,
+              dense: true,
+              visualDensity: VisualDensity.compact,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleAnimalStyleChanged,
             ),
             RadioListTile<String>(
-              title: Text('Simple', style: optionStyle),
+              title: const Text('Simple'),
               value: 'simple',
               groupValue: state.animalStyle,
+              dense: true,
+              visualDensity: VisualDensity.compact,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleAnimalStyleChanged,
             ),
             const Divider(height: 16),
-            Padding(
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Puzzle Style', style: sectionStyle),
+              child: Text(
+                'Puzzle Style',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
             ),
             RadioListTile<String>(
-              title: Text('Modern', style: optionStyle),
+              title: const Text('Modern'),
               value: 'Modern',
               groupValue: state.styleName,
+              dense: true,
+              visualDensity: VisualDensity.compact,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleStyleChanged,
             ),
             RadioListTile<String>(
-              title: Text('Classic', style: optionStyle),
+              title: const Text('Classic'),
               value: 'Classic',
               groupValue: state.styleName,
+              dense: true,
+              visualDensity: VisualDensity.compact,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleStyleChanged,
             ),
             RadioListTile<String>(
-              title: Text('High Contrast', style: optionStyle),
+              title: const Text('High Contrast'),
               value: 'High Contrast',
               groupValue: state.styleName,
+              dense: true,
+              visualDensity: VisualDensity.compact,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               onChanged: _handleStyleChanged,
             ),
             const Divider(height: 16),
             ListTile(
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              title: Text('Audio', style: sectionStyle),
+              title: const Text(
+                'Audio',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -103,6 +117,7 @@ class SudokuDrawer extends StatelessWidget {
                     value: true,
                     groupValue: audioEnabled ? true : null,
                     toggleable: true,
+                    visualDensity: VisualDensity.compact,
                     onChanged: _handleAudioChanged,
                   ),
                 ],
@@ -121,9 +136,12 @@ class SudokuDrawer extends StatelessWidget {
                 (onLoadCorrectionScenario != null ||
                     onLoadExhaustedCorrectionScenario != null)) ...[
               const Divider(height: 16),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text('Debug', style: sectionStyle),
+                child: Text(
+                  'Debug',
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
               ),
               ListTile(
                 leading: const Icon(Icons.science_outlined),

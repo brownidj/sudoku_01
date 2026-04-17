@@ -178,7 +178,7 @@ void main() {
 
     expect(find.text('Start New Game?'), findsOneWidget);
     expect(
-      find.text('Switch difficulty to HARD and start a fresh game?'),
+      find.text('Change difficulty to HARD and start a new game?'),
       findsOneWidget,
     );
 
@@ -239,7 +239,7 @@ void main() {
 
     expect(find.text('Start New Game?'), findsOneWidget);
     expect(
-      find.text('Switch puzzle mode to UNIQUE and start a fresh game?'),
+      find.text('Change puzzle mode to UNIQUE and start a new game?'),
       findsOneWidget,
     );
 

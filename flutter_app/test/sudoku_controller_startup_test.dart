@@ -93,14 +93,9 @@ void main() {
     final restoredCell =
         restoreController.state.board.cells[editable.row][editable.col];
     expect(restoredCell.value, 1);
-    expect(restoreController.state.canChangeDifficulty, isFalse);
-    expect(restoreController.state.canChangePuzzleMode, isFalse);
 
     final sessionJson = jsonDecode(fakePrefs.savedSession!);
     expect(sessionJson['version'], 2);
-    final settingsJson = sessionJson['settings'] as Map<String, dynamic>;
-    expect(settingsJson['canChangeDifficulty'], isFalse);
-    expect(settingsJson['canChangePuzzleMode'], isFalse);
   });
 
   test(

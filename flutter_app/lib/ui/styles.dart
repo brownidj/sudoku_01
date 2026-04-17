@@ -61,7 +61,7 @@ class BoardStyle {
 const BoardStyle styleModern = BoardStyle(
   boardBg: Colors.white,
   cellDefault: Colors.white,
-  cellSelected: Color(0xFFD3EAFF),
+  cellSelected: Color(0xFFCFE8FF),
   cellPeerRowCol: Color(0xFFEEF7FF),
   cellPeerBox: Color(0xFFF2F0FF),
   cellConflict: Color(0xFFF6A5A5),
@@ -90,7 +90,7 @@ const BoardStyle styleModern = BoardStyle(
 const BoardStyle styleClassic = BoardStyle(
   boardBg: Color(0xFFFAF7F2),
   cellDefault: Color(0xFFFAF7F2),
-  cellSelected: Color(0xFFE9E0CC),
+  cellSelected: Color(0xFFE6DDC6),
   cellPeerRowCol: Color(0xFFF1EAD9),
   cellPeerBox: Color(0xFFEDE4CF),
   cellConflict: Color(0xFFE6A0A0),
@@ -119,7 +119,7 @@ const BoardStyle styleClassic = BoardStyle(
 const BoardStyle styleHighContrast = BoardStyle(
   boardBg: Colors.white,
   cellDefault: Colors.white,
-  cellSelected: Color(0xFFFFFFA3),
+  cellSelected: Color(0xFFFFFF99),
   cellPeerRowCol: Color(0xFFE0E0E0),
   cellPeerBox: Color(0xFFD0D0D0),
   cellConflict: Color(0xFFFF6666),

@@ -5,144 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.6.1+154">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/1_cartoon_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/2_cartoon_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_camel.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_camel_notes.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_cartoon_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_cartoon_camel_notes.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_cartoon_cheetah notes.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/3_cartoon_cheetah.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/4_cartoon_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_cartoon_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_cartoon_elephant.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_elephant.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/6_cartoon_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/7_cartoon_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/7_giraffe.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/8_cartoon_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/8_hippo.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/9_cartoon_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/9_cartoon_iguana.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/9_iguana.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/1_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/1_cartoon_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/2_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/2_cartoon_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/3_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/3_cartoon_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/4_cartoon_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/4_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/5_cartoon_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/5_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/6_cartoon_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/6_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/7_cartoon_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/7_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/8_cartoon_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/8_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/9_cartoon_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/16/9_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/1_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/1_cartoon_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/2_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/2_cartoon_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/3_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/3_cartoon_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/4_cartoon_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/4_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/5_cartoon_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/5_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/6_cartoon_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/6_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/7_cartoon_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/7_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/8_cartoon_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/8_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/9_cartoon_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/20/9_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/1_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/1_cartoon_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/2_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/2_cartoon_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/3_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/3_cartoon_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/4_cartoon_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/4_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/5_cartoon_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/5_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/6_cartoon_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/6_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/7_cartoon_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/7_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/8_cartoon_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/8_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/9_cartoon_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/24/9_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/1_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/1_cartoon_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/2_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/2_cartoon_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/3_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/3_cartoon_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/4_cartoon_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/4_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/5_cartoon_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/5_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/6_cartoon_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/6_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/7_cartoon_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/7_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/8_cartoon_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/8_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/9_cartoon_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/notes/32/9_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/1_ape.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/2_buffalo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/3_camel.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/4_dolphin.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/5_elephant.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/6_frog.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/7_giraffe.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/8_hippo.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/9_ibis.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals_chatGpT/9_iguana.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/AU_flag.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/DB Statement.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/UK_flag.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/US_flag.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/android_graphic.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/android_graphic.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/animal_sudoku_icon.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/animal_sudoku_icon_android.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/flags.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/pencil-icon 2.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/pencil-icon.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/pencil-icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/pencil-icon.pxd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/icons/super_granny_512.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Podfile" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Podfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Podfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_configuration_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_configuration_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/board_painter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/board_painter.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/macos/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/macos/Podfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -150,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="637" />
+    <option name="cachedIndexableFilesCount" value="481" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -187,40 +50,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
-    &quot;Python.bgt.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fix_animal_images.executor&quot;: &quot;Run&quot;,
-    &quot;Python.generate_animal_images.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tk_view.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck&quot;,
-    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;chore/minor-ui-tweaks&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/david/PycharmProjects/Sudoku_01&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in tests.executor": "Run",
+    "Python.bgt.executor": "Run",
+    "Python.fix_animal_images.executor": "Run",
+    "Python.generate_animal_images.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.tk_view.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHELLCHECK.PATH": "/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
+    "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "chore/misc-followup-changes",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "show.migrate.to.gradle.popup": "false",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1772334012594" />
     <option name="spentUsd" value="0.11471075" />
@@ -256,7 +118,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bgt.py" />
@@ -281,7 +142,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/fix_animal_images.py" />
@@ -306,7 +166,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/generate_animal_images.py" />
@@ -331,7 +190,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
@@ -353,7 +211,6 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
@@ -374,8 +231,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-3bd3a6803838-JavaScript-PY-261.22158.340" />
-        <option value="bundled-python-sdk-b63d5a1f7c97-b61e75351b1f-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.22158.340" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
       </set>
     </attachedChunks>
   </component>
@@ -407,7 +264,6 @@
       <workItem from="1774045496587" duration="1226000" />
       <workItem from="1774067436611" duration="736000" />
       <workItem from="1774911627963" duration="8324000" />
-      <workItem from="1776023355153" duration="1209000" />
     </task>
     <task id="LOCAL-00014" summary="Added Check and solution">
       <option name="closed" value="true" />
@@ -839,6 +695,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'" />
     <MESSAGE value="Prior to refactoring" />
     <MESSAGE value="First major refactoring" />
     <MESSAGE value="Added various files to commit" />
@@ -863,8 +720,7 @@
     <MESSAGE value="PR 3 &amp; 4 completed" />
     <MESSAGE value="First pre-release build" />
     <MESSAGE value="Updated version to 0.6.1+154" />
-    <MESSAGE value="Updated version to 0.7.7+176 prior to removal of Clear chip" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.7.7+176 prior to removal of Clear chip" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.6.1+154" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />

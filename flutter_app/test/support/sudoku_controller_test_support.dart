@@ -67,7 +67,7 @@ class FakeSettingsController extends SettingsController {
   }
 
   @override
-  bool setDifficulty(String difficulty, {bool force = false}) {
+  bool setDifficulty(String difficulty) {
     _state = _state.copyWith(difficulty: difficulty);
     return true;
   }

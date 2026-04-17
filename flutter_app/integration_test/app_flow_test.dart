@@ -84,14 +84,14 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.textContaining(_correctionsTooltipPrefix), findsOneWidget);
 
-    await tester.longPress(find.text('Undo'));
+    await tester.longPress(find.widgetWithText(OutlinedButton, 'Undo'));
     await tester.pumpAndSettle();
     expect(find.text(_undoTooltip), findsOneWidget);
   });
 
   testWidgets('resume opens the saved session', (tester) async {
     await _resetPreferences();
-    await _seedSavedSession(tokensLeft: 1, hintsLeft: 1);
+    await _seedSavedSession(tokensLeft: 1);
     await _launchApp(tester);
 
     expect(find.text('Resume'), findsOneWidget);
@@ -103,7 +103,7 @@ void main() {
 
   testWidgets('new game ignores the saved correction count', (tester) async {
     await _resetPreferences();
-    await _seedSavedSession(tokensLeft: 1, hintsLeft: 1);
+    await _seedSavedSession(tokensLeft: 1);
     await _launchApp(tester);
 
     expect(find.text('Resume'), findsOneWidget);
@@ -111,7 +111,6 @@ void main() {
 
     await _startGameFromLaunch(tester, buttonLabel: 'New game');
     expect(find.text('Corrections: 3'), findsOneWidget);
-    expect(find.text('Hints: 3'), findsOneWidget);
   });
 }
 
@@ -135,10 +134,6 @@ Future<void> _startGameFromLaunch(
 }) async {
   await tester.tap(find.text(buttonLabel));
   await tester.pumpAndSettle();
-  if (find.text('Start New Game').evaluate().isNotEmpty) {
-    await tester.tap(find.text('Start New Game'));
-    await tester.pumpAndSettle();
-  }
   await _pumpUntilVisible(tester, find.text('Notes'));
 }
 
@@ -172,10 +167,7 @@ Future<void> _resetPreferences() async {
   await prefs.clear();
 }
 
-Future<void> _seedSavedSession({
-  required int tokensLeft,
-  required int hintsLeft,
-}) async {
+Future<void> _seedSavedSession({required int tokensLeft}) async {
   final prefs = await SharedPreferences.getInstance();
   final codec = const GameSessionCodec();
   final board = Board.empty();
@@ -211,7 +203,6 @@ Future<void> _seedSavedSession({
     'selected': null,
     'gameOver': false,
     'debugScenarioLabel': null,
-    'conflictHintsLeft': hintsLeft,
     'settings': <String, dynamic>{
       'notesMode': settings.notesMode,
       'difficulty': settings.difficulty,

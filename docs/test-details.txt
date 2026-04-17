@@ -1,15 +1,9 @@
-TThere is now a bit of audio - you can turn it off in the hamburger. 'Hints' are applied automatically. They are not
-hints in the traditional sense. I noticed a user who would randomly select an animal/number and the game would indicate
-whether or not it was correct and show them too much information. This now only happens a limited number of
-times... and that's what you will see with 'Hints'. There is a countdown of the number of 'Hint' you have left.
-"Hard' is now harder! Now, if you select an animal/number it is automatically removed from the rows/column/blocks where
-it is no longer relevant. I'm not sure I like this and I haven't tested the Undo in this respect.
+There is now a bit of audio - you can turn it off in the hamburger. 'Hints' are applied automatically. They are not hints in the traditional sense. I noticed a user who would randomly select an animal/number and the game would indicate whether or not it was correct and show them a bit too much information. This now only happens a limited number of times... and that's what you will see with 'Hints'. There is a countdown of the number of 'Hint' you have left. "Hard' is now harder! Now, if you select an animal/number it is automatically removed from the rows/column/blocks where it is no longer relevant. I'm not sure I like this and I haven't tested the Undo in this respect.
 
- There are still changes to be made:
- 1) Selecting the difficulty level still is not straight-forward. FIXED
- 2) The animal images need to be regularised - made a similar size. FIXED
- 3) A game timer will be added, with the ability to switch it off, and your top 10 scores kept.
- 4) More long-press help will be added
+There are still changes to be made:
+1) Selecting the difficulty level still is not straight-forward.
+2) The animal images need to be regularised - made a similar size.
+3) A game timer will be added, with the ability to switch it off, and your top 10 scores kept.
+4) More long-press help will be added
 
- If you have things that annoy you, please let me know. One thing that annoys me is that I fumble the Notes button - I might make it bigger.
 If you have things that annoy you, please let me know. One thing that annoys me is that I fumble the Notes button - I might make it bigger.

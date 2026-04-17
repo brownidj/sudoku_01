@@ -7,109 +7,55 @@ void main() {
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/1_cartoon_ape.png',
       ),
-      'audio/animals/apes.mp3',
+      'audio/apes.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/2_cartoon_buffalo.png',
       ),
-      'audio/animals/buffalo.mp3',
+      'audio/buffalo.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/3_cartoon_camel.png',
       ),
-      'audio/animals/camel.mp3',
+      'audio/cheetah.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/4_cartoon_dolphin.png',
       ),
-      'audio/animals/dolphin.mp3',
+      'audio/dolphin.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/5_cartoon_elephant.png',
       ),
-      'audio/animals/elephant.mp3',
+      'audio/elephant.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/6_cartoon_frog.png',
       ),
-      'audio/animals/frog.mp3',
+      'audio/frog.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/7_cartoon_giraffe.png',
       ),
-      'audio/animals/giraffe.mp3',
+      'audio/giraffe.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/8_cartoon_hippo.png',
       ),
-      'audio/animals/hippos.mp3',
+      'audio/hippos.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/9_cartoon_iguana.png',
       ),
-      'audio/animals/iguana.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/maracas.png',
-      ),
-      'audio/music/maracas.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/drum.png',
-      ),
-      'audio/music/drum.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/horn.png',
-      ),
-      'audio/music/horn.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/piano.png',
-      ),
-      'audio/music/piano.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/saxaphone.png',
-      ),
-      'audio/music/saxophone.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/tambourine.png',
-      ),
-      'audio/music/tambourine.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/trumpet.png',
-      ),
-      'audio/music/trumpet.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/ukulele.png',
-      ),
-      'audio/music/ukulele.mp3',
-    );
-    expect(
-      SudokuVictoryAudioService.audioAssetForVictoryMascot(
-        'assets/images/music/violin.png',
-      ),
-      'audio/music/violin.mp3',
+      'audio/iguana.mp3',
     );
   });
 

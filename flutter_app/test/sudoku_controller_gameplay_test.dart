@@ -61,8 +61,6 @@ void main() {
 
     controller.onContentModeChanged('numbers');
     expect(fakeSettings.state.contentMode, 'numbers');
-    controller.onContentModeChanged('instruments');
-    expect(fakeSettings.state.contentMode, 'instruments');
   });
 
   test('conflict peer hints are limited per game by difficulty', () async {

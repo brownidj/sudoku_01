@@ -26,24 +26,6 @@ class GameConfigurationService {
     startGame();
   }
 
-  void confirmDifficultyAndStartNewGame({
-    required SettingsController settings,
-    required String difficulty,
-    required VoidCallback startGame,
-    required ValueChanged<String> render,
-  }) {
-    final nextDifficulty = difficulty.trim().toLowerCase();
-    if (!['easy', 'medium', 'hard'].contains(nextDifficulty)) {
-      render('Unknown difficulty: $difficulty');
-      return;
-    }
-    if (!settings.setDifficulty(nextDifficulty, force: true)) {
-      return;
-    }
-    settings.setPuzzleMode('unique');
-    startGame();
-  }
-
   void setPuzzleMode({
     required SettingsController settings,
     required String mode,
@@ -57,22 +39,6 @@ class GameConfigurationService {
     if (settings.state.difficulty == 'hard') {
       settings.setPuzzleMode('unique');
       render('Puzzle mode: unique');
-      return;
-    }
-    settings.setPuzzleMode(mode == 'unique' ? 'unique' : 'multi');
-    startGame();
-  }
-
-  void confirmPuzzleModeAndStartNewGame({
-    required SettingsController settings,
-    required String mode,
-    required VoidCallback startGame,
-    required ValueChanged<String> render,
-  }) {
-    if (settings.state.difficulty == 'hard') {
-      settings.setPuzzleMode('unique');
-      render('Puzzle mode: unique');
-      startGame();
       return;
     }
     settings.setPuzzleMode(mode == 'unique' ? 'unique' : 'multi');

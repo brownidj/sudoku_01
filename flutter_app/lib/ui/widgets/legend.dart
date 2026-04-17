@@ -14,10 +14,10 @@ class Legend extends StatelessWidget {
         spacing: 12,
         runSpacing: 8,
         children: [
-          _legendItem(style.highlightIncorrect, 'Needs Review'),
-          _legendItem(style.highlightCorrect, 'Great Progress'),
-          _legendItem(style.highlightGiven, 'Starter Clue'),
-          _legendItem(style.highlightSolution, 'Revealed Clue'),
+          _legendItem(style.highlightIncorrect, 'Incorrect'),
+          _legendItem(style.highlightCorrect, 'Correct'),
+          _legendItem(style.highlightGiven, 'Starter'),
+          _legendItem(style.highlightSolution, 'Solution'),
         ],
       ),
     );

@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
-import 'package:flutter_app/ui/widgets/info_sheet.dart';
 
 class CandidatePanel extends StatelessWidget {
   final bool visible;
@@ -44,21 +43,13 @@ class CandidatePanel extends StatelessWidget {
           for (final digit in candidateDigits)
             Builder(
               builder: (context) {
+                final tooltipKey = GlobalKey<TooltipState>();
                 return SizedBox(
-                  width: 52,
-                  height: 52,
+                  width: 44,
+                  height: 44,
                   child: GestureDetector(
                     onLongPressStart: showImages
-                        ? (_) {
-                            if (digit == 0) {
-                              return;
-                            }
-                            final name = AnimalImageCache.displayNameForDigit(
-                              contentMode,
-                              digit,
-                            );
-                            showInfoSheet(context: context, message: name);
-                          }
+                        ? (_) => tooltipKey.currentState?.ensureTooltipVisible()
                         : null,
                     onLongPress: onDigitLongPressed == null
                         ? null
@@ -68,12 +59,12 @@ class CandidatePanel extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         backgroundColor:
                             notesMode && selectedNotes.contains(digit)
-                            ? const Color(0xFFCFEFCD)
+                            ? const Color(0xFFF6BABA)
                             : (showImages ? Colors.white : null),
                       ),
                       onPressed: () => onDigitSelected(digit),
                       child: showImages
-                          ? _animalOption(digit)
+                          ? _animalOption(digit, tooltipKey)
                           : (digit == 0
                                 ? const Icon(Icons.clear)
                                 : Text('$digit')),
@@ -87,7 +78,7 @@ class CandidatePanel extends StatelessWidget {
     );
   }
 
-  Widget _animalOption(int digit) {
+  Widget _animalOption(int digit, GlobalKey<TooltipState> tooltipKey) {
     if (digit == 0) {
       return const Icon(Icons.clear);
     }
@@ -95,13 +86,16 @@ class CandidatePanel extends StatelessWidget {
     if (image == null) {
       return Text('$digit');
     }
-    return SizedBox(
-      width: 38,
-      height: 38,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Transform.scale(
-          scaleY: contentMode == 'animals' && digit == 5 ? 1.15 : 1.0,
+    final name = AnimalImageCache.displayNameForDigit(contentMode, digit);
+    return Tooltip(
+      key: tooltipKey,
+      message: name,
+      triggerMode: TooltipTriggerMode.manual,
+      child: SizedBox(
+        width: 32,
+        height: 32,
+        child: FittedBox(
+          fit: BoxFit.contain,
           child: RawImage(
             image: image,
             color: _animalTintColor(digit),
@@ -115,7 +109,7 @@ class CandidatePanel extends StatelessWidget {
   }
 
   Color? _animalTintColor(int digit) {
-    if (contentMode == 'animals' && digit == 3) {
+    if (digit == 3) {
       return const Color(0xFFF8F0E2);
     }
     return null;

@@ -1,8 +1,6 @@
 from pathlib import Path
 import base64
 import argparse
-import os
-import sys
 from typing import Literal
 from openai import OpenAI
 
@@ -11,7 +9,7 @@ from openai import OpenAI
 OUTPUT_DIR = Path("../assets/images/animals_chatGPT")
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-DEFAULT_MODEL = "gpt-image-1"  # DALL·E image model
+MODEL = "gpt-image-1"  # DALL·E image model
 IMAGE_SIZE: Literal[
     "auto",
     "1024x1024",
@@ -107,12 +105,16 @@ No realism or heavy textures.
 """.strip()
 
 
+# ---------------- Client ----------------
+
+client = OpenAI()
+
 # ---------------- Helpers ----------------
 
-def generate_image(client: OpenAI, model: str, prompt: str, out_path: Path) -> None:
+def generate_image(prompt: str, out_path: Path) -> None:
     """Generate one image and save it to disk."""
     result = client.images.generate(
-        model=model,
+        model=MODEL,
         prompt=prompt,
         size=IMAGE_SIZE,
         background="transparent",
@@ -128,8 +130,6 @@ def generate_image(client: OpenAI, model: str, prompt: str, out_path: Path) -> N
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate cartoon animal icons with DALL·E")
-    parser.add_argument("--model", default=os.getenv("OPENAI_MODEL", DEFAULT_MODEL))
-    parser.add_argument("--api-key", default=os.getenv("OPENAI_API_KEY"))
     parser.add_argument(
         "--test",
         action="store_true",
@@ -142,12 +142,7 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
-def main(test_run: bool = False, use_base: bool = False, model: str = DEFAULT_MODEL, api_key: str | None = None) -> int:
-    if not api_key:
-        print("Missing API key. Set OPENAI_API_KEY or use --api-key.", file=sys.stderr)
-        return 1
-
-    client = OpenAI(api_key=api_key)
+def main(test_run: bool = False, use_base: bool = False) -> None:
     animals = ORDERED_ANIMALS[:2] if test_run else ORDERED_ANIMALS
     for animal in animals:
         idx = ORDERED_ANIMALS.index(animal) + 1
@@ -163,11 +158,9 @@ def main(test_run: bool = False, use_base: bool = False, model: str = DEFAULT_MO
             print(f"Skipping (already exists): {out_file.name}")
             continue
 
-        generate_image(client, model, prompt, out_file)
-
-    return 0
+        generate_image(prompt, out_file)
 
 
 if __name__ == "__main__":
     args = parse_args()
-    raise SystemExit(main(test_run=args.test, use_base=args.base, model=args.model, api_key=args.api_key))
+    main(test_run=args.test, use_base=args.base)

@@ -39,55 +39,6 @@ target 'Runner' do
   end
 end
 
-def patch_file(path)
-  return unless File.exist?(path)
-
-  content = File.read(path)
-  patched = yield(content)
-  return if patched == content
-
-  File.chmod(0644, path)
-  File.write(path, patched)
-  puts "Patched deprecated API usage in #{path}"
-end
-
-def patch_deprecated_ios_apis
-  patrol_tls_policy = File.expand_path(
-    '.symlinks/plugins/patrol/darwin/Classes/Telegraph/Security/TLSPolicy.swift',
-    __dir__
-  )
-  patch_file(patrol_tls_policy) do |content|
-    content
-      .gsub(
-        "    // Evaluate the trust\n" \
-        "    var result: SecTrustResultType = .invalid\n" \
-        "    SecTrustEvaluate(trust, &result)\n\n" \
-        "    return result == .unspecified || result == .proceed",
-        "    // Evaluate the trust\n" \
-        "    var error: CFError?\n" \
-        "    return SecTrustEvaluateWithError(trust, &error)"
-      )
-  end
-
-  cocoa_async_socket = File.expand_path(
-    'Pods/CocoaAsyncSocket/Source/GCD/GCDAsyncSocket.m',
-    __dir__
-  )
-  patch_file(cocoa_async_socket) do |content|
-    content.gsub('SSLDisposeContext(sslContext);', 'SSLClose(sslContext);')
-  end
-
-  cocoa_async_socket_umbrella = File.expand_path(
-    'Pods/Target Support Files/CocoaAsyncSocket/CocoaAsyncSocket-umbrella.h',
-    __dir__
-  )
-  patch_file(cocoa_async_socket_umbrella) do |content|
-    content
-      .gsub('#import "GCDAsyncSocket.h"', '#import <CocoaAsyncSocket/GCDAsyncSocket.h>')
-      .gsub('#import "GCDAsyncUdpSocket.h"', '#import <CocoaAsyncSocket/GCDAsyncUdpSocket.h>')
-  end
-end
-
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
@@ -95,21 +46,6 @@ post_install do |installer|
       # Ensure dSYM generation for all pod frameworks in archive builds.
       config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
       config.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = 'YES'
-      # Keep all pods on a modern iOS deployment target to avoid Xcode 26
-      # warnings from older podspec defaults (for example 9.0).
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
-      # Xcode 16+/iOS 26 toolchain warns on quoted includes in some 3p pod
-      # framework headers (for example CocoaAsyncSocket). Keep these as
-      # non-blocking warnings so device install/build does not stall.
-      config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] =
-        'NO'
-      config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
-      if target.name == 'CocoaAsyncSocket'
-        config.build_settings['INHIBIT_ALL_WARNINGS'] = 'YES'
-        config.build_settings['WARNING_CFLAGS'] = '$(inherited) -w'
-        config.build_settings['GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS'] = 'NO'
-      end
     end
   end
-  patch_deprecated_ios_apis
 end

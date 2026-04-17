@@ -10,7 +10,6 @@ UiState _state({
   String difficulty = 'easy',
   int correctionsLeft = 3,
   int conflictHintsLeft = 3,
-  Coord? selected,
   String? debugScenarioLabel,
 }) {
   final cells = List<List<CellVm>>.generate(
@@ -43,7 +42,7 @@ UiState _state({
     contentMode: 'numbers',
     animalStyle: 'simple',
     puzzleMode: puzzleMode,
-    selected: selected,
+    selected: null,
     gameOver: false,
     correctionsLeft: correctionsLeft,
     canUndo: false,
@@ -133,9 +132,10 @@ void main() {
 
     expect(
       find.text(
-        'You have 2 corrections available for this puzzle. '
-        'If an earlier move blocks progress, use one correction to keep going '
-        'at your own pace.',
+        'In this mode you have 2 corrections opportunities. '
+        'When you select a tile that has no valid solution, because of an '
+        'earlier error, a box will open that allows you to use an automatic '
+        'correction.',
       ),
       findsOneWidget,
     );
@@ -178,7 +178,7 @@ void main() {
 
     expect(
       find.text(
-        'Hints mark conflicts in the same row, column, or 3x3 box. Use them anytime to support steady progress.',
+        'Hints reveal conflicting peer cells (same row, column, or 3x3 box) when you place a conflicting value. Hints count down each time peers are revealed.',
       ),
       findsOneWidget,
     );
@@ -215,62 +215,5 @@ void main() {
     );
 
     expect(find.text('Debug scenario: corrections exhausted'), findsOneWidget);
-  });
-
-  testWidgets('shows start instruction only when no tile is selected', (
-    WidgetTester tester,
-  ) async {
-    const message = 'To start, select a square you want to add an icon to.';
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
-            width: 420,
-            height: 620,
-            child: SudokuBoardArea(
-              state: _state(selected: null),
-              style: styleModern,
-              animalImages: const {},
-              noteImagesBySize: const {},
-              devicePixelRatio: 2.0,
-              candidateVisible: false,
-              candidateDigits: const [],
-              selectedNotes: const {},
-              onDigitSelected: (_) {},
-              onDigitLongPressed: null,
-              onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
-            ),
-          ),
-        ),
-      ),
-    );
-    expect(find.text(message), findsOneWidget);
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
-            width: 420,
-            height: 620,
-            child: SudokuBoardArea(
-              state: _state(selected: const Coord(0, 0)),
-              style: styleModern,
-              animalImages: const {},
-              noteImagesBySize: const {},
-              devicePixelRatio: 2.0,
-              candidateVisible: false,
-              candidateDigits: const [],
-              selectedNotes: const {},
-              onDigitSelected: (_) {},
-              onDigitLongPressed: null,
-              onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
-            ),
-          ),
-        ),
-      ),
-    );
-    expect(find.text(message), findsNothing);
   });
 }

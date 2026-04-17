@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
-import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 
 class LaunchScreen extends StatefulWidget {
@@ -26,8 +25,6 @@ class _LaunchScreenState extends State<LaunchScreen> {
   bool _openingGame = false;
   String? _launchError;
   String _versionLabel = 'ZuDoKu';
-  final SudokuNewGameConfirmationService _newGameConfirmationService =
-      const SudokuNewGameConfirmationService();
 
   @override
   void initState() {
@@ -102,18 +99,6 @@ class _LaunchScreenState extends State<LaunchScreen> {
     }
   }
 
-  Future<void> _confirmAndStartNewGame() {
-    return _newGameConfirmationService.confirmAndRun(
-      context: context,
-      isMounted: () => mounted,
-      title: 'Start New Game?',
-      message: 'Start a fresh game and reset this board?',
-      onConfirm: () {
-        _openGame(startNewGame: true);
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -121,115 +106,112 @@ class _LaunchScreenState extends State<LaunchScreen> {
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 420),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _versionLabel,
+                  key: const ValueKey<String>('launch-version-title'),
+                  style: theme.textTheme.headlineSmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "It's harder than you think: engage more parts of your brain and have twice the fun!",
+                  style: theme.textTheme.bodyMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: SizedBox(
+                    width: 120,
+                    height: 120,
+                    child: Image.asset(
+                      'assets/images/icons/super_granny.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'The Angry Grannies Dev Team',
+                  style: theme.textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'dev - DayDay',
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'dev - SudokuQueen',
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                Text(
+                  'tech advisor - Icy',
+                  style: theme.textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                if (!widget.controller.hadSavedSessionAtLaunch)
+                  SizedBox(
+                    height: 44,
+                    child: ElevatedButton(
+                      onPressed: _openingGame
+                          ? null
+                          : () => _openGame(startNewGame: false),
+                      child: const Text('Play'),
+                    ),
+                  )
+                else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 44,
+                        child: ElevatedButton(
+                          onPressed: _openingGame
+                              ? null
+                              : () => _openGame(startNewGame: false),
+                          child: const Text('Resume'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      SizedBox(
+                        height: 44,
+                        child: OutlinedButton(
+                          onPressed: _openingGame
+                              ? null
+                              : () => _openGame(startNewGame: true),
+                          child: const Text('New game'),
+                        ),
+                      ),
+                    ],
+                  ),
+                if (_openingGame) ...[
+                  const SizedBox(height: 12),
                   Text(
-                    _versionLabel,
-                    key: const ValueKey<String>('launch-version-title'),
-                    style: theme.textTheme.headlineSmall,
+                    'Please wait...',
+                    style: theme.textTheme.bodySmall,
                     textAlign: TextAlign.center,
                   ),
+                ],
+                if (_launchError != null) ...[
                   const SizedBox(height: 8),
                   Text(
-                    'Take your time, enjoy each puzzle, and keep your mind active.',
-                    style: theme.textTheme.bodyLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: Image.asset(
-                        'assets/images/icons/super_granny.png',
-                        fit: BoxFit.cover,
-                      ),
+                    _launchError!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.error,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'The Angry Grannies Dev Team',
-                    style: theme.textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'dev - DayDay',
-                    style: theme.textTheme.bodySmall,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'dev - SudokuQueen',
-                    style: theme.textTheme.bodySmall,
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    'tech advisor - Icy',
-                    style: theme.textTheme.bodySmall,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  if (!widget.controller.hadSavedSessionAtLaunch)
-                    SizedBox(
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: _openingGame
-                            ? null
-                            : () => _openGame(startNewGame: false),
-                        child: const Text('Play'),
-                      ),
-                    )
-                  else
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          height: 52,
-                          child: ElevatedButton(
-                            onPressed: _openingGame
-                                ? null
-                                : () => _openGame(startNewGame: false),
-                            child: const Text('Resume'),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        SizedBox(
-                          height: 52,
-                          child: OutlinedButton(
-                            onPressed: _openingGame
-                                ? null
-                                : _confirmAndStartNewGame,
-                            child: const Text('New game'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  if (_openingGame) ...[
-                    const SizedBox(height: 12),
-                    Text(
-                      'Please wait...',
-                      style: theme.textTheme.bodySmall,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                  if (_launchError != null) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      _launchError!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.error,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
                 ],
-              ),
+              ],
             ),
           ),
         ),
