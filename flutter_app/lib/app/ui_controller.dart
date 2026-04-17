@@ -86,7 +86,8 @@ class UiController {
   }
 
   void onContentModeChanged(String mode, VoidCallback notifyListeners) {
-    _settings.setContentMode(mode == 'animals' ? 'animals' : 'numbers');
+    const allowedModes = {'animals', 'instruments', 'numbers'};
+    _settings.setContentMode(allowedModes.contains(mode) ? mode : 'numbers');
     notifyListeners();
   }
 

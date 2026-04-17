@@ -248,7 +248,7 @@ class GameSessionCodec {
 
   String _contentModeOrDefault(Object? raw, SettingsState fallback) {
     final value = raw is String ? raw : '';
-    if (value == 'animals' || value == 'numbers') {
+    if (value == 'animals' || value == 'instruments' || value == 'numbers') {
       return value;
     }
     return fallback.contentMode;

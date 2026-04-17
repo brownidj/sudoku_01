@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/ui/sudoku_content_asset_selector.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
@@ -127,9 +128,14 @@ class _SudokuScreenState extends State<SudokuScreen> {
                   return SudokuGameContent(
                     state: state,
                     style: style,
-                    animalImages: _animalImages[state.animalStyle] ?? const {},
-                    noteImagesBySize:
-                        _noteImages[state.animalStyle] ?? const {},
+                    animalImages: SudokuContentAssetSelector.imagesForState(
+                      state,
+                      imagesByVariant: _animalImages,
+                    ),
+                    noteImagesBySize: SudokuContentAssetSelector.notesForState(
+                      state,
+                      notesByVariant: _noteImages,
+                    ),
                     devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
                     candidateVisible: viewModel.candidateVisible,
                     candidateDigits: viewModel.candidateDigits,

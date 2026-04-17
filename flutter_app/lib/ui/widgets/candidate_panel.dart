@@ -59,7 +59,7 @@ class CandidatePanel extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         backgroundColor:
                             notesMode && selectedNotes.contains(digit)
-                            ? const Color(0xFFF6BABA)
+                            ? const Color(0xFFCFEFCD)
                             : (showImages ? Colors.white : null),
                       ),
                       onPressed: () => onDigitSelected(digit),
@@ -92,12 +92,12 @@ class CandidatePanel extends StatelessWidget {
       message: name,
       triggerMode: TooltipTriggerMode.manual,
       child: SizedBox(
-        width: 32,
-        height: 32,
+        width: 38,
+        height: 38,
         child: FittedBox(
           fit: BoxFit.contain,
           child: Transform.scale(
-            scaleY: digit == 5 ? 1.15 : 1.0,
+            scaleY: contentMode == 'animals' && digit == 5 ? 1.15 : 1.0,
             child: RawImage(
               image: image,
               color: _animalTintColor(digit),
@@ -112,7 +112,7 @@ class CandidatePanel extends StatelessWidget {
   }
 
   Color? _animalTintColor(int digit) {
-    if (digit == 3) {
+    if (contentMode == 'animals' && digit == 3) {
       return const Color(0xFFF8F0E2);
     }
     return null;

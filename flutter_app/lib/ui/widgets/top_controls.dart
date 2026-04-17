@@ -28,6 +28,8 @@ class TopControls extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: DropdownButton<String>(
                   value: switch (state.contentMode) {
+                    'animals' => 'animals',
+                    'instruments' => 'instruments',
                     'numbers' => 'numbers',
                     _ => 'animals',
                   },
@@ -41,6 +43,10 @@ class TopControls extends StatelessWidget {
                     DropdownMenuItem<String>(
                       value: 'animals',
                       child: Text('Animals'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'instruments',
+                      child: Text('Instruments'),
                     ),
                     DropdownMenuItem<String>(
                       value: 'numbers',
