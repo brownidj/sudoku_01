@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class ActionBar extends StatelessWidget {
   static const String undoTooltip =
@@ -27,23 +28,22 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const controlWidth = 44.0;
-    const controlHeight = 34.0;
-    const notesWidth = controlWidth * 2.25;
-    const notesHeight = controlHeight * 1.5;
+    const controlWidth = 52.0;
+    const controlHeight = 52.0;
+    const notesWidth = 100.0;
+    const notesHeight = 52.0;
 
     final compactStyle = OutlinedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       minimumSize: const Size(controlWidth, controlHeight),
-      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      visualDensity: VisualDensity.compact,
+      tapTargetSize: MaterialTapTargetSize.padded,
       textStyle: const TextStyle(fontSize: 13),
     );
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Tooltip(
+          LongPressTooltip(
             message: solutionTooltip,
             child: OutlinedButton(
               style: compactStyle,
@@ -58,25 +58,13 @@ class ActionBar extends StatelessWidget {
             child: const Text('Clear'),
           ),
           const SizedBox(width: 6),
-          Builder(
-            builder: (context) {
-              final tooltipKey = GlobalKey<TooltipState>();
-              return Tooltip(
-                key: tooltipKey,
-                message: undoTooltip,
-                triggerMode: TooltipTriggerMode.manual,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onLongPress: () =>
-                      tooltipKey.currentState?.ensureTooltipVisible(),
-                  child: OutlinedButton(
-                    style: compactStyle,
-                    onPressed: state.canUndo ? onUndo : null,
-                    child: const Text('Undo'),
-                  ),
-                ),
-              );
-            },
+          LongPressTooltip(
+            message: undoTooltip,
+            child: OutlinedButton(
+              style: compactStyle,
+              onPressed: state.canUndo ? onUndo : null,
+              child: const Text('Undo'),
+            ),
           ),
           const Spacer(),
           OutlinedButton(

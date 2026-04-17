@@ -52,11 +52,18 @@ class SudokuGameplayActionService {
       saveGameSession: saveGameSession,
       render: render,
     );
+    var locksChanged = false;
     if (outcome.lockDifficulty) {
       settings.setDifficultyLocked(true);
+      locksChanged = true;
     }
     if (outcome.lockPuzzleMode) {
       settings.setPuzzleModeLocked(true);
+      locksChanged = true;
+    }
+    if (locksChanged) {
+      // Persist lock state for unfinished sessions so resume shows the same UI.
+      saveGameSession();
     }
   }
 

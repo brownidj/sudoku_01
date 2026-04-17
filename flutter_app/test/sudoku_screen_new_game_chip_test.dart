@@ -15,88 +15,113 @@ Future<FakePreferencesStore> _buildPrefsWithPristineSavedSession() async {
 }
 
 void main() {
-  testWidgets(
-    'new game chip starts immediately when no move has been made',
-    (WidgetTester tester) async {
-      final gameService = FakeGameService();
-      final controller = SudokuController(
-        preferencesStore: FakePreferencesStore(),
-        gameService: gameService,
-        settingsController: FakeSettingsController(
-          const SettingsState(
-            notesMode: false,
-            difficulty: 'easy',
-            canChangeDifficulty: true,
-            canChangePuzzleMode: true,
-            styleName: 'Modern',
-            contentMode: 'numbers',
-            animalStyle: 'simple',
-            puzzleMode: 'multi',
-          ),
+  testWidgets('new game chip starts immediately when no move has been made', (
+    WidgetTester tester,
+  ) async {
+    final gameService = FakeGameService();
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: gameService,
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
         ),
-      );
-      await controller.ready;
+      ),
+    );
+    await controller.ready;
 
-      await tester.pumpWidget(
-        MaterialApp(home: SudokuScreen(controller: controller)),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
 
-      final baselineNewGameCalls = gameService.newGameCalls;
-      await tester.tap(find.widgetWithText(ElevatedButton, 'New Game'));
-      await tester.pumpAndSettle();
+    final baselineNewGameCalls = gameService.newGameCalls;
+    await tester.tap(find.widgetWithText(ElevatedButton, 'New Game'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Start New Game?'), findsNothing);
-      expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
-    },
-  );
+    expect(find.text('Start New Game?'), findsNothing);
+    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+  });
 
-  testWidgets(
-    'new game chip prompts after a move and starts on confirmation',
-    (WidgetTester tester) async {
-      final gameService = FakeGameService();
-      final controller = SudokuController(
-        preferencesStore: FakePreferencesStore(),
-        gameService: gameService,
-        settingsController: FakeSettingsController(
-          const SettingsState(
-            notesMode: false,
-            difficulty: 'easy',
-            canChangeDifficulty: true,
-            canChangePuzzleMode: true,
-            styleName: 'Modern',
-            contentMode: 'numbers',
-            animalStyle: 'simple',
-            puzzleMode: 'multi',
-          ),
+  testWidgets('new game chip prompts after a move and starts on confirmation', (
+    WidgetTester tester,
+  ) async {
+    final gameService = FakeGameService();
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: gameService,
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
         ),
-      );
-      await controller.ready;
+      ),
+    );
+    await controller.ready;
 
-      await tester.pumpWidget(
-        MaterialApp(home: SudokuScreen(controller: controller)),
-      );
-      await tester.pumpAndSettle();
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
 
-      final baselineNewGameCalls = gameService.newGameCalls;
-      final editable = firstEditableCoord(controller.state)!;
-      controller.onCellTapped(editable);
-      controller.onDigitPressed(1);
-      await tester.pumpAndSettle();
+    final baselineNewGameCalls = gameService.newGameCalls;
+    final editable = firstEditableCoord(controller.state)!;
+    controller.onCellTapped(editable);
+    controller.onDigitPressed(1);
+    await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(ElevatedButton, 'New Game'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ElevatedButton, 'New Game'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Start New Game?'), findsOneWidget);
-      expect(find.text('Start a new game?'), findsOneWidget);
+    expect(find.text('Start New Game?'), findsOneWidget);
+    expect(
+      find.text('Start a fresh game and reset this board?'),
+      findsOneWidget,
+    );
 
-      await tester.tap(find.text('Start New Game'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('Start New Game'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Start New Game?'), findsNothing);
-      expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
-    },
-  );
+    expect(find.text('Start New Game?'), findsNothing);
+    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+  });
+
+  testWidgets('new game chip starts immediately when game is complete', (
+    WidgetTester tester,
+  ) async {
+    final gameService = FakeGameService();
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: gameService,
+    );
+    await controller.ready;
+    controller.onShowSolution();
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    final baselineNewGameCalls = gameService.newGameCalls;
+    await tester.tap(find.widgetWithText(ElevatedButton, 'New Game'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Start New Game?'), findsNothing);
+    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+  });
 
   testWidgets(
     'new game chip prompts for resumed session even before any new move',
@@ -122,7 +147,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Start New Game?'), findsOneWidget);
-      expect(find.text('Start a new game?'), findsOneWidget);
+      expect(
+        find.text('Start a fresh game and reset this board?'),
+        findsOneWidget,
+      );
       expect(gameService.newGameCalls, baselineNewGameCalls);
 
       await tester.tap(find.text('Start New Game'));
