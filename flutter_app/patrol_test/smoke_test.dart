@@ -80,11 +80,11 @@ void main() {
     expect($('Undo'), findsOneWidget);
   });
 
-  patrolTest('opens Help from the app bar chip', ($) async {
+  patrolTest('opens Help from top controls chip', ($) async {
     await _launchGame($);
 
     await _dismissInfoSheetIfVisible($);
-    await $(find.byKey(const ValueKey<String>('appbar-help-chip'))).tap();
+    await $(find.byKey(const ValueKey<String>('top-controls-help-chip'))).tap();
     await $(find.byType(AlertDialog)).waitUntilVisible();
     final okInDialog = $(
       find.descendant(of: find.byType(AlertDialog), matching: find.text('OK')),

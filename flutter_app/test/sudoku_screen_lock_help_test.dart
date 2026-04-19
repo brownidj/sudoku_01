@@ -119,7 +119,7 @@ void main() {
     expect(unlockedDifficultyDropdown.onChanged, isNotNull);
   });
 
-  testWidgets('help chip appears in app bar and opens help dialog', (
+  testWidgets('help chip appears in top controls and opens help dialog', (
     WidgetTester tester,
   ) async {
     final controller = _buildController();
@@ -131,14 +131,43 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.byKey(const ValueKey<String>('appbar-help-chip')),
+      find.byKey(const ValueKey<String>('top-controls-help-chip')),
       findsOneWidget,
     );
 
-    await tester.tap(find.byKey(const ValueKey<String>('appbar-help-chip')));
+    await tester.tap(
+      find.byKey(const ValueKey<String>('top-controls-help-chip')),
+    );
     await tester.pumpAndSettle();
 
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.textContaining('holding your finger'), findsOneWidget);
+  });
+
+  testWidgets('progress chip opens metrics sheet with completed puzzles', (
+    WidgetTester tester,
+  ) async {
+    final prefs = FakePreferencesStore(completedPuzzles: 7);
+    final controller = SudokuController(
+      preferencesStore: prefs,
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(_defaultSettings),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('top-controls-progress-chip')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your Progress'), findsOneWidget);
+    expect(find.textContaining('Completed puzzles: 7'), findsOneWidget);
+    expect(find.textContaining('Days played: coming soon'), findsOneWidget);
+    expect(find.textContaining('Streak: coming soon'), findsOneWidget);
   });
 }

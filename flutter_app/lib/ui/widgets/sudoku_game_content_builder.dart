@@ -28,6 +28,8 @@ class SudokuGameContentBuilder extends StatelessWidget {
     required this.onTapCell,
     required this.onLongPressCell,
     required this.onNewGame,
+    required this.onProgressPressed,
+    required this.onHelpPressed,
     required this.onContentModeChanged,
     required this.onConfigurationLockTapped,
     required this.onConfigurationLockDoubleTapped,
@@ -56,6 +58,8 @@ class SudokuGameContentBuilder extends StatelessWidget {
   final Future<void> Function(Coord) onTapCell;
   final void Function(Offset, Coord) onLongPressCell;
   final VoidCallback onNewGame;
+  final VoidCallback onProgressPressed;
+  final VoidCallback onHelpPressed;
   final ValueChanged<String> onContentModeChanged;
   final VoidCallback onConfigurationLockTapped;
   final VoidCallback onConfigurationLockDoubleTapped;
@@ -93,6 +97,8 @@ class SudokuGameContentBuilder extends StatelessWidget {
               tilesPanelKey: tilesPanelKey,
               bottomControlsKey: bottomControlsKey,
               onNewGame: onNewGame,
+              onProgressPressed: onProgressPressed,
+              onHelpPressed: onHelpPressed,
               onContentModeChanged: onContentModeChanged,
               onConfigurationLockTapped: onConfigurationLockTapped,
               onConfigurationLockDoubleTapped: onConfigurationLockDoubleTapped,

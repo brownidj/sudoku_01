@@ -52,7 +52,7 @@ class AppVersionService {
     if (cleanVersion.isEmpty || cleanBuild.isEmpty) {
       return null;
     }
-    return '$_appName $cleanVersion build $cleanBuild';
+    return '$cleanVersion build $cleanBuild';
   }
 
   void _logOnce({

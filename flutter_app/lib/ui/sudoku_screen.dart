@@ -154,7 +154,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onVersionTapped: _onVersionTapped,
             onVersionLongPressed:
                 _services.interactionController.onVersionLongPressed,
-            onHelpPressed: () => showSudokuHelpDialog(context),
           ),
           drawer: SudokuDrawer(
             state: state,
@@ -220,6 +219,20 @@ class _SudokuScreenState extends State<SudokuScreen> {
                 ),
               );
             },
+            onProgressPressed: () {
+              final completedPuzzles = widget.controller.completedPuzzles;
+              unawaited(
+                showInfoSheet(
+                  context: context,
+                  title: 'Your Progress',
+                  message:
+                      'Completed puzzles: $completedPuzzles\n'
+                      'Days played: coming soon\n'
+                      'Streak: coming soon',
+                ),
+              );
+            },
+            onHelpPressed: () => showSudokuHelpDialog(context),
             onContentModeChanged: controller.onContentModeChanged,
             onConfigurationLockTapped: () {
               final message = _configurationFlowService.lockedSettingsMessage(

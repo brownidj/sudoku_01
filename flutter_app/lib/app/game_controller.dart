@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/progress_metrics_service.dart';
 import 'package:flutter_app/app/board_edit_coordinator.dart';
 import 'package:flutter_app/app/game_configuration_service.dart';
 import 'package:flutter_app/app/game_controller_effects.dart';
@@ -23,10 +26,13 @@ class GameController {
   final GameStartupService _startupService;
   final GameScenarioService _scenarioService;
   final GameConfigurationService _configurationService;
+  final ProgressMetricsService _progressMetricsService;
   final SudokuRuntimeStateService _runtimeStateService;
   final UiStateMapper _uiStateMapper;
   late SudokuRuntimeState _runtime;
   bool _hadSavedSessionAtLaunch = false;
+  bool _completionRecordedForCurrentPuzzle = false;
+  int _completedPuzzles = 0;
 
   GameController({
     required SettingsController settingsController,
@@ -36,6 +42,7 @@ class GameController {
     required GameStartupService startupService,
     required GameScenarioService scenarioService,
     required GameConfigurationService configurationService,
+    required ProgressMetricsService progressMetricsService,
     required UiStateMapper uiStateMapper,
     required GameService gameService,
   }) : _settings = settingsController,
@@ -45,6 +52,7 @@ class GameController {
        _startupService = startupService,
        _scenarioService = scenarioService,
        _configurationService = configurationService,
+       _progressMetricsService = progressMetricsService,
        _uiStateMapper = uiStateMapper {
     final history = gameService.initialHistory();
     _runtime = SudokuRuntimeState(
@@ -64,15 +72,18 @@ class GameController {
   );
   SettingsState get settingsState => _settings.state;
   bool get hadSavedSessionAtLaunch => _hadSavedSessionAtLaunch;
+  int get completedPuzzles => _completedPuzzles;
   bool get gameOver => _runtime.gameOver;
   History get history => _runtime.history;
   Coord? get selected => _runtime.selected;
 
   Future<void> initialize(VoidCallback notifyListeners) async {
+    _completedPuzzles = await _progressMetricsService.loadCompletedPuzzles();
     final startup = await _startupService.initialize(_settings);
     _hadSavedSessionAtLaunch = startup.hadSavedSessionAtLaunch;
     if (startup.restoredRuntime != null) {
       _runtime = startup.restoredRuntime!;
+      _completionRecordedForCurrentPuzzle = _runtime.puzzleSolved;
     }
     if (startup.shouldNotifyListeners) {
       _effects.render(notifyListeners, 'Session restored');
@@ -104,6 +115,7 @@ class GameController {
     BoardEditOutcome outcome,
     VoidCallback notifyListeners,
   ) {
+    final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.applyBoardEditOutcome(
       runtime: _runtime,
       settings: _settings,
@@ -114,9 +126,11 @@ class GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
+    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
   }
 
   void start(VoidCallback notifyListeners) {
+    _completionRecordedForCurrentPuzzle = false;
     _actionService.startPuzzle(
       runtime: _runtime,
       settings: _settings,
@@ -133,6 +147,7 @@ class GameController {
   }
 
   void onLoadCorrectionScenario(VoidCallback notifyListeners) {
+    _completionRecordedForCurrentPuzzle = false;
     _scenarioService.loadCorrectionScenario(
       runtime: _runtime,
       settings: _settings,
@@ -145,6 +160,7 @@ class GameController {
   }
 
   void onLoadExhaustedCorrectionScenario(VoidCallback notifyListeners) {
+    _completionRecordedForCurrentPuzzle = false;
     _scenarioService.loadExhaustedCorrectionScenario(
       runtime: _runtime,
       settings: _settings,
@@ -186,6 +202,7 @@ class GameController {
   }
 
   void onCheckSolution(VoidCallback notifyListeners) {
+    final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.checkSolution(
       runtime: _runtime,
       settings: _settings,
@@ -195,9 +212,11 @@ class GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
+    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
   }
 
   void onShowSolution(VoidCallback notifyListeners) {
+    final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.showSolution(
       runtime: _runtime,
       settings: _settings,
@@ -207,9 +226,11 @@ class GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
+    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
   }
 
   void onCompletePuzzleWithSolution(VoidCallback notifyListeners) {
+    final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.completePuzzleWithSolution(
       runtime: _runtime,
       settings: _settings,
@@ -219,6 +240,7 @@ class GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
+    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
   }
 
   void onConfirmCorrection(VoidCallback notifyListeners) {
@@ -244,4 +266,15 @@ class GameController {
   }
 
   Future<void> flushGameSession() => _effects.flushPendingSave();
+
+  void _recordPuzzleCompletionIfNeeded({required bool wasPuzzleSolved}) {
+    if (wasPuzzleSolved ||
+        !_runtime.puzzleSolved ||
+        _completionRecordedForCurrentPuzzle) {
+      return;
+    }
+    _completionRecordedForCurrentPuzzle = true;
+    _completedPuzzles += 1;
+    unawaited(_progressMetricsService.saveCompletedPuzzles(_completedPuzzles));
+  }
 }

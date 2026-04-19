@@ -12,6 +12,7 @@ import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/app/game_startup_service.dart';
 import 'package:flutter_app/app/grid_utils.dart';
 import 'package:flutter_app/app/preferences_store.dart';
+import 'package:flutter_app/app/progress_metrics_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
 import 'package:flutter_app/app/solution_check_coordinator.dart';
 import 'package:flutter_app/app/sudoku_controller_action_service.dart';
@@ -42,6 +43,7 @@ class SudokuController extends ChangeNotifier {
     CorrectionRecoveryService? correctionRecoveryService,
     SudokuRuntimeStateService? runtimeStateService,
     SudokuControllerActionService? actionService,
+    ProgressMetricsService? progressMetricsService,
   }) {
     final prefs = preferencesStore ?? PreferencesStore();
     final resolvedGameService = gameService ?? GameService();
@@ -81,6 +83,8 @@ class SudokuController extends ChangeNotifier {
           correctionRecoveryService: resolvedCorrectionRecoveryService,
           runtimeStateService: resolvedRuntimeStateService,
         );
+    final resolvedProgressMetricsService =
+        progressMetricsService ?? ProgressMetricsService(prefs);
     final resolvedEffects = GameControllerEffects(resolvedSessionService);
     final resolvedStartupService = GameStartupService(
       startupCoordinator: resolvedStartupCoordinator,
@@ -101,6 +105,7 @@ class SudokuController extends ChangeNotifier {
       startupService: resolvedStartupService,
       scenarioService: resolvedScenarioService,
       configurationService: resolvedConfigurationService,
+      progressMetricsService: resolvedProgressMetricsService,
       uiStateMapper: resolvedUiStateMapper,
       gameService: resolvedGameService,
     );
@@ -114,6 +119,7 @@ class SudokuController extends ChangeNotifier {
 
   UiState get state => _gameController.state;
   bool get hadSavedSessionAtLaunch => _gameController.hadSavedSessionAtLaunch;
+  int get completedPuzzles => _gameController.completedPuzzles;
 
   void start() => _gameController.start(notifyListeners);
   void onCellTapped(Coord coord) =>

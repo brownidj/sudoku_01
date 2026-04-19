@@ -13,6 +13,7 @@ import 'package:flutter_app/ui/services/animal_asset_service.dart';
 
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
+  int completedPuzzles = 0;
 
   FakePreferencesStore({this.savedSession});
 
@@ -48,6 +49,14 @@ class FakePreferencesStore extends PreferencesStore {
   @override
   Future<void> saveGameSession(String value) async {
     savedSession = value;
+  }
+
+  @override
+  Future<int> loadCompletedPuzzles() async => completedPuzzles;
+
+  @override
+  Future<void> saveCompletedPuzzles(int value) async {
+    completedPuzzles = value;
   }
 }
 

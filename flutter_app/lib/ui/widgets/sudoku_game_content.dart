@@ -28,6 +28,8 @@ class SudokuGameContent extends StatelessWidget {
   final GlobalKey tilesPanelKey;
   final GlobalKey bottomControlsKey;
   final VoidCallback onNewGame;
+  final VoidCallback onProgressPressed;
+  final VoidCallback onHelpPressed;
   final ValueChanged<String> onContentModeChanged;
   final VoidCallback onConfigurationLockTapped;
   final VoidCallback onConfigurationLockDoubleTapped;
@@ -61,6 +63,8 @@ class SudokuGameContent extends StatelessWidget {
     required this.tilesPanelKey,
     required this.bottomControlsKey,
     required this.onNewGame,
+    required this.onProgressPressed,
+    required this.onHelpPressed,
     required this.onContentModeChanged,
     required this.onConfigurationLockTapped,
     required this.onConfigurationLockDoubleTapped,
@@ -88,6 +92,8 @@ class SudokuGameContent extends StatelessWidget {
               TopControls(
                 state: state,
                 onNewGame: onNewGame,
+                onProgressPressed: onProgressPressed,
+                onHelpPressed: onHelpPressed,
                 onContentModeChanged: onContentModeChanged,
                 onConfigurationLockTapped: onConfigurationLockTapped,
                 onConfigurationLockDoubleTapped:

@@ -4,6 +4,8 @@ import 'package:flutter_app/app/ui_state.dart';
 class TopControls extends StatelessWidget {
   final UiState state;
   final VoidCallback onNewGame;
+  final VoidCallback onProgressPressed;
+  final VoidCallback onHelpPressed;
   final ValueChanged<String> onContentModeChanged;
   final VoidCallback onConfigurationLockTapped;
   final VoidCallback onConfigurationLockDoubleTapped;
@@ -13,6 +15,8 @@ class TopControls extends StatelessWidget {
     super.key,
     required this.state,
     required this.onNewGame,
+    required this.onProgressPressed,
+    required this.onHelpPressed,
     required this.onContentModeChanged,
     required this.onConfigurationLockTapped,
     required this.onConfigurationLockDoubleTapped,
@@ -29,6 +33,28 @@ class TopControls extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Row(
+            children: [
+              Align(
+                alignment: Alignment.centerLeft,
+                child: ActionChip(
+                  key: const ValueKey<String>('top-controls-progress-chip'),
+                  onPressed: onProgressPressed,
+                  label: const Text('Progress'),
+                ),
+              ),
+              const Spacer(),
+              Align(
+                alignment: Alignment.centerRight,
+                child: ActionChip(
+                  key: const ValueKey<String>('top-controls-help-chip'),
+                  onPressed: onHelpPressed,
+                  label: const Text('Help'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
           Row(
             children: [
               SizedBox(

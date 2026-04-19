@@ -7,6 +7,7 @@ class PreferencesStore {
   static const keyDifficulty = 'difficulty';
   static const keyPuzzleMode = 'puzzle_mode';
   static const keyGameSession = 'game_session';
+  static const keyCompletedPuzzles = 'completed_puzzles';
 
   Future<AppPreferences> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -57,6 +58,16 @@ class PreferencesStore {
   Future<void> clearGameSession() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(keyGameSession);
+  }
+
+  Future<int> loadCompletedPuzzles() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(keyCompletedPuzzles) ?? 0;
+  }
+
+  Future<void> saveCompletedPuzzles(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(keyCompletedPuzzles, value);
   }
 }
 

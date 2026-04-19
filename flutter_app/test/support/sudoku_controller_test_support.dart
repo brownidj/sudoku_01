@@ -9,8 +9,9 @@ import 'package:flutter_app/domain/types.dart';
 
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
+  int completedPuzzles;
 
-  FakePreferencesStore({this.savedSession});
+  FakePreferencesStore({this.savedSession, this.completedPuzzles = 0});
 
   @override
   Future<AppPreferences> load() async {
@@ -44,6 +45,14 @@ class FakePreferencesStore extends PreferencesStore {
   @override
   Future<void> saveGameSession(String value) async {
     savedSession = value;
+  }
+
+  @override
+  Future<int> loadCompletedPuzzles() async => completedPuzzles;
+
+  @override
+  Future<void> saveCompletedPuzzles(int value) async {
+    completedPuzzles = value;
   }
 }
 

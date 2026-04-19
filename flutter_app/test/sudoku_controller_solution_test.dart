@@ -112,4 +112,36 @@ void main() {
     expect(cleared.value, isNull);
     expect(cleared.conflicted, isFalse);
   });
+
+  test('completed puzzle metric increments once per solved puzzle', () async {
+    final prefs = FakePreferencesStore(completedPuzzles: 2);
+    final controller = SudokuController(
+      preferencesStore: prefs,
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    expect(controller.completedPuzzles, 2);
+
+    controller.onCompletePuzzleWithSolution();
+    await Future<void>.delayed(Duration.zero);
+    expect(controller.completedPuzzles, 3);
+    expect(prefs.completedPuzzles, 3);
+
+    controller.onCompletePuzzleWithSolution();
+    await Future<void>.delayed(Duration.zero);
+    expect(controller.completedPuzzles, 3);
+    expect(prefs.completedPuzzles, 3);
+  });
 }
