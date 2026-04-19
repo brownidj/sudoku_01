@@ -24,7 +24,16 @@ Future<void> _stabilizeBoard(PatrolIntegrationTester $) async {
 }
 
 Future<void> _waitForBoardControls(PatrolIntegrationTester $) async {
-  await $('Undo').waitUntilVisible();
+  for (var i = 0; i < 40; i += 1) {
+    await _dismissInfoSheetIfVisible($);
+    final hasUndo = $('Undo').evaluate().isNotEmpty;
+    final hasNotes = $('Notes').evaluate().isNotEmpty;
+    if (hasUndo && hasNotes) {
+      return;
+    }
+    await $.pump(const Duration(milliseconds: 250));
+  }
+  throw StateError('Board controls did not become available in time.');
 }
 
 Future<void> _launchGame(PatrolIntegrationTester $) async {

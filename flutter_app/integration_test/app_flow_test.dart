@@ -63,7 +63,7 @@ void main() {
     Navigator.of(tester.element(find.byType(Scaffold))).maybePop();
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const ValueKey<String>('appbar-help-chip')));
+    await tester.tap(find.byKey(const ValueKey<String>('top-controls-help-chip')));
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.textContaining(_helpSnippet), findsOneWidget);

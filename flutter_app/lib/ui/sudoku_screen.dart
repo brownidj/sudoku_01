@@ -5,14 +5,13 @@ import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
-import 'package:flutter_app/ui/services/sudoku_configuration_flow_service.dart';
+import 'package:flutter_app/ui/services/sudoku_screen_flow_actions.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_service_registry.dart';
 import 'package:flutter_app/ui/services/sudoku_start_instruction_overlay_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/help_dialog.dart';
-import 'package:flutter_app/ui/widgets/info_sheet.dart';
 import 'package:flutter_app/ui/widgets/sudoku_game_content_builder.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 import 'package:flutter_app/ui/widgets/sudoku_version_app_bar.dart';
@@ -32,7 +31,7 @@ class SudokuScreen extends StatefulWidget {
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
   final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
-  final _configurationFlowService = const SudokuConfigurationFlowService();
+  final _flowActions = const SudokuScreenFlowActions();
   final _startInstructionOverlayService =
       SudokuStartInstructionOverlayService();
   late final SudokuScreenServiceRegistry _services;
@@ -210,71 +209,57 @@ class _SudokuScreenState extends State<SudokuScreen> {
             },
             onNewGame: () {
               unawaited(
-                _configurationFlowService.requestNewGame(
+                _flowActions.requestNewGame(
                   context: context,
                   isMounted: () => mounted,
-                  state: widget.controller.state,
-                  isCurrentGameResumed: false,
-                  onConfirmNewGame: widget.controller.onNewGame,
+                  controller: widget.controller,
                 ),
               );
             },
             onProgressPressed: () {
-              final completedPuzzles = widget.controller.completedPuzzles;
               unawaited(
-                showInfoSheet(
+                _flowActions.showProgressSheet(
                   context: context,
-                  title: 'Your Progress',
-                  message:
-                      'Completed puzzles: $completedPuzzles\n'
-                      'Days played: coming soon\n'
-                      'Streak: coming soon',
+                  completedPuzzles: widget.controller.completedPuzzles,
                 ),
               );
             },
             onHelpPressed: () => showSudokuHelpDialog(context),
             onContentModeChanged: controller.onContentModeChanged,
             onConfigurationLockTapped: () {
-              final message = _configurationFlowService.lockedSettingsMessage(
-                controller.state,
-              );
               unawaited(
-                showInfoSheet(
+                _flowActions.showLockedSettingsSheet(
                   context: context,
-                  title: 'Board Settings Locked',
-                  message: message,
+                  controller: controller,
                 ),
               );
             },
             onConfigurationLockDoubleTapped: () {
               unawaited(
-                _configurationFlowService.requestUnlockByStartingNewGame(
+                _flowActions.requestUnlockByStartingNewGame(
                   context: context,
                   isMounted: () => mounted,
-                  state: controller.state,
-                  onConfirmNewGame: controller.onNewGame,
+                  controller: controller,
                 ),
               );
             },
             onPuzzleModeChanged: (mode) {
               unawaited(
-                _configurationFlowService.requestPuzzleModeChange(
+                _flowActions.requestPuzzleModeChange(
                   context: context,
                   isMounted: () => mounted,
-                  state: widget.controller.state,
+                  controller: widget.controller,
                   mode: mode,
-                  onConfirmChange: widget.controller.onPuzzleModeChanged,
                 ),
               );
             },
             onSetDifficulty: (difficulty) {
               unawaited(
-                _configurationFlowService.requestDifficultyChange(
+                _flowActions.requestDifficultyChange(
                   context: context,
                   isMounted: () => mounted,
-                  state: widget.controller.state,
+                  controller: widget.controller,
                   difficulty: difficulty,
-                  onConfirmChange: widget.controller.onSetDifficulty,
                 ),
               );
             },

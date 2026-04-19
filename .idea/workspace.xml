@@ -4,21 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.8.2+225">
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/app_version_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/app_version_service.dart" afterDir="false" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.8.2+226">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content_builder.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content_builder.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_solution_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_solution_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_lock_help_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_lock_help_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -286,15 +276,7 @@
       <workItem from="1776409946430" duration="947000" />
       <workItem from="1776410909843" duration="2843000" />
       <workItem from="1776473238256" duration="11230000" />
-      <workItem from="1776488161583" duration="14298000" />
-    </task>
-    <task id="LOCAL-00015" summary="Fixing Notes - not yet good enough. About to carry out a big refactoring.">
-      <option name="closed" value="true" />
-      <created>1770761793184</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1770761793184</updated>
+      <workItem from="1776488161583" duration="16866000" />
     </task>
     <task id="LOCAL-00016" summary="First refactoring done but still needs a cleaner split between domain/services, state management, and UI widgets.">
       <option name="closed" value="true" />
@@ -680,7 +662,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776563678206</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="Updated version to 0.8.2+226">
+      <option name="closed" value="true" />
+      <created>1776565298154</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1776565298154</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -718,7 +708,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Prior to refactoring" />
     <MESSAGE value="First major refactoring" />
     <MESSAGE value="Added various files to commit" />
     <MESSAGE value="Post refactoring, before Notes icon colour change" />
@@ -743,7 +732,8 @@
     <MESSAGE value="First pre-release build" />
     <MESSAGE value="Updated version to 0.6.1+154" />
     <MESSAGE value="Updated version to 0.8.2+225" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.8.2+225" />
+    <MESSAGE value="Updated version to 0.8.2+226" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.8.2+226" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
