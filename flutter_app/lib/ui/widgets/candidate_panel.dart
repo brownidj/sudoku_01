@@ -48,11 +48,8 @@ class CandidatePanel extends StatelessWidget {
                   width: 52,
                   height: 52,
                   child: GestureDetector(
-                    onLongPressStart: showImages
+                    onLongPressStart: contentMode != 'numbers'
                         ? (_) {
-                            if (digit == 0) {
-                              return;
-                            }
                             final name = AnimalImageCache.displayNameForDigit(
                               contentMode,
                               digit,
@@ -72,11 +69,7 @@ class CandidatePanel extends StatelessWidget {
                             : (showImages ? Colors.white : null),
                       ),
                       onPressed: () => onDigitSelected(digit),
-                      child: showImages
-                          ? _animalOption(digit)
-                          : (digit == 0
-                                ? const Icon(Icons.clear)
-                                : Text('$digit')),
+                      child: _candidateOption(digit),
                     ),
                   ),
                 );
@@ -87,13 +80,18 @@ class CandidatePanel extends StatelessWidget {
     );
   }
 
-  Widget _animalOption(int digit) {
-    if (digit == 0) {
-      return const Icon(Icons.clear);
+  Widget _candidateOption(int digit) {
+    if (showImages) {
+      return _animalOption(digit);
     }
+    final label = AnimalImageCache.tileLabelForDigit(contentMode, digit);
+    return Text(label);
+  }
+
+  Widget _animalOption(int digit) {
     final image = animalImages[digit];
     if (image == null) {
-      return Text('$digit');
+      return Text(AnimalImageCache.tileLabelForDigit(contentMode, digit));
     }
     return SizedBox(
       width: 38,

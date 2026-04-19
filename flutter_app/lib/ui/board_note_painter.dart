@@ -58,7 +58,7 @@ class BoardNotePainter {
       );
       final image = noteImagesBySize[sizePx]?[digit];
       if (image == null) {
-        _drawNoteDigit(canvas, cellRect, digit);
+        _drawNoteDigit(canvas, cellRect, digit, contentMode: 'numbers');
         continue;
       }
       final left = cellLeft + (subCellSize - logicalSize) / 2;
@@ -94,15 +94,21 @@ class BoardNotePainter {
         subCellSize,
         subCellSize,
       );
-      _drawNoteDigit(canvas, cellRect, digit);
+      _drawNoteDigit(canvas, cellRect, digit, contentMode: contentMode);
     }
   }
 
-  void _drawNoteDigit(Canvas canvas, Rect rect, int digit) {
+  void _drawNoteDigit(
+    Canvas canvas,
+    Rect rect,
+    int digit, {
+    required String contentMode,
+  }) {
     final fontSize = rect.width * 0.6;
+    final label = AnimalImageCache.tileLabelForDigit(contentMode, digit);
     final textPainter = TextPainter(
       text: TextSpan(
-        text: digit.toString(),
+        text: label,
         style: TextStyle(
           color: style.valueColor.withOpacity(0.7),
           fontWeight: FontWeight.w500,

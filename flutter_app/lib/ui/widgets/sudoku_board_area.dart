@@ -51,14 +51,11 @@ class SudokuBoardArea extends StatelessWidget {
   Widget build(BuildContext context) {
     final correctionLimit = correctionsForDifficulty(state.difficulty);
     final correctionsTooltipMessage =
-        'You have $correctionLimit corrections available for this puzzle. '
-        'If an earlier move blocks progress, use one correction to keep going '
-        'at your own pace.';
+        'You have $correctionLimit automatic corrections available for this puzzle. '
+        'If an earlier move blocks your progress, you can use a correction to keep going '
+        'at your own pace. If you run out of corrections, use Undo.';
     const hintsTooltipMessage =
-        'Hints mark conflicts in the same row, column, or 3x3 box. '
-        'Use them anytime to support steady progress.';
-    const startInstructionMessage =
-        'To start, select a square you want to add an icon to.';
+        'Hints mark conflicts in the same row, column, or 3x3 box. Use them to allow you to progress. Use Undo if you have no more Hints';
     return LayoutBuilder(
       builder: (context, constraints) {
         const candidateButtonSize = 52.0;
@@ -98,18 +95,9 @@ class SudokuBoardArea extends StatelessWidget {
         final candidateHeight = candidateVisible
             ? gapBeforeCandidate + candidatePanelHeight
             : 0.0;
-        final showStartInstruction = state.selected == null && !state.gameOver;
-        const instructionBubbleHeight = 54.0;
-        const gapBeforeInstruction = 8.0;
-        final instructionHeight = showStartInstruction
-            ? instructionBubbleHeight + gapBeforeInstruction
-            : 0.0;
         const layoutSafetyPadding = 9.0;
         final reservedHeight =
-            metadataHeight +
-            instructionHeight +
-            candidateHeight +
-            layoutSafetyPadding;
+            metadataHeight + candidateHeight + layoutSafetyPadding;
         final maxBoard = max(0.0, constraints.maxHeight - reservedHeight);
         final boardWidth = max(0.0, min(constraints.maxWidth, maxBoard));
         final cellWidth = boardWidth / 9.0;
@@ -169,13 +157,6 @@ class SudokuBoardArea extends StatelessWidget {
                 onDifficultyChanged: onDifficultyChanged,
               ),
             ),
-            if (showStartInstruction) ...[
-              const SizedBox(height: 8),
-              SizedBox(
-                width: boardWidth,
-                child: _InlineTooltipMessage(message: startInstructionMessage),
-              ),
-            ],
             if (candidateVisible) const SizedBox(height: 12),
             CandidatePanel(
               visible: candidateVisible,
@@ -191,38 +172,6 @@ class SudokuBoardArea extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _InlineTooltipMessage extends StatelessWidget {
-  final String message;
-
-  const _InlineTooltipMessage({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    final tooltipTheme = Theme.of(context).tooltipTheme;
-    return Container(
-      padding:
-          tooltipTheme.padding ??
-          const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      margin: EdgeInsets.zero,
-      decoration:
-          tooltipTheme.decoration ??
-          BoxDecoration(
-            color: Colors.blueGrey.shade700,
-            borderRadius: BorderRadius.circular(10),
-          ),
-      child: Text(
-        message,
-        style:
-            tooltipTheme.textStyle ??
-            Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
-      ),
     );
   }
 }

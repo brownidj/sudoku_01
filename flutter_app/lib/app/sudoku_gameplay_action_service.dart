@@ -47,6 +47,7 @@ class SudokuGameplayActionService {
         result.history.present.board != runtime.history.present.board;
     applyPlayerResult(
       runtime: runtime,
+      settings: settings,
       result: result,
       boardChanged: boardChanged,
       saveGameSession: saveGameSession,
@@ -76,6 +77,7 @@ class SudokuGameplayActionService {
 
   void applyPlayerResult({
     required SudokuRuntimeState runtime,
+    required SettingsController settings,
     required MoveResult result,
     required bool boardChanged,
     required VoidCallback saveGameSession,
@@ -129,6 +131,9 @@ class SudokuGameplayActionService {
         ..gameOver = true
         ..puzzleSolved = true
         ..selected = null;
+      settings
+        ..setDifficultyLocked(false)
+        ..setPuzzleModeLocked(false);
       _runtimeStateService.clearCorrectionPromptState(
         runtime,
         clearRevertedCells: true,

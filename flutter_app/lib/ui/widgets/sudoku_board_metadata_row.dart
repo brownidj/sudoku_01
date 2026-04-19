@@ -31,6 +31,7 @@ class SudokuBoardMetadataRow extends StatelessWidget {
                   'Choose the mode that supports your regular puzzle routine.',
               value: state.puzzleMode,
               dropdownKey: const ValueKey<String>('board-puzzle-mode-dropdown'),
+              enabled: state.canChangePuzzleMode,
               items: const [
                 DropdownMenuItem<String>(
                   value: 'unique',
@@ -68,6 +69,7 @@ class SudokuBoardMetadataRow extends StatelessWidget {
                   'Choose the challenge level that feels right for steady daily progress.',
               value: state.difficulty,
               dropdownKey: const ValueKey<String>('board-difficulty-dropdown'),
+              enabled: state.canChangeDifficulty,
               items: const [
                 DropdownMenuItem<String>(value: 'easy', child: Text('EASY')),
                 DropdownMenuItem<String>(
@@ -89,6 +91,7 @@ class _MetadataDropdown extends StatelessWidget {
   final String tooltipMessage;
   final String value;
   final Key dropdownKey;
+  final bool enabled;
   final List<DropdownMenuItem<String>> items;
   final ValueChanged<String>? onChanged;
 
@@ -96,12 +99,16 @@ class _MetadataDropdown extends StatelessWidget {
     required this.tooltipMessage,
     required this.value,
     required this.dropdownKey,
+    required this.enabled,
     required this.items,
     required this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
+    final dropdownColor = enabled
+        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.72)
+        : Theme.of(context).colorScheme.onSurface.withOpacity(0.38);
     return LongPressTooltip(
       message: tooltipMessage,
       child: DropdownButtonHideUnderline(
@@ -114,19 +121,19 @@ class _MetadataDropdown extends StatelessWidget {
               value: value,
               isDense: false,
               itemHeight: 48,
-              icon: const Icon(Icons.expand_more, size: 18),
-              onChanged: (nextValue) {
-                if (nextValue == null) {
-                  return;
-                }
-                onChanged?.call(nextValue);
-              },
+              icon: Icon(Icons.arrow_drop_down, size: 20, color: dropdownColor),
+              onChanged: !enabled
+                  ? null
+                  : (nextValue) {
+                      if (nextValue == null) {
+                        return;
+                      }
+                      onChanged?.call(nextValue);
+                    },
               items: items,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withOpacity(0.72),
+                color: dropdownColor,
                 letterSpacing: 0.5,
               ),
             ),

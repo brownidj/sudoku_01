@@ -7,18 +7,24 @@ import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/sudoku_configuration_flow_service.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_service_registry.dart';
+import 'package:flutter_app/ui/services/sudoku_start_instruction_overlay_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/help_dialog.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
+import 'package:flutter_app/ui/widgets/sudoku_game_content_builder.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
-import 'package:flutter_app/ui/widgets/sudoku_game_content.dart';
 import 'package:flutter_app/ui/widgets/sudoku_version_app_bar.dart';
 
 class SudokuScreen extends StatefulWidget {
-  const SudokuScreen({super.key, required this.controller});
+  const SudokuScreen({
+    super.key,
+    required this.controller,
+    this.animalAssetService = const AnimalAssetService(),
+  });
   final SudokuController controller;
+  final AnimalAssetService animalAssetService;
   @override
   State<SudokuScreen> createState() => _SudokuScreenState();
 }
@@ -26,9 +32,9 @@ class SudokuScreen extends StatefulWidget {
 class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
   final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
-  final AnimalAssetService _animalAssetService = const AnimalAssetService();
-  final SudokuConfigurationFlowService _configurationFlowService =
-      const SudokuConfigurationFlowService();
+  final _configurationFlowService = const SudokuConfigurationFlowService();
+  final _startInstructionOverlayService =
+      SudokuStartInstructionOverlayService();
   late final SudokuScreenServiceRegistry _services;
   Future<void>? _animalLoad;
   final GlobalKey _overlayStackKey = GlobalKey();
@@ -39,12 +45,19 @@ class _SudokuScreenState extends State<SudokuScreen> {
   @override
   void initState() {
     super.initState();
-    _animalLoad = _loadAnimalImages();
     _services = SudokuScreenServiceRegistry(
       controller: widget.controller,
       onControllerChanged: _onControllerChanged,
-      onVictoryOverlayChanged: _onVictoryOverlayChanged,
+      onVictoryOverlayChanged: () {
+        _services.onVictoryOverlayChanged(
+          overlayStackKey: _overlayStackKey,
+          tilesPanelKey: _tilesPanelKey,
+          bottomControlsKey: _bottomControlsKey,
+          isMounted: () => mounted,
+        );
+      },
     );
+    _ensureAnimalAssetsRequested(widget.controller.state.contentMode);
   }
 
   @override
@@ -63,25 +76,54 @@ class _SudokuScreenState extends State<SudokuScreen> {
     if (!mounted) {
       return;
     }
-    final state = widget.controller.state;
+    final controller = widget.controller;
+    final state = controller.state;
+    _ensureAnimalAssetsRequested(state.contentMode);
     _services.onControllerChanged(
       context: context,
       state: state,
       isMounted: () => mounted,
-      showCorrectionPrompt: _showCorrectionPrompt,
+      showCorrectionPrompt: () async {
+        await _services.showCorrectionPrompt(
+          context: context,
+          isMounted: () => mounted,
+          onConfirmCorrection: controller.onConfirmCorrection,
+          onCorrectionConfirmed:
+              _services.candidatePanelCoordinator.onCorrectionConfirmed,
+          onDismissCorrectionPrompt: controller.onDismissCorrectionPrompt,
+          currentState: () => controller.state,
+        );
+      },
+    );
+    _startInstructionOverlayService.onStateChanged(
+      context: context,
+      state: state,
+      isMounted: () => mounted,
     );
   }
 
+  void _ensureAnimalAssetsRequested(String contentMode) {
+    if (contentMode == 'numbers' || _animalLoad != null) {
+      return;
+    }
+    _animalLoad = _loadAnimalImages();
+  }
+
   Future<void> _loadAnimalImages() async {
-    final bundle = await _animalAssetService.load();
-    _animalImages
-      ..clear()
-      ..addAll(bundle.animalImages);
-    _noteImages
-      ..clear()
-      ..addAll(bundle.noteImages);
-    if (mounted) {
-      setState(() {});
+    try {
+      final bundle = await widget.animalAssetService.load();
+      _animalImages
+        ..clear()
+        ..addAll(bundle.animalImages);
+      _noteImages
+        ..clear()
+        ..addAll(bundle.noteImages);
+      if (mounted) {
+        setState(() {});
+      }
+    } on Exception catch (error) {
+      AppDebug.log('Failed to load visual assets: $error');
+      _animalLoad = null;
     }
   }
 
@@ -93,7 +135,13 @@ class _SudokuScreenState extends State<SudokuScreen> {
         _services.candidateSelectionService,
       ]),
       builder: (context, _) {
-        final state = widget.controller.state;
+        final controller = widget.controller;
+        final state = controller.state;
+        final assetVariant = switch (state.contentMode) {
+          'animals' => state.animalStyle,
+          'instruments' => 'instruments',
+          _ => null,
+        };
         final viewModel = SudokuScreenViewModel.from(
           state: state,
           coordinator: _services.candidatePanelCoordinator,
@@ -106,109 +154,126 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onVersionTapped: _onVersionTapped,
             onVersionLongPressed:
                 _services.interactionController.onVersionLongPressed,
+            onHelpPressed: () => showSudokuHelpDialog(context),
           ),
           drawer: SudokuDrawer(
             state: state,
-            onAnimalStyleChanged: widget.controller.onAnimalStyleChanged,
-            onStyleChanged: widget.controller.onStyleChanged,
+            onAnimalStyleChanged: controller.onAnimalStyleChanged,
+            onStyleChanged: controller.onStyleChanged,
             audioEnabled: _audioEnabled,
             onAudioEnabledChanged: _onAudioEnabledChanged,
-            onHelpPressed: () {
-              Navigator.of(context).maybePop();
-              showSudokuHelpDialog(context);
-            },
             onLoadCorrectionScenario: () {
               Navigator.of(context).maybePop();
-              widget.controller.onLoadCorrectionScenario();
+              controller.onLoadCorrectionScenario();
             },
             onLoadExhaustedCorrectionScenario: () {
               Navigator.of(context).maybePop();
-              widget.controller.onLoadExhaustedCorrectionScenario();
+              controller.onLoadExhaustedCorrectionScenario();
             },
             showDebugTools: viewModel.showDebugTools,
           ),
-          body: ValueListenableBuilder<VictoryOverlayState>(
-            valueListenable: _services.victoryOverlayService.state,
-            builder: (context, victoryState, _) {
-              return ValueListenableBuilder<double?>(
-                valueListenable: _services.victoryPositionService.centerY,
-                builder: (context, centerY, _) {
-                  return SudokuGameContent(
-                    state: state,
-                    style: style,
-                    animalImages: _animalImages[state.animalStyle] ?? const {},
-                    noteImagesBySize:
-                        _noteImages[state.animalStyle] ?? const {},
-                    devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
-                    candidateVisible: viewModel.candidateVisible,
-                    candidateDigits: viewModel.candidateDigits,
-                    selectedNotes: viewModel.selectedNotes,
-                    onDigitSelected: _services
-                        .interactionController
-                        .onCandidateDigitSelected,
-                    onDigitLongPressed: state.notesMode
-                        ? _services
-                              .interactionController
-                              .onCandidateDigitLongPressed
-                        : null,
-                    onTapCell: _handleCellTap,
-                    onLongPressCell: _handleCellLongPress,
-                    showDebugNotification: viewModel.showDebugNotification,
-                    overlayStackKey: _overlayStackKey,
-                    tilesPanelKey: _tilesPanelKey,
-                    bottomControlsKey: _bottomControlsKey,
-                    onNewGame: _onNewGameRequested,
-                    onContentModeChanged:
-                        widget.controller.onContentModeChanged,
-                    onConfigurationLockTapped: _onConfigurationLockTapped,
-                    onPuzzleModeChanged: _onPuzzleModeRequested,
-                    onSetDifficulty: _onDifficultyRequested,
-                    onStyleChanged: widget.controller.onStyleChanged,
-                    onUndo: widget.controller.onUndo,
-                    onToggleNotesMode: widget.controller.onToggleNotesMode,
-                    onClear: widget.controller.onClearPressed,
-                    onCheckOrSolution: () => _services.interactionController
-                        .onCheckOrSolutionPressed(widget.controller.state),
-                    showVictoryOverlay: victoryState.visible,
-                    victoryAssetPath: victoryState.assetPath,
-                    victoryImageCenterY: centerY,
-                  );
-                },
+          body: SudokuGameContentBuilder(
+            victoryStateListenable: _services.victoryOverlayService.state,
+            victoryCenterYListenable: _services.victoryPositionService.centerY,
+            state: state,
+            style: style,
+            animalImages: assetVariant == null
+                ? const {}
+                : (_animalImages[assetVariant] ?? const {}),
+            noteImagesBySize: assetVariant == null
+                ? const {}
+                : (_noteImages[assetVariant] ?? const {}),
+            devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+            viewModel: viewModel,
+            overlayStackKey: _overlayStackKey,
+            tilesPanelKey: _tilesPanelKey,
+            bottomControlsKey: _bottomControlsKey,
+            onDigitSelected:
+                _services.interactionController.onCandidateDigitSelected,
+            onDigitLongPressed: state.notesMode
+                ? _services.interactionController.onCandidateDigitLongPressed
+                : null,
+            onTapCell: (coord) async {
+              final state = widget.controller.state;
+              await _services.interactionController.onCellTapped(
+                state: state,
+                coord: coord,
+                animalLoad: _animalLoad,
               );
             },
+            onLongPressCell: (globalPosition, coord) {
+              _services.showCellTooltip(
+                context: context,
+                state: controller.state,
+                coord: coord,
+                globalPosition: globalPosition,
+              );
+            },
+            onNewGame: () {
+              unawaited(
+                _configurationFlowService.requestNewGame(
+                  context: context,
+                  isMounted: () => mounted,
+                  state: widget.controller.state,
+                  isCurrentGameResumed: false,
+                  onConfirmNewGame: widget.controller.onNewGame,
+                ),
+              );
+            },
+            onContentModeChanged: controller.onContentModeChanged,
+            onConfigurationLockTapped: () {
+              final message = _configurationFlowService.lockedSettingsMessage(
+                controller.state,
+              );
+              unawaited(
+                showInfoSheet(
+                  context: context,
+                  title: 'Board Settings Locked',
+                  message: message,
+                ),
+              );
+            },
+            onConfigurationLockDoubleTapped: () {
+              unawaited(
+                _configurationFlowService.requestUnlockByStartingNewGame(
+                  context: context,
+                  isMounted: () => mounted,
+                  state: controller.state,
+                  onConfirmNewGame: controller.onNewGame,
+                ),
+              );
+            },
+            onPuzzleModeChanged: (mode) {
+              unawaited(
+                _configurationFlowService.requestPuzzleModeChange(
+                  context: context,
+                  isMounted: () => mounted,
+                  state: widget.controller.state,
+                  mode: mode,
+                  onConfirmChange: widget.controller.onPuzzleModeChanged,
+                ),
+              );
+            },
+            onSetDifficulty: (difficulty) {
+              unawaited(
+                _configurationFlowService.requestDifficultyChange(
+                  context: context,
+                  isMounted: () => mounted,
+                  state: widget.controller.state,
+                  difficulty: difficulty,
+                  onConfirmChange: widget.controller.onSetDifficulty,
+                ),
+              );
+            },
+            onStyleChanged: controller.onStyleChanged,
+            onUndo: controller.onUndo,
+            onToggleNotesMode: controller.onToggleNotesMode,
+            onClear: controller.onClearPressed,
+            onCheckOrSolution: () => _services.interactionController
+                .onCheckOrSolutionPressed(controller.state),
           ),
         );
       },
-    );
-  }
-
-  void _handleCellLongPress(Offset globalPosition, Coord coord) {
-    _services.showCellTooltip(
-      context: context,
-      state: widget.controller.state,
-      coord: coord,
-      globalPosition: globalPosition,
-    );
-  }
-
-  Future<void> _handleCellTap(Coord coord) async {
-    final state = widget.controller.state;
-    await _services.interactionController.onCellTapped(
-      state: state,
-      coord: coord,
-      animalLoad: _animalLoad,
-    );
-  }
-
-  Future<void> _showCorrectionPrompt() async {
-    await _services.showCorrectionPrompt(
-      context: context,
-      isMounted: () => mounted,
-      onConfirmCorrection: widget.controller.onConfirmCorrection,
-      onCorrectionConfirmed:
-          _services.candidatePanelCoordinator.onCorrectionConfirmed,
-      onDismissCorrectionPrompt: widget.controller.onDismissCorrectionPrompt,
-      currentState: () => widget.controller.state,
     );
   }
 
@@ -231,63 +296,5 @@ class _SudokuScreenState extends State<SudokuScreen> {
       _audioEnabled = enabled;
     });
     _services.onAudioEnabledChanged(enabled);
-  }
-
-  void _onVictoryOverlayChanged() {
-    _services.onVictoryOverlayChanged(
-      overlayStackKey: _overlayStackKey,
-      tilesPanelKey: _tilesPanelKey,
-      bottomControlsKey: _bottomControlsKey,
-      isMounted: () => mounted,
-    );
-  }
-
-  void _onConfigurationLockTapped() {
-    final message = _configurationFlowService.lockedSettingsMessage(
-      widget.controller.state,
-    );
-    unawaited(
-      showInfoSheet(
-        context: context,
-        title: 'Board Settings Locked',
-        message: message,
-      ),
-    );
-  }
-
-  void _onPuzzleModeRequested(String mode) {
-    unawaited(
-      _configurationFlowService.requestPuzzleModeChange(
-        context: context,
-        isMounted: () => mounted,
-        state: widget.controller.state,
-        mode: mode,
-        onConfirmChange: widget.controller.onPuzzleModeChanged,
-      ),
-    );
-  }
-
-  void _onNewGameRequested() {
-    unawaited(
-      _configurationFlowService.requestNewGame(
-        context: context,
-        isMounted: () => mounted,
-        state: widget.controller.state,
-        isCurrentGameResumed: false,
-        onConfirmNewGame: widget.controller.onNewGame,
-      ),
-    );
-  }
-
-  void _onDifficultyRequested(String difficulty) {
-    unawaited(
-      _configurationFlowService.requestDifficultyChange(
-        context: context,
-        isMounted: () => mounted,
-        state: widget.controller.state,
-        difficulty: difficulty,
-        onConfirmChange: widget.controller.onSetDifficulty,
-      ),
-    );
   }
 }

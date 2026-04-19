@@ -67,7 +67,7 @@ void main() {
   test('derives candidate visibility and selected notes', () {
     final selection = CandidateSelectionService();
     final coordinator = CandidatePanelCoordinator(selection);
-    selection.show(const Coord(0, 0), const [1, 2, 0]);
+    selection.show(const Coord(0, 0), const [1, 2]);
 
     final vm = SudokuScreenViewModel.from(
       state: _state(selected: const Coord(0, 0), notes: const [2, 3]),
@@ -77,14 +77,14 @@ void main() {
     );
 
     expect(vm.candidateVisible, isTrue);
-    expect(vm.candidateDigits, const [1, 2, 0]);
+    expect(vm.candidateDigits, const [1, 2]);
     expect(vm.selectedNotes, {2, 3});
   });
 
   test('hides candidate panel when game is over', () {
     final selection = CandidateSelectionService();
     final coordinator = CandidatePanelCoordinator(selection);
-    selection.show(const Coord(0, 0), const [1, 0]);
+    selection.show(const Coord(0, 0), const [1]);
 
     final vm = SudokuScreenViewModel.from(
       state: _state(gameOver: true, selected: const Coord(0, 0)),

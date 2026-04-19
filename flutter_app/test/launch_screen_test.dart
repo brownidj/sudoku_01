@@ -254,4 +254,38 @@ void main() {
       expect(find.byType(LaunchScreen), findsNothing);
     },
   );
+
+  testWidgets(
+    'Play waits on splash for image assets when content mode is instruments',
+    (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(1080, 1920));
+      final controller = SudokuController(
+        preferencesStore: FakePreferencesStore(),
+      );
+      await controller.ready;
+      controller.onContentModeChanged('instruments');
+      final service = DelayedAnimalAssetService();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: LaunchScreen(
+            controller: controller,
+            animalAssetService: service,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Play'));
+      await tester.pump();
+
+      expect(service.loadCalls, 1);
+      expect(find.text('Please wait...'), findsOneWidget);
+
+      service.complete();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(LaunchScreen), findsNothing);
+    },
+  );
 }

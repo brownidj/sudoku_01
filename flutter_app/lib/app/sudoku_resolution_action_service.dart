@@ -40,7 +40,9 @@ class SudokuResolutionActionService {
       ..selected = null
       ..puzzleSolved = false
       ..gameOver = true;
-    settings.setPuzzleModeLocked(false);
+    settings
+      ..setDifficultyLocked(false)
+      ..setPuzzleModeLocked(false);
     _runtimeStateService.clearCorrectionPromptState(
       runtime,
       clearRevertedCells: true,
@@ -77,7 +79,9 @@ class SudokuResolutionActionService {
       ..solutionGrid = result.solutionGrid
       ..solutionAddedCells = result.solutionAdded
       ..selected = null;
-    settings.setPuzzleModeLocked(false);
+    settings
+      ..setDifficultyLocked(false)
+      ..setPuzzleModeLocked(false);
     _runtimeStateService.clearCorrectionPromptState(
       runtime,
       clearRevertedCells: true,
@@ -105,7 +109,9 @@ class SudokuResolutionActionService {
       ..selected = null
       ..gameOver = true
       ..puzzleSolved = true;
-    settings.setPuzzleModeLocked(false);
+    settings
+      ..setDifficultyLocked(false)
+      ..setPuzzleModeLocked(false);
     _runtimeStateService.clearCorrectionPromptState(
       runtime,
       clearRevertedCells: true,

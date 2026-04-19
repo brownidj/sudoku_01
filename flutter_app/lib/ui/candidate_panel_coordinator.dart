@@ -33,7 +33,7 @@ class CandidatePanelCoordinator {
     final candidates = cell.value == null
         ? _remainingDigitsForBlock(state, coord)
         : <int>[];
-    selectionService.show(coord, [...candidates, 0]);
+    selectionService.show(coord, candidates);
   }
 
   void onDigitApplied({required int digit, required UiState nextState}) {
@@ -44,12 +44,11 @@ class CandidatePanelCoordinator {
             .board
             .cells[candidateCoord.row][candidateCoord.col]
             .conflicted;
-    if ((digit != 0 && selectedCellConflicted) ||
-        (nextState.notesMode && digit != 0)) {
+    if (selectedCellConflicted || nextState.notesMode) {
       selectionService.refresh();
       return;
     }
-    if (digit == 0 || !nextState.notesMode) {
+    if (!nextState.notesMode) {
       selectionService.hide();
       return;
     }

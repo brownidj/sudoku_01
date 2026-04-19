@@ -21,4 +21,16 @@ void main() {
     expect(state.styleName, 'Classic');
     expect(state.difficulty, 'hard');
   });
+
+  test('controller keeps persisted instruments content mode', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({
+      'content_mode': 'instruments',
+    });
+
+    final controller = SudokuController();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(controller.state.contentMode, 'instruments');
+  });
 }

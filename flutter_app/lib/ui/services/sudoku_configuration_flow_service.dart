@@ -11,18 +11,26 @@ class SudokuConfigurationFlowService {
            confirmationService ?? const SudokuNewGameConfirmationService();
 
   String lockedSettingsMessage(UiState state) {
-    final difficultyLocked = !state.canChangeDifficulty;
-    final puzzleModeLocked = !state.canChangePuzzleMode;
-    return switch ((difficultyLocked, puzzleModeLocked)) {
-      (true, true) =>
-        'Difficulty and puzzle mode are locked for this board. Start a new game when you are ready to change them.',
-      (true, false) =>
-        'Difficulty is locked for this board. Start a new game when you are ready to change it.',
-      (false, true) =>
-        'Puzzle mode is locked for this board. Start a new game when you are ready to change it.',
-      (false, false) =>
-        'Some board settings are currently locked. Start a new game to change them.',
-    };
+    return "Difficulty and puzzle mode are locked during a game. To unlock them, either double-tap the lock icon or start a 'New Game'";
+  }
+
+  Future<void> requestUnlockByStartingNewGame({
+    required BuildContext context,
+    required bool Function() isMounted,
+    required UiState state,
+    required VoidCallback onConfirmNewGame,
+  }) async {
+    if (state.canChangeDifficulty && state.canChangePuzzleMode) {
+      return;
+    }
+    await _confirmationService.confirmAndRun(
+      context: context,
+      isMounted: isMounted,
+      title: 'Unlock Settings?',
+      message:
+          "Unlocking difficulty and puzzle mode will start a new game and reset this board. Continue?",
+      onConfirm: onConfirmNewGame,
+    );
   }
 
   Future<void> requestPuzzleModeChange({

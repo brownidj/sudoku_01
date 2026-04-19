@@ -62,6 +62,11 @@ android {
         release {
             // Release signing via android/key.properties (required for Play upload).
             signingConfig = signingConfigs.getByName("release")
+            // Release artifacts are shipped for Play device ABIs only.
+            // This avoids release-time strip/upload checks for x86/x86_64 emulator libs.
+            ndk {
+                abiFilters += setOf("armeabi-v7a", "arm64-v8a")
+            }
         }
     }
 }

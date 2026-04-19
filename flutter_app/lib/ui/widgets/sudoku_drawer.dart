@@ -8,7 +8,6 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String> onStyleChanged;
   final bool audioEnabled;
   final ValueChanged<bool>? onAudioEnabledChanged;
-  final VoidCallback? onHelpPressed;
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final bool showDebugTools;
@@ -20,7 +19,6 @@ class SudokuDrawer extends StatelessWidget {
     required this.onStyleChanged,
     this.audioEnabled = true,
     this.onAudioEnabledChanged,
-    this.onHelpPressed,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
     this.showDebugTools = AppDebug.enabled,
@@ -125,12 +123,6 @@ class SudokuDrawer extends StatelessWidget {
               onTap: onAudioEnabledChanged == null
                   ? null
                   : () => onAudioEnabledChanged!(!audioEnabled),
-            ),
-            const Divider(height: 16),
-            ListTile(
-              leading: const Icon(Icons.help_outline),
-              title: const Text('Help'),
-              onTap: onHelpPressed,
             ),
             if (showDebugTools &&
                 (onLoadCorrectionScenario != null ||

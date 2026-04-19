@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
-import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class TopControls extends StatelessWidget {
   final UiState state;
   final VoidCallback onNewGame;
   final ValueChanged<String> onContentModeChanged;
   final VoidCallback onConfigurationLockTapped;
+  final VoidCallback onConfigurationLockDoubleTapped;
   final ValueChanged<String> onStyleChanged;
 
   const TopControls({
@@ -15,6 +15,7 @@ class TopControls extends StatelessWidget {
     required this.onNewGame,
     required this.onContentModeChanged,
     required this.onConfigurationLockTapped,
+    required this.onConfigurationLockDoubleTapped,
     required this.onStyleChanged,
   });
 
@@ -24,7 +25,7 @@ class TopControls extends StatelessWidget {
         !state.canChangeDifficulty || !state.canChangePuzzleMode;
     final colorScheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -67,26 +68,23 @@ class TopControls extends StatelessWidget {
               Expanded(
                 child: showConfigLock
                     ? Center(
-                        child: LongPressTooltip(
-                          message:
-                              'Some board settings are locked. Tap for details.',
-                          child: Material(
-                            color: colorScheme.surfaceContainerHighest,
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              key: const ValueKey<String>(
-                                'top-controls-config-lock-indicator',
-                              ),
-                              customBorder: const CircleBorder(),
-                              onTap: onConfigurationLockTapped,
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: Icon(
-                                  Icons.lock,
-                                  size: 14,
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
+                        child: Material(
+                          color: colorScheme.surfaceContainerHighest,
+                          shape: const CircleBorder(),
+                          child: InkWell(
+                            key: const ValueKey<String>(
+                              'top-controls-config-lock-indicator',
+                            ),
+                            customBorder: const CircleBorder(),
+                            onTap: onConfigurationLockTapped,
+                            onDoubleTap: onConfigurationLockDoubleTapped,
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: Icon(
+                                Icons.lock,
+                                size: 14,
+                                color: colorScheme.onSurfaceVariant,
                               ),
                             ),
                           ),
@@ -96,14 +94,9 @@ class TopControls extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: ElevatedButton.icon(
+                child: ActionChip(
                   onPressed: onNewGame,
-                  icon: const Icon(Icons.refresh),
                   label: const Text('New Game'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(0, 48),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                  ),
                 ),
               ),
             ],

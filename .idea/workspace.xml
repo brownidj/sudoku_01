@@ -5,7 +5,59 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.6.1+154">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/MONETISATION.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/MONETISATION.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/android/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/android/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/apes.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/buffalo.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/camel.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/cheetah.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/dolphin.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/elephant.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/frog.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/giraffe.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/hippos.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/iguana.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_session_codec.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_session_codec.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller_action_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller_action_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_gameplay_action_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_gameplay_action_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_resolution_action_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_resolution_action_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/ui_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/ui_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/board_note_painter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/board_note_painter.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/board_painter.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/board_painter.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/candidate_panel_coordinator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/candidate_panel_coordinator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/help_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/help_dialog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/legend.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_area.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_area.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_metadata_row.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_metadata_row.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/macos/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/macos/Podfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/candidate_panel_coordinator_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/candidate_panel_coordinator_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/preferences_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/preferences_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_board_area_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_board_area_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_gameplay_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_gameplay_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_solution_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_solution_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_view_model_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_view_model_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_victory_audio_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_victory_audio_service_test.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -13,7 +65,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="481" />
+    <option name="cachedIndexableFilesCount" value="760" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -50,39 +102,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Python tests.Python tests in tests.executor": "Run",
-    "Python.bgt.executor": "Run",
-    "Python.fix_animal_images.executor": "Run",
-    "Python.generate_animal_images.executor": "Run",
-    "Python.main.executor": "Run",
-    "Python.tk_view.executor": "Run",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHELLCHECK.PATH": "/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
-    "ai.playground.ignore.import.keys.banner.in.settings": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "chore/misc-followup-changes",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "show.migrate.to.gradle.popup": "false",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
+    &quot;Python.bgt.executor&quot;: &quot;Run&quot;,
+    &quot;Python.fix_animal_images.executor&quot;: &quot;Run&quot;,
+    &quot;Python.generate_animal_images.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.tk_view.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/david/PycharmProjects/Sudoku_01&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1772334012594" />
     <option name="spentUsd" value="0.11471075" />
@@ -118,6 +171,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bgt.py" />
@@ -142,6 +196,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/fix_animal_images.py" />
@@ -166,6 +221,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/generate_animal_images.py" />
@@ -190,6 +246,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
@@ -211,6 +268,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
@@ -231,8 +289,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
-        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+        <option value="bundled-js-predefined-d6986cc7102b-3bd3a6803838-JavaScript-PY-261.22158.340" />
+        <option value="bundled-python-sdk-b63d5a1f7c97-b61e75351b1f-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.22158.340" />
       </set>
     </attachedChunks>
   </component>
@@ -264,6 +322,10 @@
       <workItem from="1774045496587" duration="1226000" />
       <workItem from="1774067436611" duration="736000" />
       <workItem from="1774911627963" duration="8324000" />
+      <workItem from="1776409946430" duration="947000" />
+      <workItem from="1776410909843" duration="2843000" />
+      <workItem from="1776473238256" duration="11230000" />
+      <workItem from="1776488161583" duration="12644000" />
     </task>
     <task id="LOCAL-00014" summary="Added Check and solution">
       <option name="closed" value="true" />

@@ -16,13 +16,12 @@ import 'package:flutter_app/main.dart' as app;
 
 const _menuTooltip =
     'Press this to open a drawer. Use the drawer menu to change animals and style.';
-const _correctionsTooltipPrefix = 'In this mode you have ';
+const _correctionsTooltipPrefix = 'automatic corrections available';
 const _undoTooltip =
     'Use Undo to step back through the selections you made previously. '
     'Undo clears each previous selection, one at a time. '
     'You can also do this if you run out of Corrections';
-const _helpSnippet =
-    'Long-press "Corrections" on the board for a quick explanation.';
+const _helpSnippet = 'holding your finger';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +46,7 @@ void main() {
     await _resetPreferences();
     await _launchApp(tester);
     await _startGameFromLaunch(tester, buttonLabel: 'Play');
+    await _dismissInfoSheetIfVisible(tester);
 
     await tester.longPress(find.byIcon(Icons.menu));
     await tester.pumpAndSettle();
@@ -55,11 +55,17 @@ void main() {
     await _openDrawer(tester);
     expect(find.text('Puzzle Solution Mode'), findsNothing);
     expect(find.text('Difficulty'), findsNothing);
-    expect(find.text('Help'), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(Drawer), matching: find.text('Help')),
+      findsNothing,
+    );
 
-    await tester.tap(find.text('Help'));
+    Navigator.of(tester.element(find.byType(Scaffold))).maybePop();
     await tester.pumpAndSettle();
-    expect(find.text('Help'), findsWidgets);
+
+    await tester.tap(find.byKey(const ValueKey<String>('appbar-help-chip')));
+    await tester.pumpAndSettle();
+    expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.textContaining(_helpSnippet), findsOneWidget);
     expect(find.text('OK'), findsOneWidget);
     await tester.tap(find.text('OK'));
@@ -79,14 +85,38 @@ void main() {
     await _resetPreferences();
     await _launchApp(tester);
     await _startGameFromLaunch(tester, buttonLabel: 'Play');
+    await _dismissInfoSheetIfVisible(tester);
 
     await tester.longPress(find.textContaining('Corrections:'));
     await tester.pumpAndSettle();
     expect(find.textContaining(_correctionsTooltipPrefix), findsOneWidget);
+    await tester.tap(find.text('Got it'));
+    await tester.pumpAndSettle();
 
     await tester.longPress(find.widgetWithText(OutlinedButton, 'Undo'));
     await tester.pumpAndSettle();
     expect(find.text(_undoTooltip), findsOneWidget);
+    await tester.tap(find.text('Got it'));
+    await tester.pumpAndSettle();
+  });
+
+  testWidgets('content mode switch works across all options', (tester) async {
+    await _resetPreferences();
+    await _launchApp(tester);
+    await _startGameFromLaunch(tester, buttonLabel: 'Play');
+    await _dismissInfoSheetIfVisible(tester);
+
+    await _selectContentMode(tester, label: 'Instruments');
+    expect(_contentModeDropdown(tester).value, 'instruments');
+
+    await _selectContentMode(tester, label: 'Numbers');
+    expect(_contentModeDropdown(tester).value, 'numbers');
+
+    await _selectContentMode(tester, label: 'Animals');
+    expect(_contentModeDropdown(tester).value, 'animals');
+
+    await _selectContentMode(tester, label: 'Instruments');
+    expect(_contentModeDropdown(tester).value, 'instruments');
   });
 
   testWidgets('resume opens the saved session', (tester) async {
@@ -140,7 +170,32 @@ Future<void> _startGameFromLaunch(
 Future<void> _openDrawer(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.menu));
   await tester.pumpAndSettle();
-  await _pumpUntilVisible(tester, find.text('Help'));
+  await _pumpUntilVisible(tester, find.text('ZuDoKu+'));
+}
+
+Future<void> _dismissInfoSheetIfVisible(WidgetTester tester) async {
+  final gotIt = find.text('Got it');
+  if (gotIt.evaluate().isEmpty) {
+    return;
+  }
+  await tester.tap(gotIt.first);
+  await tester.pumpAndSettle();
+}
+
+DropdownButton<String> _contentModeDropdown(WidgetTester tester) {
+  return tester.widget<DropdownButton<String>>(
+    find.byType(DropdownButton<String>).first,
+  );
+}
+
+Future<void> _selectContentMode(
+  WidgetTester tester, {
+  required String label,
+}) async {
+  await tester.tap(find.byType(DropdownButton<String>).first);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(label).last);
+  await tester.pumpAndSettle();
 }
 
 Future<void> _pumpUntilVisible(

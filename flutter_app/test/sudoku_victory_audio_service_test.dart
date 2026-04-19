@@ -7,55 +7,73 @@ void main() {
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/1_cartoon_ape.png',
       ),
-      'audio/apes.mp3',
+      'audio/animals/apes.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/2_cartoon_buffalo.png',
       ),
-      'audio/buffalo.mp3',
+      'audio/animals/buffalo.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/3_cartoon_camel.png',
       ),
-      'audio/cheetah.mp3',
+      'audio/animals/camel.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/4_cartoon_dolphin.png',
       ),
-      'audio/dolphin.mp3',
+      'audio/animals/dolphin.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/5_cartoon_elephant.png',
       ),
-      'audio/elephant.mp3',
+      'audio/animals/elephant.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/6_cartoon_frog.png',
       ),
-      'audio/frog.mp3',
+      'audio/animals/frog.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/7_cartoon_giraffe.png',
       ),
-      'audio/giraffe.mp3',
+      'audio/animals/giraffe.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/8_cartoon_hippo.png',
       ),
-      'audio/hippos.mp3',
+      'audio/animals/hippos.mp3',
     );
     expect(
       SudokuVictoryAudioService.audioAssetForVictoryMascot(
         'assets/images/animals_chatGpT/9_cartoon_iguana.png',
       ),
-      'audio/iguana.mp3',
+      'audio/animals/iguana.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/music/piano.png',
+      ),
+      'audio/music/piano.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/music/saxaphone.png',
+      ),
+      'audio/music/saxophone.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/music/ukelele.png',
+      ),
+      'audio/music/ukulele.mp3',
     );
   });
 

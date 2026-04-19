@@ -7,6 +7,7 @@ class SudokuVersionAppBar extends StatefulWidget
     implements PreferredSizeWidget {
   final VoidCallback onVersionTapped;
   final VoidCallback onVersionLongPressed;
+  final VoidCallback onHelpPressed;
   final Duration longPressThreshold;
   final AppVersionService versionService;
 
@@ -14,6 +15,7 @@ class SudokuVersionAppBar extends StatefulWidget
     super.key,
     required this.onVersionTapped,
     required this.onVersionLongPressed,
+    required this.onHelpPressed,
     this.longPressThreshold = const Duration(milliseconds: 1500),
     this.versionService = const AppVersionService(),
   });
@@ -111,8 +113,19 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
         ),
       ),
       actions: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Center(
+            child: ActionChip(
+              key: const ValueKey<String>('appbar-help-chip'),
+              label: const Text('Help'),
+              onPressed: widget.onHelpPressed,
+            ),
+          ),
+        ),
         Builder(
           builder: (context) => IconButton(
+            key: const ValueKey<String>('appbar-menu-button'),
             onPressed: () => Scaffold.of(context).openDrawer(),
             icon: const Icon(Icons.menu),
             tooltip:

@@ -113,7 +113,16 @@ class SudokuBoardPainter extends CustomPainter {
               animalImages.containsKey(cell.value)) {
             _drawAnimal(canvas, rect, animalImages[cell.value]!, cell.value!);
           } else {
-            _drawValue(canvas, rect, cell.value!, cell.given, cellSize);
+            _drawValue(
+              canvas,
+              rect,
+              AnimalImageCache.tileLabelForDigit(
+                state.contentMode,
+                cell.value!,
+              ),
+              cell.given,
+              cellSize,
+            );
           }
         } else if (cell.notes.isNotEmpty) {
           notePainter.drawNotes(canvas, rect, cell.notes);
@@ -135,14 +144,14 @@ class SudokuBoardPainter extends CustomPainter {
   void _drawValue(
     Canvas canvas,
     Rect rect,
-    int value,
+    String valueLabel,
     bool given,
     double cellSize,
   ) {
     final fontSize = cellSize * 0.6;
     final textPainter = TextPainter(
       text: TextSpan(
-        text: value.toString(),
+        text: valueLabel,
         style: TextStyle(
           color: given ? style.givenColor : style.valueColor,
           fontWeight: given ? FontWeight.bold : FontWeight.normal,

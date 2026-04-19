@@ -15,8 +15,8 @@ void main() {
           const SettingsState(
             notesMode: false,
             difficulty: 'easy',
-            canChangeDifficulty: true,
-            canChangePuzzleMode: true,
+            canChangeDifficulty: false,
+            canChangePuzzleMode: false,
             styleName: 'Modern',
             contentMode: 'numbers',
             animalStyle: 'simple',
@@ -34,6 +34,8 @@ void main() {
           .expand((row) => row)
           .any((cell) => cell.solutionAdded);
       expect(hasSolutionAdded, isTrue);
+      expect(state.canChangeDifficulty, isTrue);
+      expect(state.canChangePuzzleMode, isTrue);
     },
   );
 

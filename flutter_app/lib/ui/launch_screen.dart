@@ -119,8 +119,8 @@ class _LaunchScreenState extends State<LaunchScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "It's harder than you think: engage more parts of your brain and have twice the fun!",
-                  style: theme.textTheme.bodyMedium,
+                  'Take your time, enjoy each puzzle, and keep your mind active.',
+                  style: theme.textTheme.bodyLarge,
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),

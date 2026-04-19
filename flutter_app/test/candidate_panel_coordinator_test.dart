@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/app/ui_state.dart';
@@ -12,6 +14,7 @@ UiState _state({
   List<int> cellNotes = const [],
   bool cellGiven = false,
   bool cellConflicted = false,
+  String contentMode = 'numbers',
 }) {
   final cells = List<List<CellVm>>.generate(
     9,
@@ -65,7 +68,7 @@ UiState _state({
     canChangeDifficulty: true,
     canChangePuzzleMode: true,
     styleName: 'Modern',
-    contentMode: 'numbers',
+    contentMode: contentMode,
     animalStyle: 'simple',
     puzzleMode: 'multi',
     selected: selected,
@@ -97,16 +100,16 @@ void main() {
       expect(notesEnabled, isTrue);
       expect(service.visible, isTrue);
       expect(service.candidateCoord, const Coord(0, 0));
-      expect(service.candidateDigits, contains(0));
+      expect(service.candidateDigits, isNot(contains(0)));
     },
   );
 
-  test('CandidatePanelCoordinator hides panel after clear', () {
+  test('CandidatePanelCoordinator hides panel after digit in value mode', () {
     final service = CandidateSelectionService();
     final coordinator = CandidatePanelCoordinator(service);
-    service.show(const Coord(0, 0), const [2, 3, 0]);
+    service.show(const Coord(0, 0), const [2, 3]);
 
-    coordinator.onDigitApplied(digit: 0, nextState: _state());
+    coordinator.onDigitApplied(digit: 2, nextState: _state());
 
     expect(service.visible, isFalse);
     expect(service.candidateCoord, isNull);
@@ -119,7 +122,7 @@ void main() {
       final coordinator = CandidatePanelCoordinator(service);
       var notifyCount = 0;
       service.addListener(() => notifyCount += 1);
-      service.show(const Coord(0, 0), const [2, 3, 0]);
+      service.show(const Coord(0, 0), const [2, 3]);
       notifyCount = 0;
 
       coordinator.onDigitApplied(
@@ -129,6 +132,31 @@ void main() {
 
       expect(service.visible, isTrue);
       expect(notifyCount, 1);
+    },
+  );
+
+  test(
+    'CandidatePanelCoordinator waits on image load in instruments',
+    () async {
+      final service = CandidateSelectionService();
+      final coordinator = CandidatePanelCoordinator(service);
+      var notesEnabled = false;
+      final blocker = Completer<void>();
+      final tapFuture = coordinator.onCellTapped(
+        state: _state(contentMode: 'instruments'),
+        coord: const Coord(0, 0),
+        animalLoad: blocker.future,
+        setNotesMode: (enabled) => notesEnabled = enabled,
+      );
+
+      await Future<void>.delayed(Duration.zero);
+      expect(service.visible, isFalse);
+
+      blocker.complete();
+      await tapFuture;
+      expect(notesEnabled, isFalse);
+      expect(service.visible, isTrue);
+      expect(service.candidateCoord, const Coord(0, 0));
     },
   );
 }

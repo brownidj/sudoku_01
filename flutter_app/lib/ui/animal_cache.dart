@@ -9,12 +9,24 @@ class AnimalImageCache {
   static Map<String, Map<int, Map<int, ui.Image>>>? _notesCache;
 
   static Future<Map<String, Map<int, ui.Image>>> loadAll() {
-    _future ??= _loadAll();
+    _future ??= _loadAll().catchError((Object error, StackTrace stackTrace) {
+      _future = null;
+      return Future<Map<String, Map<int, ui.Image>>>.error(error, stackTrace);
+    });
     return _future!;
   }
 
   static Future<Map<String, Map<int, Map<int, ui.Image>>>> loadNotesAll() {
-    _notesFuture ??= _loadNotesAll();
+    _notesFuture ??= _loadNotesAll().catchError((
+      Object error,
+      StackTrace stackTrace,
+    ) {
+      _notesFuture = null;
+      return Future<Map<String, Map<int, Map<int, ui.Image>>>>.error(
+        error,
+        stackTrace,
+      );
+    });
     return _notesFuture!;
   }
 
@@ -26,7 +38,8 @@ class AnimalImageCache {
   static Future<Map<String, Map<int, ui.Image>>> _loadAll() async {
     final simple = await _loadImages(variant: 'simple');
     final cute = await _loadImages(variant: 'cute');
-    return {'simple': simple, 'cute': cute};
+    final instruments = await _loadMusicImages();
+    return {'simple': simple, 'cute': cute, 'instruments': instruments};
   }
 
   static Future<Map<String, Map<int, Map<int, ui.Image>>>>
@@ -34,13 +47,16 @@ class AnimalImageCache {
     final sizes = [16, 20, 24, 32];
     final simple = <int, Map<int, ui.Image>>{};
     final cute = <int, Map<int, ui.Image>>{};
+    final instruments = <int, Map<int, ui.Image>>{};
     final simpleNotes = await _loadNotesImages(variant: 'simple');
     final cuteNotes = await _loadNotesImages(variant: 'cute');
+    final instrumentNotes = await _loadMusicImages();
     for (final size in sizes) {
       simple[size] = Map<int, ui.Image>.from(simpleNotes);
       cute[size] = Map<int, ui.Image>.from(cuteNotes);
+      instruments[size] = Map<int, ui.Image>.from(instrumentNotes);
     }
-    _notesCache = {'simple': simple, 'cute': cute};
+    _notesCache = {'simple': simple, 'cute': cute, 'instruments': instruments};
     return _notesCache!;
   }
 
@@ -51,11 +67,19 @@ class AnimalImageCache {
     for (var d = 1; d <= 9; d += 1) {
       final name = _animalName(d);
       final data = await rootBundle.load(
-        _tileAssetPath(
-          digit: d,
-          name: name,
-          variant: variant,
-        ),
+        _tileAssetPath(digit: d, name: name, variant: variant),
+      );
+      final image = await _decodeImage(data.buffer.asUint8List());
+      images[d] = image;
+    }
+    return images;
+  }
+
+  static Future<Map<int, ui.Image>> _loadMusicImages() async {
+    final images = <int, ui.Image>{};
+    for (var d = 1; d <= 9; d += 1) {
+      final data = await rootBundle.load(
+        'assets/images/music/${_instrumentFileName(d)}.png',
       );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
@@ -123,8 +147,78 @@ class AnimalImageCache {
     return _animalName(digit);
   }
 
+  static String _instrumentName(int digit) {
+    switch (digit) {
+      case 1:
+        return 'piano';
+      case 2:
+        return 'banjo';
+      case 3:
+        return 'violin';
+      case 4:
+        return 'trumpet';
+      case 5:
+        return 'horn';
+      case 6:
+        return 'drums';
+      case 7:
+        return 'saxophone';
+      case 8:
+        return 'tambourine';
+      case 9:
+        return 'ukulele';
+      default:
+        return 'piano';
+    }
+  }
+
+  static String _instrumentFileName(int digit) {
+    switch (digit) {
+      case 1:
+        return 'piano';
+      case 2:
+        return 'banjo';
+      case 3:
+        return 'violin';
+      case 4:
+        return 'trumpet';
+      case 5:
+        return 'horn';
+      case 6:
+        return 'drum';
+      case 7:
+        return 'saxaphone';
+      case 8:
+        return 'tambourine';
+      case 9:
+        return 'ukelele';
+      default:
+        return 'piano';
+    }
+  }
+
   static String displayNameForDigit(String contentMode, int digit) {
-    return _animalName(digit);
+    switch (contentMode) {
+      case 'animals':
+        return _animalName(digit);
+      case 'instruments':
+        return _instrumentName(digit);
+      default:
+        return digit.toString();
+    }
+  }
+
+  static String tileLabelForDigit(String contentMode, int digit) {
+    switch (contentMode) {
+      case 'instruments':
+        final instrument = _instrumentName(digit);
+        if (instrument.isEmpty) {
+          return digit.toString();
+        }
+        return instrument[0].toUpperCase();
+      default:
+        return digit.toString();
+    }
   }
 
   static String initialForDigit(int digit) {

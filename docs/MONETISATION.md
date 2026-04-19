@@ -1,38 +1,256 @@
-For your model, the premium unlock should normally be a non-consumable in-app purchase called something like Premium Unlock or Remove Ads + Premium. Apple supports testing that through TestFlight, and TestFlight purchases run in the sandbox, so testers are not charged and those test purchases do not carry over to production after release.  ￼
+# Sudoku_01 Monetisation Plan (Seniors, One-Time Premium)
 
-The practical flow is:
+## Goal
+This document is the canonical monetisation plan for Sudoku_01.
 
-First, set up the in-app purchase in App Store Connect. Create a non-consumable product, give it a product ID, pricing, and metadata, and wire your app to fetch that product and unlock premium when the transaction is verified. Before you even involve TestFlight, it is worth testing locally with StoreKit Testing in Xcode, because Apple explicitly positions Xcode testing for early development and sandbox/TestFlight for end-to-end testing with real App Store product data.  ￼
+Commercial model:
+- Free app with a genuine, enjoyable core experience.
+- One-time Premium unlock (non-consumable IAP).
+- No pushy or manipulative patterns.
 
-Then upload a build to TestFlight. Internal testers can test once the build is available to them; external testers require the build to go through TestFlight App Review first. Apple’s TestFlight docs distinguish those paths clearly.  ￼
+Design rule:
+- Monetisation must feel calm, clear, and respectful.
+- Free users should enjoy the app properly.
+- Premium should feel like a fuller and more personal experience, not a penalty.
 
-On the tester’s device, install the app from TestFlight and attempt the purchase normally from your paywall or premium screen. Because the app is running from TestFlight, the purchase flow uses Apple’s sandbox environment automatically. For broader sandbox controls and scenario testing, Apple says you can sign out of the production Media & Purchases account and sign into Developer settings with a Sandbox Apple Account. Apple also notes that Sandbox Apple Accounts for TestFlight can only be used to test apps within your own developer account.  ￼
+## Product Model
 
-For your specific Sudoku app, I would test these cases in TestFlight:
-1.	Fresh purchase
-A free user taps Premium Unlock, completes the sandbox purchase, and the app unlocks premium immediately.
-2.	Relaunch persistence
-Close and reopen the app and confirm premium stays unlocked.
-3.	Restore Purchases
-Delete the app or install on a second device using the same Apple ID, tap Restore Purchases, and confirm the non-consumable restores correctly.
-4.	Offline / flaky network behavior
-Make sure the UI does not falsely unlock if verification fails or the transaction is incomplete.
-5.	Reinstall and sign-in edge cases
-Premium should be tied to Apple purchase state, not just a local flag, otherwise reinstalls will break.
-6.	Paywall messaging
-Make sure it is completely clear what the one-time purchase buys: ad removal, advanced stats, themes, harder packs, whatever is included.
+### Free
+- Easy and Medium difficulties.
+- Full core puzzle loop.
+- Clear UI, useful feedback, satisfying completion.
+- Basic sounds and celebrations.
+- Essential comfort/readability settings.
 
-For a one-time unlock, the most important implementation detail is this: do not rely only on a local boolean like isPremium = true after purchase. You want the unlock to come from StoreKit transaction state and to support Restore Purchases, because that is how users recover a non-consumable purchase across reinstalls and devices.
+### Premium (one-time unlock)
+- Hard and Very Hard.
+- Progress tracking and milestones.
+- Personal best history.
+- Extra themes/tile styles.
+- Extra sounds and celebrations.
 
-A clean testing sequence is:
-•	build and test locally with StoreKit in Xcode
-•	create the real non-consumable in App Store Connect
-•	ship a TestFlight build
-•	test purchase, restore, reinstall, and second-device flows in TestFlight
-•	only after that, submit the app and IAP for release/review
+Store messaging baseline:
+- `One-time purchase`
+- `No subscription`
+- `Restore Purchases` always visible on Premium surfaces.
 
-One subtle point: if you later add a subscription, TestFlight subscription renewals are accelerated, but that does not matter for your current one-time unlock model.  ￼
+## Screen-by-Screen Plan
 
-For your Sudoku app, I would keep the first TestFlight monetisation pass very small: one product only, for example Premium Unlock. Test just these user stories: “buy premium”, “premium remains unlocked tomorrow”, and “restore premium on another device.” If those work cleanly, your monetisation foundation is sound.
+### 1. First Launch / Welcome
+- Do not show a paywall immediately.
+- Introduce the app as friendly, easy to use, and enjoyable.
+- Mention Premium only as a secondary line.
 
-If you want, I can map this into the exact App Store Connect objects and the StoreKit 2 logic you need for a Flutter app.
+Suggested supporting line:
+- `More themes, progress tracking, and extra levels available in Premium.`
+
+Primary user objective:
+- Start first puzzle quickly and comfortably.
+
+### 2. Main Menu / Home
+- Show difficulty choices clearly:
+  - `Easy`
+  - `Medium`
+  - `Hard 🔒`
+  - `Very Hard 🔒`
+- Locked levels should be tappable and visually distinct (not broken-looking).
+- Show a small Premium card with:
+  - `Premium includes: All difficulty levels, progress tracking, extra themes, sounds, and celebrations.`
+- Always show `Unlock Premium` button, but it must not dominate layout.
+
+### 3. Difficulty Tap Behavior
+- Tap `Easy`/`Medium`: open puzzle immediately.
+- Tap `Hard`/`Very Hard`: open small informative Premium sheet.
+
+Suggested sheet copy:
+- Title: `Hard and Very Hard are part of Premium`
+- Body: `Unlock all difficulty levels, progress tracking, extra themes, sounds, and celebrations with a one-time purchase.`
+- Buttons:
+  - `Not now`
+  - `Unlock Premium`
+
+Optional pre-tap microcopy:
+- `Available in Premium`
+
+### 4. In-Game Experience (Free Users)
+- Must feel complete and pleasant.
+- Keep interface, feedback, sounds, celebrations, and end-of-game quality high.
+- Do not interrupt active puzzles with upgrade prompts.
+- Do not use frustration loops as conversion pressure.
+
+### 5. Puzzle Completion Screen
+- This is a primary upgrade moment for free users.
+- Show success first, then Premium value.
+
+Suggested free-user layout:
+- `Well done! You completed the puzzle.`
+- `With Premium you can also:`
+  - `See your progress history`
+  - `Track personal milestones`
+  - `Unlock all difficulty levels`
+  - `Enjoy extra themes and celebration styles`
+- Buttons:
+  - `Play again`
+  - `Unlock Premium`
+
+Premium user variant:
+- Show progress info and enhanced celebration instead of upgrade CTA.
+
+### 6. Drawer / Side Menu
+- Avoid dead controls.
+- Show active free items and clearly labeled Premium items.
+
+Recommended structure:
+- `Home`
+- `New Puzzle`
+- `How to Play`
+- `Settings`
+- `Progress Tracker 🔒`
+- `Themes 🔒`
+- `Sounds & Celebrations 🔒`
+- `Unlock Premium`
+
+Tap behavior for locked items:
+- Open explanatory panel with value + upgrade option.
+
+Example:
+- Title: `Progress Tracker is part of Premium`
+- Body: `See completed puzzles, days played, and personal milestones.`
+- Buttons:
+  - `Not now`
+  - `Unlock Premium`
+
+### 7. Settings
+- Keep Settings simple and trustworthy.
+- Essential comfort/usability controls stay free.
+- Group Premium settings in a separate section.
+
+Example grouping:
+- `Free Settings`
+  - `Sound`
+  - `Celebrations`
+  - `Number highlighting`
+  - `Simple assistance options`
+- `Premium Settings`
+  - `Extra themes 🔒`
+  - `Premium celebration styles 🔒`
+  - `Additional sound packs 🔒`
+  - `Advanced progress options 🔒`
+
+Rule:
+- Do not lock essential accessibility/readability features.
+
+### 8. Progress / Metrics
+- Use gentle, non-competitive framing.
+
+Preferred labels:
+- `Your Progress`
+- `Puzzles completed`
+- `Days played`
+- `Favourite difficulty`
+- `Personal best times`
+
+Free-user preview pattern:
+- `Track your Sudoku journey with Premium`
+- `See your completed puzzles, milestones, and personal bests.`
+- Button: `Unlock Premium`
+
+### 9. Premium Page / Paywall
+- One dedicated Premium page reachable from home, locked taps, drawer, and completion.
+- Keep it short and plain-language.
+
+Structure:
+- Header: `Unlock Premium`
+- Subheader: `Enjoy the full Sudoku experience with one simple purchase.`
+- Benefits:
+  - `All difficulty levels`
+  - `Progress tracking and milestones`
+  - `Personal bests and history`
+  - `Extra themes and tile styles`
+  - `Extra sounds and celebrations`
+- Pricing framing:
+  - `One-time purchase`
+  - `No subscription`
+- Actions:
+  - `Unlock Premium`
+  - `Restore Purchases`
+
+### 10. Restore Purchases
+- Must be visible and simple.
+- Present on Premium page and optionally in Settings.
+
+Suggested copy:
+- `Already purchased Premium? Restore Purchases`
+
+### 11. Upgrade Prompt Timing
+- Use only these triggers:
+  - Tap locked difficulty.
+  - Tap locked Premium feature.
+  - Puzzle completion.
+- Do not repeatedly interrupt after dismissals.
+- Back off after `Not now` until user explicitly engages another Premium trigger.
+
+### 12. Wording Style
+Preferred:
+- `Unlock Premium`
+- `Available in Premium`
+- `Track your progress`
+- `Enjoy extra themes and celebrations`
+
+Avoid:
+- `Upgrade now!`
+- `Buy the app!`
+- `Limited access`
+- `Restricted feature`
+- `Only for paying users`
+
+### 13. Emotional Outcome
+- Free user: `This is pleasant and useful already.`
+- Considering user: `I like this, and Premium gives me a fuller version without pressure.`
+- Premium user: `I paid once and now I have the complete experience.`
+
+### 14. Version 1 Premium Bundle (Do Not Expand Yet)
+- Hard and Very Hard.
+- Progress tracking.
+- Personal best history.
+- Extra themes/tile styles.
+- Extra sounds and celebrations.
+
+Do not add separate paid packs in v1. Validate one clean Premium unlock first.
+
+### 15. Critical Recommendation
+Do not withhold basic comfort.
+
+Keep free genuinely pleasant. Lock advanced variety, richer personalization, and deeper progress features.
+
+The app should communicate:
+- `This is the fuller version`
+
+and never:
+- `The free version is intentionally crippled`
+
+## Implementation Guardrails
+- No mid-puzzle paywall interruptions.
+- No fake scarcity or countdown pressure.
+- No hidden restore path.
+- No confusing dead UI controls.
+- No locking essential readability/accessibility options.
+
+## UX Copy Baseline
+Use this exact baseline unless intentionally revised:
+- Primary CTA: `Unlock Premium`
+- Secondary dismiss: `Not now`
+- Locked label: `Available in Premium`
+- Restore label: `Restore Purchases`
+- Pricing reassurance: `One-time purchase` and `No subscription`
+
+## Analytics Events (Minimal)
+Track only what is needed to improve clarity and conversion:
+- `premium_sheet_opened` (source: locked_difficulty, locked_feature, completion, home, drawer)
+- `premium_unlock_tapped`
+- `premium_unlock_success`
+- `premium_unlock_cancelled`
+- `restore_purchases_tapped`
+- `restore_purchases_success`
+
+Use these events to tune copy and placement, not to increase prompt frequency.

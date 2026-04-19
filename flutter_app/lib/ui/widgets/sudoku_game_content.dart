@@ -5,7 +5,6 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
-import 'package:flutter_app/ui/widgets/legend.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_area.dart';
 import 'package:flutter_app/ui/widgets/top_controls.dart';
 import 'package:flutter_app/ui/widgets/victory_foil_overlay.dart';
@@ -31,6 +30,7 @@ class SudokuGameContent extends StatelessWidget {
   final VoidCallback onNewGame;
   final ValueChanged<String> onContentModeChanged;
   final VoidCallback onConfigurationLockTapped;
+  final VoidCallback onConfigurationLockDoubleTapped;
   final ValueChanged<String> onPuzzleModeChanged;
   final ValueChanged<String> onSetDifficulty;
   final ValueChanged<String> onStyleChanged;
@@ -63,6 +63,7 @@ class SudokuGameContent extends StatelessWidget {
     required this.onNewGame,
     required this.onContentModeChanged,
     required this.onConfigurationLockTapped,
+    required this.onConfigurationLockDoubleTapped,
     required this.onPuzzleModeChanged,
     required this.onSetDifficulty,
     required this.onStyleChanged,
@@ -89,6 +90,8 @@ class SudokuGameContent extends StatelessWidget {
                 onNewGame: onNewGame,
                 onContentModeChanged: onContentModeChanged,
                 onConfigurationLockTapped: onConfigurationLockTapped,
+                onConfigurationLockDoubleTapped:
+                    onConfigurationLockDoubleTapped,
                 onStyleChanged: onStyleChanged,
               ),
               Expanded(
@@ -114,7 +117,6 @@ class SudokuGameContent extends StatelessWidget {
                   ),
                 ),
               ),
-              if (state.gameOver) Legend(style: style),
               KeyedSubtree(
                 key: bottomControlsKey,
                 child: ActionBar(

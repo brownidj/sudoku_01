@@ -43,6 +43,7 @@ void main() {
     expect(editable, isNotNull);
     controller.onCellTapped(editable!);
     controller.onDigitPressed(1);
+    expect(fakeSettings.state.canChangeDifficulty, false);
     expect(fakeSettings.state.canChangePuzzleMode, false);
 
     controller.onPuzzleModeChanged('unique');
@@ -50,6 +51,7 @@ void main() {
     expect(fakeGameService.newGameCalls, 3);
 
     controller.onCheckSolution();
+    expect(fakeSettings.state.canChangeDifficulty, true);
     expect(fakeSettings.state.canChangePuzzleMode, true);
 
     controller.onPuzzleModeChanged('unique');

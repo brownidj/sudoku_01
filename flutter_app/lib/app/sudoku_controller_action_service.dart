@@ -134,6 +134,7 @@ class SudokuControllerActionService {
 
   void applyPlayerResult({
     required SudokuRuntimeState runtime,
+    required SettingsController settings,
     required MoveResult result,
     required bool boardChanged,
     required VoidCallback saveGameSession,
@@ -141,6 +142,7 @@ class SudokuControllerActionService {
   }) {
     _gameplayActions.applyPlayerResult(
       runtime: runtime,
+      settings: settings,
       result: result,
       boardChanged: boardChanged,
       saveGameSession: saveGameSession,

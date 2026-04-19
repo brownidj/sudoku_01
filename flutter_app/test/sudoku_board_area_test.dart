@@ -12,6 +12,7 @@ UiState _state({
   int conflictHintsLeft = 3,
   Coord? selected,
   String? debugScenarioLabel,
+  String contentMode = 'numbers',
 }) {
   final cells = List<List<CellVm>>.generate(
     9,
@@ -40,7 +41,7 @@ UiState _state({
     canChangeDifficulty: true,
     canChangePuzzleMode: true,
     styleName: 'Modern',
-    contentMode: 'numbers',
+    contentMode: contentMode,
     animalStyle: 'simple',
     puzzleMode: puzzleMode,
     selected: selected,
@@ -133,9 +134,9 @@ void main() {
 
     expect(
       find.text(
-        'You have 2 corrections available for this puzzle. '
-        'If an earlier move blocks progress, use one correction to keep going '
-        'at your own pace.',
+        'You have 2 automatic corrections available for this puzzle. '
+        'If an earlier move blocks your progress, you can use a correction to keep going '
+        'at your own pace. If you run out of corrections, use Undo.',
       ),
       findsOneWidget,
     );
@@ -178,7 +179,7 @@ void main() {
 
     expect(
       find.text(
-        'Hints mark conflicts in the same row, column, or 3x3 box. Use them anytime to support steady progress.',
+        'Hints mark conflicts in the same row, column, or 3x3 box. Use them to allow you to progress. Use Undo if you have no more Hints',
       ),
       findsOneWidget,
     );
@@ -217,7 +218,7 @@ void main() {
     expect(find.text('Debug scenario: corrections exhausted'), findsOneWidget);
   });
 
-  testWidgets('shows start instruction only when no tile is selected', (
+  testWidgets('does not render inline start instruction banner', (
     WidgetTester tester,
   ) async {
     const message = 'To start, select a square you want to add an icon to.';
@@ -245,32 +246,43 @@ void main() {
         ),
       ),
     );
-    expect(find.text(message), findsOneWidget);
+    expect(find.text(message), findsNothing);
+  });
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
-            width: 420,
-            height: 620,
-            child: SudokuBoardArea(
-              state: _state(selected: const Coord(0, 0)),
-              style: styleModern,
-              animalImages: const {},
-              noteImagesBySize: const {},
-              devicePixelRatio: 2.0,
-              candidateVisible: false,
-              candidateDigits: const [],
-              selectedNotes: const {},
-              onDigitSelected: (_) {},
-              onDigitLongPressed: null,
-              onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+  testWidgets(
+    'instruments candidate long press shows instrument name tooltip',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SizedBox(
+              width: 420,
+              height: 620,
+              child: SudokuBoardArea(
+                state: _state(contentMode: 'instruments'),
+                style: styleModern,
+                animalImages: const {},
+                noteImagesBySize: const {},
+                devicePixelRatio: 2.0,
+                candidateVisible: true,
+                candidateDigits: const [1],
+                selectedNotes: const {},
+                onDigitSelected: (_) {},
+                onDigitLongPressed: null,
+                onTapCell: (_) {},
+                onLongPressCell: (_, __) {},
+              ),
             ),
           ),
         ),
-      ),
-    );
-    expect(find.text(message), findsNothing);
-  });
+      );
+
+      expect(find.text('P'), findsOneWidget);
+      await tester.longPress(find.text('P'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('piano'), findsOneWidget);
+      expect(find.text('ape'), findsNothing);
+    },
+  );
 }
