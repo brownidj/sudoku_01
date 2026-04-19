@@ -91,11 +91,7 @@ class ActionBar extends StatelessWidget {
             onPressed: onToggleNotesMode,
             child: Text(
               'Notes',
-              style: TextStyle(
-                fontWeight: state.notesMode
-                    ? FontWeight.bold
-                    : FontWeight.normal,
-              ),
+              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
             ),
           ),
         ],

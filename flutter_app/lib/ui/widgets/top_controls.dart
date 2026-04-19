@@ -28,6 +28,8 @@ class TopControls extends StatelessWidget {
     final showConfigLock =
         !state.canChangeDifficulty || !state.canChangePuzzleMode;
     final colorScheme = Theme.of(context).colorScheme;
+    final newGameFontSize =
+        (Theme.of(context).textTheme.labelLarge?.fontSize ?? 14) + 2;
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
       child: Column(
@@ -38,9 +40,14 @@ class TopControls extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: ActionChip(
-                  key: const ValueKey<String>('top-controls-progress-chip'),
-                  onPressed: onProgressPressed,
-                  label: const Text('Progress'),
+                  onPressed: onNewGame,
+                  label: Text(
+                    'New Game',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: newGameFontSize,
+                    ),
+                  ),
                 ),
               ),
               const Spacer(),
@@ -54,7 +61,7 @@ class TopControls extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 3),
           Row(
             children: [
               SizedBox(
@@ -121,8 +128,9 @@ class TopControls extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: ActionChip(
-                  onPressed: onNewGame,
-                  label: const Text('New Game'),
+                  key: const ValueKey<String>('top-controls-progress-chip'),
+                  onPressed: onProgressPressed,
+                  label: const Text('How am I doing?'),
                 ),
               ),
             ],

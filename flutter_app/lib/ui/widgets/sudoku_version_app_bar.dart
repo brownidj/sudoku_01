@@ -1,21 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/ui/services/app_version_service.dart';
 
 class SudokuVersionAppBar extends StatefulWidget
     implements PreferredSizeWidget {
   final VoidCallback onVersionTapped;
   final VoidCallback onVersionLongPressed;
   final Duration longPressThreshold;
-  final AppVersionService versionService;
 
   const SudokuVersionAppBar({
     super.key,
     required this.onVersionTapped,
     required this.onVersionLongPressed,
     this.longPressThreshold = const Duration(milliseconds: 1500),
-    this.versionService = const AppVersionService(),
   });
 
   @override
@@ -29,26 +26,11 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
   Timer? _longPressTimer;
   bool _versionPressActive = false;
   bool _longPressTriggered = false;
-  String _versionLabel = 'ZuDoKu';
+  String _versionLabel = 'ZuDoKu+';
 
   @override
   void initState() {
     super.initState();
-    _versionLabel = widget.versionService.initialDisplayVersion();
-    _loadVersionLabel();
-  }
-
-  Future<void> _loadVersionLabel() async {
-    if (_versionLabel != 'ZuDoKu') {
-      return;
-    }
-    final label = await widget.versionService.loadDisplayVersion();
-    if (!mounted) {
-      return;
-    }
-    setState(() {
-      _versionLabel = label;
-    });
   }
 
   void _handleTapDown(TapDownDetails _) {
@@ -91,25 +73,22 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTapDown: _handleTapDown,
-          onTapUp: _handleTapUp,
-          onTapCancel: _handleTapCancel,
-          child: SizedBox(
-            height: kToolbarHeight,
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                _versionLabel,
-                key: const ValueKey<String>('version-title-text'),
-              ),
+      title: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTapDown: _handleTapDown,
+        onTapUp: _handleTapUp,
+        onTapCancel: _handleTapCancel,
+        child: SizedBox(
+          height: kToolbarHeight,
+          child: Center(
+            child: Text(
+              _versionLabel,
+              key: const ValueKey<String>('version-title-text'),
             ),
           ),
         ),
       ),
+      centerTitle: true,
       actions: [
         Builder(
           builder: (context) => IconButton(
