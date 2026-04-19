@@ -144,4 +144,66 @@ void main() {
     expect(controller.completedPuzzles, 3);
     expect(prefs.completedPuzzles, 3);
   });
+
+  test('abandoning an in-progress game does not increment completed puzzles', () async {
+    final prefs = FakePreferencesStore(completedPuzzles: 5);
+    final controller = SudokuController(
+      preferencesStore: prefs,
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    expect(controller.completedPuzzles, 5);
+
+    final editable = firstEditableCoord(controller.state);
+    expect(editable, isNotNull);
+    controller.onCellTapped(editable!);
+    controller.onDigitPressed(1);
+    controller.onNewGame();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(controller.completedPuzzles, 5);
+    expect(prefs.completedPuzzles, 5);
+  });
+
+  test('show solution give-up path does not increment completed puzzles', () async {
+    final prefs = FakePreferencesStore(completedPuzzles: 6);
+    final controller = SudokuController(
+      preferencesStore: prefs,
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    expect(controller.completedPuzzles, 6);
+
+    controller.onShowSolution();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(controller.state.gameOver, isTrue);
+    expect(controller.state.puzzleSolved, isFalse);
+    expect(controller.completedPuzzles, 6);
+    expect(prefs.completedPuzzles, 6);
+  });
 }

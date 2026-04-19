@@ -150,6 +150,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         final style = styleForName(state.styleName);
         return Scaffold(
           appBar: SudokuVersionAppBar(
+            onNewGamePressed: _onNewGamePressed,
             onVersionTapped: _onVersionTapped,
             onVersionLongPressed:
                 _services.interactionController.onVersionLongPressed,
@@ -205,15 +206,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
                 state: controller.state,
                 coord: coord,
                 globalPosition: globalPosition,
-              );
-            },
-            onNewGame: () {
-              unawaited(
-                _flowActions.requestNewGame(
-                  context: context,
-                  isMounted: () => mounted,
-                  controller: widget.controller,
-                ),
               );
             },
             onProgressPressed: () {
@@ -272,6 +264,16 @@ class _SudokuScreenState extends State<SudokuScreen> {
           ),
         );
       },
+    );
+  }
+
+  void _onNewGamePressed() {
+    unawaited(
+      _flowActions.requestNewGame(
+        context: context,
+        isMounted: () => mounted,
+        controller: widget.controller,
+      ),
     );
   }
 

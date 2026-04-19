@@ -144,6 +144,39 @@ void main() {
     expect(find.textContaining('holding your finger'), findsOneWidget);
   });
 
+  testWidgets('game over swaps help chip with progress chip', (
+    WidgetTester tester,
+  ) async {
+    final controller = _buildController();
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('top-controls-help-chip')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('top-controls-progress-chip')),
+      findsNothing,
+    );
+
+    controller.onShowSolution();
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('top-controls-help-chip')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('top-controls-progress-chip')),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('progress chip opens metrics sheet with completed puzzles', (
     WidgetTester tester,
   ) async {
@@ -158,6 +191,9 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(home: SudokuScreen(controller: controller)),
     );
+    await tester.pumpAndSettle();
+
+    controller.onShowSolution();
     await tester.pumpAndSettle();
 
     await tester.tap(

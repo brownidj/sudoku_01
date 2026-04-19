@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 
 class SudokuVersionAppBar extends StatefulWidget
     implements PreferredSizeWidget {
+  final VoidCallback onNewGamePressed;
   final VoidCallback onVersionTapped;
   final VoidCallback onVersionLongPressed;
   final Duration longPressThreshold;
 
   const SudokuVersionAppBar({
     super.key,
+    required this.onNewGamePressed,
     required this.onVersionTapped,
     required this.onVersionLongPressed,
     this.longPressThreshold = const Duration(milliseconds: 1500),
@@ -71,35 +73,73 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    const sideSlotWidth = 132.0;
     return AppBar(
       automaticallyImplyLeading: false,
-      title: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTapDown: _handleTapDown,
-        onTapUp: _handleTapUp,
-        onTapCancel: _handleTapCancel,
-        child: SizedBox(
-          height: kToolbarHeight,
-          child: Center(
-            child: Text(
-              _versionLabel,
-              key: const ValueKey<String>('version-title-text'),
+      title: SizedBox(
+        height: kToolbarHeight,
+        child: Row(
+          children: [
+            SizedBox(
+              width: sideSlotWidth,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: ActionChip(
+                  key: const ValueKey<String>('appbar-new-game-chip'),
+                  onPressed: widget.onNewGamePressed,
+                  label: Text(
+                    'New Game',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize:
+                          (Theme.of(context).textTheme.labelLarge?.fontSize ??
+                              14) +
+                          2,
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
+            Expanded(
+              child: Center(
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTapDown: _handleTapDown,
+                  onTapUp: _handleTapUp,
+                  onTapCancel: _handleTapCancel,
+                  child: Text(
+                    _versionLabel,
+                    key: const ValueKey<String>('version-title-text'),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize:
+                          (Theme.of(context).textTheme.titleLarge?.fontSize ??
+                              22) +
+                          4,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: sideSlotWidth,
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Builder(
+                  builder: (context) => IconButton(
+                    key: const ValueKey<String>('appbar-menu-button'),
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    icon: const Icon(Icons.menu),
+                    tooltip:
+                        'Press this to open a drawer. Use the drawer menu to change animals and style.',
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       centerTitle: true,
-      actions: [
-        Builder(
-          builder: (context) => IconButton(
-            key: const ValueKey<String>('appbar-menu-button'),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: const Icon(Icons.menu),
-            tooltip:
-                'Press this to open a drawer. Use the drawer menu to change animals and style.',
-          ),
-        ),
-      ],
     );
   }
 }

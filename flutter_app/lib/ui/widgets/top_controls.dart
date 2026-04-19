@@ -3,7 +3,6 @@ import 'package:flutter_app/app/ui_state.dart';
 
 class TopControls extends StatelessWidget {
   final UiState state;
-  final VoidCallback onNewGame;
   final VoidCallback onProgressPressed;
   final VoidCallback onHelpPressed;
   final ValueChanged<String> onContentModeChanged;
@@ -14,7 +13,6 @@ class TopControls extends StatelessWidget {
   const TopControls({
     super.key,
     required this.state,
-    required this.onNewGame,
     required this.onProgressPressed,
     required this.onHelpPressed,
     required this.onContentModeChanged,
@@ -28,40 +26,11 @@ class TopControls extends StatelessWidget {
     final showConfigLock =
         !state.canChangeDifficulty || !state.canChangePuzzleMode;
     final colorScheme = Theme.of(context).colorScheme;
-    final newGameFontSize =
-        (Theme.of(context).textTheme.labelLarge?.fontSize ?? 14) + 2;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              Align(
-                alignment: Alignment.centerLeft,
-                child: ActionChip(
-                  onPressed: onNewGame,
-                  label: Text(
-                    'New Game',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: newGameFontSize,
-                    ),
-                  ),
-                ),
-              ),
-              const Spacer(),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ActionChip(
-                  key: const ValueKey<String>('top-controls-help-chip'),
-                  onPressed: onHelpPressed,
-                  label: const Text('Help'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 3),
           Row(
             children: [
               SizedBox(
@@ -127,11 +96,19 @@ class TopControls extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: ActionChip(
-                  key: const ValueKey<String>('top-controls-progress-chip'),
-                  onPressed: onProgressPressed,
-                  label: const Text('How am I doing?'),
-                ),
+                child: state.gameOver
+                    ? ActionChip(
+                        key: const ValueKey<String>(
+                          'top-controls-progress-chip',
+                        ),
+                        onPressed: onProgressPressed,
+                        label: const Text('How am I doing?'),
+                      )
+                    : ActionChip(
+                        key: const ValueKey<String>('top-controls-help-chip'),
+                        onPressed: onHelpPressed,
+                        label: const Text('Help'),
+                      ),
               ),
             ],
           ),

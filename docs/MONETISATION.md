@@ -254,3 +254,20 @@ Track only what is needed to improve clarity and conversion:
 - `restore_purchases_success`
 
 Use these events to tune copy and placement, not to increase prompt frequency.
+
+
+## Congratulatory messages
+- “Wonderful work — you solved it!”
+- “Well done — another ZuDoKu completed.
+- “Excellent thinking — you got every tile in place.”
+- “Congratulations — puzzle solved beautifully.”
+- “Splendid job — your brainpower shines.”
+- “You did it — calm, clever, and correct.”
+- “Another great win for you in ZuDoKu.”
+- “Superb effort — that puzzle didn’t stand a chance.”
+- “Brilliant solving — enjoy your success.”
+- “Nicely done — every move led to victory.”
+- “A lovely result — another puzzle complete.”
+- “Fantastic work — you finished the board.”
+- “Success — you cracked the puzzle.”
+- “Great concentration — and a great result.”

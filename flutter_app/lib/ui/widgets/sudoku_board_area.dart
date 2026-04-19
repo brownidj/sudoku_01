@@ -58,6 +58,7 @@ class SudokuBoardArea extends StatelessWidget {
         'Hints mark conflicts in the same row, column, or 3x3 box. Use them to allow you to progress. Use Undo if you have no more Hints';
     return LayoutBuilder(
       builder: (context, constraints) {
+        const maxCandidateControls = 9;
         const candidateButtonSize = 52.0;
         const candidateSpacing = 8.0;
         const candidateHorizontalPadding = 16.0;
@@ -77,24 +78,19 @@ class SudokuBoardArea extends StatelessWidget {
           0.0,
           constraints.maxWidth - (candidateHorizontalPadding * 2),
         );
-        final maxControls = candidateDigits.length;
-        final controlsPerRow = maxControls == 0
-            ? 1
-            : ((candidatePanelWidth + candidateSpacing) /
-                      (candidateButtonSize + candidateSpacing))
-                  .floor()
-                  .clamp(1, maxControls);
-        final rowCount = maxControls == 0
-            ? 0
-            : ((maxControls + controlsPerRow - 1) / controlsPerRow).floor();
-        final candidatePanelHeight = candidateVisible
-            ? (candidateVerticalPadding * 2) +
-                  (candidateButtonSize * rowCount) +
-                  (candidateSpacing * max(0, rowCount - 1))
-            : 0.0;
-        final candidateHeight = candidateVisible
-            ? gapBeforeCandidate + candidatePanelHeight
-            : 0.0;
+        final controlsPerRow =
+            ((candidatePanelWidth + candidateSpacing) /
+                    (candidateButtonSize + candidateSpacing))
+                .floor()
+                .clamp(1, maxCandidateControls);
+        final rowCount =
+            ((maxCandidateControls + controlsPerRow - 1) / controlsPerRow)
+                .floor();
+        final candidatePanelHeight =
+            (candidateVerticalPadding * 2) +
+            (candidateButtonSize * rowCount) +
+            (candidateSpacing * max(0, rowCount - 1));
+        final candidateHeight = gapBeforeCandidate + candidatePanelHeight;
         const layoutSafetyPadding = 9.0;
         final reservedHeight =
             metadataHeight + candidateHeight + layoutSafetyPadding;
@@ -157,17 +153,20 @@ class SudokuBoardArea extends StatelessWidget {
                 onDifficultyChanged: onDifficultyChanged,
               ),
             ),
-            if (candidateVisible) const SizedBox(height: 12),
-            CandidatePanel(
-              visible: candidateVisible,
-              candidateDigits: candidateDigits,
-              showImages: state.contentMode != 'numbers',
-              contentMode: state.contentMode,
-              notesMode: state.notesMode,
-              selectedNotes: selectedNotes,
-              animalImages: animalImages,
-              onDigitSelected: onDigitSelected,
-              onDigitLongPressed: onDigitLongPressed,
+            const SizedBox(height: 12),
+            SizedBox(
+              height: candidatePanelHeight,
+              child: CandidatePanel(
+                visible: candidateVisible,
+                candidateDigits: candidateDigits,
+                showImages: state.contentMode != 'numbers',
+                contentMode: state.contentMode,
+                notesMode: state.notesMode,
+                selectedNotes: selectedNotes,
+                animalImages: animalImages,
+                onDigitSelected: onDigitSelected,
+                onDigitLongPressed: onDigitLongPressed,
+              ),
             ),
           ],
         );

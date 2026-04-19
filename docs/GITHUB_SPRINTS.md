@@ -97,7 +97,121 @@ Use this template per issue in GitHub:
    Manual UI pass complete in game flow.
    •
    Copy is consistent with senior-friendly tone.
-5) **S2: Add premium entitlement model (state + policy service)**
+
+
+For this updated requirement, treat completion evidence as two artifacts in-repo (or PR) with clear pass/fail criteria.
+1) Manual UI pass in game flow Show it as a short checklist doc, e.g. docs/qa/S1_issue4_manual_pass.md, with:
+   •
+   Device(s), OS, build, date
+   •
+   Tester name
+   •
+   Steps executed
+   •
+   Result per step (Pass/Fail) + notes/screenshots
+   Recommended steps:
+1.
+Launch app and start puzzle from Play.
+2.
+Open How am I doing? before puzzle completion.
+3.
+Verify calm framing text appears (completed puzzles / days played / streak).
+4.
+Finish a puzzle (or use your completion path), reopen modal.
+5.
+Verify updated completed count and unchanged calm tone.
+6.
+Switch modes/difficulty, reopen modal, verify copy still consistent.
+7.
+Verify no milestone framing appears in pressure-sensitive primary surfaces (e.g. board metadata row).
+8.
+Repeat on at least one small-phone layout.
+2) Copy consistency verification This is a targeted content audit plus test guardrails.
+   Constitutes “verified” when:
+   •
+   The exact approved strings are defined in one source location (constants/service), not duplicated ad hoc.
+   •
+   All user-facing progress-framing surfaces use those strings.
+   •
+   No conflicting pressure language exists in those surfaces.
+   Practical checks:
+   •
+   rg search for disallowed tone in UI strings (e.g. leaderboard, performance, fastest, beat, score pressure).
+   •
+   Confirm approved modal strings appear exactly where intended.
+   •
+   Add/adjust widget test assertions for modal text so regressions fail CI.
+
+
+
+
+5) **S1: Main Screen UI Polish + Reposition “How am I doing?”**
+   Goal
+   Improve clarity and flow on the in-game main screen by refining top control layout and repositioning the progress action so it is easy to find and less visually crowded.
+   Scope
+   Main in-game screen top control area.
+   Positioning/alignment of New Game, Help, and How am I doing?.
+   Spacing/visual rhythm between top rows and board entry area.
+   Related test selectors/coverage where layout assumptions changed.
+   Tasks
+   •
+   Audit current top control hierarchy and interaction priority.
+   •
+   Reposition How am I doing? to the agreed target location on the main page.
+   •
+   Adjust row structure/alignment so primary actions feel intentional and balanced.
+   •
+   Normalize spacing and tap-target comfort in the top control region.
+   •
+   Keep tone and labeling consistent with senior-friendly copy standards.
+   •
+   Update widget/integration/Patrol selectors if control keys or locations changed.
+   •
+   Run and fix impacted tests.
+   Acceptance Criteria
+   •
+   How am I doing? appears in the intended position on the main screen.
+   •
+   Top control layout is clear at a glance on common phone sizes.
+   •
+   No overlap, clipping, or crowding in portrait layouts.
+   •
+   Tap targets remain comfortable and reliably hit-testable.
+   •
+   Existing flows (New Game, Help, drawer access) continue to work.
+   •
+   Tests pass with updated locators/expectations.
+   Done When
+   •
+   UI change merged with before/after screenshots in PR.
+   •
+   flutter test passes.
+   •
+   Integration/Patrol tests covering top controls pass on CI device target.
+   •
+   No new file-size guardrail violations from the refactor.
+
+Functionally, most of Issue 5 is done:
+•
+How am I doing? repositioned and state-swapped with Help
+•
+Top control/app bar layout updated
+•
+Related widget tests updated and passing
+•
+File-size guard currently passes (check_file_sizes.sh)
+But per the Issue 5 Done When criteria, it is still missing explicit completion evidence:
+•
+before/after screenshots attached in PR
+•
+confirmed CI run for integration/Patrol top-control coverage on a device target
+So status is: implementation largely complete, closure criteria not fully satisfied yet.
+
+
+
+
+
+6) **S2: Add premium entitlement model (state + policy service)**
    Goal
    Create a single source of truth for premium access.
    Scope
@@ -121,7 +235,7 @@ Use this template per issue in GitHub:
    Entitlement model integrated and unit-tested.
    •
    No direct premium checks outside policy layer.
-6) **S2: Gate difficulties for free vs premium**
+7) **S2: Gate difficulties for free vs premium**
    Goal
    Restrict difficulty access per freemium rules.
    Scope
@@ -145,7 +259,7 @@ Use this template per issue in GitHub:
    Difficulty gate covered by tests.
    •
    No bypass path found in manual checks.
-7) **S2: Add very_hard difficulty end-to-end**
+8) **S2: Add very_hard difficulty end-to-end**
    Goal
    Introduce very_hard across generation, settings, and persistence.
    Scope
@@ -171,7 +285,7 @@ Use this template per issue in GitHub:
    Tests for generation + codec + config updated/passing.
    •
    Manual new game + resume verified for very_hard.
-8) **S2: Premium explainer sheet and locked-item tap flow**
+9) **S2: Premium explainer sheet and locked-item tap flow**
    Goal
    Provide a calm, informative upgrade path.
    Scope
@@ -195,7 +309,7 @@ Use this template per issue in GitHub:
    All locked entry points route to sheet.
    •
    UX validated on small and large phones.
-9) **S3: Integrate in_app_purchase service (buy + restore)**
+10) **S3: Integrate in_app_purchase service (buy + restore)**
    Goal
    Implement one-time premium unlock purchase flow.
    Scope
@@ -221,7 +335,7 @@ Use this template per issue in GitHub:
    Service unit/integration tests added where feasible.
    •
    Manual sandbox/internal test purchase completed.
-10) **S3: Wire entitlement updates into app lifecycle and UI**
+11) **S3: Wire entitlement updates into app lifecycle and UI**
     Goal
     Reflect purchase state changes immediately and persistently.
     Scope
@@ -247,7 +361,7 @@ Use this template per issue in GitHub:
     Lifecycle scenarios tested: cold start, resume, reopen.
     •
     No manual refresh needed by user.
-11) **S3: Add Restore Purchases and Premium status in drawer**
+12) **S3: Add Restore Purchases and Premium status in drawer**
     Goal
     Give users explicit restore path and visible entitlement status.
     Scope
@@ -271,7 +385,7 @@ Use this template per issue in GitHub:
     Drawer behavior tested with free and premium states.
     •
     Restore tested on second device/account scenario.
-12) **S3: Product IDs and environment config for iOS/Android**
+13) **S3: Product IDs and environment config for iOS/Android**
     Goal
     Centralize SKU config and avoid hardcoded product IDs in UI.
     Scope
@@ -293,7 +407,7 @@ Use this template per issue in GitHub:
     Build runs for iOS/Android with correct product IDs.
     •
     Config documented in project notes.
-13) **S4: Monetization QA matrix (purchase/restore/reinstall/offline)**
+14) **S4: Monetization QA matrix (purchase/restore/reinstall/offline)**
     Goal
     Validate monetization reliability before release.
     Scope
@@ -315,7 +429,7 @@ Use this template per issue in GitHub:
     QA checklist completed and stored in repo docs.
     •
     Any failed case has follow-up issue.
-14) **S4: Senior usability pass and final copy polish**
+15) **S4: Senior usability pass and final copy polish**
     Goal
     Ensure monetization UX remains calm, respectful, and clear.
     Scope
@@ -337,7 +451,7 @@ Use this template per issue in GitHub:
     Final copy approved for release.
     •
     No outstanding UX wording issues.
-15) **S4: Add/expand tests for premium gates and restore flow**
+16) **S4: Add/expand tests for premium gates and restore flow**
     Goal
     Protect against monetization regressions.
     Scope
