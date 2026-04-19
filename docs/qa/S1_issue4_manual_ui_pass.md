@@ -4,11 +4,11 @@ Use this checklist to record manual verification for:
 S1: Progress framing update (shown in **How am I doing?** modal only).
 
 ## Run Metadata
-- Date:
-- Tester:
-- Branch/Commit:
-- Build Variant:
-- Device 1 (required):
+- Date: 20-04-2026
+- Tester: DB
+- Branch/Commit: Main
+- Build Variant: 229
+- Device 1 (required): iPhone
 - Device 2 (optional):
 
 ## Preconditions
@@ -24,49 +24,49 @@ S1: Progress framing update (shown in **How am I doing?** modal only).
 
 ## Test Steps
 1. Launch app and start a puzzle from the launch screen.
-   - Result: Pass / Fail
+   - Result: Pass
    - Notes:
 
 2. Open **How am I doing?** before completing the puzzle.
    - Verify modal shows:
-     - `Completed puzzles: <n>`
+     - `Completed puzzles: <y>`
      - `Days played: ...`
      - `Streak: ...`
-   - Result: Pass / Fail
+   - Result: Pass
    - Notes:
 
 3. Verify board metadata row does not contain milestone framing text.
-   - Result: Pass / Fail
+   - Result: Pass 
    - Notes:
 
 4. Complete a puzzle (normal play or approved completion path), then reopen **How am I doing?**.
    - Verify `Completed puzzles` increased by 1 from Step 2.
-   - Result: Pass / Fail
+   - Result: Pass
    - Notes:
 
 5. Start a new puzzle and reopen **How am I doing?**.
    - Verify count is persisted and does not reset unexpectedly.
-   - Result: Pass / Fail
+   - Result: Pass
    - Notes:
 
 6. Switch content mode/difficulty and reopen **How am I doing?**.
    - Verify copy remains unchanged in tone and structure.
-   - Result: Pass / Fail
+   - Result: Pass
    - Notes:
 
 7. Verify key controls still work after opening/closing modal:
    - `New Game`
    - `Help`
    - Drawer menu
-   - Result: Pass / Fail
+   - Result: Pass
    - Notes:
 
 ## Evidence
-- Screenshot 1 (modal before completion):
-- Screenshot 2 (modal after completion):
-- Screenshot 3 (main screen showing no milestone framing in metadata row):
+- Screenshot 1 (modal after first completion): [How am I doing modal before completion](https://github.com/brownidj/sudoku_01/blob/main/docs/qa/screenshots/issue4_modal_before.png)
+- Screenshot 2 (modal after second completion): [How am I doing modal after completion](https://github.com/brownidj/sudoku_01/blob/main/docs/qa/screenshots/issue4_modal_after.png)
+- Screenshot 3 (main screen showing no milestone framing in metadata row): [Main screen showing no milestone framing](https://github.com/brownidj/sudoku_01/blob/main/docs/qa/screenshots/issue4_no_milestones.png)
 
 ## Summary
-- Overall Result: Pass / Fail
-- Blocking Issues:
-- Follow-up Issues Created:
+- Overall Result: Pass
+- Blocking Issues: None
+- Follow-up Issues Created: None
