@@ -14,6 +14,7 @@ class SudokuRuntimeStateService {
     required SudokuRuntimeState runtime,
     required SettingsState settings,
     required UiStateMapper uiStateMapper,
+    required Entitlement entitlement,
   }) {
     return uiStateMapper.map(
       UiStateMapperInput(
@@ -35,6 +36,7 @@ class SudokuRuntimeStateService {
         correctionNoticeSerial: runtime.correctionNoticeSerial,
         correctionNoticeMessage: runtime.correctionNoticeMessage,
         conflictHintsLeft: runtime.conflictHintsLeft,
+        entitlement: entitlement,
       ),
     );
   }

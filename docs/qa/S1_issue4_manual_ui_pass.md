@@ -61,6 +61,11 @@ S1: Progress framing update (shown in **How am I doing?** modal only).
    - Result: Pass
    - Notes:
 
+### Test Evidence (Local)
+- ✅ `flutter test` (all passed)
+- ✅ `flutter test integration_test/app_flow_test.dart -d emulator-5554` (all passed)
+- ✅ `patrol test patrol_test/smoke_test.dart --target integration_test/test_bundle.dart -d emulator-5554` (all passed)
+
 ## Evidence
 - Screenshot 1 (modal after first completion): [How am I doing modal before completion](https://github.com/brownidj/sudoku_01/blob/main/docs/qa/screenshots/issue4_modal_before.png)
 - Screenshot 2 (modal after second completion): [How am I doing modal after completion](https://github.com/brownidj/sudoku_01/blob/main/docs/qa/screenshots/issue4_modal_after.png)

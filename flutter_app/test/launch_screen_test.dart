@@ -14,7 +14,7 @@ import 'package:flutter_app/ui/services/animal_asset_service.dart';
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
   int completedPuzzles = 0;
-
+  Entitlement entitlement = Entitlement.free;
   FakePreferencesStore({this.savedSession});
 
   @override
@@ -58,11 +58,18 @@ class FakePreferencesStore extends PreferencesStore {
   Future<void> saveCompletedPuzzles(int value) async {
     completedPuzzles = value;
   }
+
+  @override
+  Future<Entitlement> loadEntitlement() async => entitlement;
+
+  @override
+  Future<void> saveEntitlement(Entitlement value) async {
+    entitlement = value;
+  }
 }
 
 class SpyGameService extends GameService {
   int newGameCalls = 0;
-
   @override
   MoveResult newGameFromGrid(Grid grid) {
     newGameCalls += 1;
@@ -74,7 +81,6 @@ class DelayedAnimalAssetService extends AnimalAssetService {
   final Completer<AnimalAssetBundle> _completer =
       Completer<AnimalAssetBundle>();
   int loadCalls = 0;
-
   @override
   Future<AnimalAssetBundle> load() {
     loadCalls += 1;
@@ -132,12 +138,10 @@ void main() {
       preferencesStore: FakePreferencesStore(),
     );
     await controller.ready;
-
     await tester.pumpWidget(
       MaterialApp(home: LaunchScreen(controller: controller)),
     );
     await tester.pumpAndSettle();
-
     expect(find.text('Play'), findsOneWidget);
     expect(find.text('Resume'), findsNothing);
     expect(find.text('New game'), findsNothing);
@@ -154,12 +158,10 @@ void main() {
       gameService: service,
     );
     await controller.ready;
-
     await tester.pumpWidget(
       MaterialApp(home: LaunchScreen(controller: controller)),
     );
     await tester.pumpAndSettle();
-
     expect(find.text('Play'), findsNothing);
     expect(find.text('Resume'), findsOneWidget);
     expect(find.text('New game'), findsOneWidget);
@@ -172,12 +174,10 @@ void main() {
       final prefs = await _buildPrefsWithCompletedSession();
       final controller = SudokuController(preferencesStore: prefs);
       await controller.ready;
-
       await tester.pumpWidget(
         MaterialApp(home: LaunchScreen(controller: controller)),
       );
       await tester.pumpAndSettle();
-
       expect(find.text('Play'), findsOneWidget);
       expect(find.text('Resume'), findsNothing);
       expect(find.text('New game'), findsNothing);
@@ -187,7 +187,6 @@ void main() {
   testWidgets('Resume does not start a new game', (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(1080, 1920));
     final prefs = await _buildPrefsWithSavedSession();
-
     final resumeService = SpyGameService();
     final resumeController = SudokuController(
       preferencesStore: prefs,
@@ -195,7 +194,6 @@ void main() {
     );
     await resumeController.ready;
     expect(resumeService.newGameCalls, 0);
-
     await tester.pumpWidget(
       MaterialApp(home: LaunchScreen(controller: resumeController)),
     );
@@ -245,10 +243,8 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
       await tester.tap(find.text('Play'));
       await tester.pump();
-
       expect(service.loadCalls, 1);
       expect(find.text('Please wait...'), findsOneWidget);
       expect(find.text('Play'), findsOneWidget);
@@ -256,10 +252,8 @@ void main() {
         find.byKey(const ValueKey<String>('launch-version-title')),
         findsOneWidget,
       );
-
       service.complete();
       await tester.pumpAndSettle();
-
       expect(find.byType(LaunchScreen), findsNothing);
     },
   );
@@ -284,16 +278,12 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-
       await tester.tap(find.text('Play'));
       await tester.pump();
-
       expect(service.loadCalls, 1);
       expect(find.text('Please wait...'), findsOneWidget);
-
       service.complete();
       await tester.pumpAndSettle();
-
       expect(find.byType(LaunchScreen), findsNothing);
     },
   );

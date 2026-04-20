@@ -48,6 +48,10 @@ PY
 require_command flutter
 require_command python3
 
+cd "$REPO_DIR"
+echo "==> premium policy guard"
+./scripts/check_premium_policy_usage.sh flutter_app
+
 cd "$APP_DIR"
 
 if ! assert_device_available "$INTEGRATION_DEVICE"; then

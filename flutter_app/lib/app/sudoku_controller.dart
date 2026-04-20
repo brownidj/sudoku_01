@@ -4,6 +4,7 @@ import 'package:flutter_app/app/check_service.dart';
 import 'package:flutter_app/app/controller_startup_coordinator.dart';
 import 'package:flutter_app/app/contradiction_service.dart';
 import 'package:flutter_app/app/correction_recovery_service.dart';
+import 'package:flutter_app/app/entitlement_service.dart';
 import 'package:flutter_app/app/game_configuration_service.dart';
 import 'package:flutter_app/app/game_controller.dart';
 import 'package:flutter_app/app/game_controller_effects.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_app/app/game_scenario_service.dart';
 import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/app/game_startup_service.dart';
 import 'package:flutter_app/app/grid_utils.dart';
+import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/progress_metrics_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
@@ -44,6 +46,8 @@ class SudokuController extends ChangeNotifier {
     SudokuRuntimeStateService? runtimeStateService,
     SudokuControllerActionService? actionService,
     ProgressMetricsService? progressMetricsService,
+    EntitlementService? entitlementService,
+    PremiumPolicyService? premiumPolicyService,
   }) {
     final prefs = preferencesStore ?? PreferencesStore();
     final resolvedGameService = gameService ?? GameService();
@@ -85,6 +89,10 @@ class SudokuController extends ChangeNotifier {
         );
     final resolvedProgressMetricsService =
         progressMetricsService ?? ProgressMetricsService(prefs);
+    final resolvedEntitlementService =
+        entitlementService ?? EntitlementService(prefs);
+    final resolvedPremiumPolicyService =
+        premiumPolicyService ?? const PremiumPolicyService();
     final resolvedEffects = GameControllerEffects(resolvedSessionService);
     final resolvedStartupService = GameStartupService(
       startupCoordinator: resolvedStartupCoordinator,
@@ -95,7 +103,9 @@ class SudokuController extends ChangeNotifier {
       contradictionService: resolvedContradictionService,
       runtimeStateService: resolvedRuntimeStateService,
     );
-    const resolvedConfigurationService = GameConfigurationService();
+    final resolvedConfigurationService = GameConfigurationService(
+      premiumPolicyService: resolvedPremiumPolicyService,
+    );
 
     _gameController = GameController(
       settingsController: resolvedSettingsController,
@@ -105,7 +115,9 @@ class SudokuController extends ChangeNotifier {
       startupService: resolvedStartupService,
       scenarioService: resolvedScenarioService,
       configurationService: resolvedConfigurationService,
+      premiumPolicyService: resolvedPremiumPolicyService,
       progressMetricsService: resolvedProgressMetricsService,
+      entitlementService: resolvedEntitlementService,
       uiStateMapper: resolvedUiStateMapper,
       gameService: resolvedGameService,
     );
@@ -120,6 +132,7 @@ class SudokuController extends ChangeNotifier {
   UiState get state => _gameController.state;
   bool get hadSavedSessionAtLaunch => _gameController.hadSavedSessionAtLaunch;
   int get completedPuzzles => _gameController.completedPuzzles;
+  Entitlement get entitlement => _gameController.entitlement;
 
   void start() => _gameController.start(notifyListeners);
   void onCellTapped(Coord coord) =>
@@ -156,5 +169,9 @@ class SudokuController extends ChangeNotifier {
       _gameController.onConfirmCorrection(notifyListeners);
   void onDismissCorrectionPrompt() =>
       _gameController.onDismissCorrectionPrompt(notifyListeners);
+  void onSetEntitlement(Entitlement entitlement) =>
+      _gameController.setEntitlement(entitlement, notifyListeners);
+  bool isDifficultyUnlocked(String difficulty) =>
+      _gameController.isDifficultyUnlocked(difficulty);
   Future<void> flushGameSession() => _gameController.flushGameSession();
 }

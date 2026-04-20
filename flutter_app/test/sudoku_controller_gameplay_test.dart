@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/domain/types.dart';
 
 import 'support/sudoku_controller_test_support.dart';
 
@@ -115,5 +116,82 @@ void main() {
     controller.onDigitPressed(conflictDigit);
     expect(controller.state.conflictHintsLeft, 0);
     expect(conflictedCount(), 1);
+  });
+
+  test('difficulty gating uses policy in controller path', () async {
+    final freeController = SudokuController(
+      preferencesStore: FakePreferencesStore(entitlement: Entitlement.free),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await freeController.ready;
+    freeController.onSetDifficulty('hard');
+    expect(freeController.state.difficulty, 'easy');
+
+    final premiumController = SudokuController(
+      preferencesStore: FakePreferencesStore(entitlement: Entitlement.premium),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await premiumController.ready;
+    premiumController.onSetDifficulty('hard');
+    expect(premiumController.state.difficulty, 'hard');
+  });
+
+  test('controller queries policy service for difficulty checks', () async {
+    final policySpy = SpyPremiumPolicyService(
+      byDifficulty: {'hard': false},
+      defaultDifficultyResult: true,
+    );
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(entitlement: Entitlement.premium),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+      premiumPolicyService: policySpy,
+    );
+    await controller.ready;
+
+    final allowedEasy = controller.isDifficultyUnlocked('easy');
+    controller.onSetDifficulty('hard');
+
+    expect(allowedEasy, isTrue);
+    expect(controller.state.difficulty, 'easy');
+    expect(
+      policySpy.difficultyChecks,
+      containsAll(['easy:premium', 'hard:premium']),
+    );
   });
 }
