@@ -158,7 +158,49 @@ void main() {
     expect(controller.state.entitlement, Entitlement.premium);
   });
 
-  test('Setting entitlement updates state, persistence, and listeners', () async {
+  test(
+    'Setting entitlement updates state, persistence, and listeners',
+    () async {
+      final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);
+      final controller = SudokuController(preferencesStore: fakePrefs);
+      await controller.ready;
+
+      var notifications = 0;
+      controller.addListener(() {
+        notifications += 1;
+      });
+
+      controller.onSetEntitlement(Entitlement.premium);
+
+      expect(controller.entitlement, Entitlement.premium);
+      expect(controller.state.entitlement, Entitlement.premium);
+      expect(fakePrefs.entitlement, Entitlement.premium);
+      expect(notifications, 1);
+    },
+  );
+
+  test(
+    'refreshEntitlement updates state and listeners when value changes',
+    () async {
+      final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);
+      final controller = SudokuController(preferencesStore: fakePrefs);
+      await controller.ready;
+
+      var notifications = 0;
+      controller.addListener(() {
+        notifications += 1;
+      });
+
+      fakePrefs.entitlement = Entitlement.premium;
+      await controller.refreshEntitlement();
+
+      expect(controller.entitlement, Entitlement.premium);
+      expect(controller.state.entitlement, Entitlement.premium);
+      expect(notifications, 1);
+    },
+  );
+
+  test('refreshEntitlement is a no-op when value is unchanged', () async {
     final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);
     final controller = SudokuController(preferencesStore: fakePrefs);
     await controller.ready;
@@ -168,11 +210,62 @@ void main() {
       notifications += 1;
     });
 
-    controller.onSetEntitlement(Entitlement.premium);
+    await controller.refreshEntitlement();
 
-    expect(controller.entitlement, Entitlement.premium);
-    expect(controller.state.entitlement, Entitlement.premium);
-    expect(fakePrefs.entitlement, Entitlement.premium);
-    expect(notifications, 1);
+    expect(controller.entitlement, Entitlement.free);
+    expect(controller.state.entitlement, Entitlement.free);
+    expect(notifications, 0);
   });
+
+  test(
+    'non-resumable saved session does not override loaded preference selections',
+    () async {
+      final fakePrefs = FakePreferencesStore();
+      final sessionSettings = FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'animals',
+          animalStyle: 'cute',
+          puzzleMode: 'unique',
+        ),
+      );
+      final seedController = SudokuController(
+        preferencesStore: fakePrefs,
+        settingsController: sessionSettings,
+        gameService: FakeGameService(),
+      );
+      await seedController.ready;
+      seedController.onShowSolution();
+      expect(seedController.state.gameOver, isTrue);
+
+      final loadedPreferenceSettings = FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'medium',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Classic',
+          contentMode: 'instruments',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      );
+      final restoredController = SudokuController(
+        preferencesStore: fakePrefs,
+        settingsController: loadedPreferenceSettings,
+        gameService: FakeGameService(),
+      );
+      await restoredController.ready;
+
+      expect(restoredController.hadSavedSessionAtLaunch, isFalse);
+      expect(restoredController.state.styleName, 'Classic');
+      expect(restoredController.state.contentMode, 'instruments');
+      expect(restoredController.state.animalStyle, 'simple');
+      expect(restoredController.state.difficulty, 'medium');
+    },
+  );
 }

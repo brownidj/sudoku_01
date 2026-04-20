@@ -170,10 +170,15 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   void _drawAnimal(Canvas canvas, Rect rect, ui.Image image, int digit) {
-    final targetSize = _animalTargetSize(rect.width, digit);
-    final left = rect.left + (rect.width - targetSize) / 2;
-    final top = rect.top + (rect.height - targetSize) / 2;
-    final target = Rect.fromLTWH(left, top, targetSize, targetSize);
+    final targetSize = _animalTargetSize(rect.width);
+    var targetWidth = targetSize;
+    var targetHeight = targetSize;
+    if (state.contentMode == 'animals' && digit == 5) {
+      targetHeight = (targetHeight + 6).clamp(0.0, rect.height).toDouble();
+    }
+    final left = rect.left + (rect.width - targetWidth) / 2;
+    final top = rect.top + (rect.height - targetHeight) / 2;
+    final target = Rect.fromLTWH(left, top, targetWidth, targetHeight);
     paintImage(
       canvas: canvas,
       rect: target,
@@ -190,8 +195,10 @@ class SudokuBoardPainter extends CustomPainter {
     return null;
   }
 
-  double _animalTargetSize(double cellSize, int digit) {
-    return cellSize * 0.7;
+  double _animalTargetSize(double cellSize) {
+    const minPadding = 4.0;
+    final maxSize = cellSize - (minPadding * 2);
+    return maxSize > 0 ? maxSize : cellSize;
   }
 
   void _drawGrid(Canvas canvas, BoardLayout layout) {

@@ -23,11 +23,34 @@ class SudokuCellTooltipService {
     if (value == null) {
       return;
     }
-    final name = AnimalImageCache.displayNameForDigit(state.contentMode, value);
+    final name = _titleCase(
+      AnimalImageCache.displayNameForDigit(state.contentMode, value),
+    );
+    final imageAssetPath = AnimalImageCache.tileAssetPathForDigit(
+      contentMode: state.contentMode,
+      animalStyle: state.animalStyle,
+      digit: value,
+    );
     _tooltipOverlayService.show(
       context: context,
       globalPosition: globalPosition,
       text: name,
+      imageAssetPath: imageAssetPath,
     );
+  }
+
+  String _titleCase(String text) {
+    final normalized = text.replaceAll('_', ' ').trim();
+    if (normalized.isEmpty) {
+      return normalized;
+    }
+    final words = normalized.split(RegExp(r'\s+'));
+    return words
+        .map(
+          (word) => word.isEmpty
+              ? word
+              : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
+        )
+        .join(' ');
   }
 }

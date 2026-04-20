@@ -4,7 +4,9 @@ import 'package:flutter_app/app/check_service.dart';
 import 'package:flutter_app/app/controller_startup_coordinator.dart';
 import 'package:flutter_app/app/contradiction_service.dart';
 import 'package:flutter_app/app/correction_recovery_service.dart';
+import 'package:flutter_app/app/billing_service.dart';
 import 'package:flutter_app/app/entitlement_service.dart';
+import 'package:flutter_app/app/entitlement_sync_service.dart';
 import 'package:flutter_app/app/game_configuration_service.dart';
 import 'package:flutter_app/app/game_controller.dart';
 import 'package:flutter_app/app/game_controller_effects.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_app/app/game_session_service.dart';
 import 'package:flutter_app/app/game_startup_service.dart';
 import 'package:flutter_app/app/grid_utils.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
+import 'package:flutter_app/app/premium_purchase_coordinator.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/progress_metrics_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
@@ -28,6 +31,7 @@ import 'package:flutter_app/domain/types.dart';
 class SudokuController extends ChangeNotifier {
   late final GameController _gameController;
   late final UiController _uiController;
+  late final PremiumPurchaseCoordinator _premiumPurchaseCoordinator;
   late final Future<void> ready;
 
   SudokuController({
@@ -47,6 +51,8 @@ class SudokuController extends ChangeNotifier {
     SudokuControllerActionService? actionService,
     ProgressMetricsService? progressMetricsService,
     EntitlementService? entitlementService,
+    EntitlementSyncService? entitlementSyncService,
+    BillingService? billingService,
     PremiumPolicyService? premiumPolicyService,
   }) {
     final prefs = preferencesStore ?? PreferencesStore();
@@ -91,8 +97,12 @@ class SudokuController extends ChangeNotifier {
         progressMetricsService ?? ProgressMetricsService(prefs);
     final resolvedEntitlementService =
         entitlementService ?? EntitlementService(prefs);
+    final resolvedEntitlementSyncService =
+        entitlementSyncService ??
+        EntitlementSyncService(resolvedEntitlementService);
     final resolvedPremiumPolicyService =
         premiumPolicyService ?? const PremiumPolicyService();
+    final resolvedBillingService = billingService ?? const NoopBillingService();
     final resolvedEffects = GameControllerEffects(resolvedSessionService);
     final resolvedStartupService = GameStartupService(
       startupCoordinator: resolvedStartupCoordinator,
@@ -117,16 +127,20 @@ class SudokuController extends ChangeNotifier {
       configurationService: resolvedConfigurationService,
       premiumPolicyService: resolvedPremiumPolicyService,
       progressMetricsService: resolvedProgressMetricsService,
-      entitlementService: resolvedEntitlementService,
+      entitlementSyncService: resolvedEntitlementSyncService,
       uiStateMapper: resolvedUiStateMapper,
       gameService: resolvedGameService,
+    );
+    _premiumPurchaseCoordinator = PremiumPurchaseCoordinator(
+      billingService: resolvedBillingService,
+      entitlementSyncService: resolvedEntitlementSyncService,
     );
     _uiController = UiController(
       gameController: _gameController,
       settingsController: resolvedSettingsController,
       boardEditCoordinator: resolvedBoardEditCoordinator,
     );
-    ready = _gameController.initialize(notifyListeners);
+    ready = _initialize();
   }
 
   UiState get state => _gameController.state;
@@ -174,4 +188,24 @@ class SudokuController extends ChangeNotifier {
   bool isDifficultyUnlocked(String difficulty) =>
       _gameController.isDifficultyUnlocked(difficulty);
   Future<void> flushGameSession() => _gameController.flushGameSession();
+  Future<void> refreshEntitlement() =>
+      _gameController.refreshEntitlement(notifyListeners);
+  Future<BillingActionResult> buyPremium() =>
+      _premiumPurchaseCoordinator.buyPremium();
+  Future<BillingActionResult> restorePurchases() =>
+      _premiumPurchaseCoordinator.restorePurchases();
+
+  @override
+  void dispose() {
+    _premiumPurchaseCoordinator.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initialize() async {
+    await _gameController.initialize(notifyListeners);
+    _premiumPurchaseCoordinator.start(
+      onPremiumEntitlementSynced: () =>
+          _gameController.refreshEntitlement(notifyListeners),
+    );
+  }
 }

@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
+import 'package:flutter_app/app/billing_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/ui_state.dart';
@@ -90,6 +93,11 @@ class FakeSettingsController extends SettingsController {
   }
 
   @override
+  void setNotesMode(bool enabled) {
+    _state = _state.copyWith(notesMode: enabled);
+  }
+
+  @override
   bool setDifficulty(String difficulty) {
     _state = _state.copyWith(difficulty: difficulty);
     return true;
@@ -159,6 +167,42 @@ class SpyPremiumPolicyService extends PremiumPolicyService {
     difficultyChecks.add('$normalized:${entitlement.name}');
     return byDifficulty[normalized] ?? defaultDifficultyResult;
   }
+}
+
+class FakeBillingService implements BillingService {
+  final StreamController<BillingPurchaseUpdate> _updatesController =
+      StreamController<BillingPurchaseUpdate>.broadcast();
+  bool available;
+  BillingActionResult buyResult;
+  BillingActionResult restoreResult;
+  List<BillingProduct> products;
+
+  FakeBillingService({
+    this.available = true,
+    this.buyResult = BillingActionResult.started,
+    this.restoreResult = BillingActionResult.started,
+    this.products = const <BillingProduct>[],
+  });
+
+  @override
+  Stream<BillingPurchaseUpdate> get purchaseUpdates =>
+      _updatesController.stream;
+
+  void emit(BillingPurchaseUpdate update) {
+    _updatesController.add(update);
+  }
+
+  @override
+  Future<bool> isAvailable() async => available;
+
+  @override
+  Future<List<BillingProduct>> loadProducts() async => products;
+
+  @override
+  Future<BillingActionResult> buyPremium() async => buyResult;
+
+  @override
+  Future<BillingActionResult> restorePurchases() async => restoreResult;
 }
 
 Coord? firstEditableCoord(UiState state) {

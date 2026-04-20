@@ -69,6 +69,7 @@ class UiController {
       return;
     }
     _settings.toggleNotesMode();
+    _gameController.persistCurrentSession();
     notifyListeners();
   }
 
@@ -77,11 +78,13 @@ class UiController {
       return;
     }
     _settings.setNotesMode(enabled);
+    _gameController.persistCurrentSession();
     notifyListeners();
   }
 
   void onStyleChanged(String styleName, VoidCallback notifyListeners) {
     _settings.setStyleName(styleName);
+    _gameController.persistCurrentSession();
     notifyListeners();
   }
 
@@ -91,11 +94,13 @@ class UiController {
       _ => 'numbers',
     };
     _settings.setContentMode(nextMode);
+    _gameController.persistCurrentSession();
     notifyListeners();
   }
 
   void onAnimalStyleChanged(String style, VoidCallback notifyListeners) {
     _settings.setAnimalStyle(style == 'cute' ? 'cute' : 'simple');
+    _gameController.persistCurrentSession();
     notifyListeners();
   }
 }

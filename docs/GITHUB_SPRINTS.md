@@ -308,7 +308,7 @@ So status is: implementation largely complete, closure criteria not fully satisf
    •
    All locked entry points route to sheet.
    •
-   UX validated on small and large phones.
+   UX validated on small and large virtual phones (emulator/simulator).
 10) **S3: Integrate in_app_purchase service (buy + restore)**
    Goal
    Implement one-time premium unlock purchase flow.

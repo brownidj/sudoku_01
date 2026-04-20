@@ -15,6 +15,7 @@ class SudokuRuntimeStateService {
     required SettingsState settings,
     required UiStateMapper uiStateMapper,
     required Entitlement entitlement,
+    required bool premiumActive,
   }) {
     return uiStateMapper.map(
       UiStateMapperInput(
@@ -37,6 +38,7 @@ class SudokuRuntimeStateService {
         correctionNoticeMessage: runtime.correctionNoticeMessage,
         conflictHintsLeft: runtime.conflictHintsLeft,
         entitlement: entitlement,
+        premiumActive: premiumActive,
       ),
     );
   }

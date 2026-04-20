@@ -53,6 +53,7 @@ class UiState {
   final String? correctionNoticeMessage;
   final int conflictHintsLeft;
   final Entitlement entitlement;
+  final bool premiumActive;
 
   const UiState({
     required this.board,
@@ -75,5 +76,6 @@ class UiState {
     required this.correctionNoticeMessage,
     this.conflictHintsLeft = 0,
     this.entitlement = Entitlement.free,
+    this.premiumActive = false,
   });
 }

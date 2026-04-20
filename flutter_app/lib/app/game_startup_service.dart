@@ -51,12 +51,6 @@ class GameStartupService {
         shouldStartNewGame: false,
       );
     }
-    if (restoredSession != null) {
-      _runtimeStateService.applyRestoredSettings(
-        settings,
-        restoredSession.settings,
-      );
-    }
     return GameStartupOutcome(
       restoredRuntime: null,
       hadSavedSessionAtLaunch: startup.shouldResumeSession,

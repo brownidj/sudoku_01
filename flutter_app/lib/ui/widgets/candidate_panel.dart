@@ -93,20 +93,19 @@ class CandidatePanel extends StatelessWidget {
     if (image == null) {
       return Text(AnimalImageCache.tileLabelForDigit(contentMode, digit));
     }
+    final optionHeight =
+        contentMode == 'animals' && digit == 5 ? 44.0 : 38.0;
     return SizedBox(
       width: 38,
-      height: 38,
+      height: optionHeight,
       child: FittedBox(
         fit: BoxFit.contain,
-        child: Transform.scale(
-          scaleY: contentMode == 'animals' && digit == 5 ? 1.15 : 1.0,
-          child: RawImage(
-            image: image,
-            color: _animalTintColor(digit),
-            colorBlendMode: _animalTintColor(digit) != null
-                ? BlendMode.modulate
-                : null,
-          ),
+        child: RawImage(
+          image: image,
+          color: _animalTintColor(digit),
+          colorBlendMode: _animalTintColor(digit) != null
+              ? BlendMode.modulate
+              : null,
         ),
       ),
     );

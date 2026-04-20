@@ -137,4 +137,41 @@ void main() {
     expect(correctionTapped, isTrue);
     expect(exhaustedTapped, isTrue);
   });
+
+  testWidgets('shows premium status and restore purchases action', (
+    WidgetTester tester,
+  ) async {
+    var restoreTapped = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SudokuDrawer(
+          state: _state(),
+          onAnimalStyleChanged: (_) {},
+          onStyleChanged: (_) {},
+          onRestorePurchasesSelected: () {
+            restoreTapped = true;
+          },
+        ),
+      ),
+    );
+
+    await tester.drag(find.byType(ListView), const Offset(0, -900));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('drawer-premium-status')),
+      findsOneWidget,
+    );
+    expect(find.text('Free'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('drawer-restore-purchases')),
+      findsOneWidget,
+    );
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('drawer-restore-purchases')),
+    );
+    await tester.pumpAndSettle();
+    expect(restoreTapped, isTrue);
+  });
 }

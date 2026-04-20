@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/in_app_purchase_billing_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/launch_screen.dart';
 
@@ -18,7 +19,9 @@ class _SudokuAppState extends State<SudokuApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controller = SudokuController();
+    _controller = SudokuController(
+      billingService: InAppPurchaseBillingService(),
+    );
   }
 
   @override
@@ -33,6 +36,10 @@ class _SudokuAppState extends State<SudokuApp> with WidgetsBindingObserver {
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       unawaited(_controller.flushGameSession());
+      return;
+    }
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_controller.refreshEntitlement());
     }
   }
 

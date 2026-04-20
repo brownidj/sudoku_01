@@ -22,6 +22,7 @@ class UiStateMapperInput {
   final String? correctionNoticeMessage;
   final int conflictHintsLeft;
   final Entitlement entitlement;
+  final bool premiumActive;
 
   const UiStateMapperInput({
     required this.board,
@@ -43,6 +44,7 @@ class UiStateMapperInput {
     required this.correctionNoticeMessage,
     this.conflictHintsLeft = 0,
     this.entitlement = Entitlement.free,
+    this.premiumActive = false,
   });
 }
 
@@ -104,6 +106,7 @@ class UiStateMapper {
       correctionNoticeMessage: input.correctionNoticeMessage,
       conflictHintsLeft: input.conflictHintsLeft,
       entitlement: input.entitlement,
+      premiumActive: input.premiumActive,
     );
   }
 }

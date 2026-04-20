@@ -83,17 +83,29 @@ class SudokuBoardArea extends StatelessWidget {
                     (candidateButtonSize + candidateSpacing))
                 .floor()
                 .clamp(1, maxCandidateControls);
-        final rowCount =
+        final maxRowCount =
             ((maxCandidateControls + controlsPerRow - 1) / controlsPerRow)
                 .floor();
-        final candidatePanelHeight =
+        final maxCandidatePanelHeight =
             (candidateVerticalPadding * 2) +
-            (candidateButtonSize * rowCount) +
-            (candidateSpacing * max(0, rowCount - 1));
-        final candidateHeight = gapBeforeCandidate + candidatePanelHeight;
+            (candidateButtonSize * maxRowCount) +
+            (candidateSpacing * max(0, maxRowCount - 1));
+        final visibleCandidateCount = candidateVisible
+            ? candidateDigits.length.clamp(0, maxCandidateControls)
+            : 0;
+        final visibleRowCount = visibleCandidateCount == 0
+            ? 0
+            : ((visibleCandidateCount + controlsPerRow - 1) / controlsPerRow)
+                  .floor();
+        final visibleCandidatePanelHeight = visibleRowCount == 0
+            ? 0.0
+            : (candidateVerticalPadding * 2) +
+                  (candidateButtonSize * visibleRowCount) +
+                  (candidateSpacing * max(0, visibleRowCount - 1));
+        final lockedCandidateHeight = gapBeforeCandidate + maxCandidatePanelHeight;
         const layoutSafetyPadding = 9.0;
         final reservedHeight =
-            metadataHeight + candidateHeight + layoutSafetyPadding;
+            metadataHeight + lockedCandidateHeight + layoutSafetyPadding;
         final maxBoard = max(0.0, constraints.maxHeight - reservedHeight);
         final boardWidth = max(0.0, min(constraints.maxWidth, maxBoard));
         final cellWidth = boardWidth / 9.0;
@@ -154,20 +166,23 @@ class SudokuBoardArea extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            SizedBox(
-              height: candidatePanelHeight,
-              child: CandidatePanel(
-                visible: candidateVisible,
-                candidateDigits: candidateDigits,
-                showImages: state.contentMode != 'numbers',
-                contentMode: state.contentMode,
-                notesMode: state.notesMode,
-                selectedNotes: selectedNotes,
-                animalImages: animalImages,
-                onDigitSelected: onDigitSelected,
-                onDigitLongPressed: onDigitLongPressed,
+            if (visibleCandidatePanelHeight > 0) ...[
+              SizedBox(
+                height: visibleCandidatePanelHeight,
+                child: CandidatePanel(
+                  visible: candidateVisible,
+                  candidateDigits: candidateDigits,
+                  showImages: state.contentMode != 'numbers',
+                  contentMode: state.contentMode,
+                  notesMode: state.notesMode,
+                  selectedNotes: selectedNotes,
+                  animalImages: animalImages,
+                  onDigitSelected: onDigitSelected,
+                  onDigitLongPressed: onDigitLongPressed,
+                ),
               ),
-            ),
+            ],
+            SizedBox(height: max(0.0, maxCandidatePanelHeight - visibleCandidatePanelHeight)),
           ],
         );
       },

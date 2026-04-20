@@ -140,53 +140,59 @@ void main() {
     expect(find.text('1 tile(s) corrected.'), findsOneWidget);
   });
 
-  testWidgets('locked difficulty shows premium explainer for free entitlement', (
-    WidgetTester tester,
-  ) async {
-    final gameService = FakeGameService();
-    final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
-      gameService: gameService,
-      settingsController: FakeSettingsController(
-        const SettingsState(
-          notesMode: false,
-          difficulty: 'easy',
-          canChangeDifficulty: true,
-          canChangePuzzleMode: true,
-          styleName: 'Modern',
-          contentMode: 'numbers',
-          animalStyle: 'simple',
-          puzzleMode: 'multi',
+  testWidgets(
+    'locked difficulty shows premium explainer for free entitlement',
+    (WidgetTester tester) async {
+      final gameService = FakeGameService();
+      final controller = SudokuController(
+        preferencesStore: FakePreferencesStore(),
+        gameService: gameService,
+        settingsController: FakeSettingsController(
+          const SettingsState(
+            notesMode: false,
+            difficulty: 'easy',
+            canChangeDifficulty: true,
+            canChangePuzzleMode: true,
+            styleName: 'Modern',
+            contentMode: 'numbers',
+            animalStyle: 'simple',
+            puzzleMode: 'multi',
+          ),
         ),
-      ),
-    );
-    await controller.ready;
+      );
+      await controller.ready;
 
-    await tester.pumpWidget(
-      MaterialApp(home: SudokuScreen(controller: controller)),
-    );
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(
+        MaterialApp(home: SudokuScreen(controller: controller)),
+      );
+      await tester.pumpAndSettle();
 
-    final baselineNewGameCalls = gameService.newGameCalls;
+      final baselineNewGameCalls = gameService.newGameCalls;
 
-    await tester.tap(
-      find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('MUCH HARDER').last);
-    await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('MUCH HARDER').last);
+      await tester.pumpAndSettle();
 
-    expect(find.text('MUCH HARDER is Premium'), findsOneWidget);
-    expect(
-      find.textContaining('MUCH HARDER is part of Premium.'),
-      findsOneWidget,
-    );
-    await tester.tap(find.text('Got it'));
-    await tester.pumpAndSettle();
+      expect(
+        find.byKey(const ValueKey<String>('premium-sheet-title')),
+        findsOneWidget,
+      );
+      expect(
+        find.textContaining('MUCH HARDER is available in Premium.'),
+        findsOneWidget,
+      );
+      await tester.tap(
+        find.byKey(const ValueKey<String>('premium-sheet-dismiss-button')),
+      );
+      await tester.pumpAndSettle();
 
-    expect(find.text('EASY'), findsOneWidget);
-    expect(gameService.newGameCalls, baselineNewGameCalls);
-  });
+      expect(find.text('EASY'), findsOneWidget);
+      expect(gameService.newGameCalls, baselineNewGameCalls);
+    },
+  );
 
   testWidgets('changing puzzle mode prompts before starting a new game', (
     WidgetTester tester,

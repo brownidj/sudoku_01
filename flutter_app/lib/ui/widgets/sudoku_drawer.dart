@@ -8,6 +8,9 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String> onStyleChanged;
   final bool audioEnabled;
   final ValueChanged<bool>? onAudioEnabledChanged;
+  final ValueChanged<String>? onPremiumFeatureSelected;
+  final VoidCallback? onUnlockPremiumSelected;
+  final VoidCallback? onRestorePurchasesSelected;
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final bool showDebugTools;
@@ -19,6 +22,9 @@ class SudokuDrawer extends StatelessWidget {
     required this.onStyleChanged,
     this.audioEnabled = true,
     this.onAudioEnabledChanged,
+    this.onPremiumFeatureSelected,
+    this.onUnlockPremiumSelected,
+    this.onRestorePurchasesSelected,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
     this.showDebugTools = AppDebug.enabled,
@@ -123,6 +129,68 @@ class SudokuDrawer extends StatelessWidget {
               onTap: onAudioEnabledChanged == null
                   ? null
                   : () => onAudioEnabledChanged!(!audioEnabled),
+            ),
+            const Divider(height: 16),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Premium',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            ListTile(
+              key: const ValueKey<String>('drawer-premium-status'),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              title: const Text('Premium Status'),
+              trailing: Text(
+                state.premiumActive ? 'Active' : 'Free',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
+            if (!state.premiumActive) ...[
+              ListTile(
+                key: const ValueKey<String>('drawer-locked-progress-tracker'),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                title: const Text('Progress Tracker 🔒'),
+                subtitle: const Text('Track completed puzzles and milestones.'),
+                onTap: onPremiumFeatureSelected == null
+                    ? null
+                    : () => onPremiumFeatureSelected!('progress_tracker'),
+              ),
+              ListTile(
+                key: const ValueKey<String>('drawer-locked-extra-themes'),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                title: const Text('Extra Themes 🔒'),
+                subtitle: const Text('Unlock additional visual styles.'),
+                onTap: onPremiumFeatureSelected == null
+                    ? null
+                    : () => onPremiumFeatureSelected!('extra_themes'),
+              ),
+              ListTile(
+                key: const ValueKey<String>('drawer-locked-extra-sounds'),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                title: const Text('Sounds & Celebrations 🔒'),
+                subtitle: const Text('Unlock extra sounds and celebrations.'),
+                onTap: onPremiumFeatureSelected == null
+                    ? null
+                    : () => onPremiumFeatureSelected!(
+                        'extra_sounds_and_celebrations',
+                      ),
+              ),
+              ListTile(
+                key: const ValueKey<String>('drawer-unlock-premium'),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                leading: const Icon(Icons.workspace_premium_outlined),
+                title: const Text('Unlock Premium'),
+                onTap: onUnlockPremiumSelected,
+              ),
+            ],
+            ListTile(
+              key: const ValueKey<String>('drawer-restore-purchases'),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              leading: const Icon(Icons.restore),
+              title: const Text('Restore Purchases'),
+              onTap: onRestorePurchasesSelected,
             ),
             if (showDebugTools &&
                 (onLoadCorrectionScenario != null ||

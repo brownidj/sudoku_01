@@ -50,12 +50,22 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('MUCH HARDER is Premium'), findsOneWidget);
     expect(
-      find.textContaining('MUCH HARDER is part of Premium.'),
+      find.byKey(const ValueKey<String>('premium-sheet-title')),
       findsOneWidget,
     );
-    await tester.tap(find.text('Got it'));
+    expect(
+      find.textContaining('MUCH HARDER is available in Premium.'),
+      findsOneWidget,
+    );
+    expect(find.text('Not now'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('premium-sheet-unlock-button')),
+      findsOneWidget,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('premium-sheet-dismiss-button')),
+    );
     await tester.pumpAndSettle();
     await pending;
     expect(controller.state.difficulty, 'easy');

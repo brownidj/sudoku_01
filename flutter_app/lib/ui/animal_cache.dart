@@ -208,6 +208,19 @@ class AnimalImageCache {
     }
   }
 
+  static String tileAssetPathForDigit({
+    required String contentMode,
+    required String animalStyle,
+    required int digit,
+  }) {
+    if (contentMode == 'instruments') {
+      return 'assets/images/music/${_instrumentFileName(digit)}.png';
+    }
+    final variant = animalStyle == 'cute' ? 'cute' : 'simple';
+    final name = _animalName(digit);
+    return _tileAssetPath(digit: digit, name: name, variant: variant);
+  }
+
   static String tileLabelForDigit(String contentMode, int digit) {
     switch (contentMode) {
       case 'instruments':
