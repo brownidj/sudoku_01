@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/domain/types.dart';
 
 import 'support/sudoku_controller_test_support.dart';
 
@@ -147,4 +148,31 @@ void main() {
       expect(restoreController.state.correctionsLeft, 3);
     },
   );
+
+  test('Loads entitlement into app state at startup', () async {
+    final fakePrefs = FakePreferencesStore(entitlement: Entitlement.premium);
+    final controller = SudokuController(preferencesStore: fakePrefs);
+    await controller.ready;
+
+    expect(controller.entitlement, Entitlement.premium);
+    expect(controller.state.entitlement, Entitlement.premium);
+  });
+
+  test('Setting entitlement updates state, persistence, and listeners', () async {
+    final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);
+    final controller = SudokuController(preferencesStore: fakePrefs);
+    await controller.ready;
+
+    var notifications = 0;
+    controller.addListener(() {
+      notifications += 1;
+    });
+
+    controller.onSetEntitlement(Entitlement.premium);
+
+    expect(controller.entitlement, Entitlement.premium);
+    expect(controller.state.entitlement, Entitlement.premium);
+    expect(fakePrefs.entitlement, Entitlement.premium);
+    expect(notifications, 1);
+  });
 }

@@ -133,6 +133,7 @@ printf '==> using iOS integration simulator: %s\n' "$IOS_INTEGRATION_DEVICE"
 
 cd "$REPO_DIR"
 run_step "./scripts/check_file_sizes.sh flutter_app" ./scripts/check_file_sizes.sh flutter_app
+run_step "./scripts/check_premium_policy_usage.sh flutter_app" ./scripts/check_premium_policy_usage.sh flutter_app
 
 cd "$APP_DIR"
 run_step "flutter clean" flutter clean

@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app/domain/types.dart';
 
 class PreferencesStore {
   static const keyAnimalStyle = 'animal_style';
@@ -8,6 +9,7 @@ class PreferencesStore {
   static const keyPuzzleMode = 'puzzle_mode';
   static const keyGameSession = 'game_session';
   static const keyCompletedPuzzles = 'completed_puzzles';
+  static const keyEntitlement = 'entitlement';
 
   Future<AppPreferences> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -68,6 +70,29 @@ class PreferencesStore {
   Future<void> saveCompletedPuzzles(int value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(keyCompletedPuzzles, value);
+  }
+
+  Future<Entitlement> loadEntitlement() async {
+    final prefs = await SharedPreferences.getInstance();
+    final rawValue = prefs.getString(keyEntitlement);
+    return _parseEntitlement(rawValue);
+  }
+
+  Future<void> saveEntitlement(Entitlement value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(keyEntitlement, value.name);
+  }
+
+  Entitlement _parseEntitlement(String? rawValue) {
+    if (rawValue == null) {
+      return Entitlement.free;
+    }
+    for (final entitlement in Entitlement.values) {
+      if (entitlement.name == rawValue) {
+        return entitlement;
+      }
+    }
+    return Entitlement.free;
   }
 }
 

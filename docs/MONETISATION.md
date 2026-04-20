@@ -255,6 +255,48 @@ Track only what is needed to improve clarity and conversion:
 
 Use these events to tune copy and placement, not to increase prompt frequency.
 
+## Premium Entitlement Model Implementation Reference
+This section is the implementation reference for Issue 6 (S2: premium entitlement model).
+
+Where entitlement is stored:
+- Domain type: `flutter_app/lib/domain/types.dart` (`Entitlement`)
+- Persistent storage API: `flutter_app/lib/app/preferences_store.dart`
+  - `loadEntitlement()`
+  - `saveEntitlement(...)`
+  - Persisted key: `entitlement`
+- App service wrapper: `flutter_app/lib/app/entitlement_service.dart`
+- App/controller state wiring:
+  - `flutter_app/lib/app/game_controller.dart`
+  - `flutter_app/lib/app/sudoku_controller.dart`
+  - `flutter_app/lib/app/ui_state.dart`
+  - `flutter_app/lib/app/ui_state_mapper.dart`
+
+Where policy rules are defined:
+- Single source of truth: `flutter_app/lib/app/premium_policy_service.dart`
+- Core policy API:
+  - `isUnlocked(feature, entitlement)`
+  - `isDifficultyUnlocked(difficulty, entitlement)`
+  - `featureForDifficulty(difficulty)`
+  - `isPremiumActive(entitlement)`
+  - `lockedFeatures(features, entitlement)`
+- Rule mapping is encoded in `_unlockedByEntitlement`.
+
+How to add a new premium-gated feature:
+1. Add enum value in `PremiumFeature` (`flutter_app/lib/domain/types.dart`).
+2. Add/update entitlement mapping in `_unlockedByEntitlement` (`premium_policy_service.dart`).
+3. If it is difficulty-based, update `featureForDifficulty(...)`.
+4. Route access checks via `PremiumPolicyService` only.
+5. Do not add direct entitlement checks in UI/widgets.
+6. Add/adjust tests:
+   - `flutter_app/test/premium_policy_service_test.dart`
+   - relevant controller/flow tests (for call path + locked behavior)
+7. Run guardrails:
+   - `./scripts/check_premium_policy_usage.sh flutter_app`
+   - `./scripts/check_file_sizes.sh flutter_app`
+   - `flutter test`
+
+Issue 6 closure evidence link target:
+- `docs/MONETISATION.md#premium-entitlement-model-implementation-reference`
 
 ## Congratulatory messages
 - “Wonderful work — you solved it!”

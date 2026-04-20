@@ -86,7 +86,14 @@ class SudokuScreenFlowActions {
     required bool Function() isMounted,
     required SudokuController controller,
     required String difficulty,
-  }) {
+  }) async {
+    if (!controller.isDifficultyUnlocked(difficulty)) {
+      await showPremiumFeatureLockedSheet(
+        context: context,
+        featureLabel: _difficultyLabel(difficulty),
+      );
+      return;
+    }
     return _configurationFlowService.requestDifficultyChange(
       context: context,
       isMounted: isMounted,
@@ -94,5 +101,33 @@ class SudokuScreenFlowActions {
       difficulty: difficulty,
       onConfirmChange: controller.onSetDifficulty,
     );
+  }
+
+  Future<void> showPremiumFeatureLockedSheet({
+    required BuildContext context,
+    required String featureLabel,
+  }) {
+    return showInfoSheet(
+      context: context,
+      title: '$featureLabel is Premium',
+      message:
+          '$featureLabel is part of Premium.\n'
+          'Unlock Premium to access all difficulty levels and extra features.',
+    );
+  }
+
+  String _difficultyLabel(String difficulty) {
+    switch (difficulty.trim().toLowerCase()) {
+      case 'easy':
+        return 'Easy';
+      case 'medium':
+        return 'Medium';
+      case 'hard':
+        return 'Hard';
+      case 'very_hard':
+        return 'Very Hard';
+      default:
+        return difficulty.toUpperCase();
+    }
   }
 }

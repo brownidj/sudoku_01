@@ -1,11 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
+import 'package:flutter_app/domain/types.dart';
 
 class GameConfigurationService {
-  const GameConfigurationService();
+  final PremiumPolicyService _premiumPolicyService;
+
+  const GameConfigurationService({
+    PremiumPolicyService premiumPolicyService = const PremiumPolicyService(),
+  }) : _premiumPolicyService = premiumPolicyService;
 
   void setDifficulty({
     required SettingsController settings,
+    required Entitlement entitlement,
     required String difficulty,
     required VoidCallback startGame,
     required ValueChanged<String> render,
@@ -17,6 +24,10 @@ class GameConfigurationService {
     }
     if (!settings.state.canChangeDifficulty) {
       render('Finish or start a new game before changing difficulty');
+      return;
+    }
+    if (!_premiumPolicyService.isDifficultyUnlocked(nextDifficulty, entitlement)) {
+      render('This difficulty is available in Premium.');
       return;
     }
     if (!settings.setDifficulty(nextDifficulty)) {

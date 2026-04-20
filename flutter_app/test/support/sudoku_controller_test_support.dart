@@ -1,4 +1,5 @@
 import 'package:flutter_app/app/preferences_store.dart';
+import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/ui_state.dart';
@@ -10,8 +11,13 @@ import 'package:flutter_app/domain/types.dart';
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
   int completedPuzzles;
+  Entitlement entitlement;
 
-  FakePreferencesStore({this.savedSession, this.completedPuzzles = 0});
+  FakePreferencesStore({
+    this.savedSession,
+    this.completedPuzzles = 0,
+    this.entitlement = Entitlement.free,
+  });
 
   @override
   Future<AppPreferences> load() async {
@@ -53,6 +59,14 @@ class FakePreferencesStore extends PreferencesStore {
   @override
   Future<void> saveCompletedPuzzles(int value) async {
     completedPuzzles = value;
+  }
+
+  @override
+  Future<Entitlement> loadEntitlement() async => entitlement;
+
+  @override
+  Future<void> saveEntitlement(Entitlement value) async {
+    entitlement = value;
   }
 }
 
@@ -126,6 +140,24 @@ class FakeGameService extends GameService {
   MoveResult newGameFromGrid(Grid grid) {
     newGameCalls += 1;
     return super.newGameFromGrid(grid);
+  }
+}
+
+class SpyPremiumPolicyService extends PremiumPolicyService {
+  final List<String> difficultyChecks = <String>[];
+  bool defaultDifficultyResult;
+  final Map<String, bool> byDifficulty;
+
+  SpyPremiumPolicyService({
+    this.defaultDifficultyResult = true,
+    Map<String, bool>? byDifficulty,
+  }) : byDifficulty = byDifficulty ?? <String, bool>{};
+
+  @override
+  bool isDifficultyUnlocked(String difficulty, Entitlement entitlement) {
+    final normalized = difficulty.trim().toLowerCase();
+    difficultyChecks.add('$normalized:${entitlement.name}');
+    return byDifficulty[normalized] ?? defaultDifficultyResult;
   }
 }
 

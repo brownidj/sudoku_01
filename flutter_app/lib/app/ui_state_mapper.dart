@@ -21,6 +21,7 @@ class UiStateMapperInput {
   final int correctionNoticeSerial;
   final String? correctionNoticeMessage;
   final int conflictHintsLeft;
+  final Entitlement entitlement;
 
   const UiStateMapperInput({
     required this.board,
@@ -41,6 +42,7 @@ class UiStateMapperInput {
     required this.correctionNoticeSerial,
     required this.correctionNoticeMessage,
     this.conflictHintsLeft = 0,
+    this.entitlement = Entitlement.free,
   });
 }
 
@@ -101,6 +103,7 @@ class UiStateMapper {
       correctionNoticeSerial: input.correctionNoticeSerial,
       correctionNoticeMessage: input.correctionNoticeMessage,
       conflictHintsLeft: input.conflictHintsLeft,
+      entitlement: input.entitlement,
     );
   }
 }

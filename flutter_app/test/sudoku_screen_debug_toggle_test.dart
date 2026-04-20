@@ -140,7 +140,7 @@ void main() {
     expect(find.text('1 tile(s) corrected.'), findsOneWidget);
   });
 
-  testWidgets('changing difficulty prompts before starting a new game', (
+  testWidgets('locked difficulty shows premium explainer for free entitlement', (
     WidgetTester tester,
   ) async {
     final gameService = FakeGameService();
@@ -176,29 +176,16 @@ void main() {
     await tester.tap(find.text('HARD').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Start New Game?'), findsOneWidget);
+    expect(find.text('Hard is Premium'), findsOneWidget);
     expect(
-      find.text('Change difficulty to HARD and start a new game?'),
+      find.textContaining('Hard is part of Premium.'),
       findsOneWidget,
     );
-
-    await tester.tap(find.text('Cancel'));
+    await tester.tap(find.text('Got it'));
     await tester.pumpAndSettle();
 
     expect(find.text('EASY'), findsOneWidget);
     expect(gameService.newGameCalls, baselineNewGameCalls);
-
-    await tester.tap(
-      find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('HARD').last);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Start New Game'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('HARD'), findsOneWidget);
-    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
   });
 
   testWidgets('changing puzzle mode prompts before starting a new game', (

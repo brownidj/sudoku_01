@@ -52,6 +52,7 @@ class UiState {
   final int correctionNoticeSerial;
   final String? correctionNoticeMessage;
   final int conflictHintsLeft;
+  final Entitlement entitlement;
 
   const UiState({
     required this.board,
@@ -73,5 +74,6 @@ class UiState {
     required this.correctionNoticeSerial,
     required this.correctionNoticeMessage,
     this.conflictHintsLeft = 0,
+    this.entitlement = Entitlement.free,
   });
 }

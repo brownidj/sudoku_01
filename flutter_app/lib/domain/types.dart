@@ -1,5 +1,16 @@
 import 'dart:collection';
 
+enum Entitlement { free, premium }
+
+enum PremiumFeature {
+  hardDifficulty,
+  veryHardDifficulty,
+  progressTracker,
+  personalBestHistory,
+  extraThemes,
+  extraSoundsAndCelebrations,
+}
+
 class Coord {
   final int row;
   final int col;
