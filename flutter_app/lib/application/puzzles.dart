@@ -55,9 +55,15 @@ const Map<String, List<Grid>> _difficultySeeds = {
   'easy': [_easyGrid01],
   'medium': [_mediumGrid01],
   'hard': [_hardGrid01],
+  'very_hard': [_hardGrid01],
 };
 
-const Map<String, int> _targetGivens = {'easy': 40, 'medium': 32, 'hard': 25};
+const Map<String, int> _targetGivens = {
+  'easy': 40,
+  'medium': 34,
+  'hard': 28,
+  'very_hard': 22,
+};
 
 final Map<String, Puzzle> puzzles = {
   'starter': Puzzle(puzzleId: 'starter', difficulty: 'easy', grid: _easyGrid01),
@@ -87,7 +93,9 @@ Puzzle generatePuzzle(
   if (puzzleMode != 'unique' && puzzleMode != 'multi') {
     throw ArgumentError('Unknown puzzle mode: $mode');
   }
-  final resolvedMode = (diff == 'hard') ? 'unique' : puzzleMode;
+  final resolvedMode = (diff == 'hard' || diff == 'very_hard')
+      ? 'unique'
+      : puzzleMode;
   final solution = _generateFullSolution(random);
   final Grid grid;
   if (resolvedMode == 'unique') {

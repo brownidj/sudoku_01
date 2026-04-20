@@ -173,12 +173,12 @@ void main() {
       find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
     );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('HARD').last);
+    await tester.tap(find.text('MUCH HARDER').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Hard is Premium'), findsOneWidget);
+    expect(find.text('MUCH HARDER is Premium'), findsOneWidget);
     expect(
-      find.textContaining('Hard is part of Premium.'),
+      find.textContaining('MUCH HARDER is part of Premium.'),
       findsOneWidget,
     );
     await tester.tap(find.text('Got it'));

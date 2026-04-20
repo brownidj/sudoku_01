@@ -33,4 +33,16 @@ void main() {
 
     expect(controller.state.contentMode, 'instruments');
   });
+
+  test('controller restores persisted very_hard difficulty', () async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({
+      'difficulty': 'very_hard',
+    });
+
+    final controller = SudokuController();
+    await Future<void>.delayed(Duration.zero);
+
+    expect(controller.state.difficulty, 'very_hard');
+  });
 }

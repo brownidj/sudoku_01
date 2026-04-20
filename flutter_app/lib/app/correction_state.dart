@@ -5,6 +5,8 @@ import 'package:flutter_app/domain/types.dart';
 
 int correctionsForDifficulty(String difficulty) {
   switch (difficulty) {
+    case 'very_hard':
+      return 0;
     case 'hard':
       return 1;
     case 'medium':
@@ -16,6 +18,8 @@ int correctionsForDifficulty(String difficulty) {
 
 int conflictHintsForDifficulty(String difficulty) {
   switch (difficulty) {
+    case 'very_hard':
+      return 0;
     case 'hard':
       return 1;
     case 'medium':

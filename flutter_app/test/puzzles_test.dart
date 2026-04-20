@@ -27,4 +27,14 @@ void main() {
     );
     expect(countSolutions(puzzle.grid, limit: 2), 1);
   });
+
+  test('Very hard mode forces unique when multi is requested', () {
+    final puzzle = puzzles.generatePuzzle(
+      'very_hard',
+      mode: 'multi',
+      rng: Random(11),
+    );
+    expect(puzzle.difficulty, 'very_hard');
+    expect(countSolutions(puzzle.grid, limit: 2), 1);
+  });
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/difficulty_labels.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/sudoku_configuration_flow_service.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
@@ -90,7 +91,7 @@ class SudokuScreenFlowActions {
     if (!controller.isDifficultyUnlocked(difficulty)) {
       await showPremiumFeatureLockedSheet(
         context: context,
-        featureLabel: _difficultyLabel(difficulty),
+        featureLabel: difficultyDisplayLabel(difficulty),
       );
       return;
     }
@@ -116,18 +117,4 @@ class SudokuScreenFlowActions {
     );
   }
 
-  String _difficultyLabel(String difficulty) {
-    switch (difficulty.trim().toLowerCase()) {
-      case 'easy':
-        return 'Easy';
-      case 'medium':
-        return 'Medium';
-      case 'hard':
-        return 'Hard';
-      case 'very_hard':
-        return 'Very Hard';
-      default:
-        return difficulty.toUpperCase();
-    }
-  }
 }

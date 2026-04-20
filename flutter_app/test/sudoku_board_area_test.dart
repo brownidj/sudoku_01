@@ -93,7 +93,7 @@ void main() {
       expect(find.text('UNIQUE'), findsOneWidget);
       expect(find.text('Hints: 2'), findsOneWidget);
       expect(find.text('Corrections: 1'), findsOneWidget);
-      expect(find.text('HARD'), findsOneWidget);
+      expect(find.text('MUCH HARDER'), findsOneWidget);
     },
   );
 

@@ -13,7 +13,7 @@ class GameSessionCodec {
 
     final difficulty = _difficultyOrDefault(raw['difficulty'], fallback);
     var puzzleMode = _puzzleModeOrDefault(raw['puzzleMode']);
-    if (difficulty == 'hard') {
+    if (difficulty == 'hard' || difficulty == 'very_hard') {
       puzzleMode = 'unique';
     }
 
@@ -224,7 +224,10 @@ class GameSessionCodec {
 
   String _difficultyOrDefault(Object? raw, SettingsState fallback) {
     final value = raw is String ? raw : '';
-    if (value == 'easy' || value == 'medium' || value == 'hard') {
+    if (value == 'easy' ||
+        value == 'medium' ||
+        value == 'hard' ||
+        value == 'very_hard') {
       return value;
     }
     return fallback.difficulty;

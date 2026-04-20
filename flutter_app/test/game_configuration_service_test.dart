@@ -67,6 +67,37 @@ void main() {
     expect(status, 'This difficulty is available in Premium.');
   });
 
+  test('setDifficulty accepts very_hard for premium entitlement', () {
+    final service = GameConfigurationService();
+    final settings = FakeSettingsController(
+      const SettingsState(
+        notesMode: false,
+        difficulty: 'easy',
+        canChangeDifficulty: true,
+        canChangePuzzleMode: true,
+        styleName: 'Modern',
+        contentMode: 'numbers',
+        animalStyle: 'simple',
+        puzzleMode: 'multi',
+      ),
+    );
+    var startCalls = 0;
+    String? status;
+
+    service.setDifficulty(
+      settings: settings,
+      entitlement: Entitlement.premium,
+      difficulty: 'very_hard',
+      startGame: () => startCalls += 1,
+      render: (message) => status = message,
+    );
+
+    expect(settings.state.difficulty, 'very_hard');
+    expect(settings.state.puzzleMode, 'unique');
+    expect(startCalls, 1);
+    expect(status, isNull);
+  });
+
   test('setPuzzleMode renders guidance when mode is locked', () {
     final service = GameConfigurationService();
     final settings = FakeSettingsController(
@@ -94,5 +125,34 @@ void main() {
     expect(settings.state.puzzleMode, 'multi');
     expect(startCalls, 0);
     expect(status, 'Finish or check the game before changing puzzle mode');
+  });
+
+  test('setPuzzleMode stays unique for very_hard difficulty', () {
+    final service = GameConfigurationService();
+    final settings = FakeSettingsController(
+      const SettingsState(
+        notesMode: false,
+        difficulty: 'very_hard',
+        canChangeDifficulty: true,
+        canChangePuzzleMode: true,
+        styleName: 'Modern',
+        contentMode: 'numbers',
+        animalStyle: 'simple',
+        puzzleMode: 'unique',
+      ),
+    );
+    var startCalls = 0;
+    String? status;
+
+    service.setPuzzleMode(
+      settings: settings,
+      mode: 'multi',
+      startGame: () => startCalls += 1,
+      render: (message) => status = message,
+    );
+
+    expect(settings.state.puzzleMode, 'unique');
+    expect(startCalls, 0);
+    expect(status, 'Puzzle mode: unique');
   });
 }

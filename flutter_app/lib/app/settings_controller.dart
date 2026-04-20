@@ -35,7 +35,7 @@ class SettingsController {
       next = next.copyWith(styleName: prefs.styleName);
     }
     if (prefs.difficulty != null &&
-        ['easy', 'medium', 'hard'].contains(prefs.difficulty)) {
+        ['easy', 'medium', 'hard', 'very_hard'].contains(prefs.difficulty)) {
       next = next.copyWith(difficulty: prefs.difficulty);
     }
     if (prefs.puzzleMode == 'unique' || prefs.puzzleMode == 'multi') {
@@ -45,7 +45,8 @@ class SettingsController {
         puzzleMode: _defaultPuzzleModeForDifficulty(next.difficulty),
       );
     }
-    if (next.difficulty == 'hard' && next.puzzleMode != 'unique') {
+    if ((next.difficulty == 'hard' || next.difficulty == 'very_hard') &&
+        next.puzzleMode != 'unique') {
       next = next.copyWith(puzzleMode: 'unique');
     }
     _setState(next);

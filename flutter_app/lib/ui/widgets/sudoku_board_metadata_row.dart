@@ -46,39 +46,58 @@ class SudokuBoardMetadataRow extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: Alignment.center,
-            child: _ManualTooltipLabel(
-              label: 'Hints: ${state.conflictHintsLeft}',
-              tooltipMessage: hintsTooltipMessage,
+            child: Transform.translate(
+              offset: const Offset(-8, 0),
+              child: _ManualTooltipLabel(
+                label: 'Hints: ${state.conflictHintsLeft}',
+                tooltipMessage: hintsTooltipMessage,
+              ),
             ),
           ),
         ),
         Expanded(
           child: Align(
             alignment: Alignment.center,
-            child: _ManualTooltipLabel(
-              label: 'Corrections: ${state.correctionsLeft}',
-              tooltipMessage: correctionsTooltipMessage,
+            child: Transform.translate(
+              offset: const Offset(-20, 0),
+              child: _ManualTooltipLabel(
+                label: 'Corrections: ${state.correctionsLeft}',
+                tooltipMessage: correctionsTooltipMessage,
+              ),
             ),
           ),
         ),
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
-            child: _MetadataDropdown(
-              tooltipMessage:
-                  'Choose the challenge level that feels right for steady daily progress.',
-              value: state.difficulty,
-              dropdownKey: const ValueKey<String>('board-difficulty-dropdown'),
-              enabled: state.canChangeDifficulty,
-              items: const [
-                DropdownMenuItem<String>(value: 'easy', child: Text('EASY')),
-                DropdownMenuItem<String>(
-                  value: 'medium',
-                  child: Text('MEDIUM'),
-                ),
-                DropdownMenuItem<String>(value: 'hard', child: Text('HARD')),
-              ],
-              onChanged: onDifficultyChanged,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 2),
+              child: _MetadataDropdown(
+                tooltipMessage:
+                    'Choose the challenge level that feels right for steady daily progress.',
+                value: state.difficulty,
+                dropdownKey: const ValueKey<String>('board-difficulty-dropdown'),
+                enabled: state.canChangeDifficulty,
+                items: const [
+                  DropdownMenuItem<String>(
+                    value: 'easy',
+                    child: Text('EASY'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'medium',
+                    child: Text('A BIT HARDER'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'hard',
+                    child: Text('MUCH HARDER'),
+                  ),
+                  DropdownMenuItem<String>(
+                    value: 'very_hard',
+                    child: Text('NIGH IMPOSSIBLE'),
+                  ),
+                ],
+                onChanged: onDifficultyChanged,
+              ),
             ),
           ),
         ),
@@ -119,9 +138,10 @@ class _MetadataDropdown extends StatelessWidget {
             child: DropdownButton<String>(
               key: dropdownKey,
               value: value,
-              isDense: false,
+              isDense: true,
               itemHeight: 48,
               icon: Icon(Icons.arrow_drop_down, size: 20, color: dropdownColor),
+              padding: EdgeInsets.zero,
               onChanged: !enabled
                   ? null
                   : (nextValue) {

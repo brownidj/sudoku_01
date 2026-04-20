@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/difficulty_labels.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
 
@@ -71,12 +72,12 @@ class SudokuConfigurationFlowService {
       onConfirmChange(difficulty);
       return;
     }
+    final difficultyLabel = difficultyDisplayLabel(difficulty);
     await _confirmationService.confirmAndRun(
       context: context,
       isMounted: isMounted,
       title: 'Start New Game?',
-      message:
-          'Change difficulty to ${difficulty.toUpperCase()} and start a new game?',
+      message: 'Change difficulty to $difficultyLabel and start a new game?',
       onConfirm: () => onConfirmChange(difficulty),
     );
   }

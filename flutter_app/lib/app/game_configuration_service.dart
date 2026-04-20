@@ -18,7 +18,7 @@ class GameConfigurationService {
     required ValueChanged<String> render,
   }) {
     final nextDifficulty = difficulty.trim().toLowerCase();
-    if (!['easy', 'medium', 'hard'].contains(nextDifficulty)) {
+    if (!['easy', 'medium', 'hard', 'very_hard'].contains(nextDifficulty)) {
       render('Unknown difficulty: $difficulty');
       return;
     }
@@ -47,7 +47,8 @@ class GameConfigurationService {
       render('Finish or check the game before changing puzzle mode');
       return;
     }
-    if (settings.state.difficulty == 'hard') {
+    if (settings.state.difficulty == 'hard' ||
+        settings.state.difficulty == 'very_hard') {
       settings.setPuzzleMode('unique');
       render('Puzzle mode: unique');
       return;

@@ -50,8 +50,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Hard is Premium'), findsOneWidget);
-    expect(find.textContaining('Hard is part of Premium.'), findsOneWidget);
+    expect(find.text('MUCH HARDER is Premium'), findsOneWidget);
+    expect(
+      find.textContaining('MUCH HARDER is part of Premium.'),
+      findsOneWidget,
+    );
     await tester.tap(find.text('Got it'));
     await tester.pumpAndSettle();
     await pending;
@@ -102,7 +105,7 @@ void main() {
 
     expect(find.text('Start New Game?'), findsOneWidget);
     expect(
-      find.text('Change difficulty to HARD and start a new game?'),
+      find.text('Change difficulty to MUCH HARDER and start a new game?'),
       findsOneWidget,
     );
     await tester.tap(find.text('Cancel'));
