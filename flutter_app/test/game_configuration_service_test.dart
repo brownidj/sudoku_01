@@ -64,7 +64,7 @@ void main() {
 
     expect(settings.state.difficulty, 'easy');
     expect(startCalls, 0);
-    expect(status, 'This difficulty is available in Premium.');
+    expect(status, 'This difficulty is available in Full Version.');
   });
 
   test('setDifficulty accepts very_hard for premium entitlement', () {

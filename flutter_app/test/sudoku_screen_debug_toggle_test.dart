@@ -181,7 +181,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.textContaining('MUCH HARDER is available in Premium.'),
+        find.textContaining('MUCH HARDER is available in Full Version.'),
         findsOneWidget,
       );
       await tester.tap(

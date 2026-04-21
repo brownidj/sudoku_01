@@ -152,7 +152,7 @@ class SudokuScreenFlowActions {
       context: context,
       result: result,
       startedMessage:
-          'Purchase started. Complete it in the store to unlock Premium.',
+          'Purchase started. Complete it in the store to unlock Full Version.',
     );
   }
 
@@ -178,9 +178,9 @@ class SudokuScreenFlowActions {
       BillingActionResult.unavailable =>
         'Purchases are unavailable on this device right now.',
       BillingActionResult.productNotConfigured =>
-        'Premium is not configured yet. Please try again later.',
+        'Full Version is not configured yet. Please try again later.',
       BillingActionResult.productUnavailable =>
-        'Premium product details could not be loaded. Please try again.',
+        'Full Version product details could not be loaded. Please try again.',
       BillingActionResult.failed => 'That did not work. Please try again.',
     };
     ScaffoldMessenger.of(

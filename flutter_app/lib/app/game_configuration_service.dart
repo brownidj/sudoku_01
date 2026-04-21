@@ -27,7 +27,7 @@ class GameConfigurationService {
       return;
     }
     if (!_premiumPolicyService.isDifficultyUnlocked(nextDifficulty, entitlement)) {
-      render('This difficulty is available in Premium.');
+      render('This difficulty is available in Full Version.');
       return;
     }
     if (!settings.setDifficulty(nextDifficulty)) {

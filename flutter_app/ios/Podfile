@@ -46,6 +46,19 @@ post_install do |installer|
       # Ensure dSYM generation for all pod frameworks in archive builds.
       config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
       config.build_settings['GCC_GENERATE_DEBUGGING_SYMBOLS'] = 'YES'
+
+      # Xcode 26 / iOS 18+ emits deprecation warnings for StoreKit 1 symbols
+      # used inside in_app_purchase_storekit Objective-C shim code.
+      # Keep this suppression scoped to in_app_purchase_storekit pod targets.
+      if target.name.start_with?('in_app_purchase_storekit')
+        config.build_settings['GCC_WARN_INHIBIT_ALL_WARNINGS'] = 'YES'
+        config.build_settings['GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS'] = 'NO'
+        config.build_settings['CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS'] = 'NO'
+        config.build_settings['WARNING_CFLAGS'] = '$(inherited) -w -Wno-deprecated-declarations'
+        config.build_settings['OTHER_CFLAGS'] = '$(inherited) -Wno-deprecated-declarations'
+        config.build_settings['SWIFT_SUPPRESS_WARNINGS'] = 'YES'
+        config.build_settings['OTHER_SWIFT_FLAGS'] = '$(inherited) -suppress-warnings'
+      end
     end
   end
 end

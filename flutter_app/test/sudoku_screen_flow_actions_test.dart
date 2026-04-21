@@ -55,7 +55,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.textContaining('MUCH HARDER is available in Premium.'),
+      find.textContaining('MUCH HARDER is available in Full Version.'),
       findsOneWidget,
     );
     expect(find.text('Not now'), findsOneWidget);

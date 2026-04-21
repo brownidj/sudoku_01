@@ -131,17 +131,10 @@ class SudokuDrawer extends StatelessWidget {
                   : () => onAudioEnabledChanged!(!audioEnabled),
             ),
             const Divider(height: 16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Premium',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
             ListTile(
               key: const ValueKey<String>('drawer-premium-status'),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              title: const Text('Premium Status'),
+              title: const Text('Version'),
               trailing: Text(
                 state.premiumActive ? 'Active' : 'Free',
                 style: const TextStyle(fontWeight: FontWeight.w600),
@@ -181,7 +174,7 @@ class SudokuDrawer extends StatelessWidget {
                 key: const ValueKey<String>('drawer-unlock-premium'),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 leading: const Icon(Icons.workspace_premium_outlined),
-                title: const Text('Unlock Premium'),
+                title: const Text('Unlock Full Version'),
                 onTap: onUnlockPremiumSelected,
               ),
             ],

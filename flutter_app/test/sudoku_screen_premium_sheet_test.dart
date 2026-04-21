@@ -47,7 +47,7 @@ void main() {
       findsOneWidget,
     );
     expect(
-      find.textContaining('Progress Tracker is available in Premium.'),
+      find.textContaining('Progress Tracker is available in Full Version.'),
       findsOneWidget,
     );
     expect(find.text('Not now'), findsOneWidget);

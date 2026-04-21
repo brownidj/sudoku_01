@@ -126,7 +126,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               unawaited(
                 _flowActions.showPremiumFeatureLockedSheet(
                   context: context,
-                  featureLabel: 'Premium Features',
+                  featureLabel: 'Full Version Features',
                   onUnlockPremium: () => _flowActions.requestPremiumUnlock(
                     context: context,
                     controller: controller,

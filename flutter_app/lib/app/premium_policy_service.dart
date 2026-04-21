@@ -70,7 +70,7 @@ class PremiumPolicyService {
   String labelForFeatureKey(String key) {
     final feature = featureForKey(key);
     if (feature == null) {
-      return 'Premium Feature';
+      return 'Full Version Feature';
     }
     return labelForFeature(feature);
   }

@@ -11,8 +11,8 @@ class PremiumExplainerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final featureIntro = featureLabel == null
-        ? 'Premium gives you the full Sudoku experience in one purchase.'
-        : '$featureLabel is available in Premium.';
+        ? 'Full Version gives you the full Sudoku experience in one purchase.'
+        : '$featureLabel is available in Full Version.';
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -22,7 +22,7 @@ class PremiumExplainerSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Unlock Premium',
+                'Unlock Full Version',
                 key: const ValueKey<String>('premium-sheet-title'),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
@@ -32,7 +32,7 @@ class PremiumExplainerSheet extends StatelessWidget {
               Text(featureIntro, style: theme.textTheme.bodyLarge),
               const SizedBox(height: 12),
               Text(
-                'Premium includes:',
+                'Full Version includes:',
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -63,7 +63,7 @@ class PremiumExplainerSheet extends StatelessWidget {
                     onPressed: () => Navigator.of(
                       context,
                     ).pop(PremiumExplainerAction.unlock),
-                    child: const Text('Unlock Premium'),
+                    child: const Text('Unlock Full Version'),
                   ),
                 ],
               ),
