@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.8.2+226">
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.9.1+234">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,40 +51,40 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
-    &quot;Python.bgt.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fix_animal_images.executor&quot;: &quot;Run&quot;,
-    &quot;Python.generate_animal_images.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tk_view.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck&quot;,
-    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/david/PycharmProjects/Sudoku_01&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in tests.executor": "Run",
+    "Python.bgt.executor": "Run",
+    "Python.fix_animal_images.executor": "Run",
+    "Python.generate_animal_images.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.tk_view.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHELLCHECK.PATH": "/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
+    "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "feature/issue-6-premium-entitlement-model",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/opera",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "show.migrate.to.gradle.popup": "false",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1772334012594" />
     <option name="spentUsd" value="0.11471075" />
@@ -96,11 +94,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/opera" />
+      <recent name="$PROJECT_DIR$/docs/qa/screenshots" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/images/icons" />
       <recent name="$PROJECT_DIR$/flutter_app/android/app" />
-      <recent name="$PROJECT_DIR$/flutter_app/assets/images/animals" />
-      <recent name="$PROJECT_DIR$/tests" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/flutter_app/assets/images" />
@@ -276,87 +274,7 @@
       <workItem from="1776409946430" duration="947000" />
       <workItem from="1776410909843" duration="2843000" />
       <workItem from="1776473238256" duration="11230000" />
-      <workItem from="1776488161583" duration="16866000" />
-    </task>
-    <task id="LOCAL-00016" summary="First refactoring done but still needs a cleaner split between domain/services, state management, and UI widgets.">
-      <option name="closed" value="true" />
-      <created>1770765012974</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1770765012974</updated>
-    </task>
-    <task id="LOCAL-00017" summary="First refactoring done but still needs a cleaner split between domain/services, state management, and UI widgets.">
-      <option name="closed" value="true" />
-      <created>1770765057084</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1770765057084</updated>
-    </task>
-    <task id="LOCAL-00018" summary="Refactoring complete for now. &#10;Clear separation: application services (GameService, CheckService, GridUtils), state (SudokuController, SettingsController + SettingsState, UiState), UI widgets (SudokuScreen + extracted widgets), rendering (BoardPainter, BoardTheme, BoardLayout).&#10;UI composition is modular and readable; board input/gestures live in SudokuBoard.&#10;State persistence is centralized in PreferencesStore and SettingsController.">
-      <option name="closed" value="true" />
-      <created>1770768956710</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1770768956710</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Refactoring complete for now. &#10;Clear separation: application services (GameService, CheckService, GridUtils), state (SudokuController, SettingsController + SettingsState, UiState), UI widgets (SudokuScreen + extracted widgets), rendering (BoardPainter, BoardTheme, BoardLayout).&#10;UI composition is modular and readable; board input/gestures live in SudokuBoard.&#10;State persistence is centralized in PreferencesStore and SettingsController.">
-      <option name="closed" value="true" />
-      <created>1770768987199</created>
-      <option name="number" value="00019" />
-      <option name="presentableId" value="LOCAL-00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1770768987199</updated>
-    </task>
-    <task id="LOCAL-00020" summary="Added splash Screen and updated app">
-      <option name="closed" value="true" />
-      <created>1770771418837</created>
-      <option name="number" value="00020" />
-      <option name="presentableId" value="LOCAL-00020" />
-      <option name="project" value="LOCAL" />
-      <updated>1770771418837</updated>
-    </task>
-    <task id="LOCAL-00021" summary="Added splash Screen and updated app">
-      <option name="closed" value="true" />
-      <created>1770771436276</created>
-      <option name="number" value="00021" />
-      <option name="presentableId" value="LOCAL-00021" />
-      <option name="project" value="LOCAL" />
-      <updated>1770771436276</updated>
-    </task>
-    <task id="LOCAL-00022" summary="Added splash Screen and updated app">
-      <option name="closed" value="true" />
-      <created>1770786675485</created>
-      <option name="number" value="00022" />
-      <option name="presentableId" value="LOCAL-00022" />
-      <option name="project" value="LOCAL" />
-      <updated>1770786675485</updated>
-    </task>
-    <task id="LOCAL-00023" summary="Notes feature might be resolved...">
-      <option name="closed" value="true" />
-      <created>1770846159630</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1770846159630</updated>
-    </task>
-    <task id="LOCAL-00024" summary="Added some Notes testing">
-      <option name="closed" value="true" />
-      <created>1770846329974</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1770846329974</updated>
-    </task>
-    <task id="LOCAL-00025" summary="Added some Notes testing and updated image folders">
-      <option name="closed" value="true" />
-      <created>1770846376753</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1770846376753</updated>
+      <workItem from="1776488161583" duration="61017000" />
     </task>
     <task id="LOCAL-00026" summary="First alpha version">
       <option name="closed" value="true" />
@@ -670,7 +588,87 @@
       <option name="project" value="LOCAL" />
       <updated>1776565298154</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="Updated version to 0.8.2+227">
+      <option name="closed" value="true" />
+      <created>1776567872377</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1776567872377</updated>
+    </task>
+    <task id="LOCAL-00066" summary="Updated version to 0.8.2+229">
+      <option name="closed" value="true" />
+      <created>1776638109770</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1776638109770</updated>
+    </task>
+    <task id="LOCAL-00067" summary="Updated version to 0.8.2+229 with evidence">
+      <option name="closed" value="true" />
+      <created>1776639780630</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1776639780630</updated>
+    </task>
+    <task id="LOCAL-00068" summary="Updated version to 0.9.0+230">
+      <option name="closed" value="true" />
+      <created>1776644257958</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1776644257958</updated>
+    </task>
+    <task id="LOCAL-00069" summary="Updated version to 0.9.0+230">
+      <option name="closed" value="true" />
+      <created>1776644293291</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1776644293291</updated>
+    </task>
+    <task id="LOCAL-00070" summary="Updated version to 0.9.0+231">
+      <option name="closed" value="true" />
+      <created>1776648644111</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1776648644111</updated>
+    </task>
+    <task id="LOCAL-00071" summary="Updated version to 0.9.1+232">
+      <option name="closed" value="true" />
+      <created>1776725204981</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1776725204981</updated>
+    </task>
+    <task id="LOCAL-00072" summary="Updated version to 0.9.1+232">
+      <option name="closed" value="true" />
+      <created>1776725266662</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1776725266662</updated>
+    </task>
+    <task id="LOCAL-00073" summary="Updated version to 0.9.1+233">
+      <option name="closed" value="true" />
+      <created>1776735988392</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1776735988392</updated>
+    </task>
+    <task id="LOCAL-00074" summary="Updated version to 0.9.1+234">
+      <option name="closed" value="true" />
+      <created>1776806854585</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1776806854585</updated>
+    </task>
+    <option name="localTasksCounter" value="75" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -708,14 +706,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="First major refactoring" />
-    <MESSAGE value="Added various files to commit" />
-    <MESSAGE value="Post refactoring, before Notes icon colour change" />
-    <MESSAGE value="Adjusted animal icon colours" />
-    <MESSAGE value="Updated to version 0.4.4 build 125" />
-    <MESSAGE value="Updated to version 0.4.4 build 126" />
-    <MESSAGE value="First pass of the correction code" />
-    <MESSAGE value="Prior to refactoring of 595 flutter_app/lib/app/sudoku_controller.dart&#10;                        385 flutter_app/lib/app/game_session_service.dart" />
     <MESSAGE value="After refactoring of 595 flutter_app/lib/app/sudoku_controller.dart&#10;                        385 flutter_app/lib/app/game_session_service.dart" />
     <MESSAGE value="Corrections 2nd pass" />
     <MESSAGE value="Corrections prior to adding all missing animals valid or not." />
@@ -733,7 +723,15 @@
     <MESSAGE value="Updated version to 0.6.1+154" />
     <MESSAGE value="Updated version to 0.8.2+225" />
     <MESSAGE value="Updated version to 0.8.2+226" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.8.2+226" />
+    <MESSAGE value="Updated version to 0.8.2+227" />
+    <MESSAGE value="Updated version to 0.8.2+229" />
+    <MESSAGE value="Updated version to 0.8.2+229 with evidence" />
+    <MESSAGE value="Updated version to 0.9.0+230" />
+    <MESSAGE value="Updated version to 0.9.0+231" />
+    <MESSAGE value="Updated version to 0.9.1+232" />
+    <MESSAGE value="Updated version to 0.9.1+233" />
+    <MESSAGE value="Updated version to 0.9.1+234" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.9.1+234" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
