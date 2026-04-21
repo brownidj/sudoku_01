@@ -32,9 +32,7 @@ class TooltipOverlayService {
       hasImage
           ? previewSize + tooltipPadding.horizontal
           : textPainter.width + tooltipPadding.horizontal,
-      (hasImage ? previewSize + 10 : 0) +
-          textPainter.height +
-          tooltipPadding.vertical,
+      (hasImage ? previewSize : textPainter.height) + tooltipPadding.vertical,
     );
 
     var left = globalPosition.dx - tooltipSize.width / 2;
@@ -57,7 +55,7 @@ class TooltipOverlayService {
           child: Container(
             padding: tooltipPadding,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: hasImage ? Colors.transparent : Colors.white,
               borderRadius: BorderRadius.circular(6),
             ),
             child: Column(
@@ -68,19 +66,19 @@ class TooltipOverlayService {
                   Container(
                     width: previewSize,
                     height: previewSize,
-                    color: Colors.white,
+                    color: Colors.transparent,
                     child: Image.asset(
                       imageAssetPath!,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                     ),
                   ),
-                if (hasImage) const SizedBox(height: 10),
-                Text(
-                  text,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.black, fontSize: 14),
-                ),
+                if (!hasImage)
+                  Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.black, fontSize: 14),
+                  ),
               ],
             ),
           ),

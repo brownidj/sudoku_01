@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
+import 'package:flutter_app/ui/services/sudoku_tile_preview_audio_service.dart';
 import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
 
 class SudokuCellTooltipService {
   final TooltipOverlayService _tooltipOverlayService;
+  final SudokuTilePreviewAudioService _tilePreviewAudioService;
 
-  const SudokuCellTooltipService(this._tooltipOverlayService);
+  const SudokuCellTooltipService(
+    this._tooltipOverlayService,
+    this._tilePreviewAudioService,
+  );
 
   void showForCell({
     required BuildContext context,
@@ -36,6 +41,10 @@ class SudokuCellTooltipService {
       globalPosition: globalPosition,
       text: name,
       imageAssetPath: imageAssetPath,
+    );
+    _tilePreviewAudioService.playForTile(
+      contentMode: state.contentMode,
+      digit: value,
     );
   }
 

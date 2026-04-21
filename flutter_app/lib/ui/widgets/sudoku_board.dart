@@ -48,6 +48,9 @@ class SudokuBoard extends StatelessWidget {
                 }
               },
               onLongPressStart: (details) {
+                if (state.contentMode == 'numbers') {
+                  return;
+                }
                 final local = details.localPosition;
                 final layout = layoutForSize(Size(boardSize, boardSize));
                 final coord = coordFromOffset(layout, local);

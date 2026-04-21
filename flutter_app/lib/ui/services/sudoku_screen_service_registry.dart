@@ -11,6 +11,7 @@ import 'package:flutter_app/ui/services/sudoku_controller_binding_service.dart';
 import 'package:flutter_app/ui/services/sudoku_correction_flow_coordinator.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_effects_coordinator.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_effects_service.dart';
+import 'package:flutter_app/ui/services/sudoku_tile_preview_audio_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_audio_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_layout_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
@@ -22,6 +23,7 @@ class SudokuScreenServiceRegistry {
   late final CandidatePanelCoordinator candidatePanelCoordinator;
   late final DebugToggleService debugToggleService;
   late final TooltipOverlayService tooltipService;
+  late final SudokuTilePreviewAudioService tilePreviewAudioService;
   late final SudokuCellTooltipService cellTooltipService;
   late final SudokuScreenEffectsService effectsService;
   late final SudokuScreenEffectsCoordinator effectsCoordinator;
@@ -46,7 +48,11 @@ class SudokuScreenServiceRegistry {
     );
     debugToggleService = DebugToggleService();
     tooltipService = TooltipOverlayService();
-    cellTooltipService = SudokuCellTooltipService(tooltipService);
+    tilePreviewAudioService = SudokuTilePreviewAudioService();
+    cellTooltipService = SudokuCellTooltipService(
+      tooltipService,
+      tilePreviewAudioService,
+    );
     effectsService = SudokuScreenEffectsService();
     effectsCoordinator = SudokuScreenEffectsCoordinator(effectsService);
     correctionFlowCoordinator = SudokuCorrectionFlowCoordinator(effectsService);
@@ -97,6 +103,7 @@ class SudokuScreenServiceRegistry {
   }
 
   void onAudioEnabledChanged(bool enabled) {
+    tilePreviewAudioService.setEnabled(enabled);
     victoryAudioService.setEnabled(enabled);
     victoryAudioService.onOverlayStateChanged(
       victoryOverlayService.state.value,
@@ -158,6 +165,7 @@ class SudokuScreenServiceRegistry {
     victoryOverlayService.state.removeListener(_onVictoryOverlayChanged);
     victoryOverlayService.dispose();
     victoryAudioService.dispose();
+    tilePreviewAudioService.dispose();
     victoryPositionService.dispose();
     tooltipService.dispose();
   }
