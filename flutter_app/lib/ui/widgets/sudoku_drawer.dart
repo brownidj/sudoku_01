@@ -48,31 +48,6 @@ class SudokuDrawer extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Animals',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            RadioListTile<String>(
-              title: const Text('Cute'),
-              value: 'cute',
-              groupValue: state.animalStyle,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: _handleAnimalStyleChanged,
-            ),
-            RadioListTile<String>(
-              title: const Text('Simple'),
-              value: 'simple',
-              groupValue: state.animalStyle,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: _handleAnimalStyleChanged,
-            ),
             const Divider(height: 16),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
@@ -232,14 +207,6 @@ class SudokuDrawer extends StatelessWidget {
       ),
     );
   }
-
-  void _handleAnimalStyleChanged(String? value) {
-    if (value == null) {
-      return;
-    }
-    onAnimalStyleChanged(value);
-  }
-
   void _handleStyleChanged(String? value) {
     if (value == null) {
       return;

@@ -42,10 +42,7 @@ class SudokuTilePreviewAudioService {
     }
   }
 
-  void playForTile({
-    required String contentMode,
-    required int digit,
-  }) {
+  void playForTile({required String contentMode, required int digit}) {
     if (!_enabled) {
       return;
     }
@@ -86,9 +83,21 @@ class SudokuTilePreviewAudioService {
       8: 'audio/music/tambourine.mp3',
       9: 'audio/music/ukulele.mp3',
     };
+    const operaAssets = <int, String>{
+      1: 'audio/opera/bass.mp3',
+      2: 'audio/opera/baritone.mp3',
+      3: 'audio/opera/tenor.mp3',
+      4: 'audio/opera/mezzo_soprano.mp3',
+      5: 'audio/opera/soprano.mp3',
+      6: 'audio/opera/royal_court_singer.mp3',
+      7: 'audio/opera/modern_opera.mp3',
+      8: 'audio/opera/masked_phantom_style.mp3',
+      9: 'audio/opera/opera_diva_comic.mp3',
+    };
     return switch (normalizedMode) {
       'animals' => animalAssets[digit],
       'instruments' => instrumentAssets[digit],
+      'old_opera' => operaAssets[digit],
       _ => null,
     };
   }

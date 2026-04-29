@@ -95,6 +95,15 @@ class SudokuVictoryAudioService {
       'saxophone.png': 'audio/music/saxophone.mp3',
       'ukelele.png': 'audio/music/ukulele.mp3',
       'ukulele.png': 'audio/music/ukulele.mp3',
+      'bass.png': 'audio/opera/bass.mp3',
+      'baritone.png': 'audio/opera/baritone.mp3',
+      'tenor.png': 'audio/opera/tenor.mp3',
+      'mezzo_soprano.png': 'audio/opera/mezzo_soprano.mp3',
+      'soprano.png': 'audio/opera/soprano.mp3',
+      'royal_court_singer.png': 'audio/opera/royal_court_singer.mp3',
+      'modern_opera.png': 'audio/opera/modern_opera.mp3',
+      'masked_phantom_style.png': 'audio/opera/masked_phantom_style.mp3',
+      'opera_diva_comic.png': 'audio/opera/opera_diva_comic.mp3',
     };
     return explicitMap[fileName];
   }

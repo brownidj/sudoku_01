@@ -75,6 +75,60 @@ void main() {
       ),
       'audio/music/ukulele.mp3',
     );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/bass.png',
+      ),
+      'audio/opera/bass.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/baritone.png',
+      ),
+      'audio/opera/baritone.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/tenor.png',
+      ),
+      'audio/opera/tenor.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/mezzo_soprano.png',
+      ),
+      'audio/opera/mezzo_soprano.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/soprano.png',
+      ),
+      'audio/opera/soprano.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/royal_court_singer.png',
+      ),
+      'audio/opera/royal_court_singer.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/modern_opera.png',
+      ),
+      'audio/opera/modern_opera.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/masked_phantom_style.png',
+      ),
+      'audio/opera/masked_phantom_style.mp3',
+    );
+    expect(
+      SudokuVictoryAudioService.audioAssetForVictoryMascot(
+        'assets/images/opera/opera_diva_comic.png',
+      ),
+      'audio/opera/opera_diva_comic.mp3',
+    );
   });
 
   test('returns null for unknown mascot asset path', () {

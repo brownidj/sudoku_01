@@ -86,6 +86,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         final assetVariant = switch (state.contentMode) {
           'animals' => state.animalStyle,
           'instruments' => 'instruments',
+          'old_opera' => 'old_opera',
           _ => null,
         };
         final viewModel = SudokuScreenViewModel.from(

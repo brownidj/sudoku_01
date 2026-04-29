@@ -39,7 +39,13 @@ class AnimalImageCache {
     final simple = await _loadImages(variant: 'simple');
     final cute = await _loadImages(variant: 'cute');
     final instruments = await _loadMusicImages();
-    return {'simple': simple, 'cute': cute, 'instruments': instruments};
+    final oldOpera = await _loadOperaImages();
+    return {
+      'simple': simple,
+      'cute': cute,
+      'instruments': instruments,
+      'old_opera': oldOpera,
+    };
   }
 
   static Future<Map<String, Map<int, Map<int, ui.Image>>>>
@@ -48,15 +54,23 @@ class AnimalImageCache {
     final simple = <int, Map<int, ui.Image>>{};
     final cute = <int, Map<int, ui.Image>>{};
     final instruments = <int, Map<int, ui.Image>>{};
+    final oldOpera = <int, Map<int, ui.Image>>{};
     final simpleNotes = await _loadNotesImages(variant: 'simple');
     final cuteNotes = await _loadNotesImages(variant: 'cute');
     final instrumentNotes = await _loadMusicImages();
+    final oldOperaNotes = await _loadOperaImages();
     for (final size in sizes) {
       simple[size] = Map<int, ui.Image>.from(simpleNotes);
       cute[size] = Map<int, ui.Image>.from(cuteNotes);
       instruments[size] = Map<int, ui.Image>.from(instrumentNotes);
+      oldOpera[size] = Map<int, ui.Image>.from(oldOperaNotes);
     }
-    _notesCache = {'simple': simple, 'cute': cute, 'instruments': instruments};
+    _notesCache = {
+      'simple': simple,
+      'cute': cute,
+      'instruments': instruments,
+      'old_opera': oldOpera,
+    };
     return _notesCache!;
   }
 
@@ -80,6 +94,18 @@ class AnimalImageCache {
     for (var d = 1; d <= 9; d += 1) {
       final data = await rootBundle.load(
         'assets/images/music/${_instrumentFileName(d)}.png',
+      );
+      final image = await _decodeImage(data.buffer.asUint8List());
+      images[d] = image;
+    }
+    return images;
+  }
+
+  static Future<Map<int, ui.Image>> _loadOperaImages() async {
+    final images = <int, ui.Image>{};
+    for (var d = 1; d <= 9; d += 1) {
+      final data = await rootBundle.load(
+        'assets/images/opera/${_operaFileName(d)}.png',
       );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
@@ -197,12 +223,64 @@ class AnimalImageCache {
     }
   }
 
+  static String _operaName(int digit) {
+    switch (digit) {
+      case 1:
+        return 'bass';
+      case 2:
+        return 'baritone';
+      case 3:
+        return 'tenor';
+      case 4:
+        return 'mezzo soprano';
+      case 5:
+        return 'soprano';
+      case 6:
+        return 'royal court singer';
+      case 7:
+        return 'modern opera performer';
+      case 8:
+        return 'masked phantom style';
+      case 9:
+        return 'opera diva comic';
+      default:
+        return 'bass';
+    }
+  }
+
+  static String _operaFileName(int digit) {
+    switch (digit) {
+      case 1:
+        return 'bass';
+      case 2:
+        return 'baritone';
+      case 3:
+        return 'tenor';
+      case 4:
+        return 'mezzo_soprano';
+      case 5:
+        return 'soprano';
+      case 6:
+        return 'royal_court_singer';
+      case 7:
+        return 'modern_opera';
+      case 8:
+        return 'masked_phantom_style';
+      case 9:
+        return 'opera_diva_comic';
+      default:
+        return 'bass';
+    }
+  }
+
   static String displayNameForDigit(String contentMode, int digit) {
     switch (contentMode) {
       case 'animals':
         return _animalName(digit);
       case 'instruments':
         return _instrumentName(digit);
+      case 'old_opera':
+        return _operaName(digit);
       default:
         return digit.toString();
     }
@@ -215,6 +293,9 @@ class AnimalImageCache {
   }) {
     if (contentMode == 'instruments') {
       return 'assets/images/music/${_instrumentFileName(digit)}.png';
+    }
+    if (contentMode == 'old_opera') {
+      return 'assets/images/opera/${_operaFileName(digit)}.png';
     }
     final variant = animalStyle == 'cute' ? 'cute' : 'simple';
     final name = _animalName(digit);
@@ -229,6 +310,12 @@ class AnimalImageCache {
           return digit.toString();
         }
         return instrument[0].toUpperCase();
+      case 'old_opera':
+        final singer = _operaName(digit);
+        if (singer.isEmpty) {
+          return digit.toString();
+        }
+        return singer[0].toUpperCase();
       default:
         return digit.toString();
     }

@@ -41,6 +41,30 @@ const _animalAudioAssets = <String>[
   'assets/audio/animals/iguana.mp3',
 ];
 
+const _operaImageAssets = <String>[
+  'assets/images/opera/bass.png',
+  'assets/images/opera/baritone.png',
+  'assets/images/opera/tenor.png',
+  'assets/images/opera/mezzo_soprano.png',
+  'assets/images/opera/soprano.png',
+  'assets/images/opera/royal_court_singer.png',
+  'assets/images/opera/modern_opera.png',
+  'assets/images/opera/masked_phantom_style.png',
+  'assets/images/opera/opera_diva_comic.png',
+];
+
+const _operaAudioAssets = <String>[
+  'assets/audio/opera/bass.mp3',
+  'assets/audio/opera/baritone.mp3',
+  'assets/audio/opera/masked_phantom_style.mp3',
+  'assets/audio/opera/mezzo_soprano.mp3',
+  'assets/audio/opera/modern_opera.mp3',
+  'assets/audio/opera/opera_diva_comic.mp3',
+  'assets/audio/opera/royal_court_singer.mp3',
+  'assets/audio/opera/tenor.mp3',
+  'assets/audio/opera/soprano.mp3',
+];
+
 Future<void> _expectAssetsLoadable(List<String> assets) async {
   for (final asset in assets) {
     final data = await rootBundle.load(asset);
@@ -61,5 +85,13 @@ void main() {
 
   testWidgets('bundles animal audio assets', (tester) async {
     await _expectAssetsLoadable(_animalAudioAssets);
+  });
+
+  testWidgets('bundles old opera image assets', (tester) async {
+    await _expectAssetsLoadable(_operaImageAssets);
+  });
+
+  testWidgets('bundles old opera audio assets', (tester) async {
+    await _expectAssetsLoadable(_operaAudioAssets);
   });
 }

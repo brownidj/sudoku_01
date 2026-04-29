@@ -42,6 +42,18 @@ class SudokuCellTooltipService {
       text: name,
       imageAssetPath: imageAssetPath,
     );
+    final audioAsset = SudokuTilePreviewAudioService.audioAssetForTile(
+      contentMode: state.contentMode,
+      digit: value,
+    );
+    if (audioAsset == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Audio is not available for this tile yet.'),
+        ),
+      );
+      return;
+    }
     _tilePreviewAudioService.playForTile(
       contentMode: state.contentMode,
       digit: value,

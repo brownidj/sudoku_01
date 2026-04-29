@@ -18,4 +18,13 @@ void main() {
     expect(AnimalImageCache.tileLabelForDigit('numbers', 4), '4');
     expect(AnimalImageCache.tileLabelForDigit('animals', 4), '4');
   });
+
+  test('old opera mode exposes mapped names and initials', () {
+    expect(AnimalImageCache.displayNameForDigit('old_opera', 1), 'bass');
+    expect(
+      AnimalImageCache.displayNameForDigit('old_opera', 4),
+      'mezzo soprano',
+    );
+    expect(AnimalImageCache.tileLabelForDigit('old_opera', 3), 'T');
+  });
 }

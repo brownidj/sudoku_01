@@ -40,9 +40,21 @@ class SudokuVictoryOverlayService {
     'assets/images/music/tambourine.png',
     'assets/images/music/ukelele.png',
   ];
+  static const List<String> oldOperaCelebrationAssets = <String>[
+    'assets/images/opera/bass.png',
+    'assets/images/opera/baritone.png',
+    'assets/images/opera/tenor.png',
+    'assets/images/opera/mezzo_soprano.png',
+    'assets/images/opera/soprano.png',
+    'assets/images/opera/royal_court_singer.png',
+    'assets/images/opera/modern_opera.png',
+    'assets/images/opera/masked_phantom_style.png',
+    'assets/images/opera/opera_diva_comic.png',
+  ];
   static const List<String> numberCelebrationAssets = <String>[
     ...animalCelebrationAssets,
     ...instrumentCelebrationAssets,
+    ...oldOperaCelebrationAssets,
   ];
 
   final Duration duration;
@@ -77,6 +89,7 @@ class SudokuVictoryOverlayService {
     final assets = switch (contentMode) {
       'animals' => animalCelebrationAssets,
       'instruments' => instrumentCelebrationAssets,
+      'old_opera' => oldOperaCelebrationAssets,
       _ => numberCelebrationAssets,
     };
     if (assets.isEmpty) {
