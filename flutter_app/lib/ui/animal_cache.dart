@@ -4,6 +4,62 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 
 class AnimalImageCache {
+  static const List<String> _animalNames = <String>[
+    'ape',
+    'buffalo',
+    'cheetah',
+    'dolphin',
+    'elephant',
+    'frog',
+    'giraffe',
+    'hippo',
+    'iguana',
+  ];
+  static const List<String> _instrumentNames = <String>[
+    'piano',
+    'banjo',
+    'violin',
+    'trumpet',
+    'horn',
+    'drums',
+    'saxophone',
+    'tambourine',
+    'ukulele',
+  ];
+  static const List<String> _instrumentFileNames = <String>[
+    'piano',
+    'banjo',
+    'violin',
+    'trumpet',
+    'horn',
+    'drum',
+    'saxaphone',
+    'tambourine',
+    'ukelele',
+  ];
+  static const List<String> _operaNames = <String>[
+    'bass',
+    'baritone',
+    'tenor',
+    'mezzo soprano',
+    'soprano',
+    'royal court singer',
+    'modern opera performer',
+    'masked phantom style',
+    'opera diva comic',
+  ];
+  static const List<String> _operaFileNames = <String>[
+    'bass',
+    'baritone',
+    'tenor',
+    'mezzo_soprano',
+    'soprano',
+    'royal_court_singer',
+    'modern_opera',
+    'masked_phantom_style',
+    'opera_diva_comic',
+  ];
+
   static Future<Map<String, Map<int, ui.Image>>>? _future;
   static Future<Map<String, Map<int, Map<int, ui.Image>>>>? _notesFuture;
   static Map<String, Map<int, Map<int, ui.Image>>>? _notesCache;
@@ -145,28 +201,7 @@ class AnimalImageCache {
   }
 
   static String _animalName(int digit) {
-    switch (digit) {
-      case 1:
-        return 'ape';
-      case 2:
-        return 'buffalo';
-      case 3:
-        return 'cheetah';
-      case 4:
-        return 'dolphin';
-      case 5:
-        return 'elephant';
-      case 6:
-        return 'frog';
-      case 7:
-        return 'giraffe';
-      case 8:
-        return 'hippo';
-      case 9:
-        return 'iguana';
-      default:
-        return 'ape';
-    }
+    return _nameAt(digit, _animalNames, fallback: 'ape');
   }
 
   static String nameForDigit(int digit) {
@@ -174,103 +209,19 @@ class AnimalImageCache {
   }
 
   static String _instrumentName(int digit) {
-    switch (digit) {
-      case 1:
-        return 'piano';
-      case 2:
-        return 'banjo';
-      case 3:
-        return 'violin';
-      case 4:
-        return 'trumpet';
-      case 5:
-        return 'horn';
-      case 6:
-        return 'drums';
-      case 7:
-        return 'saxophone';
-      case 8:
-        return 'tambourine';
-      case 9:
-        return 'ukulele';
-      default:
-        return 'piano';
-    }
+    return _nameAt(digit, _instrumentNames, fallback: 'piano');
   }
 
   static String _instrumentFileName(int digit) {
-    switch (digit) {
-      case 1:
-        return 'piano';
-      case 2:
-        return 'banjo';
-      case 3:
-        return 'violin';
-      case 4:
-        return 'trumpet';
-      case 5:
-        return 'horn';
-      case 6:
-        return 'drum';
-      case 7:
-        return 'saxaphone';
-      case 8:
-        return 'tambourine';
-      case 9:
-        return 'ukelele';
-      default:
-        return 'piano';
-    }
+    return _nameAt(digit, _instrumentFileNames, fallback: 'piano');
   }
 
   static String _operaName(int digit) {
-    switch (digit) {
-      case 1:
-        return 'bass';
-      case 2:
-        return 'baritone';
-      case 3:
-        return 'tenor';
-      case 4:
-        return 'mezzo soprano';
-      case 5:
-        return 'soprano';
-      case 6:
-        return 'royal court singer';
-      case 7:
-        return 'modern opera performer';
-      case 8:
-        return 'masked phantom style';
-      case 9:
-        return 'opera diva comic';
-      default:
-        return 'bass';
-    }
+    return _nameAt(digit, _operaNames, fallback: 'bass');
   }
 
   static String _operaFileName(int digit) {
-    switch (digit) {
-      case 1:
-        return 'bass';
-      case 2:
-        return 'baritone';
-      case 3:
-        return 'tenor';
-      case 4:
-        return 'mezzo_soprano';
-      case 5:
-        return 'soprano';
-      case 6:
-        return 'royal_court_singer';
-      case 7:
-        return 'modern_opera';
-      case 8:
-        return 'masked_phantom_style';
-      case 9:
-        return 'opera_diva_comic';
-      default:
-        return 'bass';
-    }
+    return _nameAt(digit, _operaFileNames, fallback: 'bass');
   }
 
   static String displayNameForDigit(String contentMode, int digit) {
@@ -327,6 +278,13 @@ class AnimalImageCache {
       return '';
     }
     return name[0].toUpperCase();
+  }
+
+  static String _nameAt(int digit, List<String> names, {required String fallback}) {
+    if (digit < 1 || digit > names.length) {
+      return fallback;
+    }
+    return names[digit - 1];
   }
 
   static Future<ui.Image> _decodeImage(Uint8List bytes) async {

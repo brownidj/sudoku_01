@@ -7,32 +7,48 @@ import 'package:flutter_app/ui/sudoku_screen.dart';
 
 import 'support/sudoku_controller_test_support.dart';
 
+Future<SudokuController> _createController({
+  FakeGameService? gameService,
+}) async {
+  final controller = SudokuController(
+    preferencesStore: FakePreferencesStore(),
+    gameService: gameService ?? FakeGameService(),
+    settingsController: FakeSettingsController(
+      const SettingsState(
+        notesMode: false,
+        difficulty: 'easy',
+        canChangeDifficulty: true,
+        canChangePuzzleMode: true,
+        styleName: 'Modern',
+        contentMode: 'numbers',
+        animalStyle: 'simple',
+        puzzleMode: 'multi',
+      ),
+    ),
+  );
+  await controller.ready;
+  return controller;
+}
+
+Future<void> _pumpScreen(WidgetTester tester, SudokuController controller) async {
+  await tester.pumpWidget(MaterialApp(home: SudokuScreen(controller: controller)));
+  await tester.pumpAndSettle();
+}
+
+Future<void> _enableDebugTools(WidgetTester tester) async {
+  for (var i = 0; i < 7; i += 1) {
+    await tester.tap(find.byKey(const ValueKey<String>('version-title-text')));
+    await tester.pump(const Duration(milliseconds: 120));
+  }
+  await tester.pumpAndSettle();
+}
+
 void main() {
   testWidgets(
     'debug drawer tools are hidden by default and enabled by 7 taps',
     (WidgetTester tester) async {
-      final controller = SudokuController(
-        preferencesStore: FakePreferencesStore(),
-        gameService: FakeGameService(),
-        settingsController: FakeSettingsController(
-          const SettingsState(
-            notesMode: false,
-            difficulty: 'easy',
-            canChangeDifficulty: true,
-            canChangePuzzleMode: true,
-            styleName: 'Modern',
-            contentMode: 'numbers',
-            animalStyle: 'simple',
-            puzzleMode: 'multi',
-          ),
-        ),
-      );
-      await controller.ready;
-
-      await tester.pumpWidget(
-        MaterialApp(home: SudokuScreen(controller: controller)),
-      );
-      await tester.pumpAndSettle();
+      final controller = await _createController();
+      await _pumpScreen(tester, controller);
 
       await tester.tap(find.byIcon(Icons.menu));
       await tester.pumpAndSettle();
@@ -43,13 +59,7 @@ void main() {
       Navigator.of(tester.element(find.byType(SudokuScreen))).maybePop();
       await tester.pumpAndSettle();
 
-      for (var i = 0; i < 7; i += 1) {
-        await tester.tap(
-          find.byKey(const ValueKey<String>('version-title-text')),
-        );
-        await tester.pump(const Duration(milliseconds: 120));
-      }
-      await tester.pumpAndSettle();
+      await _enableDebugTools(tester);
 
       await tester.tap(find.byIcon(Icons.menu));
       await tester.pumpAndSettle();
@@ -62,28 +72,8 @@ void main() {
   testWidgets('debug scenario notification is hidden when debug mode is off', (
     WidgetTester tester,
   ) async {
-    final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
-      gameService: FakeGameService(),
-      settingsController: FakeSettingsController(
-        const SettingsState(
-          notesMode: false,
-          difficulty: 'easy',
-          canChangeDifficulty: true,
-          canChangePuzzleMode: true,
-          styleName: 'Modern',
-          contentMode: 'numbers',
-          animalStyle: 'simple',
-          puzzleMode: 'multi',
-        ),
-      ),
-    );
-    await controller.ready;
-
-    await tester.pumpWidget(
-      MaterialApp(home: SudokuScreen(controller: controller)),
-    );
-    await tester.pumpAndSettle();
+    final controller = await _createController();
+    await _pumpScreen(tester, controller);
 
     controller.onLoadCorrectionScenario();
     await tester.pumpAndSettle();
@@ -91,42 +81,16 @@ void main() {
     await tester.tap(find.text('Cancel'));
     await tester.pumpAndSettle();
 
-    for (var i = 0; i < 7; i += 1) {
-      await tester.tap(
-        find.byKey(const ValueKey<String>('version-title-text')),
-      );
-      await tester.pump(const Duration(milliseconds: 120));
-    }
-    await tester.pumpAndSettle();
+    await _enableDebugTools(tester);
     expect(find.text('Debug scenario: correction available'), findsOneWidget);
   });
 
   testWidgets('confirming a correction shows corrected tiles snackbar', (
     WidgetTester tester,
   ) async {
-    final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
-      gameService: FakeGameService(),
-      settingsController: FakeSettingsController(
-        const SettingsState(
-          notesMode: false,
-          difficulty: 'easy',
-          canChangeDifficulty: true,
-          canChangePuzzleMode: true,
-          styleName: 'Modern',
-          contentMode: 'numbers',
-          animalStyle: 'simple',
-          puzzleMode: 'multi',
-        ),
-      ),
-    );
-    await controller.ready;
+    final controller = await _createController();
     controller.onLoadCorrectionScenario();
-
-    await tester.pumpWidget(
-      MaterialApp(home: SudokuScreen(controller: controller)),
-    );
-    await tester.pumpAndSettle();
+    await _pumpScreen(tester, controller);
 
     expect(
       find.text(
@@ -145,28 +109,8 @@ void main() {
     'locked difficulty shows premium explainer for free entitlement',
     (WidgetTester tester) async {
       final gameService = FakeGameService();
-      final controller = SudokuController(
-        preferencesStore: FakePreferencesStore(),
-        gameService: gameService,
-        settingsController: FakeSettingsController(
-          const SettingsState(
-            notesMode: false,
-            difficulty: 'easy',
-            canChangeDifficulty: true,
-            canChangePuzzleMode: true,
-            styleName: 'Modern',
-            contentMode: 'numbers',
-            animalStyle: 'simple',
-            puzzleMode: 'multi',
-          ),
-        ),
-      );
-      await controller.ready;
-
-      await tester.pumpWidget(
-        MaterialApp(home: SudokuScreen(controller: controller)),
-      );
-      await tester.pumpAndSettle();
+      final controller = await _createController(gameService: gameService);
+      await _pumpScreen(tester, controller);
 
       final baselineNewGameCalls = gameService.newGameCalls;
 
@@ -199,28 +143,8 @@ void main() {
     WidgetTester tester,
   ) async {
     final gameService = FakeGameService();
-    final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
-      gameService: gameService,
-      settingsController: FakeSettingsController(
-        const SettingsState(
-          notesMode: false,
-          difficulty: 'easy',
-          canChangeDifficulty: true,
-          canChangePuzzleMode: true,
-          styleName: 'Modern',
-          contentMode: 'numbers',
-          animalStyle: 'simple',
-          puzzleMode: 'multi',
-        ),
-      ),
-    );
-    await controller.ready;
-
-    await tester.pumpWidget(
-      MaterialApp(home: SudokuScreen(controller: controller)),
-    );
-    await tester.pumpAndSettle();
+    final controller = await _createController(gameService: gameService);
+    await _pumpScreen(tester, controller);
 
     final baselineNewGameCalls = gameService.newGameCalls;
 
@@ -247,37 +171,10 @@ void main() {
   testWidgets('debug reset entitlement action switches version from full to free', (
     WidgetTester tester,
   ) async {
-    final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
-      gameService: FakeGameService(),
-      settingsController: FakeSettingsController(
-        const SettingsState(
-          notesMode: false,
-          difficulty: 'easy',
-          canChangeDifficulty: true,
-          canChangePuzzleMode: true,
-          styleName: 'Modern',
-          contentMode: 'numbers',
-          animalStyle: 'simple',
-          puzzleMode: 'multi',
-        ),
-      ),
-    );
-    await controller.ready;
+    final controller = await _createController();
     controller.onSetEntitlement(Entitlement.premium);
-
-    await tester.pumpWidget(
-      MaterialApp(home: SudokuScreen(controller: controller)),
-    );
-    await tester.pumpAndSettle();
-
-    for (var i = 0; i < 7; i += 1) {
-      await tester.tap(
-        find.byKey(const ValueKey<String>('version-title-text')),
-      );
-      await tester.pump(const Duration(milliseconds: 120));
-    }
-    await tester.pumpAndSettle();
+    await _pumpScreen(tester, controller);
+    await _enableDebugTools(tester);
 
     final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
     scaffoldState.openDrawer();

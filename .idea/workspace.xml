@@ -4,26 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.9.1+234">
-      <change afterPath="$PROJECT_DIR$/docs/OfferCodeOneTimeUseCodes.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/ios/Untitled.swift" afterDir="false" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.9.3+262">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/billing_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/billing_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/in_app_purchase_billing_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/in_app_purchase_billing_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/premium_purchase_coordinator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/premium_purchase_coordinator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/in_app_purchase_billing_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/in_app_purchase_billing_service_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_billing_bridge_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_billing_bridge_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_premium_sheet_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_premium_sheet_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +74,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "feature/issue-6-premium-entitlement-model",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/assets/images",
+    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/opera",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -111,9 +95,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/opera" />
       <recent name="$PROJECT_DIR$/assets/images" />
       <recent name="$PROJECT_DIR$/docs" />
-      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/opera" />
       <recent name="$PROJECT_DIR$/docs/qa/screenshots" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -294,23 +278,7 @@
       <workItem from="1776473238256" duration="11230000" />
       <workItem from="1776488161583" duration="70178000" />
       <workItem from="1776888599522" duration="7107000" />
-      <workItem from="1777337854263" duration="16751000" />
-    </task>
-    <task id="LOCAL-00028" summary="Corrected Numbers mode Notes">
-      <option name="closed" value="true" />
-      <created>1770945709579</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1770945709579</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Android release">
-      <option name="closed" value="true" />
-      <created>1771991691387</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1771991691387</updated>
+      <workItem from="1777337854263" duration="30276000" />
     </task>
     <task id="LOCAL-00030" summary="Added game board persistence">
       <option name="closed" value="true" />
@@ -688,7 +656,23 @@
       <option name="project" value="LOCAL" />
       <updated>1776809652280</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Updated version to 0.9.3+243">
+      <option name="closed" value="true" />
+      <created>1777428491161</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1777428491161</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Updated version to 0.9.3+262">
+      <option name="closed" value="true" />
+      <created>1777468609231</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1777468609231</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -726,8 +710,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="After refactoring of 595 flutter_app/lib/app/sudoku_controller.dart&#10;                        385 flutter_app/lib/app/game_session_service.dart" />
-    <MESSAGE value="Corrections 2nd pass" />
     <MESSAGE value="Corrections prior to adding all missing animals valid or not." />
     <MESSAGE value="Changed to cheetah" />
     <MESSAGE value="Prior to a refactoring: &#10;387 flutter_app/lib/app/sudoku_controller.dart&#10;426 flutter_app/lib/app/sudoku_controller_internal.dart&#10;386 flutter_app/lib/ui/sudoku_screen.dart" />
@@ -751,7 +733,9 @@
     <MESSAGE value="Updated version to 0.9.1+232" />
     <MESSAGE value="Updated version to 0.9.1+233" />
     <MESSAGE value="Updated version to 0.9.1+234" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.9.1+234" />
+    <MESSAGE value="Updated version to 0.9.3+243" />
+    <MESSAGE value="Updated version to 0.9.3+262" />
+    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.9.3+262" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
