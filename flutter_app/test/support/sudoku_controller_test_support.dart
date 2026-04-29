@@ -176,6 +176,7 @@ class FakeBillingService implements BillingService {
   BillingActionResult buyResult;
   BillingActionResult restoreResult;
   List<BillingProduct> products;
+  String? diagnostics;
 
   FakeBillingService({
     this.available = true,
@@ -187,6 +188,9 @@ class FakeBillingService implements BillingService {
   @override
   Stream<BillingPurchaseUpdate> get purchaseUpdates =>
       _updatesController.stream;
+
+  @override
+  String? get lastActionDiagnostics => diagnostics;
 
   void emit(BillingPurchaseUpdate update) {
     _updatesController.add(update);

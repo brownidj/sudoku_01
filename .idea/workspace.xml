@@ -5,8 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.9.1+234">
+      <change afterPath="$PROJECT_DIR$/docs/OfferCodeOneTimeUseCodes.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/ios/Untitled.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/xcshareddata/xcschemes/Runner.xcscheme" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/billing_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/billing_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/in_app_purchase_billing_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/in_app_purchase_billing_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/premium_purchase_coordinator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/premium_purchase_coordinator.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/in_app_purchase_billing_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/in_app_purchase_billing_service_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_billing_bridge_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_billing_bridge_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_premium_sheet_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_premium_sheet_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,7 +31,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="760" />
+    <option name="cachedIndexableFilesCount" value="846" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -73,7 +90,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "feature/issue-6-premium-entitlement-model",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/opera",
+    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/assets/images",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -94,13 +111,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images" />
+      <recent name="$PROJECT_DIR$/docs" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/audio/opera" />
       <recent name="$PROJECT_DIR$/docs/qa/screenshots" />
       <recent name="$PROJECT_DIR$" />
-      <recent name="$PROJECT_DIR$/flutter_app/assets/images/icons" />
-      <recent name="$PROJECT_DIR$/flutter_app/android/app" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/assets/images/screenshots" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/images" />
       <recent name="$PROJECT_DIR$/assets/images/icons" />
       <recent name="$PROJECT_DIR$" />
@@ -274,23 +292,9 @@
       <workItem from="1776409946430" duration="947000" />
       <workItem from="1776410909843" duration="2843000" />
       <workItem from="1776473238256" duration="11230000" />
-      <workItem from="1776488161583" duration="61017000" />
-    </task>
-    <task id="LOCAL-00026" summary="First alpha version">
-      <option name="closed" value="true" />
-      <created>1770849125377</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1770849125377</updated>
-    </task>
-    <task id="LOCAL-00027" summary="Added meta-documentation">
-      <option name="closed" value="true" />
-      <created>1770849634376</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1770849634376</updated>
+      <workItem from="1776488161583" duration="70178000" />
+      <workItem from="1776888599522" duration="7107000" />
+      <workItem from="1777337854263" duration="16751000" />
     </task>
     <task id="LOCAL-00028" summary="Corrected Numbers mode Notes">
       <option name="closed" value="true" />
@@ -668,7 +672,23 @@
       <option name="project" value="LOCAL" />
       <updated>1776806854585</updated>
     </task>
-    <option name="localTasksCounter" value="75" />
+    <task id="LOCAL-00075" summary="Updated version to 0.9.1+234">
+      <option name="closed" value="true" />
+      <created>1776809624201</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1776809624201</updated>
+    </task>
+    <task id="LOCAL-00076" summary="Updated version to 0.9.1+234">
+      <option name="closed" value="true" />
+      <created>1776809652280</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1776809652280</updated>
+    </task>
+    <option name="localTasksCounter" value="77" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

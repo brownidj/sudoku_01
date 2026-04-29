@@ -9,6 +9,8 @@ class _FakeInAppPurchaseApi implements InAppPurchaseApi {
   bool available;
   bool buyShouldSucceed;
   bool restoreShouldThrow;
+  bool completeShouldThrow;
+  int completePurchaseCalls = 0;
   ProductDetailsResponse productDetailsResponse;
   final StreamController<List<PurchaseDetails>> _purchaseStreamController =
       StreamController<List<PurchaseDetails>>.broadcast();
@@ -17,6 +19,7 @@ class _FakeInAppPurchaseApi implements InAppPurchaseApi {
     required this.available,
     required this.buyShouldSucceed,
     required this.restoreShouldThrow,
+    required this.completeShouldThrow,
     required this.productDetailsResponse,
   });
 
@@ -49,6 +52,14 @@ class _FakeInAppPurchaseApi implements InAppPurchaseApi {
       throw Exception('restore failed');
     }
   }
+
+  @override
+  Future<void> completePurchase(PurchaseDetails purchaseDetails) async {
+    completePurchaseCalls += 1;
+    if (completeShouldThrow) {
+      throw Exception('complete failed');
+    }
+  }
 }
 
 ProductDetails _product({required String id}) {
@@ -66,8 +77,9 @@ ProductDetails _product({required String id}) {
 PurchaseDetails _purchaseDetails({
   required String productId,
   required PurchaseStatus status,
+  bool pendingCompletePurchase = false,
 }) {
-  return PurchaseDetails(
+  final details = PurchaseDetails(
     purchaseID: 'purchase-123',
     productID: productId,
     verificationData: PurchaseVerificationData(
@@ -78,6 +90,8 @@ PurchaseDetails _purchaseDetails({
     transactionDate: '1700000000000',
     status: status,
   );
+  details.pendingCompletePurchase = pendingCompletePurchase;
+  return details;
 }
 
 void main() {
@@ -88,6 +102,7 @@ void main() {
       available: false,
       buyShouldSucceed: true,
       restoreShouldThrow: false,
+      completeShouldThrow: false,
       productDetailsResponse: ProductDetailsResponse(
         productDetails: <ProductDetails>[_product(id: premiumId)],
         notFoundIDs: const <String>[],
@@ -97,9 +112,7 @@ void main() {
       inAppPurchaseApi: api,
       premiumProductId: premiumId,
     );
-
     final result = await service.buyPremium();
-
     expect(result, BillingActionResult.unavailable);
   });
 
@@ -108,6 +121,7 @@ void main() {
       available: true,
       buyShouldSucceed: true,
       restoreShouldThrow: false,
+      completeShouldThrow: false,
       productDetailsResponse: ProductDetailsResponse(
         productDetails: const <ProductDetails>[],
         notFoundIDs: const <String>[],
@@ -117,9 +131,7 @@ void main() {
       inAppPurchaseApi: api,
       premiumProductId: '   ',
     );
-
     final result = await service.buyPremium();
-
     expect(result, BillingActionResult.productNotConfigured);
   });
 
@@ -130,6 +142,7 @@ void main() {
         available: true,
         buyShouldSucceed: true,
         restoreShouldThrow: false,
+        completeShouldThrow: false,
         productDetailsResponse: ProductDetailsResponse(
           productDetails: const <ProductDetails>[],
           notFoundIDs: const <String>[premiumId],
@@ -139,9 +152,7 @@ void main() {
         inAppPurchaseApi: api,
         premiumProductId: premiumId,
       );
-
       final result = await service.buyPremium();
-
       expect(result, BillingActionResult.productUnavailable);
     },
   );
@@ -153,6 +164,7 @@ void main() {
         available: true,
         buyShouldSucceed: true,
         restoreShouldThrow: false,
+        completeShouldThrow: false,
         productDetailsResponse: ProductDetailsResponse(
           productDetails: <ProductDetails>[_product(id: premiumId)],
           notFoundIDs: const <String>[],
@@ -162,9 +174,7 @@ void main() {
         inAppPurchaseApi: api,
         premiumProductId: premiumId,
       );
-
       final result = await service.buyPremium();
-
       expect(result, BillingActionResult.started);
     },
   );
@@ -174,6 +184,7 @@ void main() {
       available: true,
       buyShouldSucceed: true,
       restoreShouldThrow: false,
+      completeShouldThrow: false,
       productDetailsResponse: ProductDetailsResponse(
         productDetails: <ProductDetails>[_product(id: premiumId)],
         notFoundIDs: const <String>[],
@@ -183,7 +194,6 @@ void main() {
       inAppPurchaseApi: api,
       premiumProductId: premiumId,
     );
-
     final updates = <BillingPurchaseUpdate>[];
     final sub = service.purchaseUpdates.listen(updates.add);
     api.emitPurchase(
@@ -194,14 +204,16 @@ void main() {
     expect(updates, hasLength(1));
     expect(updates.first.productId, premiumId);
     expect(updates.first.status, BillingPurchaseStatus.purchased);
+    expect(api.completePurchaseCalls, 0);
     await sub.cancel();
   });
 
-  test('restorePurchases returns failed when restore throws', () async {
+  test('purchase stream completes pending purchases', () async {
     final api = _FakeInAppPurchaseApi(
       available: true,
       buyShouldSucceed: true,
-      restoreShouldThrow: true,
+      restoreShouldThrow: false,
+      completeShouldThrow: false,
       productDetailsResponse: ProductDetailsResponse(
         productDetails: <ProductDetails>[_product(id: premiumId)],
         notFoundIDs: const <String>[],
@@ -211,9 +223,72 @@ void main() {
       inAppPurchaseApi: api,
       premiumProductId: premiumId,
     );
+    final updates = <BillingPurchaseUpdate>[];
+    final sub = service.purchaseUpdates.listen(updates.add);
+    api.emitPurchase(
+      _purchaseDetails(
+        productId: premiumId,
+        status: PurchaseStatus.purchased,
+        pendingCompletePurchase: true,
+      ),
+    );
+    await Future<void>.delayed(Duration.zero);
 
+    expect(updates, hasLength(1));
+    expect(api.completePurchaseCalls, 1);
+    await sub.cancel();
+  });
+
+  test(
+    'purchase stream still emits update when completePurchase throws',
+    () async {
+      final api = _FakeInAppPurchaseApi(
+        available: true,
+        buyShouldSucceed: true,
+        restoreShouldThrow: false,
+        completeShouldThrow: true,
+        productDetailsResponse: ProductDetailsResponse(
+          productDetails: <ProductDetails>[_product(id: premiumId)],
+          notFoundIDs: const <String>[],
+        ),
+      );
+      final service = InAppPurchaseBillingService(
+        inAppPurchaseApi: api,
+        premiumProductId: premiumId,
+      );
+      final updates = <BillingPurchaseUpdate>[];
+      final sub = service.purchaseUpdates.listen(updates.add);
+      api.emitPurchase(
+        _purchaseDetails(
+          productId: premiumId,
+          status: PurchaseStatus.purchased,
+          pendingCompletePurchase: true,
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(updates, hasLength(1));
+      expect(api.completePurchaseCalls, 1);
+      await sub.cancel();
+    },
+  );
+
+  test('restorePurchases returns failed when restore throws', () async {
+    final api = _FakeInAppPurchaseApi(
+      available: true,
+      buyShouldSucceed: true,
+      restoreShouldThrow: true,
+      completeShouldThrow: false,
+      productDetailsResponse: ProductDetailsResponse(
+        productDetails: <ProductDetails>[_product(id: premiumId)],
+        notFoundIDs: const <String>[],
+      ),
+    );
+    final service = InAppPurchaseBillingService(
+      inAppPurchaseApi: api,
+      premiumProductId: premiumId,
+    );
     final result = await service.restorePurchases();
-
     expect(result, BillingActionResult.failed);
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 
 import 'support/sudoku_controller_test_support.dart';
@@ -241,5 +242,72 @@ void main() {
 
     expect(find.text('UNIQUE'), findsOneWidget);
     expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+  });
+
+  testWidgets('debug reset entitlement action switches version from full to free', (
+    WidgetTester tester,
+  ) async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    controller.onSetEntitlement(Entitlement.premium);
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    for (var i = 0; i < 7; i += 1) {
+      await tester.tap(
+        find.byKey(const ValueKey<String>('version-title-text')),
+      );
+      await tester.pump(const Duration(milliseconds: 120));
+    }
+    await tester.pumpAndSettle();
+
+    final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -1400));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Full'), findsOneWidget);
+    await tester.ensureVisible(
+      find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
+    );
+    await tester.pumpAndSettle();
+    expect(controller.state.premiumActive, isFalse);
+
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(
+      find.byKey(const ValueKey<String>('drawer-premium-status')),
+    );
+    await tester.pumpAndSettle();
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey<String>('drawer-premium-status')),
+        matching: find.text('Free'),
+      ),
+      findsOneWidget,
+    );
   });
 }

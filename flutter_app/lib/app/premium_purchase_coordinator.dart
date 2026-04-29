@@ -39,6 +39,8 @@ class PremiumPurchaseCoordinator {
     return _billingService.restorePurchases();
   }
 
+  String? get lastActionDiagnostics => _billingService.lastActionDiagnostics;
+
   void dispose() {
     final subscription = _purchaseSubscription;
     _purchaseSubscription = null;

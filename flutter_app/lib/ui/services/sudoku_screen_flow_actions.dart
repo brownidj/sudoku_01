@@ -151,8 +151,9 @@ class SudokuScreenFlowActions {
     _showBillingResultMessage(
       context: context,
       result: result,
+      diagnostics: controller.lastBillingDiagnostics,
       startedMessage:
-          'Purchase started. Complete it in the store to unlock Full Version.',
+          'Confirm the purchase in the App Store dialog to unlock Full Version.',
     );
   }
 
@@ -164,6 +165,7 @@ class SudokuScreenFlowActions {
     _showBillingResultMessage(
       context: context,
       result: result,
+      diagnostics: controller.lastBillingDiagnostics,
       startedMessage: 'Restore started. Purchased items will reappear shortly.',
     );
   }
@@ -172,8 +174,9 @@ class SudokuScreenFlowActions {
     required BuildContext context,
     required BillingActionResult result,
     required String startedMessage,
+    String? diagnostics,
   }) {
-    final message = switch (result) {
+    final baseMessage = switch (result) {
       BillingActionResult.started => startedMessage,
       BillingActionResult.unavailable =>
         'Purchases are unavailable on this device right now.',
@@ -183,6 +186,14 @@ class SudokuScreenFlowActions {
         'Full Version product details could not be loaded. Please try again.',
       BillingActionResult.failed => 'That did not work. Please try again.',
     };
+    final includeDiagnostics =
+        result == BillingActionResult.productUnavailable ||
+        result == BillingActionResult.unavailable;
+    final message = includeDiagnostics &&
+            diagnostics != null &&
+            diagnostics.trim().isNotEmpty
+        ? '$baseMessage [$diagnostics]'
+        : baseMessage;
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/billing_service.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
@@ -7,12 +8,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'support/sudoku_controller_test_support.dart';
 
 void main() {
-  testWidgets('locked drawer premium item opens the reusable premium sheet', (
-    WidgetTester tester,
-  ) async {
-    final controller = SudokuController(
+  SudokuController buildController({BillingService? billingService}) {
+    return SudokuController(
       preferencesStore: FakePreferencesStore(),
       gameService: FakeGameService(),
+      billingService: billingService,
       settingsController: FakeSettingsController(
         const SettingsState(
           notesMode: false,
@@ -26,6 +26,12 @@ void main() {
         ),
       ),
     );
+  }
+
+  testWidgets('locked drawer premium item opens the reusable premium sheet', (
+    WidgetTester tester,
+  ) async {
+    final controller = buildController();
     await controller.ready;
 
     await tester.pumpWidget(
@@ -64,22 +70,7 @@ void main() {
   testWidgets('unlock action from premium sheet triggers billing feedback', (
     WidgetTester tester,
   ) async {
-    final controller = SudokuController(
-      preferencesStore: FakePreferencesStore(),
-      gameService: FakeGameService(),
-      settingsController: FakeSettingsController(
-        const SettingsState(
-          notesMode: false,
-          difficulty: 'easy',
-          canChangeDifficulty: true,
-          canChangePuzzleMode: true,
-          styleName: 'Modern',
-          contentMode: 'numbers',
-          animalStyle: 'simple',
-          puzzleMode: 'multi',
-        ),
-      ),
-    );
+    final controller = buildController();
     await controller.ready;
 
     await tester.pumpWidget(
@@ -103,8 +94,65 @@ void main() {
     await tester.pump();
 
     expect(
-      find.text('Purchases are unavailable on this device right now.'),
+      find.textContaining('Purchases are unavailable on this device right now.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('restore purchases shows started feedback message', (
+    WidgetTester tester,
+  ) async {
+    final controller = buildController(
+      billingService: FakeBillingService(restoreResult: BillingActionResult.started),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -900));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('drawer-restore-purchases')),
+    );
+    await tester.pump();
+
+    expect(
+      find.text('Restore started. Purchased items will reappear shortly.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('restore purchases shows failed feedback message', (
+    WidgetTester tester,
+  ) async {
+    final controller = buildController(
+      billingService: FakeBillingService(restoreResult: BillingActionResult.failed),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -900));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('drawer-restore-purchases')),
+    );
+    await tester.pump();
+
+    expect(find.text('That did not work. Please try again.'), findsOneWidget);
   });
 }

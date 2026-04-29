@@ -35,6 +35,35 @@ void main() {
     },
   );
 
+  test(
+    'restored purchase stream update unlocks premium and persists entitlement',
+    () async {
+      final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);
+      final fakeBilling = FakeBillingService();
+      final controller = SudokuController(
+        preferencesStore: fakePrefs,
+        billingService: fakeBilling,
+      );
+      await controller.ready;
+
+      fakeBilling.emit(
+        const BillingPurchaseUpdate(
+          status: BillingPurchaseStatus.restored,
+          productId: 'premium_unlock',
+          purchaseId: 'restore-1',
+          errorMessage: null,
+          pendingCompletion: false,
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
+
+      expect(controller.entitlement, Entitlement.premium);
+      expect(controller.state.entitlement, Entitlement.premium);
+      expect(fakePrefs.entitlement, Entitlement.premium);
+    },
+  );
+
   test('non-premium purchase updates do not unlock entitlement', () async {
     final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);
     final fakeBilling = FakeBillingService();

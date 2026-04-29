@@ -13,6 +13,7 @@ class SudokuDrawer extends StatelessWidget {
   final VoidCallback? onRestorePurchasesSelected;
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
+  final VoidCallback? onResetEntitlementToFreeSelected;
   final bool showDebugTools;
 
   const SudokuDrawer({
@@ -27,6 +28,7 @@ class SudokuDrawer extends StatelessWidget {
     this.onRestorePurchasesSelected,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
+    this.onResetEntitlementToFreeSelected,
     this.showDebugTools = AppDebug.enabled,
   });
 
@@ -136,7 +138,7 @@ class SudokuDrawer extends StatelessWidget {
               contentPadding: const EdgeInsets.symmetric(horizontal: 16),
               title: const Text('Version'),
               trailing: Text(
-                state.premiumActive ? 'Active' : 'Free',
+                state.premiumActive ? 'Full' : 'Free',
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
@@ -187,7 +189,8 @@ class SudokuDrawer extends StatelessWidget {
             ),
             if (showDebugTools &&
                 (onLoadCorrectionScenario != null ||
-                    onLoadExhaustedCorrectionScenario != null)) ...[
+                    onLoadExhaustedCorrectionScenario != null ||
+                    onResetEntitlementToFreeSelected != null)) ...[
               const Divider(height: 16),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
@@ -212,6 +215,16 @@ class SudokuDrawer extends StatelessWidget {
                     'Temporary control for undo-only recovery testing.',
                   ),
                   onTap: onLoadExhaustedCorrectionScenario,
+                ),
+              if (onResetEntitlementToFreeSelected != null)
+                ListTile(
+                  key: const ValueKey<String>('drawer-reset-entitlement-free'),
+                  leading: const Icon(Icons.restart_alt),
+                  title: const Text('Reset Full Version (Debug)'),
+                  subtitle: const Text(
+                    'Sets local entitlement to Free for purchase retesting.',
+                  ),
+                  onTap: onResetEntitlementToFreeSelected,
                 ),
             ],
           ],

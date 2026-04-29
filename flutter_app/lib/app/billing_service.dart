@@ -40,6 +40,7 @@ class BillingPurchaseUpdate {
 
 abstract class BillingService {
   Stream<BillingPurchaseUpdate> get purchaseUpdates;
+  String? get lastActionDiagnostics;
 
   Future<bool> isAvailable();
 
@@ -56,6 +57,9 @@ class NoopBillingService implements BillingService {
   @override
   Stream<BillingPurchaseUpdate> get purchaseUpdates =>
       const Stream<BillingPurchaseUpdate>.empty();
+
+  @override
+  String? get lastActionDiagnostics => null;
 
   @override
   Future<bool> isAvailable() async => false;

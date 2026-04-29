@@ -194,6 +194,8 @@ class SudokuController extends ChangeNotifier {
       _premiumPurchaseCoordinator.buyPremium();
   Future<BillingActionResult> restorePurchases() =>
       _premiumPurchaseCoordinator.restorePurchases();
+  String? get lastBillingDiagnostics =>
+      _premiumPurchaseCoordinator.lastActionDiagnostics;
 
   @override
   void dispose() {

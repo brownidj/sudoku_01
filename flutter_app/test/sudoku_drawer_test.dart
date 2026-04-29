@@ -4,7 +4,7 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 
-UiState _state() {
+UiState _state({bool premiumActive = false}) {
   final cells = List<List<CellVm>>.generate(
     9,
     (r) => List<CellVm>.generate(
@@ -44,6 +44,8 @@ UiState _state() {
     debugScenarioLabel: null,
     correctionNoticeSerial: 0,
     correctionNoticeMessage: null,
+    entitlement: premiumActive ? Entitlement.premium : Entitlement.free,
+    premiumActive: premiumActive,
   );
 }
 
@@ -104,6 +106,7 @@ void main() {
   ) async {
     var correctionTapped = false;
     var exhaustedTapped = false;
+    var resetEntitlementTapped = false;
 
     await tester.pumpWidget(
       MaterialApp(
@@ -117,6 +120,9 @@ void main() {
           onLoadExhaustedCorrectionScenario: () {
             exhaustedTapped = true;
           },
+          onResetEntitlementToFreeSelected: () {
+            resetEntitlementTapped = true;
+          },
           showDebugTools: true,
         ),
       ),
@@ -127,15 +133,21 @@ void main() {
 
     expect(find.text('Load Correction Scenario'), findsOneWidget);
     expect(find.text('Load Exhausted Correction Scenario'), findsOneWidget);
+    expect(find.text('Reset Full Version (Debug)'), findsOneWidget);
     expect(find.text('Help'), findsNothing);
 
     await tester.tap(find.text('Load Correction Scenario'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Load Exhausted Correction Scenario'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Reset Full Version (Debug)'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Reset Full Version (Debug)'));
+    await tester.pumpAndSettle();
 
     expect(correctionTapped, isTrue);
     expect(exhaustedTapped, isTrue);
+    expect(resetEntitlementTapped, isTrue);
   });
 
   testWidgets('shows premium status and restore purchases action', (
@@ -173,5 +185,49 @@ void main() {
     );
     await tester.pumpAndSettle();
     expect(restoreTapped, isTrue);
+  });
+
+  testWidgets('shows full premium status and hides locked premium rows', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: SudokuDrawer(
+          state: _state(premiumActive: true),
+          onAnimalStyleChanged: (_) {},
+          onStyleChanged: (_) {},
+        ),
+      ),
+    );
+
+    await tester.drag(find.byType(ListView), const Offset(0, -900));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('drawer-premium-status')),
+      findsOneWidget,
+    );
+    expect(find.text('Full'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('drawer-restore-purchases')),
+      findsOneWidget,
+    );
+
+    expect(
+      find.byKey(const ValueKey<String>('drawer-locked-progress-tracker')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('drawer-locked-extra-themes')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('drawer-locked-extra-sounds')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('drawer-unlock-premium')),
+      findsNothing,
+    );
   });
 }

@@ -151,6 +151,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
               Navigator.of(context).maybePop();
               controller.onLoadExhaustedCorrectionScenario();
             },
+            onResetEntitlementToFreeSelected: () {
+              Navigator.of(context).maybePop();
+              controller.onSetEntitlement(Entitlement.free);
+            },
             showDebugTools: viewModel.showDebugTools,
           ),
           body: SudokuGameContentBuilder(
