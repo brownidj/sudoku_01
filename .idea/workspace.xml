@@ -4,39 +4,52 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Updated version to 0.9.3+262 after further refactor">
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`">
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Blue Morpho Lullaby-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Blue Morpho Lullaby.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Drifting Leaf Waltz-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Drifting Leaf Waltz.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Flamboyant Glide-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Flamboyant Glide.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Glasswing Glide-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Glasswing Glide.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Metamorphic Rave-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Metamorphic Rave.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Monarchs March-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Monarchs March.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Savannah Flutter-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Savannah Flutter.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Sulphur Shuffle-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Sulphur Shuffle.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Swallowtail Swoop-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Swallowtail Swoop.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/butterfly_sound.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/android/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/android/app/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/android/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/android/app/google-services.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/android/app/src/androidTest/java/org/topository/zudoku/MainActivityTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/android/app/src/main/kotlin/org/topository/zudoku/MainActivity.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/android/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/android/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_cartoon_elephant.png" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_cartoon_elephant.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_cartoon_elephant_s.png" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/images/animals/5_cartoon_elephant_s.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_configuration_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_configuration_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_session_codec.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_session_codec.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/ui_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/ui_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_start_instruction_overlay_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_start_instruction_overlay_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_service_registry.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_service_registry.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_metadata_row.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_metadata_row.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen_handlers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen_handlers.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content_builder.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content_builder.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/victory_mascot_overlay.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/victory_mascot_overlay.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/macos/Podfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/macos/Podfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/game_configuration_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/game_configuration_service_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_board_area_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_board_area_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_gameplay_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_gameplay_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_lock_help_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_lock_help_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_victory_overlay_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_victory_overlay_service_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/run_everything.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_everything.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +57,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="884" />
+    <option name="cachedIndexableFilesCount" value="894" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -81,40 +94,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in tests.executor&quot;: &quot;Run&quot;,
-    &quot;Python.bgt.executor&quot;: &quot;Run&quot;,
-    &quot;Python.fix_animal_images.executor&quot;: &quot;Run&quot;,
-    &quot;Python.generate_animal_images.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.tk_view.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck&quot;,
-    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
-    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/issue-6-premium-entitlement-model&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/opera&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python tests.Python tests in tests.executor": "Run",
+    "Python.bgt.executor": "Run",
+    "Python.butterfly_sound.executor": "Run",
+    "Python.fix_animal_images.executor": "Run",
+    "Python.generate_animal_images.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.tk_view.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHELLCHECK.PATH": "/Users/david/Library/Application Support/JetBrains/PyCharm2025.3/plugins/Shell Script/shellcheck",
+    "ai.playground.ignore.import.keys.banner.in.settings": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "feature/issue-6-premium-entitlement-model",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/butterflies",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "show.migrate.to.gradle.popup": "false",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecapSpentCounter">
     <option name="endsOfQuotaMs" value="1772334012594" />
     <option name="spentUsd" value="0.11471075" />
@@ -124,20 +138,21 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/butterflies" />
+      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/background" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/audio/opera" />
       <recent name="$PROJECT_DIR$/assets/images" />
       <recent name="$PROJECT_DIR$/docs" />
-      <recent name="$PROJECT_DIR$/docs/qa/screenshots" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/butterflies" />
       <recent name="$PROJECT_DIR$/assets/images/screenshots" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/images" />
       <recent name="$PROJECT_DIR$/assets/images/icons" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.bgt">
+  <component name="RunManager" selected="Python.butterfly_sound">
     <configuration name="bgt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Sudoku_01" />
       <option name="ENV_FILES" value="" />
@@ -163,7 +178,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="fix_animal_images" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="butterfly_sound" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Sudoku_01" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -176,10 +191,10 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
+      <option name="DEBUG_JUST_MY_CODE" value="false" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/fix_animal_images.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/butterfly_sound.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -258,11 +273,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.butterfly_sound" />
         <item itemvalue="Python.bgt" />
         <item itemvalue="Python tests.Python tests in tests" />
         <item itemvalue="Python.main" />
         <item itemvalue="Python.generate_animal_images" />
-        <item itemvalue="Python.fix_animal_images" />
       </list>
     </recent_temporary>
   </component>
@@ -309,15 +324,7 @@
       <workItem from="1776888599522" duration="7107000" />
       <workItem from="1777337854263" duration="38682000" />
       <workItem from="1777604698938" duration="7771000" />
-      <workItem from="1777961118985" duration="9745000" />
-    </task>
-    <task id="LOCAL-00032" summary="Merge remote-tracking branch 'origin/main'">
-      <option name="closed" value="true" />
-      <created>1772928820223</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1772928820223</updated>
+      <workItem from="1777961118985" duration="33289000" />
     </task>
     <task id="LOCAL-00033" summary="Prior to refactoring">
       <option name="closed" value="true" />
@@ -703,7 +710,15 @@
       <option name="project" value="LOCAL" />
       <updated>1777469300178</updated>
     </task>
-    <option name="localTasksCounter" value="81" />
+    <task id="LOCAL-00081" summary="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`">
+      <option name="closed" value="true" />
+      <created>1778038717380</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1778038717380</updated>
+    </task>
+    <option name="localTasksCounter" value="82" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -741,7 +756,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Prior to a refactoring: &#10;387 flutter_app/lib/app/sudoku_controller.dart&#10;426 flutter_app/lib/app/sudoku_controller_internal.dart&#10;386 flutter_app/lib/ui/sudoku_screen.dart" />
     <MESSAGE value="PR 1 refactoring done" />
     <MESSAGE value="PR 2 refactoring done" />
     <MESSAGE value="Corrected Corrections persistence and added flushPendingSave method again" />
@@ -766,14 +780,16 @@
     <MESSAGE value="Updated version to 0.9.3+262" />
     <MESSAGE value="Updated version to 0.9.3+262 after refactor" />
     <MESSAGE value="Updated version to 0.9.3+262 after further refactor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated version to 0.9.3+262 after further refactor" />
+    <MESSAGE value="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`" />
+    <option name="LAST_COMMIT_MESSAGE" value="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/Sudoku_01$fix_animal_images.coverage" NAME="fix_animal_images Coverage Results" MODIFIED="1768788904586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
-    <SUITE FILE_PATH="coverage/Sudoku_01$bgt.coverage" NAME="bgt Coverage Results" MODIFIED="1774912062560" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Sudoku_01$generate_animal_images.coverage" NAME="generate_animal_images Coverage Results" MODIFIED="1768784519892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
+    <SUITE FILE_PATH="coverage/Sudoku_01$fix_animal_images.coverage" NAME="fix_animal_images Coverage Results" MODIFIED="1768788904586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Sudoku_01$tk_view.coverage" NAME="tk_view Coverage Results" MODIFIED="1768620549779" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ui" />
+    <SUITE FILE_PATH="coverage/Sudoku_01$butterfly_sound.coverage" NAME="butterfly_sound Coverage Results" MODIFIED="1778042369536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Sudoku_01$main.coverage" NAME="main Coverage Results" MODIFIED="1768788996892" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Sudoku_01$bgt.coverage" NAME="bgt Coverage Results" MODIFIED="1774912062560" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

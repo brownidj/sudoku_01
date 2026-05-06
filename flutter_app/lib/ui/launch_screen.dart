@@ -28,6 +28,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
     'Press Help to get some information about how to play the game.',
     'Pressing ☰ (top right) opens a drawer that allows you to make some selections.',
     'If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).',
+    'Press the music icon once to turn the background music off or twice, in quick succession to turn it on. Previous and Next retreat or advance the background music tune.',
   ];
 
   bool _ready = false;

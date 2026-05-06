@@ -106,7 +106,7 @@ void main() {
     await _startGameFromLaunch(tester, buttonLabel: 'Play');
     await _dismissInfoSheetIfVisible(tester);
 
-    await _selectContentMode(tester, label: 'Instruments (harder)');
+    await _selectContentMode(tester, label: 'Instruments (tricky)');
     expect(_contentModeDropdown(tester).value, 'instruments');
 
     await _selectContentMode(tester, label: 'Numbers (old-school)');
@@ -115,7 +115,7 @@ void main() {
     await _selectContentMode(tester, label: 'Animals (easy)');
     expect(_contentModeDropdown(tester).value, 'animals');
 
-    await _selectContentMode(tester, label: 'Instruments (harder)');
+    await _selectContentMode(tester, label: 'Instruments (tricky)');
     expect(_contentModeDropdown(tester).value, 'instruments');
   });
 

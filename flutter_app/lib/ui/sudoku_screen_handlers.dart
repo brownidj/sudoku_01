@@ -62,6 +62,9 @@ extension SudokuScreenHandlers on _SudokuScreenState {
         context: context,
         isMounted: () => mounted,
         controller: widget.controller,
+        onConfirmed: () {
+          unawaited(_services.backgroundMusicService.pickNewRandomTrack());
+        },
       ),
     );
   }
@@ -77,13 +80,118 @@ extension SudokuScreenHandlers on _SudokuScreenState {
     }
   }
 
+  void _onMusicControlTapped() {
+    final now = DateTime.now();
+    final lastTap = _lastMusicControlTapAt;
+    final isDoubleTap =
+        lastTap != null &&
+        now.difference(lastTap) <= const Duration(milliseconds: 320);
+    _lastMusicControlTapAt = now;
+
+    if (isDoubleTap) {
+      _pendingMusicSingleTapTimer?.cancel();
+      _pendingMusicSingleTapTimer = null;
+      _setBackgroundMusicEnabledFromAppBar(true);
+      return;
+    }
+
+    _pendingMusicSingleTapTimer?.cancel();
+    _pendingMusicSingleTapTimer = Timer(const Duration(milliseconds: 340), () {
+      _setBackgroundMusicEnabledFromAppBar(false);
+    });
+  }
+
+  void _onPreviousTrackTapped() {
+    if (!_backgroundMusicEnabled) {
+      return;
+    }
+    unawaited(_services.backgroundMusicService.playPreviousTrack());
+  }
+
+  void _onNextTrackTapped() {
+    if (!_backgroundMusicEnabled) {
+      return;
+    }
+    unawaited(_services.backgroundMusicService.playNextTrack());
+  }
+
+  void _setBackgroundMusicEnabledFromAppBar(bool enabled) {
+    if (enabled && !_audioEnabled) {
+      setState(() {
+        _audioEnabled = true;
+        _backgroundMusicEnabled = true;
+      });
+      _services.onAudioEnabledChanged(true);
+      _services.onBackgroundMusicEnabledChanged(true);
+      unawaited(_persistAudioPreferences());
+      return;
+    }
+    _onBackgroundMusicEnabledChanged(enabled);
+  }
+
   void _onAudioEnabledChanged(bool enabled) {
     if (_audioEnabled == enabled) {
       return;
     }
+    final nextBackgroundMusic = enabled ? _backgroundMusicEnabled : false;
     setState(() {
       _audioEnabled = enabled;
+      _backgroundMusicEnabled = nextBackgroundMusic;
     });
     _services.onAudioEnabledChanged(enabled);
+    _services.onBackgroundMusicEnabledChanged(nextBackgroundMusic);
+    unawaited(_persistAudioPreferences());
+  }
+
+  void _onBackgroundMusicEnabledChanged(bool enabled) {
+    if (!_audioEnabled) {
+      return;
+    }
+    if (_backgroundMusicEnabled == enabled) {
+      return;
+    }
+    setState(() {
+      _backgroundMusicEnabled = enabled;
+    });
+    _services.onBackgroundMusicEnabledChanged(enabled);
+    unawaited(_persistAudioPreferences());
+  }
+
+  void _onAudioVolumeChanged(double volume) {
+    if (_audioVolume == volume) {
+      return;
+    }
+    setState(() {
+      _audioVolume = volume;
+    });
+    _services.onAudioVolumeChanged(volume);
+    unawaited(_persistAudioPreferences());
+  }
+
+  Future<void> _loadAudioPreferences() async {
+    final store = PreferencesStore();
+    final storedAudio = await store.loadAudioEnabled();
+    final storedBackground = await store.loadBackgroundMusicEnabled();
+    final storedVolume = await store.loadAudioVolume();
+    if (!mounted) {
+      return;
+    }
+    final nextAudio = storedAudio;
+    final nextBackground = nextAudio ? storedBackground : false;
+    setState(() {
+      _audioEnabled = nextAudio;
+      _backgroundMusicEnabled = nextBackground;
+      _audioVolume = storedVolume;
+    });
+    _services.onBackgroundMusicEnabledChanged(nextBackground);
+    _services.onAudioEnabledChanged(nextAudio);
+    _services.onAudioVolumeChanged(storedVolume);
+  }
+
+  Future<void> _persistAudioPreferences() async {
+    final store = PreferencesStore();
+    await store.saveAudioEnabled(_audioEnabled);
+    await store.saveBackgroundMusicEnabled(_backgroundMusicEnabled);
+    await store.saveAudioVolume(_audioVolume);
   }
 }

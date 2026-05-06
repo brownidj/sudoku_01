@@ -28,6 +28,7 @@ class SettingsController {
     }
     if (prefs.contentMode == 'animals' ||
         prefs.contentMode == 'instruments' ||
+        prefs.contentMode == 'butterflies' ||
         prefs.contentMode == 'old_opera' ||
         prefs.contentMode == 'numbers') {
       next = next.copyWith(contentMode: prefs.contentMode);
@@ -82,6 +83,7 @@ class SettingsController {
   void setContentMode(String mode) {
     if (mode != 'animals' &&
         mode != 'instruments' &&
+        mode != 'butterflies' &&
         mode != 'old_opera' &&
         mode != 'numbers') {
       return;

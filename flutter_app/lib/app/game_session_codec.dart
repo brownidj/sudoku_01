@@ -253,6 +253,7 @@ class GameSessionCodec {
     final value = raw is String ? raw : '';
     if (value == 'animals' ||
         value == 'instruments' ||
+        value == 'butterflies' ||
         value == 'old_opera' ||
         value == 'numbers') {
       return value;

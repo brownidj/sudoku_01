@@ -1,17 +1,26 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class SudokuVersionAppBar extends StatefulWidget
     implements PreferredSizeWidget {
   final VoidCallback onVersionTapped;
   final VoidCallback onVersionLongPressed;
+  final bool backgroundMusicEnabled;
+  final VoidCallback? onMusicControlTapped;
+  final VoidCallback? onPreviousTrackTapped;
+  final VoidCallback? onNextTrackTapped;
   final Duration longPressThreshold;
 
   const SudokuVersionAppBar({
     super.key,
     required this.onVersionTapped,
     required this.onVersionLongPressed,
+    this.backgroundMusicEnabled = false,
+    this.onMusicControlTapped,
+    this.onPreviousTrackTapped,
+    this.onNextTrackTapped,
     this.longPressThreshold = const Duration(milliseconds: 1500),
   });
 
@@ -23,6 +32,8 @@ class SudokuVersionAppBar extends StatefulWidget
 }
 
 class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
+  static const String _musicControlsTooltip =
+      'Press once to turn the background music off or twice, in quick succession to turn it on. Previous and Next retreat or advance the background music tune.';
   Timer? _longPressTimer;
   bool _versionPressActive = false;
   bool _longPressTriggered = false;
@@ -71,6 +82,9 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    final musicColor = widget.backgroundMusicEnabled
+        ? null
+        : Theme.of(context).disabledColor;
     return AppBar(
       automaticallyImplyLeading: false,
       title: SizedBox(
@@ -101,20 +115,88 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: Builder(
-                builder: (context) => IconButton(
-                  key: const ValueKey<String>('appbar-menu-button'),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                  icon: const Icon(Icons.menu),
-                  tooltip:
-                      'Press this to open a drawer. Use the drawer menu to change animals and style.',
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _MusicGlyphButton(
+                    key: const ValueKey<String>('appbar-music-prev-button'),
+                    text: '<',
+                    color: musicColor,
+                    onTap: widget.backgroundMusicEnabled
+                        ? widget.onPreviousTrackTapped
+                        : null,
+                    longPressMessage: _musicControlsTooltip,
+                  ),
+                  _MusicGlyphButton(
+                    key: const ValueKey<String>('appbar-music-note-text'),
+                    text: '♪',
+                    color: musicColor,
+                    onTap: widget.onMusicControlTapped,
+                    longPressMessage: _musicControlsTooltip,
+                  ),
+                  _MusicGlyphButton(
+                    key: const ValueKey<String>('appbar-music-next-button'),
+                    text: '>',
+                    color: musicColor,
+                    onTap: widget.backgroundMusicEnabled
+                        ? widget.onNextTrackTapped
+                        : null,
+                    longPressMessage: _musicControlsTooltip,
+                  ),
+                  const SizedBox(width: 6),
+                  Builder(
+                    builder: (context) => IconButton(
+                      key: const ValueKey<String>('appbar-menu-button'),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: const Icon(Icons.menu),
+                      tooltip:
+                          'Press this to open a drawer. Use the drawer menu to change animals and style.',
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
       centerTitle: false,
+    );
+  }
+}
+
+class _MusicGlyphButton extends StatelessWidget {
+  final String text;
+  final Color? color;
+  final VoidCallback? onTap;
+  final String longPressMessage;
+
+  const _MusicGlyphButton({
+    super.key,
+    required this.text,
+    this.color,
+    this.onTap,
+    required this.longPressMessage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return LongPressTooltip(
+      message: longPressMessage,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

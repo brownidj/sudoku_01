@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
+import 'package:flutter_app/ui/services/sudoku_background_music_service.dart';
 import 'package:flutter_app/ui/services/sudoku_tile_preview_audio_service.dart';
 import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
 
 class SudokuCellTooltipService {
   final TooltipOverlayService _tooltipOverlayService;
   final SudokuTilePreviewAudioService _tilePreviewAudioService;
+  final SudokuBackgroundMusicService _backgroundMusicService;
 
   const SudokuCellTooltipService(
     this._tooltipOverlayService,
     this._tilePreviewAudioService,
+    this._backgroundMusicService,
   );
 
   void showForCell({
@@ -54,10 +57,17 @@ class SudokuCellTooltipService {
       );
       return;
     }
-    _tilePreviewAudioService.playForTile(
+    final started = _tilePreviewAudioService.playForTile(
       contentMode: state.contentMode,
       digit: value,
     );
+    if (!started) {
+      return;
+    }
+    _backgroundMusicService.suspend('tile-preview');
+    Future<void>.delayed(_tilePreviewAudioService.maxClipDuration, () {
+      _backgroundMusicService.resume('tile-preview');
+    });
   }
 
   String _titleCase(String text) {

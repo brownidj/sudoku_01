@@ -11,6 +11,7 @@ class SudokuVictoryAudioService {
   String? _currentAudioAsset;
   bool _looping = false;
   bool _enabled = true;
+  double _volume = 0.5;
   Timer? _autoStopTimer;
 
   SudokuVictoryAudioService({
@@ -33,6 +34,7 @@ class SudokuVictoryAudioService {
         ),
       ),
     );
+    unawaited(_player.setVolume(_volume));
   }
 
   void setEnabled(bool enabled) {
@@ -61,6 +63,15 @@ class SudokuVictoryAudioService {
       return;
     }
     unawaited(_playLoop(audioAsset));
+  }
+
+  void setVolume(double volume) {
+    final next = volume.clamp(0.0, 1.0);
+    if (_volume == next) {
+      return;
+    }
+    _volume = next;
+    unawaited(_player.setVolume(_volume));
   }
 
   void dispose() {
@@ -104,6 +115,16 @@ class SudokuVictoryAudioService {
       'modern_opera.png': 'audio/opera/modern_opera.mp3',
       'masked_phantom_style.png': 'audio/opera/masked_phantom_style.mp3',
       'opera_diva_comic.png': 'audio/opera/opera_diva_comic.mp3',
+      '1_monarch.png': 'audio/butterflies/1_monarch.wav',
+      '2_swallowtail.png': 'audio/butterflies/2_swallowtail.wav',
+      '3_blue_morpho.png': 'audio/butterflies/3_blue_morpho.wav',
+      '4_glasswing.png': 'audio/butterflies/4_glasswing.wav',
+      '5_peacock_butterfly.png': 'audio/butterflies/5_peacock_butterfly.wav',
+      '6_zebra_longwing.png': 'audio/butterflies/6_zebra_longwing.wav',
+      '7_sulphur_butterfly.png': 'audio/butterflies/7_sulphur_butterfly.wav',
+      '8_leaf_butterfly.png': 'audio/butterflies/8_leaf_butterfly.wav',
+      '9_metalmark_butterfly.png':
+          'audio/butterflies/9_metalmark_butterfly.wav',
     };
     return explicitMap[fileName];
   }

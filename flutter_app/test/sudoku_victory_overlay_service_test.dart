@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/ui/services/sudoku_victory_audio_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -73,4 +74,35 @@ void main() {
       isTrue,
     );
   });
+
+  test(
+    'victory audio is derived from the randomly selected victory mascot asset',
+    () {
+      final modes = <String>[
+        'animals',
+        'instruments',
+        'butterflies',
+        'old_opera',
+      ];
+      for (final mode in modes) {
+        final service = SudokuVictoryOverlayService(
+          duration: const Duration(seconds: 1),
+          random: math.Random(0),
+        );
+        addTearDown(service.dispose);
+
+        service.onUiStateChanged(_state(puzzleSolved: false, contentMode: mode));
+        service.onUiStateChanged(_state(puzzleSolved: true, contentMode: mode));
+
+        final mascotAsset = service.state.value.assetPath;
+        expect(mascotAsset, isNotNull, reason: 'Missing mascot for mode $mode');
+        expect(service.state.value.visible, isTrue);
+        expect(
+          SudokuVictoryAudioService.audioAssetForVictoryMascot(mascotAsset),
+          isNotNull,
+          reason: 'No mapped victory audio for mascot $mascotAsset',
+        );
+      }
+    },
+  );
 }

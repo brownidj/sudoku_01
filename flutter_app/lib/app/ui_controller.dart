@@ -90,7 +90,11 @@ class UiController {
 
   void onContentModeChanged(String mode, VoidCallback notifyListeners) {
     final nextMode = switch (mode) {
-      'animals' || 'instruments' || 'old_opera' || 'numbers' => mode,
+      'animals' ||
+      'instruments' ||
+      'butterflies' ||
+      'old_opera' ||
+      'numbers' => mode,
       _ => 'numbers',
     };
     _settings.setContentMode(nextMode);

@@ -8,6 +8,7 @@ class SudokuTilePreviewAudioService {
   final Duration _maxClipDuration;
 
   bool _enabled = true;
+  double _volume = 0.5;
   Timer? _autoStopTimer;
 
   SudokuTilePreviewAudioService({
@@ -30,6 +31,7 @@ class SudokuTilePreviewAudioService {
         ),
       ),
     );
+    unawaited(_player.setVolume(_volume));
   }
 
   void setEnabled(bool enabled) {
@@ -42,16 +44,28 @@ class SudokuTilePreviewAudioService {
     }
   }
 
-  void playForTile({required String contentMode, required int digit}) {
+  bool playForTile({required String contentMode, required int digit}) {
     if (!_enabled) {
-      return;
+      return false;
     }
     final asset = audioAssetForTile(contentMode: contentMode, digit: digit);
     if (asset == null) {
-      return;
+      return false;
     }
     unawaited(_play(asset));
+    return true;
   }
+
+  void setVolume(double volume) {
+    final next = volume.clamp(0.0, 1.0);
+    if (_volume == next) {
+      return;
+    }
+    _volume = next;
+    unawaited(_player.setVolume(_volume));
+  }
+
+  Duration get maxClipDuration => _maxClipDuration;
 
   static String? audioAssetForTile({
     required String contentMode,
@@ -94,9 +108,21 @@ class SudokuTilePreviewAudioService {
       8: 'audio/opera/masked_phantom_style.mp3',
       9: 'audio/opera/opera_diva_comic.mp3',
     };
+    const butterflyAssets = <int, String>{
+      1: 'audio/butterflies/1_monarch.wav',
+      2: 'audio/butterflies/2_swallowtail.wav',
+      3: 'audio/butterflies/3_blue_morpho.wav',
+      4: 'audio/butterflies/4_glasswing.wav',
+      5: 'audio/butterflies/5_peacock_butterfly.wav',
+      6: 'audio/butterflies/6_zebra_longwing.wav',
+      7: 'audio/butterflies/7_sulphur_butterfly.wav',
+      8: 'audio/butterflies/8_leaf_butterfly.wav',
+      9: 'audio/butterflies/9_metalmark_butterfly.wav',
+    };
     return switch (normalizedMode) {
       'animals' => animalAssets[digit],
       'instruments' => instrumentAssets[digit],
+      'butterflies' => butterflyAssets[digit],
       'old_opera' => operaAssets[digit],
       _ => null,
     };

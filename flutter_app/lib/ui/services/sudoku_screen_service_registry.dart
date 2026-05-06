@@ -9,6 +9,7 @@ import 'package:flutter_app/ui/services/debug_toggle_service.dart';
 import 'package:flutter_app/ui/services/sudoku_cell_tooltip_service.dart';
 import 'package:flutter_app/ui/services/sudoku_controller_binding_service.dart';
 import 'package:flutter_app/ui/services/sudoku_correction_flow_coordinator.dart';
+import 'package:flutter_app/ui/services/sudoku_background_music_service.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_effects_coordinator.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_effects_service.dart';
 import 'package:flutter_app/ui/services/sudoku_tile_preview_audio_service.dart';
@@ -24,6 +25,7 @@ class SudokuScreenServiceRegistry {
   late final DebugToggleService debugToggleService;
   late final TooltipOverlayService tooltipService;
   late final SudokuTilePreviewAudioService tilePreviewAudioService;
+  late final SudokuBackgroundMusicService backgroundMusicService;
   late final SudokuCellTooltipService cellTooltipService;
   late final SudokuScreenEffectsService effectsService;
   late final SudokuScreenEffectsCoordinator effectsCoordinator;
@@ -49,9 +51,11 @@ class SudokuScreenServiceRegistry {
     debugToggleService = DebugToggleService();
     tooltipService = TooltipOverlayService();
     tilePreviewAudioService = SudokuTilePreviewAudioService();
+    backgroundMusicService = SudokuBackgroundMusicService();
     cellTooltipService = SudokuCellTooltipService(
       tooltipService,
       tilePreviewAudioService,
+      backgroundMusicService,
     );
     effectsService = SudokuScreenEffectsService();
     effectsCoordinator = SudokuScreenEffectsCoordinator(effectsService);
@@ -91,6 +95,7 @@ class SudokuScreenServiceRegistry {
     required bool Function() isMounted,
     required Future<void> Function() showCorrectionPrompt,
   }) {
+    backgroundMusicService.onUiStateChanged(state);
     victoryOverlayService.onUiStateChanged(state);
     effectsCoordinator.onStateChanged(
       context: context,
@@ -105,9 +110,20 @@ class SudokuScreenServiceRegistry {
   void onAudioEnabledChanged(bool enabled) {
     tilePreviewAudioService.setEnabled(enabled);
     victoryAudioService.setEnabled(enabled);
+    backgroundMusicService.setAudioEnabled(enabled);
     victoryAudioService.onOverlayStateChanged(
       victoryOverlayService.state.value,
     );
+  }
+
+  void onBackgroundMusicEnabledChanged(bool enabled) {
+    backgroundMusicService.setBackgroundMusicEnabled(enabled);
+  }
+
+  void onAudioVolumeChanged(double volume) {
+    tilePreviewAudioService.setVolume(volume);
+    victoryAudioService.setVolume(volume);
+    backgroundMusicService.setVolume(volume);
   }
 
   void onVictoryOverlayChanged({
@@ -117,6 +133,11 @@ class SudokuScreenServiceRegistry {
     required bool Function() isMounted,
   }) {
     final victoryState = victoryOverlayService.state.value;
+    if (victoryState.visible) {
+      backgroundMusicService.suspend('victory');
+    } else {
+      backgroundMusicService.resume('victory');
+    }
     victoryAudioService.onOverlayStateChanged(victoryState);
     victoryPositionService.onOverlayStateChanged(
       overlayState: victoryState,
@@ -166,6 +187,7 @@ class SudokuScreenServiceRegistry {
     victoryOverlayService.dispose();
     victoryAudioService.dispose();
     tilePreviewAudioService.dispose();
+    backgroundMusicService.dispose();
     victoryPositionService.dispose();
     tooltipService.dispose();
   }

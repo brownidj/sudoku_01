@@ -74,11 +74,13 @@ class SudokuConfigurationFlowService {
     required UiState state,
     required bool isCurrentGameResumed,
     required VoidCallback onConfirmNewGame,
+    VoidCallback? onConfirmed,
   }) async {
     final shouldRequireConfirmation =
         !state.gameOver && (isCurrentGameResumed || state.canUndo);
     if (!shouldRequireConfirmation) {
       onConfirmNewGame();
+      onConfirmed?.call();
       return;
     }
     await _confirmationService.confirmAndRun(
@@ -86,7 +88,10 @@ class SudokuConfigurationFlowService {
       isMounted: isMounted,
       title: 'Start New Game?',
       message: 'Start a fresh game and reset this board?',
-      onConfirm: onConfirmNewGame,
+      onConfirm: () {
+        onConfirmNewGame();
+        onConfirmed?.call();
+      },
     );
   }
 }

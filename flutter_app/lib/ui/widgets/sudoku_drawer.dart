@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
-import 'package:flutter_app/ui/widgets/info_sheet.dart';
+import 'package:flutter_app/ui/widgets/sudoku_drawer_sections.dart';
 
 class SudokuDrawer extends StatelessWidget {
+  static const _sectionPadding = EdgeInsets.symmetric(horizontal: 16);
+  static const _compactDensity = VisualDensity(horizontal: 0, vertical: -4);
   final UiState state;
   final ValueChanged<String> onAnimalStyleChanged;
   final ValueChanged<String> onStyleChanged;
   final bool audioEnabled;
   final ValueChanged<bool>? onAudioEnabledChanged;
+  final double audioVolume;
+  final ValueChanged<double>? onAudioVolumeChanged;
+  final bool backgroundMusicEnabled;
+  final ValueChanged<bool>? onBackgroundMusicEnabledChanged;
   final ValueChanged<String>? onPremiumFeatureSelected;
   final VoidCallback? onUnlockPremiumSelected;
   final VoidCallback? onRestorePurchasesSelected;
@@ -26,6 +32,10 @@ class SudokuDrawer extends StatelessWidget {
     required this.onStyleChanged,
     this.audioEnabled = true,
     this.onAudioEnabledChanged,
+    this.audioVolume = 0.5,
+    this.onAudioVolumeChanged,
+    this.backgroundMusicEnabled = true,
+    this.onBackgroundMusicEnabledChanged,
     this.onPremiumFeatureSelected,
     this.onUnlockPremiumSelected,
     this.onRestorePurchasesSelected,
@@ -43,216 +53,47 @@ class SudokuDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const SizedBox(height: 12),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'ZuDoKu+',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
-              ),
+            SudokuDrawerHeaderStyleSection(
+              sectionPadding: _sectionPadding,
+              compactDensity: _compactDensity,
+              selectedStyleName: state.styleName,
+              onStyleChanged: onStyleChanged,
             ),
-            const SizedBox(height: 12),
-            const Divider(height: 16),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Puzzle Style',
-                style: TextStyle(fontWeight: FontWeight.w600),
-              ),
+            SudokuDrawerAudioSection(
+              sectionPadding: _sectionPadding,
+              compactDensity: _compactDensity,
+              audioEnabled: audioEnabled,
+              onAudioEnabledChanged: onAudioEnabledChanged,
+              backgroundMusicEnabled: backgroundMusicEnabled,
+              onBackgroundMusicEnabledChanged: onBackgroundMusicEnabledChanged,
+              audioVolume: audioVolume,
+              onAudioVolumeChanged: onAudioVolumeChanged,
             ),
-            RadioListTile<String>(
-              title: const Text('Modern'),
-              value: 'Modern',
-              groupValue: state.styleName,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: _handleStyleChanged,
+            SudokuDrawerPremiumSection(
+              sectionPadding: _sectionPadding,
+              compactDensity: _compactDensity,
+              state: state,
+              onPremiumFeatureSelected: onPremiumFeatureSelected,
+              onUnlockPremiumSelected: onUnlockPremiumSelected,
+              onRestorePurchasesSelected: onRestorePurchasesSelected,
             ),
-            RadioListTile<String>(
-              title: const Text('Classic'),
-              value: 'Classic',
-              groupValue: state.styleName,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: _handleStyleChanged,
+            SudokuDrawerAboutSection(
+              sectionPadding: _sectionPadding,
+              appVersionService: appVersionService,
             ),
-            RadioListTile<String>(
-              title: const Text('High Contrast'),
-              value: 'High Contrast',
-              groupValue: state.styleName,
-              dense: true,
-              visualDensity: VisualDensity.compact,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              onChanged: _handleStyleChanged,
-            ),
-            const Divider(height: 16),
-            ListTile(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              title: const Text(
-                'Audio',
-                style: TextStyle(fontWeight: FontWeight.w600),
+            if (showDebugTools)
+              SudokuDrawerDebugSection(
+                sectionPadding: _sectionPadding,
+                compactDensity: _compactDensity,
+                onLoadCorrectionScenario: onLoadCorrectionScenario,
+                onLoadExhaustedCorrectionScenario:
+                    onLoadExhaustedCorrectionScenario,
+                onResetEntitlementToFreeSelected:
+                    onResetEntitlementToFreeSelected,
               ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(audioEnabled ? 'On' : 'Off'),
-                  Radio<bool?>(
-                    value: true,
-                    groupValue: audioEnabled ? true : null,
-                    toggleable: true,
-                    visualDensity: VisualDensity.compact,
-                    onChanged: _handleAudioChanged,
-                  ),
-                ],
-              ),
-              onTap: onAudioEnabledChanged == null
-                  ? null
-                  : () => onAudioEnabledChanged!(!audioEnabled),
-            ),
-            const Divider(height: 16),
-            ListTile(
-              key: const ValueKey<String>('drawer-premium-status'),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              title: const Text('Version'),
-              trailing: Text(
-                state.premiumActive ? 'Full' : 'Free',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-            ),
-            if (!state.premiumActive) ...[
-              ListTile(
-                key: const ValueKey<String>('drawer-locked-progress-tracker'),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                title: const Text('Progress Tracker 🔒'),
-                subtitle: const Text('Track completed puzzles and milestones.'),
-                onTap: onPremiumFeatureSelected == null
-                    ? null
-                    : () => onPremiumFeatureSelected!('progress_tracker'),
-              ),
-              ListTile(
-                key: const ValueKey<String>('drawer-locked-extra-themes'),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                title: const Text('Extra Themes 🔒'),
-                subtitle: const Text('Unlock additional visual styles.'),
-                onTap: onPremiumFeatureSelected == null
-                    ? null
-                    : () => onPremiumFeatureSelected!('extra_themes'),
-              ),
-              ListTile(
-                key: const ValueKey<String>('drawer-locked-extra-sounds'),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                title: const Text('Sounds & Celebrations 🔒'),
-                subtitle: const Text('Unlock extra sounds and celebrations.'),
-                onTap: onPremiumFeatureSelected == null
-                    ? null
-                    : () => onPremiumFeatureSelected!(
-                        'extra_sounds_and_celebrations',
-                      ),
-              ),
-              ListTile(
-                key: const ValueKey<String>('drawer-unlock-premium'),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-                leading: const Icon(Icons.workspace_premium_outlined),
-                title: const Text('Unlock Full Version'),
-                onTap: onUnlockPremiumSelected,
-              ),
-            ],
-            ListTile(
-              key: const ValueKey<String>('drawer-restore-purchases'),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              leading: const Icon(Icons.restore),
-              title: const Text('Restore Purchases'),
-              onTap: onRestorePurchasesSelected,
-            ),
-            const SizedBox(height: 16),
-            const Divider(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: ActionChip(
-                  key: const ValueKey<String>('drawer-about-chip'),
-                  avatar: const Icon(Icons.info_outline, size: 18),
-                  label: const Text('About'),
-                  onPressed: () async {
-                    final versionLabel = await appVersionService
-                        .loadDisplayVersion();
-                    if (!context.mounted) {
-                      return;
-                    }
-                    await showInfoSheet(
-                      context: context,
-                      title: 'About',
-                      message:
-                          'Version: $versionLabel\n\n'
-                          'The Angry Grannies Dev Team\n'
-                          'dev - DayDay\n'
-                          'dev - SudokuQueen\n'
-                          'tech advisor - Icy',
-                    );
-                  },
-                ),
-              ),
-            ),
-            if (showDebugTools &&
-                (onLoadCorrectionScenario != null ||
-                    onLoadExhaustedCorrectionScenario != null ||
-                    onResetEntitlementToFreeSelected != null)) ...[
-              const Divider(height: 16),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Text(
-                  'Debug',
-                  style: TextStyle(fontWeight: FontWeight.w600),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.science_outlined),
-                title: const Text('Load Correction Scenario'),
-                subtitle: const Text(
-                  'Temporary control for assisted-recovery testing.',
-                ),
-                onTap: onLoadCorrectionScenario,
-              ),
-              if (onLoadExhaustedCorrectionScenario != null)
-                ListTile(
-                  leading: const Icon(Icons.warning_amber_outlined),
-                  title: const Text('Load Exhausted Correction Scenario'),
-                  subtitle: const Text(
-                    'Temporary control for undo-only recovery testing.',
-                  ),
-                  onTap: onLoadExhaustedCorrectionScenario,
-                ),
-              if (onResetEntitlementToFreeSelected != null)
-                ListTile(
-                  key: const ValueKey<String>('drawer-reset-entitlement-free'),
-                  leading: const Icon(Icons.restart_alt),
-                  title: const Text('Reset Full Version (Debug)'),
-                  subtitle: const Text(
-                    'Sets local entitlement to Free for purchase retesting.',
-                  ),
-                  onTap: onResetEntitlementToFreeSelected,
-                ),
-            ],
           ],
         ),
       ),
     );
-  }
-
-  void _handleStyleChanged(String? value) {
-    if (value == null) {
-      return;
-    }
-    onStyleChanged(value);
-  }
-
-  void _handleAudioChanged(bool? enabled) {
-    if (onAudioEnabledChanged == null) {
-      return;
-    }
-    onAudioEnabledChanged!(enabled == true);
   }
 }

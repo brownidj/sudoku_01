@@ -2,6 +2,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_app/domain/types.dart';
 
 class PreferencesStore {
+  static const _disableBackgroundMusicForTests = bool.fromEnvironment(
+    'DISABLE_BACKGROUND_MUSIC_FOR_TESTS',
+    defaultValue: false,
+  );
   static const keyAnimalStyle = 'animal_style';
   static const keyContentMode = 'content_mode';
   static const keyStyleName = 'style_name';
@@ -10,6 +14,9 @@ class PreferencesStore {
   static const keyGameSession = 'game_session';
   static const keyCompletedPuzzles = 'completed_puzzles';
   static const keyEntitlement = 'entitlement';
+  static const keyAudioEnabled = 'audio_enabled';
+  static const keyBackgroundMusicEnabled = 'background_music_enabled';
+  static const keyAudioVolume = 'audio_volume';
 
   Future<AppPreferences> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -81,6 +88,43 @@ class PreferencesStore {
   Future<void> saveEntitlement(Entitlement value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(keyEntitlement, value.name);
+  }
+
+  Future<bool> loadAudioEnabled() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(keyAudioEnabled) ?? true;
+  }
+
+  Future<void> saveAudioEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(keyAudioEnabled, value);
+  }
+
+  Future<bool> loadBackgroundMusicEnabled() async {
+    if (_disableBackgroundMusicForTests) {
+      return false;
+    }
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(keyBackgroundMusicEnabled) ?? true;
+  }
+
+  Future<void> saveBackgroundMusicEnabled(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(keyBackgroundMusicEnabled, value);
+  }
+
+  Future<double> loadAudioVolume() async {
+    final prefs = await SharedPreferences.getInstance();
+    final stored = prefs.getDouble(keyAudioVolume);
+    if (stored == null) {
+      return 0.5;
+    }
+    return stored.clamp(0.0, 1.0);
+  }
+
+  Future<void> saveAudioVolume(double value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(keyAudioVolume, value.clamp(0.0, 1.0));
   }
 
   Entitlement _parseEntitlement(String? rawValue) {

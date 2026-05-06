@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_flow_actions.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_service_registry.dart';
 import 'package:flutter_app/ui/services/sudoku_start_instruction_overlay_service.dart';
-import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/help_dialog.dart';
@@ -43,6 +43,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final GlobalKey _bottomControlsKey = GlobalKey();
   bool _debugToolsEnabled = false;
   bool _audioEnabled = true;
+  bool _backgroundMusicEnabled = true;
+  double _audioVolume = 0.5;
+  DateTime? _lastMusicControlTapAt;
+  Timer? _pendingMusicSingleTapTimer;
   @override
   void initState() {
     super.initState();
@@ -59,6 +63,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
       },
     );
     _ensureAnimalAssetsRequested(widget.controller.state.contentMode);
+    _loadAudioPreferences();
   }
 
   @override
@@ -69,6 +74,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   @override
   void dispose() {
+    _pendingMusicSingleTapTimer?.cancel();
     _services.dispose();
     super.dispose();
   }
@@ -86,6 +92,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
         final assetVariant = switch (state.contentMode) {
           'animals' => state.animalStyle,
           'instruments' => 'instruments',
+          'butterflies' => 'butterflies',
           'old_opera' => 'old_opera',
           _ => null,
         };
@@ -101,6 +108,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onVersionTapped: _onVersionTapped,
             onVersionLongPressed:
                 _services.interactionController.onVersionLongPressed,
+            backgroundMusicEnabled: _backgroundMusicEnabled,
+            onMusicControlTapped: _onMusicControlTapped,
+            onPreviousTrackTapped: _onPreviousTrackTapped,
+            onNextTrackTapped: _onNextTrackTapped,
           ),
           drawer: SudokuDrawer(
             state: state,
@@ -108,6 +119,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onStyleChanged: controller.onStyleChanged,
             audioEnabled: _audioEnabled,
             onAudioEnabledChanged: _onAudioEnabledChanged,
+            backgroundMusicEnabled: _backgroundMusicEnabled,
+            onBackgroundMusicEnabledChanged: _onBackgroundMusicEnabledChanged,
+            audioVolume: _audioVolume,
+            onAudioVolumeChanged: _onAudioVolumeChanged,
             onPremiumFeatureSelected: (feature) {
               Navigator.of(context).maybePop();
               unawaited(

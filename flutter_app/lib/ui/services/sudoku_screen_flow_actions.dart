@@ -27,6 +27,7 @@ class SudokuScreenFlowActions {
     required BuildContext context,
     required bool Function() isMounted,
     required SudokuController controller,
+    VoidCallback? onConfirmed,
   }) {
     return _configurationFlowService.requestNewGame(
       context: context,
@@ -34,6 +35,7 @@ class SudokuScreenFlowActions {
       state: controller.state,
       isCurrentGameResumed: false,
       onConfirmNewGame: controller.onNewGame,
+      onConfirmed: onConfirmed,
     );
   }
 
@@ -189,7 +191,8 @@ class SudokuScreenFlowActions {
     final includeDiagnostics =
         result == BillingActionResult.productUnavailable ||
         result == BillingActionResult.unavailable;
-    final message = includeDiagnostics &&
+    final message =
+        includeDiagnostics &&
             diagnostics != null &&
             diagnostics.trim().isNotEmpty
         ? '$baseMessage [$diagnostics]'
