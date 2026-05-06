@@ -248,10 +248,7 @@ void main() {
       expect(service.loadCalls, 1);
       expect(find.text('Please wait...'), findsOneWidget);
       expect(find.text('Play'), findsOneWidget);
-      expect(
-        find.byKey(const ValueKey<String>('launch-version-title')),
-        findsOneWidget,
-      );
+      expect(find.text('ZuDoKu+'), findsOneWidget);
       service.complete();
       await tester.pumpAndSettle();
       expect(find.byType(LaunchScreen), findsNothing);

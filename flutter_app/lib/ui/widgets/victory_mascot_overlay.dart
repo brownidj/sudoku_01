@@ -18,8 +18,33 @@ class VictoryMascotOverlay extends StatefulWidget {
 
 class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
     with SingleTickerProviderStateMixin {
+  static const List<String> _celebrationPrefixes = <String>[
+    'Well done!',
+    'Great job!',
+    'You nailed it!',
+    'Brilliant finish!',
+    'Excellent work!',
+    'Nice one!',
+    'You did it!',
+    'Superb effort!',
+    'Proud of you!',
+    'Keep it up!',
+    'Amazing work!',
+    'Fantastic job!',
+    'Perfect solve!',
+    'Strong finish!',
+    'Clever thinking!',
+    'Sweet success!',
+    'Top effort!',
+    'Masterful play!',
+    'Winner mindset!',
+    'Outstanding result!',
+  ];
+
   late final AnimationController _swingController;
   late final Animation<double> _swingAngle;
+  final math.Random _random = math.Random();
+  late String _message;
 
   @override
   void initState() {
@@ -35,12 +60,21 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
         ).animate(
           CurvedAnimation(parent: _swingController, curve: Curves.easeInOut),
         );
+    _message = _buildMessage();
   }
 
   @override
   void dispose() {
     _swingController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant VictoryMascotOverlay oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.assetPath != oldWidget.assetPath && widget.assetPath != null) {
+      _message = _buildMessage();
+    }
   }
 
   @override
@@ -52,7 +86,7 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
     return LayoutBuilder(
       builder: (context, constraints) {
         final left = (constraints.maxWidth - 96) / 2;
-        final top = widget.centerY! - 48 - 115;
+        final top = widget.centerY! - 48 - 125;
         return Stack(
           children: [
             Positioned(
@@ -78,16 +112,19 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
             Positioned(
               left: 0,
               right: 0,
-              top: top + 96 + 6,
-              child: const Center(
-                child: Text(
-                  "Play again! Play again!''",
-                  style: TextStyle(
-                    fontFamily: 'Arial',
-                    fontFamilyFallback: <String>['Helvetica', 'sans-serif'],
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    height: 1.0,
+              top: top + 96 + 12,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    _message,
+                    style: TextStyle(
+                      fontFamily: 'Arial',
+                      fontFamilyFallback: <String>['Helvetica', 'sans-serif'],
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      height: 1.0,
+                    ),
                   ),
                 ),
               ),
@@ -96,5 +133,11 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
         );
       },
     );
+  }
+
+  String _buildMessage() {
+    final prefix =
+        _celebrationPrefixes[_random.nextInt(_celebrationPrefixes.length)];
+    return '$prefix Play again!';
   }
 }

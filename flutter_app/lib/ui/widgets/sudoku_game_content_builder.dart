@@ -39,6 +39,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
     required this.onToggleNotesMode,
     required this.onClear,
     required this.onCheckOrSolution,
+    required this.onNewGamePressed,
   });
 
   final ValueListenable<VictoryOverlayState> victoryStateListenable;
@@ -68,6 +69,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
   final VoidCallback onToggleNotesMode;
   final VoidCallback onClear;
   final VoidCallback onCheckOrSolution;
+  final VoidCallback onNewGamePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +108,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
               onToggleNotesMode: onToggleNotesMode,
               onClear: onClear,
               onCheckOrSolution: onCheckOrSolution,
+              onNewGamePressed: onNewGamePressed,
               showVictoryOverlay: victoryState.visible,
               victoryAssetPath: victoryState.assetPath,
               victoryImageCenterY: centerY,

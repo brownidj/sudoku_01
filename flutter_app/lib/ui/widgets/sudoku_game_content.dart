@@ -39,6 +39,7 @@ class SudokuGameContent extends StatelessWidget {
   final VoidCallback onToggleNotesMode;
   final VoidCallback onClear;
   final VoidCallback onCheckOrSolution;
+  final VoidCallback onNewGamePressed;
   final bool showVictoryOverlay;
   final String? victoryAssetPath;
   final double? victoryImageCenterY;
@@ -73,6 +74,7 @@ class SudokuGameContent extends StatelessWidget {
     required this.onToggleNotesMode,
     required this.onClear,
     required this.onCheckOrSolution,
+    required this.onNewGamePressed,
     required this.showVictoryOverlay,
     required this.victoryAssetPath,
     required this.victoryImageCenterY,
@@ -132,6 +134,28 @@ class SudokuGameContent extends StatelessWidget {
               ),
             ],
           ),
+          if (!showVictoryOverlay)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 112,
+              child: Center(
+                child: ActionChip(
+                  key: const ValueKey<String>('content-new-game-chip'),
+                  onPressed: onNewGamePressed,
+                  label: Text(
+                    'New Game',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize:
+                          (Theme.of(context).textTheme.labelLarge?.fontSize ??
+                              14) +
+                          20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           if (showVictoryOverlay)
             Positioned.fill(
               child: IgnorePointer(

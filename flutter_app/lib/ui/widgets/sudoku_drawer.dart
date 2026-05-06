@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/services/app_version_service.dart';
+import 'package:flutter_app/ui/widgets/info_sheet.dart';
 
 class SudokuDrawer extends StatelessWidget {
   final UiState state;
@@ -15,6 +17,7 @@ class SudokuDrawer extends StatelessWidget {
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final VoidCallback? onResetEntitlementToFreeSelected;
   final bool showDebugTools;
+  final AppVersionService appVersionService;
 
   const SudokuDrawer({
     super.key,
@@ -30,6 +33,7 @@ class SudokuDrawer extends StatelessWidget {
     this.onLoadExhaustedCorrectionScenario,
     this.onResetEntitlementToFreeSelected,
     this.showDebugTools = AppDebug.enabled,
+    this.appVersionService = const AppVersionService(),
   });
 
   @override
@@ -162,6 +166,36 @@ class SudokuDrawer extends StatelessWidget {
               title: const Text('Restore Purchases'),
               onTap: onRestorePurchasesSelected,
             ),
+            const SizedBox(height: 16),
+            const Divider(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: ActionChip(
+                  key: const ValueKey<String>('drawer-about-chip'),
+                  avatar: const Icon(Icons.info_outline, size: 18),
+                  label: const Text('About'),
+                  onPressed: () async {
+                    final versionLabel = await appVersionService
+                        .loadDisplayVersion();
+                    if (!context.mounted) {
+                      return;
+                    }
+                    await showInfoSheet(
+                      context: context,
+                      title: 'About',
+                      message:
+                          'Version: $versionLabel\n\n'
+                          'The Angry Grannies Dev Team\n'
+                          'dev - DayDay\n'
+                          'dev - SudokuQueen\n'
+                          'tech advisor - Icy',
+                    );
+                  },
+                ),
+              ),
+            ),
             if (showDebugTools &&
                 (onLoadCorrectionScenario != null ||
                     onLoadExhaustedCorrectionScenario != null ||
@@ -207,6 +241,7 @@ class SudokuDrawer extends StatelessWidget {
       ),
     );
   }
+
   void _handleStyleChanged(String? value) {
     if (value == null) {
       return;

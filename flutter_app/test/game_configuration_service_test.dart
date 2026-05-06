@@ -37,35 +37,38 @@ void main() {
     expect(status, isNull);
   });
 
-  test('setDifficulty blocks premium-gated difficulty for free entitlement', () {
-    final service = GameConfigurationService();
-    final settings = FakeSettingsController(
-      const SettingsState(
-        notesMode: false,
-        difficulty: 'easy',
-        canChangeDifficulty: true,
-        canChangePuzzleMode: true,
-        styleName: 'Modern',
-        contentMode: 'numbers',
-        animalStyle: 'simple',
-        puzzleMode: 'unique',
-      ),
-    );
-    var startCalls = 0;
-    String? status;
+  test(
+    'setDifficulty blocks premium-gated difficulty for free entitlement',
+    () {
+      final service = GameConfigurationService();
+      final settings = FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'unique',
+        ),
+      );
+      var startCalls = 0;
+      String? status;
 
-    service.setDifficulty(
-      settings: settings,
-      entitlement: Entitlement.free,
-      difficulty: 'hard',
-      startGame: () => startCalls += 1,
-      render: (message) => status = message,
-    );
+      service.setDifficulty(
+        settings: settings,
+        entitlement: Entitlement.free,
+        difficulty: 'hard',
+        startGame: () => startCalls += 1,
+        render: (message) => status = message,
+      );
 
-    expect(settings.state.difficulty, 'easy');
-    expect(startCalls, 0);
-    expect(status, 'This difficulty is available in Full Version.');
-  });
+      expect(settings.state.difficulty, 'easy');
+      expect(startCalls, 0);
+      expect(status, 'This difficulty is available in Full Version.');
+    },
+  );
 
   test('setDifficulty accepts very_hard for premium entitlement', () {
     final service = GameConfigurationService();
@@ -98,18 +101,18 @@ void main() {
     expect(status, isNull);
   });
 
-  test('setPuzzleMode renders guidance when mode is locked', () {
+  test('setPuzzleMode keeps unique mode and renders guidance', () {
     final service = GameConfigurationService();
     final settings = FakeSettingsController(
       const SettingsState(
         notesMode: false,
         difficulty: 'easy',
         canChangeDifficulty: true,
-        canChangePuzzleMode: false,
+        canChangePuzzleMode: true,
         styleName: 'Modern',
         contentMode: 'numbers',
         animalStyle: 'simple',
-        puzzleMode: 'multi',
+        puzzleMode: 'unique',
       ),
     );
     var startCalls = 0;
@@ -122,9 +125,9 @@ void main() {
       render: (message) => status = message,
     );
 
-    expect(settings.state.puzzleMode, 'multi');
+    expect(settings.state.puzzleMode, 'unique');
     expect(startCalls, 0);
-    expect(status, 'Finish or check the game before changing puzzle mode');
+    expect(status, 'Puzzle mode: unique');
   });
 
   test('setPuzzleMode stays unique for very_hard difficulty', () {

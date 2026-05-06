@@ -73,7 +73,7 @@ void main() {
 
     expect(
       find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
-      findsOneWidget,
+      findsNothing,
     );
     expect(
       find.byKey(const ValueKey<String>('board-difficulty-dropdown')),

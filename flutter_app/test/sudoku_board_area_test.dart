@@ -6,7 +6,7 @@ import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_area.dart';
 
 UiState _state({
-  String puzzleMode = 'multi',
+  String puzzleMode = 'unique',
   String difficulty = 'easy',
   int correctionsLeft = 3,
   int conflictHintsLeft = 3,
@@ -58,7 +58,7 @@ UiState _state({
 
 void main() {
   testWidgets(
-    'main metadata row shows puzzle mode, hints, corrections left, and difficulty',
+    'main metadata row shows hints, corrections left, and difficulty',
     (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -90,7 +90,6 @@ void main() {
         ),
       );
 
-      expect(find.text('UNIQUE'), findsOneWidget);
       expect(find.text('Hints: 2'), findsOneWidget);
       expect(find.text('Corrections: 1'), findsOneWidget);
       expect(find.text('MUCH HARDER'), findsOneWidget);

@@ -31,7 +31,7 @@ class ActionBar extends StatelessWidget {
     const controlWidth = 52.0;
     const controlHeight = 52.0;
     const notesWidth = 100.0;
-    const notesHeight = 52.0;
+    const notesHeight = 65.0;
 
     final compactStyle = OutlinedButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -42,6 +42,7 @@ class ActionBar extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           LongPressTooltip(
             message: solutionTooltip,

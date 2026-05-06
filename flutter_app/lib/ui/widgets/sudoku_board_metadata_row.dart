@@ -25,29 +25,8 @@ class SudokuBoardMetadataRow extends StatelessWidget {
         Expanded(
           child: Align(
             alignment: Alignment.centerLeft,
-            child: _MetadataDropdown(
-              tooltipMessage:
-                  'UNIQUE has one solution. MULTI may have more than one valid solution. '
-                  'Choose the mode that supports your regular puzzle routine.',
-              value: state.puzzleMode,
-              dropdownKey: const ValueKey<String>('board-puzzle-mode-dropdown'),
-              enabled: state.canChangePuzzleMode,
-              items: const [
-                DropdownMenuItem<String>(
-                  value: 'unique',
-                  child: Text('UNIQUE'),
-                ),
-                DropdownMenuItem<String>(value: 'multi', child: Text('MULTI')),
-              ],
-              onChanged: onPuzzleModeChanged,
-            ),
-          ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.center,
             child: Transform.translate(
-              offset: const Offset(-8, 0),
+              offset: const Offset(-4, 0),
               child: _ManualTooltipLabel(
                 label: 'Hints: ${state.conflictHintsLeft}',
                 tooltipMessage: hintsTooltipMessage,
@@ -76,13 +55,12 @@ class SudokuBoardMetadataRow extends StatelessWidget {
                 tooltipMessage:
                     'Choose the challenge level that feels right for steady daily progress.',
                 value: state.difficulty,
-                dropdownKey: const ValueKey<String>('board-difficulty-dropdown'),
+                dropdownKey: const ValueKey<String>(
+                  'board-difficulty-dropdown',
+                ),
                 enabled: state.canChangeDifficulty,
                 items: const [
-                  DropdownMenuItem<String>(
-                    value: 'easy',
-                    child: Text('EASY'),
-                  ),
+                  DropdownMenuItem<String>(value: 'easy', child: Text('EASY')),
                   DropdownMenuItem<String>(
                     value: 'medium',
                     child: Text('A BIT HARDER'),
@@ -97,6 +75,14 @@ class SudokuBoardMetadataRow extends StatelessWidget {
                   ),
                 ],
                 onChanged: onDifficultyChanged,
+                textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(
+                    state.canChangeDifficulty ? 0.72 : 0.38,
+                  ),
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
           ),
@@ -113,6 +99,7 @@ class _MetadataDropdown extends StatelessWidget {
   final bool enabled;
   final List<DropdownMenuItem<String>> items;
   final ValueChanged<String>? onChanged;
+  final TextStyle? textStyle;
 
   const _MetadataDropdown({
     required this.tooltipMessage,
@@ -121,6 +108,7 @@ class _MetadataDropdown extends StatelessWidget {
     required this.enabled,
     required this.items,
     required this.onChanged,
+    this.textStyle,
   });
 
   @override
@@ -151,11 +139,13 @@ class _MetadataDropdown extends StatelessWidget {
                       onChanged?.call(nextValue);
                     },
               items: items,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: dropdownColor,
-                letterSpacing: 0.5,
-              ),
+              style:
+                  textStyle ??
+                  Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: dropdownColor,
+                    letterSpacing: 0.5,
+                  ),
             ),
           ),
         ),

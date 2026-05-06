@@ -9,7 +9,7 @@ class SettingsController {
     notesMode: false,
     difficulty: 'easy',
     canChangeDifficulty: true,
-    canChangePuzzleMode: true,
+    canChangePuzzleMode: false,
     styleName: 'Modern',
     contentMode: 'animals',
     animalStyle: 'cute',
@@ -39,17 +39,10 @@ class SettingsController {
         ['easy', 'medium', 'hard', 'very_hard'].contains(prefs.difficulty)) {
       next = next.copyWith(difficulty: prefs.difficulty);
     }
-    if (prefs.puzzleMode == 'unique' || prefs.puzzleMode == 'multi') {
-      next = next.copyWith(puzzleMode: prefs.puzzleMode);
-    } else {
-      next = next.copyWith(
-        puzzleMode: _defaultPuzzleModeForDifficulty(next.difficulty),
-      );
-    }
-    if ((next.difficulty == 'hard' || next.difficulty == 'very_hard') &&
-        next.puzzleMode != 'unique') {
-      next = next.copyWith(puzzleMode: 'unique');
-    }
+    next = next.copyWith(
+      puzzleMode: _defaultPuzzleModeForDifficulty(next.difficulty),
+      canChangePuzzleMode: false,
+    );
     _setState(next);
   }
 
@@ -78,7 +71,7 @@ class SettingsController {
   }
 
   void setPuzzleModeLocked(bool locked) {
-    _setState(_state.copyWith(canChangePuzzleMode: !locked));
+    _setState(_state.copyWith(canChangePuzzleMode: false));
   }
 
   void setStyleName(String styleName) {
@@ -103,8 +96,10 @@ class SettingsController {
   }
 
   void setPuzzleMode(String mode) {
-    _setState(_state.copyWith(puzzleMode: mode));
-    _prefs.savePuzzleMode(mode);
+    _setState(
+      _state.copyWith(puzzleMode: 'unique', canChangePuzzleMode: false),
+    );
+    _prefs.savePuzzleMode('unique');
   }
 
   void _setState(SettingsState next) {

@@ -26,7 +26,10 @@ class GameConfigurationService {
       render('Finish or start a new game before changing difficulty');
       return;
     }
-    if (!_premiumPolicyService.isDifficultyUnlocked(nextDifficulty, entitlement)) {
+    if (!_premiumPolicyService.isDifficultyUnlocked(
+      nextDifficulty,
+      entitlement,
+    )) {
       render('This difficulty is available in Full Version.');
       return;
     }
@@ -43,17 +46,7 @@ class GameConfigurationService {
     required VoidCallback startGame,
     required ValueChanged<String> render,
   }) {
-    if (!settings.state.canChangePuzzleMode) {
-      render('Finish or check the game before changing puzzle mode');
-      return;
-    }
-    if (settings.state.difficulty == 'hard' ||
-        settings.state.difficulty == 'very_hard') {
-      settings.setPuzzleMode('unique');
-      render('Puzzle mode: unique');
-      return;
-    }
-    settings.setPuzzleMode(mode == 'unique' ? 'unique' : 'multi');
-    startGame();
+    settings.setPuzzleMode('unique');
+    render('Puzzle mode: unique');
   }
 }

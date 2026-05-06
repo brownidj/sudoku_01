@@ -18,11 +18,11 @@ Future<SudokuController> _createController({
         notesMode: false,
         difficulty: 'easy',
         canChangeDifficulty: true,
-        canChangePuzzleMode: true,
+        canChangePuzzleMode: false,
         styleName: 'Modern',
         contentMode: 'numbers',
         animalStyle: 'simple',
-        puzzleMode: 'multi',
+        puzzleMode: 'unique',
       ),
     ),
   );
@@ -30,8 +30,13 @@ Future<SudokuController> _createController({
   return controller;
 }
 
-Future<void> _pumpScreen(WidgetTester tester, SudokuController controller) async {
-  await tester.pumpWidget(MaterialApp(home: SudokuScreen(controller: controller)));
+Future<void> _pumpScreen(
+  WidgetTester tester,
+  SudokuController controller,
+) async {
+  await tester.pumpWidget(
+    MaterialApp(home: SudokuScreen(controller: controller)),
+  );
   await tester.pumpAndSettle();
 }
 
@@ -139,72 +144,53 @@ void main() {
     },
   );
 
-  testWidgets('changing puzzle mode prompts before starting a new game', (
-    WidgetTester tester,
-  ) async {
-    final gameService = FakeGameService();
-    final controller = await _createController(gameService: gameService);
-    await _pumpScreen(tester, controller);
-
-    final baselineNewGameCalls = gameService.newGameCalls;
-
-    await tester.tap(
-      find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('UNIQUE').last);
-    await tester.pumpAndSettle();
-
-    expect(find.text('Start New Game?'), findsOneWidget);
-    expect(
-      find.text('Change puzzle mode to UNIQUE and start a new game?'),
-      findsOneWidget,
-    );
-
-    await tester.tap(find.text('Start New Game'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('UNIQUE'), findsOneWidget);
-    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
-  });
-
-  testWidgets('debug reset entitlement action switches version from full to free', (
-    WidgetTester tester,
-  ) async {
+  testWidgets('puzzle mode dropdown is not shown', (WidgetTester tester) async {
     final controller = await _createController();
-    controller.onSetEntitlement(Entitlement.premium);
     await _pumpScreen(tester, controller);
-    await _enableDebugTools(tester);
-
-    final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
-    scaffoldState.openDrawer();
-    await tester.pumpAndSettle();
-    await tester.drag(find.byType(ListView), const Offset(0, -1400));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Full'), findsOneWidget);
-    await tester.ensureVisible(
-      find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
-    );
-    await tester.pumpAndSettle();
-    await tester.tap(
-      find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
-    );
-    await tester.pumpAndSettle();
-    expect(controller.state.premiumActive, isFalse);
-
-    scaffoldState.openDrawer();
-    await tester.pumpAndSettle();
-    await tester.ensureVisible(
-      find.byKey(const ValueKey<String>('drawer-premium-status')),
-    );
-    await tester.pumpAndSettle();
     expect(
-      find.descendant(
-        of: find.byKey(const ValueKey<String>('drawer-premium-status')),
-        matching: find.text('Free'),
-      ),
-      findsOneWidget,
+      find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
+      findsNothing,
     );
   });
+
+  testWidgets(
+    'debug reset entitlement action switches version from full to free',
+    (WidgetTester tester) async {
+      final controller = await _createController();
+      controller.onSetEntitlement(Entitlement.premium);
+      await _pumpScreen(tester, controller);
+      await _enableDebugTools(tester);
+
+      final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
+      scaffoldState.openDrawer();
+      await tester.pumpAndSettle();
+      await tester.drag(find.byType(ListView), const Offset(0, -1400));
+      await tester.pumpAndSettle();
+
+      expect(controller.state.premiumActive, isTrue);
+      await tester.ensureVisible(
+        find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(
+        find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
+      );
+      await tester.pumpAndSettle();
+      expect(controller.state.premiumActive, isFalse);
+
+      scaffoldState.openDrawer();
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(
+        find.byKey(const ValueKey<String>('drawer-premium-status')),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey<String>('drawer-premium-status')),
+          matching: find.text('Free'),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
 }

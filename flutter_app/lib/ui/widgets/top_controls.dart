@@ -23,8 +23,7 @@ class TopControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showConfigLock =
-        !state.canChangeDifficulty || !state.canChangePuzzleMode;
+    final showConfigLock = !state.canChangeDifficulty;
     final colorScheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 4, 12, 0),

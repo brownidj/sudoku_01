@@ -98,7 +98,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
         final style = styleForName(state.styleName);
         return Scaffold(
           appBar: SudokuVersionAppBar(
-            onNewGamePressed: _onNewGamePressed,
             onVersionTapped: _onVersionTapped,
             onVersionLongPressed:
                 _services.interactionController.onVersionLongPressed,
@@ -248,6 +247,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onClear: controller.onClearPressed,
             onCheckOrSolution: () => _services.interactionController
                 .onCheckOrSolutionPressed(controller.state),
+            onNewGamePressed: _onNewGamePressed,
           ),
         );
       },

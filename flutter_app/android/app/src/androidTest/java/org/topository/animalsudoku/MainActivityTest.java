@@ -1,4 +1,4 @@
-package org.topository.zudoku;
+package org.topository.animalsudoku;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.Test;

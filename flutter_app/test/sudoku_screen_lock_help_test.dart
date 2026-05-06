@@ -10,11 +10,11 @@ const SettingsState _defaultSettings = SettingsState(
   notesMode: false,
   difficulty: 'easy',
   canChangeDifficulty: true,
-  canChangePuzzleMode: true,
+  canChangePuzzleMode: false,
   styleName: 'Modern',
   contentMode: 'numbers',
   animalStyle: 'simple',
-  puzzleMode: 'multi',
+  puzzleMode: 'unique',
 );
 
 SudokuController _buildController({FakeGameService? gameService}) {
@@ -50,7 +50,7 @@ void main() {
 
     expect(
       find.text(
-        "Difficulty and puzzle mode are locked during a game. To unlock them, either double-tap the lock icon or start a 'New Game'",
+        "Difficulty is locked during a game. To unlock it, either double-tap the lock icon or start a 'New Game'",
       ),
       findsOneWidget,
     );
@@ -73,13 +73,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final puzzleModeDropdown = tester.widget<DropdownButton<String>>(
-      find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
-    );
     final difficultyDropdown = tester.widget<DropdownButton<String>>(
       find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
     );
-    expect(puzzleModeDropdown.onChanged, isNull);
     expect(difficultyDropdown.onChanged, isNull);
 
     await tester.tap(
@@ -94,7 +90,7 @@ void main() {
     expect(find.text('Unlock Settings?'), findsOneWidget);
     expect(
       find.text(
-        'Unlocking difficulty and puzzle mode will start a new game and reset this board. Continue?',
+        'Unlocking difficulty will start a new game and reset this board. Continue?',
       ),
       findsOneWidget,
     );
@@ -109,13 +105,9 @@ void main() {
       findsNothing,
     );
 
-    final unlockedPuzzleModeDropdown = tester.widget<DropdownButton<String>>(
-      find.byKey(const ValueKey<String>('board-puzzle-mode-dropdown')),
-    );
     final unlockedDifficultyDropdown = tester.widget<DropdownButton<String>>(
       find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
     );
-    expect(unlockedPuzzleModeDropdown.onChanged, isNotNull);
     expect(unlockedDifficultyDropdown.onChanged, isNotNull);
   });
 

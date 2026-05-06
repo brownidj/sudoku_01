@@ -8,8 +8,8 @@ import 'package:flutter_app/ui/widgets/info_sheet.dart';
 class SudokuStartInstructionOverlayService {
   static const String _startInstructionMessage =
       'To start, select a square you want to add an icon to.\n\n'
-      'Tip: Touch and hold (long-press) labels like UNIQUE/MULTI, '
-      'Hints, and Corrections to see what they do.';
+      'Tip: Touch and hold (long-press) labels like Hints and Corrections '
+      'to see what they do.';
 
   final StartInstructionTooltipService _startInstructionTooltipService;
 

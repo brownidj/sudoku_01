@@ -6,7 +6,7 @@ import 'package:flutter_app/domain/types.dart';
 import 'support/sudoku_controller_test_support.dart';
 
 void main() {
-  test('Puzzle mode defaults, locking, and new game flow', () async {
+  test('Puzzle mode stays unique, with locking and new game flow', () async {
     final fakeGameService = FakeGameService();
     final fakePrefs = FakePreferencesStore();
     final fakeSettings = FakeSettingsController(
@@ -14,11 +14,11 @@ void main() {
         notesMode: false,
         difficulty: 'easy',
         canChangeDifficulty: true,
-        canChangePuzzleMode: true,
+        canChangePuzzleMode: false,
         styleName: 'Modern',
         contentMode: 'numbers',
         animalStyle: 'simple',
-        puzzleMode: 'multi',
+        puzzleMode: 'unique',
       ),
     );
 
@@ -37,8 +37,8 @@ void main() {
     expect(fakeGameService.newGameCalls, 2);
 
     controller.onPuzzleModeChanged('multi');
-    expect(fakeSettings.state.puzzleMode, 'multi');
-    expect(fakeGameService.newGameCalls, 3);
+    expect(fakeSettings.state.puzzleMode, 'unique');
+    expect(fakeGameService.newGameCalls, 2);
 
     final editable = firstEditableCoord(controller.state);
     expect(editable, isNotNull);
@@ -48,8 +48,8 @@ void main() {
     expect(fakeSettings.state.canChangePuzzleMode, false);
 
     controller.onPuzzleModeChanged('unique');
-    expect(fakeSettings.state.puzzleMode, 'multi');
-    expect(fakeGameService.newGameCalls, 3);
+    expect(fakeSettings.state.puzzleMode, 'unique');
+    expect(fakeGameService.newGameCalls, 2);
 
     controller.onCheckSolution();
     expect(fakeSettings.state.canChangeDifficulty, true);
@@ -57,7 +57,7 @@ void main() {
 
     controller.onPuzzleModeChanged('unique');
     expect(fakeSettings.state.puzzleMode, 'unique');
-    expect(fakeGameService.newGameCalls, 4);
+    expect(fakeGameService.newGameCalls, 2);
 
     controller.onSetDifficulty('hard');
     expect(fakeSettings.state.puzzleMode, 'unique');
@@ -75,7 +75,7 @@ void main() {
           notesMode: false,
           difficulty: 'easy',
           canChangeDifficulty: true,
-          canChangePuzzleMode: true,
+          canChangePuzzleMode: false,
           styleName: 'Modern',
           contentMode: 'numbers',
           animalStyle: 'simple',
@@ -131,7 +131,7 @@ void main() {
           styleName: 'Modern',
           contentMode: 'numbers',
           animalStyle: 'simple',
-          puzzleMode: 'multi',
+          puzzleMode: 'unique',
         ),
       ),
     );
@@ -147,11 +147,11 @@ void main() {
           notesMode: false,
           difficulty: 'easy',
           canChangeDifficulty: true,
-          canChangePuzzleMode: true,
+          canChangePuzzleMode: false,
           styleName: 'Modern',
           contentMode: 'numbers',
           animalStyle: 'simple',
-          puzzleMode: 'multi',
+          puzzleMode: 'unique',
         ),
       ),
     );
@@ -173,11 +173,11 @@ void main() {
           notesMode: false,
           difficulty: 'easy',
           canChangeDifficulty: true,
-          canChangePuzzleMode: true,
+          canChangePuzzleMode: false,
           styleName: 'Modern',
           contentMode: 'numbers',
           animalStyle: 'simple',
-          puzzleMode: 'multi',
+          puzzleMode: 'unique',
         ),
       ),
       premiumPolicyService: policySpy,
