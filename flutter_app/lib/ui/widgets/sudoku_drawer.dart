@@ -64,6 +64,9 @@ class SudokuDrawer extends StatelessWidget {
               compactDensity: _compactDensity,
               audioEnabled: audioEnabled,
               onAudioEnabledChanged: onAudioEnabledChanged,
+              showBackgroundMusicControls:
+                  state.contentMode == 'butterflies' ||
+                  state.contentMode == 'old_opera',
               backgroundMusicEnabled: backgroundMusicEnabled,
               onBackgroundMusicEnabledChanged: onBackgroundMusicEnabledChanged,
               audioVolume: audioVolume,

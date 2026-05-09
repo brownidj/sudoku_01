@@ -21,14 +21,15 @@ class LaunchScreen extends StatefulWidget {
 
 class _LaunchScreenState extends State<LaunchScreen> {
   static const List<String> _hints = <String>[
-    "If you're not sure of what goes into a particular tile, you can use Notes as a reminder of what the possibilities are. Select a tile, press Notes, and then select the possible icons that might fit. They will be shown in green. Press Notes again to switch the Notes mode off.",
-    'Use a long-press, (hold your finger down for a couple of seconds), to get some information about what something is. Also, try it on a tile that has been filled in.',
-    "If your choice leads to two or more tiles being coloured pink, this means you've made a mistake at some point. You have a limited number of auto-corrections that you can use.",
+    "Notes allows you to add little reminders of possibilities if you're not sure. Your options are shown in green. Press Notes again to switch them off.",
+    'Use a long-press, (hold your finger down for a couple of seconds), to understand what somethings do. Also, try it on a tile that has been filled in.',
+    "If your choice leads to two or more tiles being coloured pink, you've made a mistake at some point. You have a limited number of auto-corrections.",
     'Use a long-press on the lock to see what it means.',
     'Press Help to get some information about how to play the game.',
     'Pressing ☰ (top right) opens a drawer that allows you to make some selections.',
     'If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).',
-    'Press the music icon once to turn the background music off or twice, in quick succession to turn it on. Previous and Next retreat or advance the background music tune.',
+    'Press the music icon once to turn the background music off or twice, in quick succession, to turn it on.',
+    'The dice starts a new game.',
   ];
 
   bool _ready = false;
@@ -149,7 +150,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'ZuDoKu+',
+                              'SuDoKu Playtime',
                               style: titleStyle,
                               textAlign: TextAlign.center,
                             ),

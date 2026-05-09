@@ -1,6 +1,14 @@
 part of 'sudoku_screen.dart';
 
 extension SudokuScreenHandlers on _SudokuScreenState {
+  bool get _isBackgroundMusicTheme {
+    final mode = widget.controller.state.contentMode;
+    return mode == 'butterflies' || mode == 'old_opera';
+  }
+
+  bool get _effectiveBackgroundMusicEnabled =>
+      _audioEnabled && _backgroundMusicEnabled && _isBackgroundMusicTheme;
+
   void _onControllerChanged() {
     if (!mounted) {
       return;
@@ -29,6 +37,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
       state: state,
       isMounted: () => mounted,
     );
+    _services.onBackgroundMusicEnabledChanged(_effectiveBackgroundMusicEnabled);
   }
 
   void _ensureAnimalAssetsRequested(String contentMode) {
@@ -80,36 +89,29 @@ extension SudokuScreenHandlers on _SudokuScreenState {
     }
   }
 
-  void _onMusicControlTapped() {
-    final now = DateTime.now();
-    final lastTap = _lastMusicControlTapAt;
-    final isDoubleTap =
-        lastTap != null &&
-        now.difference(lastTap) <= const Duration(milliseconds: 320);
-    _lastMusicControlTapAt = now;
-
-    if (isDoubleTap) {
-      _pendingMusicSingleTapTimer?.cancel();
-      _pendingMusicSingleTapTimer = null;
-      _setBackgroundMusicEnabledFromAppBar(true);
+  void _onMusicControlSingleTap() {
+    if (!_isBackgroundMusicTheme) {
       return;
     }
+    _setBackgroundMusicEnabledFromAppBar(false);
+  }
 
-    _pendingMusicSingleTapTimer?.cancel();
-    _pendingMusicSingleTapTimer = Timer(const Duration(milliseconds: 340), () {
-      _setBackgroundMusicEnabledFromAppBar(false);
-    });
+  void _onMusicControlDoubleTap() {
+    if (!_isBackgroundMusicTheme) {
+      return;
+    }
+    _setBackgroundMusicEnabledFromAppBar(true);
   }
 
   void _onPreviousTrackTapped() {
-    if (!_backgroundMusicEnabled) {
+    if (!_effectiveBackgroundMusicEnabled) {
       return;
     }
     unawaited(_services.backgroundMusicService.playPreviousTrack());
   }
 
   void _onNextTrackTapped() {
-    if (!_backgroundMusicEnabled) {
+    if (!_effectiveBackgroundMusicEnabled) {
       return;
     }
     unawaited(_services.backgroundMusicService.playNextTrack());
@@ -139,7 +141,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
       _backgroundMusicEnabled = nextBackgroundMusic;
     });
     _services.onAudioEnabledChanged(enabled);
-    _services.onBackgroundMusicEnabledChanged(nextBackgroundMusic);
+    _services.onBackgroundMusicEnabledChanged(_effectiveBackgroundMusicEnabled);
     unawaited(_persistAudioPreferences());
   }
 
@@ -153,7 +155,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
     setState(() {
       _backgroundMusicEnabled = enabled;
     });
-    _services.onBackgroundMusicEnabledChanged(enabled);
+    _services.onBackgroundMusicEnabledChanged(_effectiveBackgroundMusicEnabled);
     unawaited(_persistAudioPreferences());
   }
 
@@ -183,7 +185,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
       _backgroundMusicEnabled = nextBackground;
       _audioVolume = storedVolume;
     });
-    _services.onBackgroundMusicEnabledChanged(nextBackground);
+    _services.onBackgroundMusicEnabledChanged(_effectiveBackgroundMusicEnabled);
     _services.onAudioEnabledChanged(nextAudio);
     _services.onAudioVolumeChanged(storedVolume);
   }

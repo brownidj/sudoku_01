@@ -79,10 +79,10 @@ class AnimalCacheCatalog {
     '2_swallowtail',
     '3_blue_morpho',
     '4_glasswing',
-    '5_peacock_butterfly',
+    '5_peacock',
     '6_zebra_longwing',
-    '7_sulphur_butterfly',
-    '8_leaf_butterfly',
-    '9_metalmark_butterfly',
+    '7_sulphur',
+    '8_leaf',
+    '9_metalmark',
   ];
 }

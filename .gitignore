@@ -5,3 +5,6 @@ flutter_app/ios/build/*.*
 flutter_app/ios/build/ios/XCBuildData/PIFCache/target/TARGET@v11*
 /.idea/workspace.xml
 TARGET@*.*
+scripts/email_testers.py
+scripts/data/playstore_testers.csv
+scripts/data/email_testers.env

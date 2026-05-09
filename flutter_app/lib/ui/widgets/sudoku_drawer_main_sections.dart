@@ -23,7 +23,7 @@ class SudokuDrawerHeaderStyleSection extends StatelessWidget {
         Padding(
           padding: sectionPadding,
           child: const Text(
-            'ZuDoKu+',
+            'SuDoKu Playtime',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
           ),
         ),
@@ -63,6 +63,7 @@ class SudokuDrawerAudioSection extends StatelessWidget {
   final EdgeInsets sectionPadding;
   final VisualDensity compactDensity;
   final bool audioEnabled;
+  final bool showBackgroundMusicControls;
   final ValueChanged<bool>? onAudioEnabledChanged;
   final bool backgroundMusicEnabled;
   final ValueChanged<bool>? onBackgroundMusicEnabledChanged;
@@ -74,6 +75,7 @@ class SudokuDrawerAudioSection extends StatelessWidget {
     required this.sectionPadding,
     required this.compactDensity,
     required this.audioEnabled,
+    this.showBackgroundMusicControls = true,
     this.onAudioEnabledChanged,
     required this.backgroundMusicEnabled,
     this.onBackgroundMusicEnabledChanged,
@@ -112,44 +114,45 @@ class SudokuDrawerAudioSection extends StatelessWidget {
               ? null
               : () => onAudioEnabledChanged!(!audioEnabled),
         ),
-        ListTile(
-          contentPadding: sectionPadding,
-          minVerticalPadding: 0,
-          visualDensity: compactDensity,
-          dense: true,
-          title: Text(
-            'Background music',
-            style: TextStyle(fontWeight: FontWeight.w600, color: inactiveColor),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              'Music to play SuDoKu by',
-              style: TextStyle(fontStyle: FontStyle.italic, color: inactiveColor),
+        if (showBackgroundMusicControls)
+          ListTile(
+            contentPadding: sectionPadding,
+            minVerticalPadding: 0,
+            visualDensity: compactDensity,
+            dense: true,
+            title: Text(
+              'Background music',
+              style: TextStyle(fontWeight: FontWeight.w600, color: inactiveColor),
             ),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                backgroundMusicEnabled ? 'On' : 'Off',
-                style: TextStyle(color: inactiveColor),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                'Sounds for SuDoKu lovers',
+                style: TextStyle(fontStyle: FontStyle.italic, color: inactiveColor),
               ),
-              Radio<bool?>(
-                value: true,
-                groupValue: backgroundMusicEnabled ? true : null,
-                toggleable: true,
-                visualDensity: VisualDensity.compact,
-                onChanged: (!audioEnabled || onBackgroundMusicEnabledChanged == null)
-                    ? null
-                    : (enabled) => onBackgroundMusicEnabledChanged!(enabled == true),
-              ),
-            ],
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  backgroundMusicEnabled ? 'On' : 'Off',
+                  style: TextStyle(color: inactiveColor),
+                ),
+                Radio<bool?>(
+                  value: true,
+                  groupValue: backgroundMusicEnabled ? true : null,
+                  toggleable: true,
+                  visualDensity: VisualDensity.compact,
+                  onChanged: (!audioEnabled || onBackgroundMusicEnabledChanged == null)
+                      ? null
+                      : (enabled) => onBackgroundMusicEnabledChanged!(enabled == true),
+                ),
+              ],
+            ),
+            onTap: (!audioEnabled || onBackgroundMusicEnabledChanged == null)
+                ? null
+                : () => onBackgroundMusicEnabledChanged!(!backgroundMusicEnabled),
           ),
-          onTap: (!audioEnabled || onBackgroundMusicEnabledChanged == null)
-              ? null
-              : () => onBackgroundMusicEnabledChanged!(!backgroundMusicEnabled),
-        ),
         ListTile(
           contentPadding: sectionPadding,
           minVerticalPadding: 0,

@@ -42,11 +42,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final GlobalKey _tilesPanelKey = GlobalKey();
   final GlobalKey _bottomControlsKey = GlobalKey();
   bool _debugToolsEnabled = false;
-  bool _audioEnabled = true;
-  bool _backgroundMusicEnabled = true;
+  bool _audioEnabled = false;
+  bool _backgroundMusicEnabled = false;
   double _audioVolume = 0.5;
-  DateTime? _lastMusicControlTapAt;
-  Timer? _pendingMusicSingleTapTimer;
   @override
   void initState() {
     super.initState();
@@ -74,7 +72,6 @@ class _SudokuScreenState extends State<SudokuScreen> {
 
   @override
   void dispose() {
-    _pendingMusicSingleTapTimer?.cancel();
     _services.dispose();
     super.dispose();
   }
@@ -96,6 +93,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
           'old_opera' => 'old_opera',
           _ => null,
         };
+        final supportsBackgroundMusicTheme =
+            state.contentMode == 'butterflies' ||
+            state.contentMode == 'old_opera';
         final viewModel = SudokuScreenViewModel.from(
           state: state,
           coordinator: _services.candidatePanelCoordinator,
@@ -108,8 +108,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
             onVersionTapped: _onVersionTapped,
             onVersionLongPressed:
                 _services.interactionController.onVersionLongPressed,
+            audioEnabled: _audioEnabled,
+            showMusicControls: supportsBackgroundMusicTheme,
             backgroundMusicEnabled: _backgroundMusicEnabled,
-            onMusicControlTapped: _onMusicControlTapped,
+            onMusicControlSingleTap: _onMusicControlSingleTap,
+            onMusicControlDoubleTap: _onMusicControlDoubleTap,
             onPreviousTrackTapped: _onPreviousTrackTapped,
             onNextTrackTapped: _onNextTrackTapped,
           ),

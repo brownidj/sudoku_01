@@ -4,7 +4,7 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
 
-UiState _state({bool canUndo = false}) {
+UiState _state({bool canUndo = false, bool puzzleSolved = false}) {
   final cells = List<List<CellVm>>.generate(
     9,
     (r) => List<CellVm>.generate(
@@ -37,7 +37,8 @@ UiState _state({bool canUndo = false}) {
     animalStyle: 'simple',
     puzzleMode: 'multi',
     selected: null,
-    gameOver: false,
+    gameOver: puzzleSolved,
+    puzzleSolved: puzzleSolved,
     correctionsLeft: 5,
     canUndo: canUndo,
     correctionPromptCoord: null,
@@ -69,7 +70,7 @@ void main() {
     expect(find.text(ActionBar.undoTooltip), findsOneWidget);
   });
 
-  testWidgets('Solution button shows tooltip text', (
+  testWidgets('New game dice shows tooltip text', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -86,9 +87,61 @@ void main() {
       ),
     );
 
-    await tester.longPress(find.text('Solution'));
+    await tester.longPress(find.byKey(const ValueKey<String>('content-new-game-chip')));
     await tester.pumpAndSettle();
 
-    expect(find.text(ActionBar.solutionTooltip), findsOneWidget);
+    expect(find.text('New Game'), findsWidgets);
+  });
+
+  testWidgets('New game dice animation pauses after first move and resumes on victory', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ActionBar(
+            state: _state(canUndo: true),
+            onUndo: () {},
+            onToggleNotesMode: () {},
+            onClear: () {},
+            onCheckOrSolution: () {},
+            onNewGamePressed: () {},
+          ),
+        ),
+      ),
+    );
+
+    final pausedImage = tester.widget<Image>(
+      find.descendant(
+        of: find.byKey(const ValueKey<String>('content-new-game-chip')),
+        matching: find.byType(Image),
+      ),
+    );
+    final pausedProvider = pausedImage.image as AssetImage;
+    expect(pausedProvider.assetName, 'assets/images/icons/dice-roll-still.png');
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ActionBar(
+            state: _state(canUndo: true, puzzleSolved: true),
+            onUndo: () {},
+            onToggleNotesMode: () {},
+            onClear: () {},
+            onCheckOrSolution: () {},
+            onNewGamePressed: () {},
+          ),
+        ),
+      ),
+    );
+
+    final resumedImage = tester.widget<Image>(
+      find.descendant(
+        of: find.byKey(const ValueKey<String>('content-new-game-chip')),
+        matching: find.byType(Image),
+      ),
+    );
+    final resumedProvider = resumedImage.image as AssetImage;
+    expect(resumedProvider.assetName, 'assets/images/icons/dice-roll.gif');
   });
 }

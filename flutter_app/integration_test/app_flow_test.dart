@@ -38,7 +38,10 @@ void main() {
     expect(find.text('Notes'), findsOneWidget);
     expect(find.text('Undo'), findsOneWidget);
     expect(find.text('Clear'), findsOneWidget);
-    expect(find.text('Solution'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('content-new-game-chip')),
+      findsOneWidget,
+    );
     expect(find.textContaining('Corrections:'), findsOneWidget);
   });
 
@@ -170,7 +173,7 @@ Future<void> _startGameFromLaunch(
 Future<void> _openDrawer(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.menu));
   await tester.pumpAndSettle();
-  await _pumpUntilVisible(tester, find.text('ZuDoKu+'));
+  await _pumpUntilVisible(tester, find.text('SuDoKu Playtime'));
 }
 
 Future<void> _dismissInfoSheetIfVisible(WidgetTester tester) async {

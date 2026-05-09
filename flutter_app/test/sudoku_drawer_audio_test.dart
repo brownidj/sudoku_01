@@ -63,6 +63,7 @@ void main() {
 
     await tester.pumpWidget(
       drawerHarness(
+        contentMode: 'butterflies',
         audioEnabled: true,
         backgroundMusicEnabled: true,
         onAudioEnabledChanged: (_) {},
@@ -85,7 +86,7 @@ void main() {
     expect(audioY, lessThan(bgMusicY));
     expect(bgMusicY, lessThan(volumeY));
 
-    final straplineFinder = find.text('Music to play SuDoKu by');
+    final straplineFinder = find.text('Sounds for SuDoKu lovers');
     expect(straplineFinder, findsOneWidget);
     final straplineText = tester.widget<Text>(straplineFinder);
     expect(straplineText.style?.fontStyle, FontStyle.italic);
@@ -105,6 +106,7 @@ void main() {
 
     await tester.pumpWidget(
       drawerHarness(
+        contentMode: 'butterflies',
         audioEnabled: false,
         backgroundMusicEnabled: false,
         onAudioEnabledChanged: (_) {},
@@ -118,5 +120,50 @@ void main() {
 
     final disabledSlider = tester.widget<Slider>(find.byType(Slider));
     expect(disabledSlider.onChanged, isNull);
+  });
+
+  testWidgets('background music row is hidden outside butterflies theme', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      drawerHarness(
+        contentMode: 'numbers',
+        audioEnabled: true,
+        backgroundMusicEnabled: true,
+        onAudioEnabledChanged: (_) {},
+        onBackgroundMusicEnabledChanged: (_) {},
+        audioVolume: 0.5,
+        onAudioVolumeChanged: (_) {},
+      ),
+    );
+
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Background music'), findsNothing);
+    expect(find.text('Sounds for SuDoKu lovers'), findsNothing);
+    expect(find.text('Volume'), findsOneWidget);
+  });
+
+  testWidgets('background music row is shown for opera theme', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      drawerHarness(
+        contentMode: 'old_opera',
+        audioEnabled: true,
+        backgroundMusicEnabled: true,
+        onAudioEnabledChanged: (_) {},
+        onBackgroundMusicEnabledChanged: (_) {},
+        audioVolume: 0.5,
+        onAudioVolumeChanged: (_) {},
+      ),
+    );
+
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Background music'), findsOneWidget);
+    expect(find.text('Sounds for SuDoKu lovers'), findsOneWidget);
   });
 }

@@ -11,7 +11,7 @@ Future<void> _dismissInfoSheetIfVisible(PatrolIntegrationTester $) async {
       return;
     }
     await gotIt.tap();
-    await $.pumpAndSettle();
+    await $.pump(const Duration(milliseconds: 300));
   }
 }
 
@@ -37,7 +37,7 @@ Future<void> _waitForBoardControls(PatrolIntegrationTester $) async {
 }
 
 Future<void> _launchGame(PatrolIntegrationTester $) async {
-  await $.pumpAndSettle();
+  await $.pump(const Duration(milliseconds: 500));
 
   for (var i = 0; i < 10; i += 1) {
     if ($('Undo').evaluate().isNotEmpty) {
@@ -55,7 +55,7 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
   }
 
   app.main();
-  await $.pumpAndSettle();
+  await $.pump(const Duration(milliseconds: 500));
 
   for (var i = 0; i < 20; i += 1) {
     if ($('Undo').evaluate().isNotEmpty) {
@@ -78,8 +78,8 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
 Future<void> _openDrawer(PatrolIntegrationTester $) async {
   await _dismissInfoSheetIfVisible($);
   await $.tester.dragFrom(const Offset(4, 140), const Offset(320, 0));
-  await $.pumpAndSettle();
-  await $('ZuDoKu+').waitUntilVisible();
+  await $.pump(const Duration(milliseconds: 400));
+  await $('SuDoKu Playtime').waitUntilVisible();
 }
 
 void main() {
@@ -125,6 +125,9 @@ void main() {
     expect($('Notes'), findsOneWidget);
     expect($('Undo'), findsOneWidget);
     expect($('Clear'), findsOneWidget);
-    expect($('Solution'), findsOneWidget);
+    expect(
+      $(find.byKey(const ValueKey<String>('content-new-game-chip'))),
+      findsOneWidget,
+    );
   });
 }

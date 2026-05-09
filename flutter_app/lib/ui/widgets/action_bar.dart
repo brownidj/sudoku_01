@@ -7,15 +7,14 @@ class ActionBar extends StatelessWidget {
       'Use Undo to step back through the selections you made previously. '
       'Undo clears each previous selection, one at a time. '
       'You can also do this if you run out of Corrections';
-  static const String solutionTooltip =
-      'First press stops the game and shows you what you got '
-      'correct/incorrect. Second press shows you the complete solution.';
 
   final UiState state;
   final VoidCallback onUndo;
   final VoidCallback onToggleNotesMode;
   final VoidCallback onClear;
   final VoidCallback onCheckOrSolution;
+  final VoidCallback? onNewGamePressed;
+  final bool showNewGame;
 
   const ActionBar({
     super.key,
@@ -24,6 +23,8 @@ class ActionBar extends StatelessWidget {
     required this.onToggleNotesMode,
     required this.onClear,
     required this.onCheckOrSolution,
+    this.onNewGamePressed,
+    this.showNewGame = true,
   });
 
   @override
@@ -39,20 +40,44 @@ class ActionBar extends StatelessWidget {
       tapTargetSize: MaterialTapTargetSize.padded,
       textStyle: const TextStyle(fontSize: 13),
     );
+    final animateNewGameDice = state.puzzleSolved || !state.canUndo;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          LongPressTooltip(
-            message: solutionTooltip,
-            child: OutlinedButton(
-              style: compactStyle,
-              onPressed: onCheckOrSolution,
-              child: const Text('Solution'),
+          if (showNewGame)
+            Tooltip(
+              message: 'New Game',
+              child: Semantics(
+                label: 'New Game',
+                key: const ValueKey<String>('content-new-game-chip'),
+                button: true,
+                child: Transform.translate(
+                  offset: const Offset(6, -6),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onNewGamePressed,
+                    child: SizedBox(
+                      width: animateNewGameDice ? 52 : 44,
+                      height: animateNewGameDice ? 52 : 44,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.asset(
+                          animateNewGameDice
+                              ? 'assets/images/icons/dice-roll.gif'
+                              : 'assets/images/icons/dice-roll-still.png',
+                          width: animateNewGameDice ? 52 : 44,
+                          height: animateNewGameDice ? 52 : 44,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ),
-          const SizedBox(width: 24),
+          if (showNewGame) const SizedBox(width: 48),
           OutlinedButton(
             style: compactStyle,
             onPressed: onClear,

@@ -66,7 +66,7 @@ class TopControls extends StatelessWidget {
                     ),
                     DropdownMenuItem<String>(
                       value: 'old_opera',
-                      child: Text('Opera (more tricky)'),
+                      child: Text('Opera (unreal!)'),
                     ),
                     DropdownMenuItem<String>(
                       value: 'numbers',

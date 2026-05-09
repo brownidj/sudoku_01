@@ -7,8 +7,11 @@ class SudokuVersionAppBar extends StatefulWidget
     implements PreferredSizeWidget {
   final VoidCallback onVersionTapped;
   final VoidCallback onVersionLongPressed;
+  final bool audioEnabled;
+  final bool showMusicControls;
   final bool backgroundMusicEnabled;
-  final VoidCallback? onMusicControlTapped;
+  final VoidCallback? onMusicControlSingleTap;
+  final VoidCallback? onMusicControlDoubleTap;
   final VoidCallback? onPreviousTrackTapped;
   final VoidCallback? onNextTrackTapped;
   final Duration longPressThreshold;
@@ -17,8 +20,11 @@ class SudokuVersionAppBar extends StatefulWidget
     super.key,
     required this.onVersionTapped,
     required this.onVersionLongPressed,
+    this.audioEnabled = true,
+    this.showMusicControls = true,
     this.backgroundMusicEnabled = false,
-    this.onMusicControlTapped,
+    this.onMusicControlSingleTap,
+    this.onMusicControlDoubleTap,
     this.onPreviousTrackTapped,
     this.onNextTrackTapped,
     this.longPressThreshold = const Duration(milliseconds: 1500),
@@ -37,7 +43,7 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
   Timer? _longPressTimer;
   bool _versionPressActive = false;
   bool _longPressTriggered = false;
-  String _versionLabel = 'ZuDoKu+';
+  String _versionLabel = 'SuDoKu Playtime';
 
   @override
   void initState() {
@@ -82,9 +88,15 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final lighterDisabledMusicColor = Color.lerp(
+      theme.disabledColor,
+      theme.colorScheme.surface,
+      0.45,
+    );
     final musicColor = widget.backgroundMusicEnabled
         ? null
-        : Theme.of(context).disabledColor;
+        : lighterDisabledMusicColor;
     return AppBar(
       automaticallyImplyLeading: false,
       title: SizedBox(
@@ -105,9 +117,8 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize:
-                          (Theme.of(context).textTheme.titleLarge?.fontSize ??
-                              22) +
-                          4,
+                          Theme.of(context).textTheme.titleLarge?.fontSize ??
+                          22,
                     ),
                   ),
                 ),
@@ -118,32 +129,49 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _MusicGlyphButton(
-                    key: const ValueKey<String>('appbar-music-prev-button'),
-                    text: '<',
-                    color: musicColor,
-                    onTap: widget.backgroundMusicEnabled
-                        ? widget.onPreviousTrackTapped
-                        : null,
-                    longPressMessage: _musicControlsTooltip,
-                  ),
-                  _MusicGlyphButton(
-                    key: const ValueKey<String>('appbar-music-note-text'),
-                    text: '♪',
-                    color: musicColor,
-                    onTap: widget.onMusicControlTapped,
-                    longPressMessage: _musicControlsTooltip,
-                  ),
-                  _MusicGlyphButton(
-                    key: const ValueKey<String>('appbar-music-next-button'),
-                    text: '>',
-                    color: musicColor,
-                    onTap: widget.backgroundMusicEnabled
-                        ? widget.onNextTrackTapped
-                        : null,
-                    longPressMessage: _musicControlsTooltip,
-                  ),
-                  const SizedBox(width: 6),
+                  if (widget.audioEnabled && widget.showMusicControls) ...[
+                    _MusicGlyphButton(
+                      key: const ValueKey<String>('appbar-music-prev-button'),
+                      text: '<',
+                      color: musicColor,
+                      onTap: widget.backgroundMusicEnabled
+                          ? widget.onPreviousTrackTapped
+                          : null,
+                      longPressMessage: _musicControlsTooltip,
+                    ),
+                    _MusicGlyphButton(
+                      key: const ValueKey<String>('appbar-music-note-text'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 2,
+                        vertical: 2,
+                      ),
+                      child: SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: Image.asset(
+                          'assets/images/icons/bg_music.png',
+                          width: 36,
+                          height: 36,
+                          color: musicColor,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      color: musicColor,
+                      onTap: widget.onMusicControlSingleTap,
+                      onDoubleTap: widget.onMusicControlDoubleTap,
+                      longPressMessage: _musicControlsTooltip,
+                    ),
+                    _MusicGlyphButton(
+                      key: const ValueKey<String>('appbar-music-next-button'),
+                      text: '>',
+                      color: musicColor,
+                      onTap: widget.backgroundMusicEnabled
+                          ? widget.onNextTrackTapped
+                          : null,
+                      longPressMessage: _musicControlsTooltip,
+                    ),
+                    const SizedBox(width: 12),
+                  ],
                   Builder(
                     builder: (context) => IconButton(
                       key: const ValueKey<String>('appbar-menu-button'),
@@ -165,18 +193,24 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
 }
 
 class _MusicGlyphButton extends StatelessWidget {
-  final String text;
+  final String? text;
+  final Widget? child;
   final Color? color;
   final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
   final String longPressMessage;
+  final EdgeInsets padding;
 
   const _MusicGlyphButton({
     super.key,
-    required this.text,
+    this.text,
+    this.child,
     this.color,
     this.onTap,
+    this.onDoubleTap,
     required this.longPressMessage,
-  });
+    this.padding = const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+  }) : assert(text != null || child != null);
 
   @override
   Widget build(BuildContext context) {
@@ -185,16 +219,19 @@ class _MusicGlyphButton extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: onTap,
+        onDoubleTap: onDoubleTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
+          padding: padding,
+          child:
+              child ??
+              Text(
+                text!,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
         ),
       ),
     );

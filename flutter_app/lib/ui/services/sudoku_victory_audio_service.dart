@@ -119,12 +119,11 @@ class SudokuVictoryAudioService {
       '2_swallowtail.png': 'audio/butterflies/2_swallowtail.wav',
       '3_blue_morpho.png': 'audio/butterflies/3_blue_morpho.wav',
       '4_glasswing.png': 'audio/butterflies/4_glasswing.wav',
-      '5_peacock_butterfly.png': 'audio/butterflies/5_peacock_butterfly.wav',
+      '5_peacock.png': 'audio/butterflies/5_peacock.wav',
       '6_zebra_longwing.png': 'audio/butterflies/6_zebra_longwing.wav',
-      '7_sulphur_butterfly.png': 'audio/butterflies/7_sulphur_butterfly.wav',
-      '8_leaf_butterfly.png': 'audio/butterflies/8_leaf_butterfly.wav',
-      '9_metalmark_butterfly.png':
-          'audio/butterflies/9_metalmark_butterfly.wav',
+      '7_sulphur.png': 'audio/butterflies/7_sulphur.wav',
+      '8_leaf.png': 'audio/butterflies/8_leaf.wav',
+      '9_metalmark.png': 'audio/butterflies/9_metalmark.wav',
     };
     return explicitMap[fileName];
   }

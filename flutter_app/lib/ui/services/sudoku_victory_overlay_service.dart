@@ -56,11 +56,11 @@ class SudokuVictoryOverlayService {
     'assets/images/butterflies/2_swallowtail.png',
     'assets/images/butterflies/3_blue_morpho.png',
     'assets/images/butterflies/4_glasswing.png',
-    'assets/images/butterflies/5_peacock_butterfly.png',
+    'assets/images/butterflies/5_peacock.png',
     'assets/images/butterflies/6_zebra_longwing.png',
-    'assets/images/butterflies/7_sulphur_butterfly.png',
-    'assets/images/butterflies/8_leaf_butterfly.png',
-    'assets/images/butterflies/9_metalmark_butterfly.png',
+    'assets/images/butterflies/7_sulphur.png',
+    'assets/images/butterflies/8_leaf.png',
+    'assets/images/butterflies/9_metalmark.png',
   ];
   static const List<String> numberCelebrationAssets = <String>[
     ...animalCelebrationAssets,

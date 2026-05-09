@@ -3,7 +3,7 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 
-UiState drawerState({bool premiumActive = false}) {
+UiState drawerState({bool premiumActive = false, String contentMode = 'numbers'}) {
   final cells = List<List<CellVm>>.generate(
     9,
     (r) => List<CellVm>.generate(
@@ -32,7 +32,7 @@ UiState drawerState({bool premiumActive = false}) {
     canChangeDifficulty: true,
     canChangePuzzleMode: true,
     styleName: 'Modern',
-    contentMode: 'numbers',
+    contentMode: contentMode,
     animalStyle: 'simple',
     puzzleMode: 'multi',
     selected: null,
@@ -50,6 +50,7 @@ UiState drawerState({bool premiumActive = false}) {
 
 Widget drawerHarness({
   bool premiumActive = false,
+  String contentMode = 'numbers',
   bool audioEnabled = true,
   bool backgroundMusicEnabled = true,
   double audioVolume = 0.5,
@@ -64,7 +65,7 @@ Widget drawerHarness({
 }) {
   return MaterialApp(
     home: SudokuDrawer(
-      state: drawerState(premiumActive: premiumActive),
+      state: drawerState(premiumActive: premiumActive, contentMode: contentMode),
       onAnimalStyleChanged: (_) {},
       onStyleChanged: (_) {},
       audioEnabled: audioEnabled,

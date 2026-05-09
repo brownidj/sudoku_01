@@ -1,14 +1,15 @@
-import 'package:flutter_app/ui/services/sudoku_background_music_service.dart';
+import 'package:flutter_app/ui/services/sudoku_background_music_tracks.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('SudokuBackgroundMusicService.shouldAttemptPlayback', () {
+  group('shouldAttemptBackgroundMusicPlayback', () {
     test('returns false when background music preference is off', () {
       expect(
-        SudokuBackgroundMusicService.shouldAttemptPlayback(
+        shouldAttemptBackgroundMusicPlayback(
           audioEnabled: true,
           backgroundMusicEnabled: false,
           sessionInProgress: true,
+          themeSupportsBackgroundMusic: true,
           hasSuspensions: false,
         ),
         isFalse,
@@ -17,37 +18,51 @@ void main() {
 
     test('returns true only when all playback preconditions are met', () {
       expect(
-        SudokuBackgroundMusicService.shouldAttemptPlayback(
+        shouldAttemptBackgroundMusicPlayback(
           audioEnabled: true,
           backgroundMusicEnabled: true,
           sessionInProgress: true,
+          themeSupportsBackgroundMusic: true,
           hasSuspensions: false,
         ),
         isTrue,
       );
       expect(
-        SudokuBackgroundMusicService.shouldAttemptPlayback(
+        shouldAttemptBackgroundMusicPlayback(
           audioEnabled: false,
           backgroundMusicEnabled: true,
           sessionInProgress: true,
+          themeSupportsBackgroundMusic: true,
           hasSuspensions: false,
         ),
         isFalse,
       );
       expect(
-        SudokuBackgroundMusicService.shouldAttemptPlayback(
+        shouldAttemptBackgroundMusicPlayback(
           audioEnabled: true,
           backgroundMusicEnabled: true,
           sessionInProgress: false,
+          themeSupportsBackgroundMusic: true,
           hasSuspensions: false,
         ),
         isFalse,
       );
       expect(
-        SudokuBackgroundMusicService.shouldAttemptPlayback(
+        shouldAttemptBackgroundMusicPlayback(
           audioEnabled: true,
           backgroundMusicEnabled: true,
           sessionInProgress: true,
+          themeSupportsBackgroundMusic: false,
+          hasSuspensions: false,
+        ),
+        isFalse,
+      );
+      expect(
+        shouldAttemptBackgroundMusicPlayback(
+          audioEnabled: true,
+          backgroundMusicEnabled: true,
+          sessionInProgress: true,
+          themeSupportsBackgroundMusic: true,
           hasSuspensions: true,
         ),
         isFalse,

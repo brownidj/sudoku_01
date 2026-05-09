@@ -1,40 +1,19 @@
 import 'dart:async';
 import 'dart:math' as math;
-
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/ui_state.dart';
-
+import 'package:flutter_app/ui/services/sudoku_background_music_tracks.dart';
 class SudokuBackgroundMusicService {
-  static const List<String> _tracks = <String>[
-    'audio/background/Blue Morpho Lullaby-2.mp3',
-    'audio/background/Blue Morpho Lullaby.mp3',
-    'audio/background/Drifting Leaf Waltz-2.mp3',
-    'audio/background/Drifting Leaf Waltz.mp3',
-    'audio/background/Flamboyant Glide-2.mp3',
-    'audio/background/Flamboyant Glide.mp3',
-    'audio/background/Glasswing Glide-2.mp3',
-    'audio/background/Glasswing Glide.mp3',
-    'audio/background/Metamorphic Rave-2.mp3',
-    'audio/background/Metamorphic Rave.mp3',
-    'audio/background/Monarchs March-2.mp3',
-    'audio/background/Monarchs March.mp3',
-    'audio/background/Savannah Flutter-2.mp3',
-    'audio/background/Savannah Flutter.mp3',
-    'audio/background/Sulphur Shuffle-2.mp3',
-    'audio/background/Sulphur Shuffle.mp3',
-    'audio/background/Swallowtail Swoop-2.mp3',
-    'audio/background/Swallowtail Swoop.mp3',
-  ];
-
   final AudioPlayer _player;
   final math.Random _random;
   final void Function(String trackAsset)? _onTrackPlayAttempt;
-
   StreamSubscription<void>? _completeSub;
   bool _audioEnabled = true;
   bool _backgroundMusicEnabled = false;
   bool _sessionInProgress = false;
+  String _contentMode = 'numbers';
   bool _playing = false;
   int _currentTrackIndex = -1;
   double _volume = 0.5;
@@ -68,7 +47,6 @@ class SudokuBackgroundMusicService {
     });
     unawaited(_player.setVolume(_volume));
   }
-
   void setAudioEnabled(bool enabled) {
     if (_audioEnabled == enabled) {
       return;
@@ -76,7 +54,6 @@ class SudokuBackgroundMusicService {
     _audioEnabled = enabled;
     _syncPlayback();
   }
-
   void setBackgroundMusicEnabled(bool enabled) {
     if (_backgroundMusicEnabled == enabled) {
       return;
@@ -84,7 +61,6 @@ class SudokuBackgroundMusicService {
     _backgroundMusicEnabled = enabled;
     _syncPlayback();
   }
-
   void setVolume(double volume) {
     final next = volume.clamp(0.0, 1.0);
     if (_volume == next) {
@@ -93,13 +69,30 @@ class SudokuBackgroundMusicService {
     _volume = next;
     unawaited(_player.setVolume(_volume));
   }
-
   void onUiStateChanged(UiState state) {
     final inProgress = !state.gameOver;
-    if (_sessionInProgress == inProgress) {
+    final nextContentMode = state.contentMode;
+    final modeChanged = _contentMode != nextContentMode;
+    if (_sessionInProgress == inProgress &&
+        !modeChanged) {
       return;
     }
     _sessionInProgress = inProgress;
+    _contentMode = nextContentMode;
+    if (modeChanged) {
+      _currentTrackIndex = -1;
+      final shouldPlayNow = shouldAttemptBackgroundMusicPlayback(
+        audioEnabled: _audioEnabled,
+        backgroundMusicEnabled: _backgroundMusicEnabled,
+        sessionInProgress: _sessionInProgress,
+        themeSupportsBackgroundMusic: _themeSupportsBackgroundMusic,
+        hasSuspensions: _suspensions.isNotEmpty,
+      );
+      if (shouldPlayNow) {
+        unawaited(_playRandomStart());
+        return;
+      }
+    }
     _syncPlayback();
   }
 
@@ -116,53 +109,61 @@ class SudokuBackgroundMusicService {
   }
 
   Future<void> pickNewRandomTrack() async {
-    if (_tracks.length <= 1) {
+    final tracks = backgroundTracksForContentMode(_contentMode);
+    if (tracks.length <= 1) {
       await _playRandomStart();
       return;
     }
     final shouldPlay =
-        _audioEnabled && _backgroundMusicEnabled && _sessionInProgress;
+        _audioEnabled &&
+        _backgroundMusicEnabled &&
+        _sessionInProgress &&
+        _themeSupportsBackgroundMusic;
     if (!shouldPlay) {
       return;
     }
     var nextIndex = _currentTrackIndex;
     while (nextIndex == _currentTrackIndex) {
-      nextIndex = _random.nextInt(_tracks.length);
+      nextIndex = _random.nextInt(tracks.length);
     }
     _currentTrackIndex = nextIndex;
     await _playCurrent();
   }
 
   Future<void> playNextTrack() async {
+    final tracks = backgroundTracksForContentMode(_contentMode);
     final shouldPlay =
         _audioEnabled &&
         _backgroundMusicEnabled &&
         _sessionInProgress &&
+        _themeSupportsBackgroundMusic &&
         _suspensions.isEmpty;
-    if (!shouldPlay || _tracks.isEmpty) {
+    if (!shouldPlay || tracks.isEmpty) {
       return;
     }
     if (_currentTrackIndex < 0) {
       _currentTrackIndex = 0;
     } else {
-      _currentTrackIndex = (_currentTrackIndex + 1) % _tracks.length;
+      _currentTrackIndex = (_currentTrackIndex + 1) % tracks.length;
     }
     await _playCurrent();
   }
 
   Future<void> playPreviousTrack() async {
+    final tracks = backgroundTracksForContentMode(_contentMode);
     final shouldPlay =
         _audioEnabled &&
         _backgroundMusicEnabled &&
         _sessionInProgress &&
+        _themeSupportsBackgroundMusic &&
         _suspensions.isEmpty;
-    if (!shouldPlay || _tracks.isEmpty) {
+    if (!shouldPlay || tracks.isEmpty) {
       return;
     }
     if (_currentTrackIndex < 0) {
-      _currentTrackIndex = _tracks.length - 1;
+      _currentTrackIndex = tracks.length - 1;
     } else {
-      _currentTrackIndex = (_currentTrackIndex - 1 + _tracks.length) % _tracks.length;
+      _currentTrackIndex = (_currentTrackIndex - 1 + tracks.length) % tracks.length;
     }
     await _playCurrent();
   }
@@ -172,10 +173,11 @@ class SudokuBackgroundMusicService {
   }
 
   void _syncPlayback() {
-    final shouldPlay = shouldAttemptPlayback(
+    final shouldPlay = shouldAttemptBackgroundMusicPlayback(
       audioEnabled: _audioEnabled,
       backgroundMusicEnabled: _backgroundMusicEnabled,
       sessionInProgress: _sessionInProgress,
+      themeSupportsBackgroundMusic: _themeSupportsBackgroundMusic,
       hasSuspensions: _suspensions.isNotEmpty,
     );
     if (!shouldPlay) {
@@ -189,40 +191,46 @@ class SudokuBackgroundMusicService {
   }
 
   Future<void> _playRandomStart() async {
-    if (_tracks.isEmpty) {
+    final tracks = backgroundTracksForContentMode(_contentMode);
+    if (tracks.isEmpty) {
       return;
     }
-    _currentTrackIndex = _random.nextInt(_tracks.length);
+    _currentTrackIndex = _random.nextInt(tracks.length);
     await _playCurrent();
   }
 
   Future<void> _playNextSequential() async {
-    final shouldPlay = shouldAttemptPlayback(
+    final shouldPlay = shouldAttemptBackgroundMusicPlayback(
       audioEnabled: _audioEnabled,
       backgroundMusicEnabled: _backgroundMusicEnabled,
       sessionInProgress: _sessionInProgress,
+      themeSupportsBackgroundMusic: _themeSupportsBackgroundMusic,
       hasSuspensions: false,
     );
-    if (!shouldPlay || _tracks.isEmpty) {
+    final tracks = backgroundTracksForContentMode(_contentMode);
+    if (!shouldPlay || tracks.isEmpty) {
       await _stop();
       return;
     }
-    _currentTrackIndex = (_currentTrackIndex + 1) % _tracks.length;
+    _currentTrackIndex = (_currentTrackIndex + 1) % tracks.length;
     await _playCurrent();
   }
 
   Future<void> _playCurrent() async {
-    final shouldPlay = shouldAttemptPlayback(
+    final shouldPlay = shouldAttemptBackgroundMusicPlayback(
       audioEnabled: _audioEnabled,
       backgroundMusicEnabled: _backgroundMusicEnabled,
       sessionInProgress: _sessionInProgress,
+      themeSupportsBackgroundMusic: _themeSupportsBackgroundMusic,
       hasSuspensions: false,
     );
-    if (!shouldPlay || _tracks.isEmpty) {
+    final tracks = backgroundTracksForContentMode(_contentMode);
+    if (!shouldPlay || tracks.isEmpty) {
       return;
     }
-    final asset = _tracks[_currentTrackIndex];
+    final asset = tracks[_currentTrackIndex];
     _onTrackPlayAttempt?.call(asset);
+    AppDebug.log('Background music track: $asset');
     try {
       await _player.stop();
       await _player.setReleaseMode(ReleaseMode.stop);
@@ -230,7 +238,7 @@ class SudokuBackgroundMusicService {
         throw StateError('No playable source for asset $asset');
       }
       _playing = true;
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to play background music: $error');
       _playing = false;
     }
@@ -248,15 +256,31 @@ class SudokuBackgroundMusicService {
       return true;
     } catch (error) {
       AppDebug.log('Fallback background asset failed (assets/$asset): $error');
+    }
+    if (await _playBytesFromBundle('assets/$asset')) {
+      return true;
+    }
+    if (await _playBytesFromBundle(asset)) {
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> _playBytesFromBundle(String bundleKey) async {
+    try {
+      final data = await rootBundle.load(bundleKey);
+      await _player.play(BytesSource(data.buffer.asUint8List()));
+      return true;
+    } catch (error) {
+      AppDebug.log('Byte-source background asset failed ($bundleKey): $error');
       return false;
     }
   }
-
   Future<void> _stop() async {
     _playing = false;
     try {
       await _player.stop();
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to stop background music: $error');
     }
   }
@@ -267,20 +291,10 @@ class SudokuBackgroundMusicService {
     await _stop();
     try {
       await _player.dispose();
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to dispose background music player: $error');
     }
   }
-
-  static bool shouldAttemptPlayback({
-    required bool audioEnabled,
-    required bool backgroundMusicEnabled,
-    required bool sessionInProgress,
-    required bool hasSuspensions,
-  }) {
-    return audioEnabled &&
-        backgroundMusicEnabled &&
-        sessionInProgress &&
-        !hasSuspensions;
-  }
+  bool get _themeSupportsBackgroundMusic =>
+      _contentMode == 'butterflies' || _contentMode == 'old_opera';
 }

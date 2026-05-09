@@ -1,0 +1,11 @@
+Hi {name},
+
+A new SuDoKu Playtime test build is available.
+
+Version: {version}
+Track: {track}
+
+Install/update from Test Link:
+{opt_in_link}
+
+Thanks for testing.

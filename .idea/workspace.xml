@@ -4,51 +4,76 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`">
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Blue Morpho Lullaby-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Blue Morpho Lullaby.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Drifting Leaf Waltz-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Drifting Leaf Waltz.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Flamboyant Glide-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Flamboyant Glide.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Glasswing Glide-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Glasswing Glide.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Metamorphic Rave-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Metamorphic Rave.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Monarchs March-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Monarchs March.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Savannah Flutter-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Savannah Flutter.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Sulphur Shuffle-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Sulphur Shuffle.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Swallowtail Swoop-2.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/Swallowtail Swoop.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/butterfly_sound.py" afterDir="false" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="feat(ui+audio+tests): refine music controls, stabilize test runs, and modularize drawer/cache&#10;•&#10;App bar music controls:&#10;◦&#10;Added &lt; ♪ &gt; controls left of hamburger with updated spacing/alignment.&#10;◦&#10;Added long-press tooltip for music controls.&#10;◦&#10;Restored chevrons to previous/next track behavior.&#10;◦&#10;Moved single/double tap background-music toggle to note icon only.&#10;◦&#10;Greyed/disabled music controls appropriately when background music is off.&#10;•&#10;Background music behavior:&#10;◦&#10;Added suspend/resume reasons in background music service.&#10;◦&#10;Pause/resume background music during victory overlay and tile-preview audio.&#10;◦&#10;Added explicit playback gate helper and startup-safe defaults to avoid unintended autoplay on resume.&#10;◦&#10;Wired “New Game” to switch to a new random background track on confirmed new game.&#10;•&#10;Audio settings UX/persistence:&#10;◦&#10;Audio default on; background music default on.&#10;◦&#10;Added persisted master volume (default 0.5) and drawer volume slider.&#10;◦&#10;Added dependency behavior between audio and background-music toggles.&#10;•&#10;Victory audio correctness:&#10;◦&#10;Ensured victory sound derives from selected victory mascot asset mapping.&#10;◦&#10;Added regression coverage for mascot→audio mapping path.&#10;•&#10;Content mode labels/hints:&#10;◦&#10;Updated dropdown labels:&#10;▪&#10;Instruments (tricky)&#10;▪&#10;Butterflies (pretty!)&#10;▪&#10;Opera (more tricky)&#10;◦&#10;Added regression test for dropdown labels.&#10;◦&#10;Added new splash hint about music controls.&#10;•&#10;Drawer + cache refactors:&#10;◦&#10;Split oversized drawer code into section modules/barrel exports.&#10;◦&#10;Split animal cache constants into dedicated catalog module.&#10;◦&#10;Reduced file sizes and improved maintainability without behavior changes.&#10;•&#10;Test and automation hardening:&#10;◦&#10;Updated integration test content-mode label expectations.&#10;◦&#10;Added playback-gate regression test.&#10;◦&#10;Hardened run_everything.sh:&#10;▪&#10;passes test dart-define to disable background music during automation&#10;▪&#10;retries/handles known flaky flutter_test_listener temp cleanup error&#10;•&#10;Versioning:&#10;◦&#10;Updated app version to 0.9.5+303.">
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Durch die Flut-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Durch die Flut.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Echo in the Dark-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Echo in the Dark.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Ha! Ha! Ha!-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Ha! Ha! Ha!.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/L'Amour Rebelle-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/L'Amour Rebelle.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Largo al Barbiere-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/Largo al Barbiere.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/O Patria Mia-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/O Patria Mia.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/The Blinding Flash-2.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/background/opera/The Blinding Flash.mp3" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/images/icons/bg_music.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Blue Morpho Lullaby-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Blue Morpho Lullaby.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Drifting Leaf Waltz-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Drifting Leaf Waltz.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Flamboyant Glide-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Flamboyant Glide.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Glasswing Glide-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Glasswing Glide.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Metamorphic Rave-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Metamorphic Rave.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Monarchs March-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Monarchs March.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Savannah Flutter-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Savannah Flutter.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Sulphur Shuffle-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Sulphur Shuffle.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Swallowtail Swoop-2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/Swallowtail Swoop.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/butterflies/8_leaf_1 copy.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/butterflies/8_leaf_1.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/butterflies/8_leaf_2.wav" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/butterflies/5_peacock_butterfly.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/butterflies/7_sulphur_butterfly.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/butterflies/8_leaf_butterfly.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/images/butterflies/9_metalmark_butterfly.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_session_codec.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_session_codec.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/ui_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/ui_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner/Info.plist" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner/Info.plist" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache_catalog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache_catalog.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_service_registry.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_service_registry.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen_handlers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen_handlers.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_main_sections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_main_sections.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_test.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_victory_overlay_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_victory_overlay_service_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/action_bar_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/action_bar_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_background_music_playback_gate_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_background_music_playback_gate_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_audio_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_drawer_audio_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/sudoku_drawer_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/sudoku_drawer_test_support.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/top_controls_labels_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/top_controls_labels_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/widget_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/run_everything.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_everything.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +142,7 @@
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "feature/issue-6-premium-entitlement-model",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/butterflies",
+    "last_opened_file_path": "/Users/david/PycharmProjects/Sudoku_01/flutter_app/assets/audio/background/opera",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -138,11 +163,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/flutter_app/assets/audio/background/opera" />
+      <recent name="$PROJECT_DIR$/flutter_app/assets/images/icons" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/audio/butterflies" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/audio/background" />
       <recent name="$PROJECT_DIR$/flutter_app/assets/audio/opera" />
-      <recent name="$PROJECT_DIR$/assets/images" />
-      <recent name="$PROJECT_DIR$/docs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/flutter_app/assets/audio/butterflies" />
@@ -324,15 +349,7 @@
       <workItem from="1776888599522" duration="7107000" />
       <workItem from="1777337854263" duration="38682000" />
       <workItem from="1777604698938" duration="7771000" />
-      <workItem from="1777961118985" duration="33289000" />
-    </task>
-    <task id="LOCAL-00033" summary="Prior to refactoring">
-      <option name="closed" value="true" />
-      <created>1772933718583</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1772933718583</updated>
+      <workItem from="1777961118985" duration="77530000" />
     </task>
     <task id="LOCAL-00034" summary="Prior to refactoring">
       <option name="closed" value="true" />
@@ -718,7 +735,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778038717380</updated>
     </task>
-    <option name="localTasksCounter" value="82" />
+    <task id="LOCAL-00082" summary="feat(ui+audio+tests): refine music controls, stabilize test runs, and modularize drawer/cache&#10;•&#10;App bar music controls:&#10;◦&#10;Added &lt; ♪ &gt; controls left of hamburger with updated spacing/alignment.&#10;◦&#10;Added long-press tooltip for music controls.&#10;◦&#10;Restored chevrons to previous/next track behavior.&#10;◦&#10;Moved single/double tap background-music toggle to note icon only.&#10;◦&#10;Greyed/disabled music controls appropriately when background music is off.&#10;•&#10;Background music behavior:&#10;◦&#10;Added suspend/resume reasons in background music service.&#10;◦&#10;Pause/resume background music during victory overlay and tile-preview audio.&#10;◦&#10;Added explicit playback gate helper and startup-safe defaults to avoid unintended autoplay on resume.&#10;◦&#10;Wired “New Game” to switch to a new random background track on confirmed new game.&#10;•&#10;Audio settings UX/persistence:&#10;◦&#10;Audio default on; background music default on.&#10;◦&#10;Added persisted master volume (default 0.5) and drawer volume slider.&#10;◦&#10;Added dependency behavior between audio and background-music toggles.&#10;•&#10;Victory audio correctness:&#10;◦&#10;Ensured victory sound derives from selected victory mascot asset mapping.&#10;◦&#10;Added regression coverage for mascot→audio mapping path.&#10;•&#10;Content mode labels/hints:&#10;◦&#10;Updated dropdown labels:&#10;▪&#10;Instruments (tricky)&#10;▪&#10;Butterflies (pretty!)&#10;▪&#10;Opera (more tricky)&#10;◦&#10;Added regression test for dropdown labels.&#10;◦&#10;Added new splash hint about music controls.&#10;•&#10;Drawer + cache refactors:&#10;◦&#10;Split oversized drawer code into section modules/barrel exports.&#10;◦&#10;Split animal cache constants into dedicated catalog module.&#10;◦&#10;Reduced file sizes and improved maintainability without behavior changes.&#10;•&#10;Test and automation hardening:&#10;◦&#10;Updated integration test content-mode label expectations.&#10;◦&#10;Added playback-gate regression test.&#10;◦&#10;Hardened run_everything.sh:&#10;▪&#10;passes test dart-define to disable background music during automation&#10;▪&#10;retries/handles known flaky flutter_test_listener temp cleanup error&#10;•&#10;Versioning:&#10;◦&#10;Updated app version to 0.9.5+303.">
+      <option name="closed" value="true" />
+      <created>1778110500255</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1778110500255</updated>
+    </task>
+    <option name="localTasksCounter" value="83" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -756,7 +781,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="PR 1 refactoring done" />
     <MESSAGE value="PR 2 refactoring done" />
     <MESSAGE value="Corrected Corrections persistence and added flushPendingSave method again" />
     <MESSAGE value="After PR 3 refactoring" />
@@ -781,7 +805,8 @@
     <MESSAGE value="Updated version to 0.9.3+262 after refactor" />
     <MESSAGE value="Updated version to 0.9.3+262 after further refactor" />
     <MESSAGE value="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`" />
-    <option name="LAST_COMMIT_MESSAGE" value="0.9.4+268 'feat(ui): refresh launch/game chrome, hint UX, and unique-mode controls&#10;• Redesign launch screen layout and typography:&#10;◦ add “The Angry Grannies bring you” header treatment&#10;◦ adjust title/tagline sizing/weights and positioning&#10;◦ move mascot image above title and fix vertical spacing/overlap&#10;◦ reserve fixed status area so “Please wait…”/errors don’t shift layout&#10;• Expand launch hints experience:&#10;◦ add additional hints (drawer/audio guidance)&#10;◦ replace single random hint display with previous/next chevron navigation&#10;◦ pin hints to a fixed bottom area and top-align hint content&#10;◦ increase hints title/body font sizes&#10;• And About entry in drawer:&#10;◦ add About chip near drawer bottom&#10;◦ move version/build + Angry Grannies team credits from splash into About sheet&#10;• Remove puzzle mode UX and enforce unique-only presentation:&#10;◦ remove UNIQUE/MULTI dropdown from board metadata row&#10;◦ keep difficulty/hints/corrections metadata visible with updated styling&#10;◦ update lock/help copy to reflect difficulty-only locking&#10;• Update top app chrome and primary game actions:&#10;◦ remove New Game from app bar&#10;◦ left-align “ZuDoKu+” title in app bar&#10;◦ add prominent in-content New Game chip between metadata and action controls&#10;◦ enlarge Notes control target (+25%) and preserve bottom alignment with row controls&#10;◦ tune New Game prominence (larger text, bold) and vertical position&#10;◦ hide New Game during victory celebrations&#10;• Adjust victory celebration positioning:&#10;◦ move celebration mascot/message upward for better composition&#10;• Test suite updates:&#10;◦ update widget/integration tests for removed puzzle mode control and revised copy/layout&#10;◦ align launch and debug expectations with new UI structure`" />
+    <MESSAGE value="feat(ui+audio+tests): refine music controls, stabilize test runs, and modularize drawer/cache&#10;•&#10;App bar music controls:&#10;◦&#10;Added &lt; ♪ &gt; controls left of hamburger with updated spacing/alignment.&#10;◦&#10;Added long-press tooltip for music controls.&#10;◦&#10;Restored chevrons to previous/next track behavior.&#10;◦&#10;Moved single/double tap background-music toggle to note icon only.&#10;◦&#10;Greyed/disabled music controls appropriately when background music is off.&#10;•&#10;Background music behavior:&#10;◦&#10;Added suspend/resume reasons in background music service.&#10;◦&#10;Pause/resume background music during victory overlay and tile-preview audio.&#10;◦&#10;Added explicit playback gate helper and startup-safe defaults to avoid unintended autoplay on resume.&#10;◦&#10;Wired “New Game” to switch to a new random background track on confirmed new game.&#10;•&#10;Audio settings UX/persistence:&#10;◦&#10;Audio default on; background music default on.&#10;◦&#10;Added persisted master volume (default 0.5) and drawer volume slider.&#10;◦&#10;Added dependency behavior between audio and background-music toggles.&#10;•&#10;Victory audio correctness:&#10;◦&#10;Ensured victory sound derives from selected victory mascot asset mapping.&#10;◦&#10;Added regression coverage for mascot→audio mapping path.&#10;•&#10;Content mode labels/hints:&#10;◦&#10;Updated dropdown labels:&#10;▪&#10;Instruments (tricky)&#10;▪&#10;Butterflies (pretty!)&#10;▪&#10;Opera (more tricky)&#10;◦&#10;Added regression test for dropdown labels.&#10;◦&#10;Added new splash hint about music controls.&#10;•&#10;Drawer + cache refactors:&#10;◦&#10;Split oversized drawer code into section modules/barrel exports.&#10;◦&#10;Split animal cache constants into dedicated catalog module.&#10;◦&#10;Reduced file sizes and improved maintainability without behavior changes.&#10;•&#10;Test and automation hardening:&#10;◦&#10;Updated integration test content-mode label expectations.&#10;◦&#10;Added playback-gate regression test.&#10;◦&#10;Hardened run_everything.sh:&#10;▪&#10;passes test dart-define to disable background music during automation&#10;▪&#10;retries/handles known flaky flutter_test_listener temp cleanup error&#10;•&#10;Versioning:&#10;◦&#10;Updated app version to 0.9.5+303." />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(ui+audio+tests): refine music controls, stabilize test runs, and modularize drawer/cache&#10;•&#10;App bar music controls:&#10;◦&#10;Added &lt; ♪ &gt; controls left of hamburger with updated spacing/alignment.&#10;◦&#10;Added long-press tooltip for music controls.&#10;◦&#10;Restored chevrons to previous/next track behavior.&#10;◦&#10;Moved single/double tap background-music toggle to note icon only.&#10;◦&#10;Greyed/disabled music controls appropriately when background music is off.&#10;•&#10;Background music behavior:&#10;◦&#10;Added suspend/resume reasons in background music service.&#10;◦&#10;Pause/resume background music during victory overlay and tile-preview audio.&#10;◦&#10;Added explicit playback gate helper and startup-safe defaults to avoid unintended autoplay on resume.&#10;◦&#10;Wired “New Game” to switch to a new random background track on confirmed new game.&#10;•&#10;Audio settings UX/persistence:&#10;◦&#10;Audio default on; background music default on.&#10;◦&#10;Added persisted master volume (default 0.5) and drawer volume slider.&#10;◦&#10;Added dependency behavior between audio and background-music toggles.&#10;•&#10;Victory audio correctness:&#10;◦&#10;Ensured victory sound derives from selected victory mascot asset mapping.&#10;◦&#10;Added regression coverage for mascot→audio mapping path.&#10;•&#10;Content mode labels/hints:&#10;◦&#10;Updated dropdown labels:&#10;▪&#10;Instruments (tricky)&#10;▪&#10;Butterflies (pretty!)&#10;▪&#10;Opera (more tricky)&#10;◦&#10;Added regression test for dropdown labels.&#10;◦&#10;Added new splash hint about music controls.&#10;•&#10;Drawer + cache refactors:&#10;◦&#10;Split oversized drawer code into section modules/barrel exports.&#10;◦&#10;Split animal cache constants into dedicated catalog module.&#10;◦&#10;Reduced file sizes and improved maintainability without behavior changes.&#10;•&#10;Test and automation hardening:&#10;◦&#10;Updated integration test content-mode label expectations.&#10;◦&#10;Added playback-gate regression test.&#10;◦&#10;Hardened run_everything.sh:&#10;▪&#10;passes test dart-define to disable background music during automation&#10;▪&#10;retries/handles known flaky flutter_test_listener temp cleanup error&#10;•&#10;Versioning:&#10;◦&#10;Updated app version to 0.9.5+303." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />

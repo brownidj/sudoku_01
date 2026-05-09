@@ -113,11 +113,11 @@ class SudokuTilePreviewAudioService {
       2: 'audio/butterflies/2_swallowtail.wav',
       3: 'audio/butterflies/3_blue_morpho.wav',
       4: 'audio/butterflies/4_glasswing.wav',
-      5: 'audio/butterflies/5_peacock_butterfly.wav',
+      5: 'audio/butterflies/5_peacock.wav',
       6: 'audio/butterflies/6_zebra_longwing.wav',
-      7: 'audio/butterflies/7_sulphur_butterfly.wav',
-      8: 'audio/butterflies/8_leaf_butterfly.wav',
-      9: 'audio/butterflies/9_metalmark_butterfly.wav',
+      7: 'audio/butterflies/7_sulphur.wav',
+      8: 'audio/butterflies/8_leaf.wav',
+      9: 'audio/butterflies/9_metalmark.wav',
     };
     return switch (normalizedMode) {
       'animals' => animalAssets[digit],

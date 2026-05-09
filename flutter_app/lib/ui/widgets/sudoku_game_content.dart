@@ -5,7 +5,6 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
-import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_area.dart';
 import 'package:flutter_app/ui/widgets/top_controls.dart';
 import 'package:flutter_app/ui/widgets/victory_foil_overlay.dart';
@@ -131,37 +130,12 @@ class SudokuGameContent extends StatelessWidget {
                   onToggleNotesMode: onToggleNotesMode,
                   onClear: onClear,
                   onCheckOrSolution: onCheckOrSolution,
+                  onNewGamePressed: onNewGamePressed,
+                  showNewGame: true,
                 ),
               ),
             ],
           ),
-          if (!showVictoryOverlay)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 112,
-              child: Center(
-                child: LongPressTooltip(
-                  message:
-                      'This will start a new game - your previous game will be lost.',
-                  child: ActionChip(
-                    key: const ValueKey<String>('content-new-game-chip'),
-                    onPressed: onNewGamePressed,
-                    backgroundColor: const Color(0xFFFFFEF5),
-                    label: Text(
-                      'New Game',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize:
-                            (Theme.of(context).textTheme.labelLarge?.fontSize ??
-                                14) +
-                            20,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
           if (showVictoryOverlay)
             Positioned.fill(
               child: IgnorePointer(

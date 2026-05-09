@@ -10,6 +10,7 @@ PATROL_TARGET="${PATROL_TARGET:-patrol_test/smoke_test.dart}"
 INTEGRATION_TARGET="${INTEGRATION_TARGET:-integration_test/app_flow_test.dart}"
 PATROL_DEVICES_TIMEOUT_SECONDS="${PATROL_DEVICES_TIMEOUT_SECONDS:-15}"
 TEST_DART_DEFINE_DISABLE_BG_MUSIC="${TEST_DART_DEFINE_DISABLE_BG_MUSIC:-DISABLE_BACKGROUND_MUSIC_FOR_TESTS=true}"
+ANDROID_MIN_FREE_MB="${ANDROID_MIN_FREE_MB:-2048}"
 
 require_command() {
   local cmd="$1"
@@ -27,6 +28,30 @@ detect_android_device() {
     exit 1
   fi
   printf '%s\n' "$device"
+}
+
+check_android_storage() {
+  local device_id="$1"
+  local min_free_mb="$2"
+  local df_output free_kb free_mb
+
+  df_output="$(adb -s "$device_id" shell df -Pk /data 2>/dev/null | tr -d '\r')"
+  free_kb="$(awk 'NR==2 {print $4}' <<<"$df_output")"
+
+  if [[ -z "$free_kb" || ! "$free_kb" =~ ^[0-9]+$ ]]; then
+    echo "Unable to determine free storage for Android device ${device_id}." >&2
+    echo "Raw df output:" >&2
+    echo "$df_output" >&2
+    exit 1
+  fi
+
+  free_mb=$((free_kb / 1024))
+  if (( free_mb < min_free_mb )); then
+    echo "Android device ${device_id} has insufficient free /data storage: ${free_mb}MB available; ${min_free_mb}MB required." >&2
+    echo "Fix: wipe emulator data or free space, then rerun." >&2
+    exit 1
+  fi
+  printf '==> Android /data free space: %sMB (minimum required: %sMB)\n' "$free_mb" "$min_free_mb"
 }
 
 detect_ios_simulator() {
@@ -168,6 +193,7 @@ fi
 
 printf '==> using Android device: %s\n' "$ANDROID_DEVICE"
 printf '==> using iOS integration simulator: %s\n' "$IOS_INTEGRATION_DEVICE"
+check_android_storage "$ANDROID_DEVICE" "$ANDROID_MIN_FREE_MB"
 
 cd "$REPO_DIR"
 run_step "./scripts/check_file_sizes.sh flutter_app" ./scripts/check_file_sizes.sh flutter_app
