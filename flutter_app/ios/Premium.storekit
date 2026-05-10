@@ -25,7 +25,7 @@
           "locale" : "en_AU"
         }
       ],
-      "productID" : "premium_unlock",
+      "productID" : "premium-unlock",
       "referenceName" : "Premium",
       "type" : "NonConsumable"
     }

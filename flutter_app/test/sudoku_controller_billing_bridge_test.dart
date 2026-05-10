@@ -20,7 +20,7 @@ void main() {
       fakeBilling.emit(
         const BillingPurchaseUpdate(
           status: BillingPurchaseStatus.purchased,
-          productId: 'premium_unlock',
+          productId: 'premium-unlock',
           purchaseId: 'purchase-1',
           errorMessage: null,
           pendingCompletion: false,
@@ -49,7 +49,7 @@ void main() {
       fakeBilling.emit(
         const BillingPurchaseUpdate(
           status: BillingPurchaseStatus.restored,
-          productId: 'premium_unlock',
+          productId: 'premium-unlock',
           purchaseId: 'restore-1',
           errorMessage: null,
           pendingCompletion: false,

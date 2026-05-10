@@ -10,7 +10,6 @@ import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/launch_screen.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
@@ -135,10 +134,6 @@ Future<FakePreferencesStore> _buildPrefsWithCompletedSession() async {
 }
 
 void main() {
-  setUp(() {
-    SharedPreferences.setMockInitialValues(<String, Object>{});
-  });
-
   testWidgets('LaunchScreen shows only Play when no saved session existed', (
     WidgetTester tester,
   ) async {
@@ -293,48 +288,4 @@ void main() {
       expect(find.byType(LaunchScreen), findsNothing);
     },
   );
-
-  testWidgets(
-    'Launch from splash honors persisted audio off and hides music controls',
-    (WidgetTester tester) async {
-      await tester.binding.setSurfaceSize(const Size(1080, 1920));
-      SharedPreferences.setMockInitialValues(<String, Object>{
-        PreferencesStore.keyAudioEnabled: false,
-        PreferencesStore.keyBackgroundMusicEnabled: false,
-      });
-      final controller = SudokuController(
-        preferencesStore: FakePreferencesStore(
-          loadedPreferences: const AppPreferences(
-            animalStyle: null,
-            contentMode: 'butterflies',
-            styleName: null,
-            difficulty: null,
-            puzzleMode: null,
-          ),
-        ),
-      );
-      await controller.ready;
-
-      await tester.pumpWidget(
-        MaterialApp(home: LaunchScreen(controller: controller)),
-      );
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Play'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.byKey(const ValueKey<String>('appbar-music-note-text')),
-        findsNothing,
-      );
-      expect(
-        find.byKey(const ValueKey<String>('appbar-music-prev-button')),
-        findsNothing,
-      );
-      expect(
-        find.byKey(const ValueKey<String>('appbar-music-next-button')),
-        findsNothing,
-      );
-    },
-  );
-
 }

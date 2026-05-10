@@ -95,7 +95,7 @@ PurchaseDetails _purchaseDetails({
 }
 
 void main() {
-  const premiumId = 'premium_unlock';
+  const premiumId = 'premium-unlock';
 
   test('buyPremium returns unavailable when store is unavailable', () async {
     final api = _FakeInAppPurchaseApi(

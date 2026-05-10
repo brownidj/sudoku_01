@@ -133,12 +133,14 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                     _MusicGlyphButton(
                       key: const ValueKey<String>('appbar-music-prev-button'),
                       text: '<',
+                      fontSize: 30,
                       color: musicColor,
                       onTap: widget.backgroundMusicEnabled
                           ? widget.onPreviousTrackTapped
                           : null,
                       longPressMessage: _musicControlsTooltip,
                     ),
+                    const SizedBox(width: 6),
                     _MusicGlyphButton(
                       key: const ValueKey<String>('appbar-music-note-text'),
                       padding: const EdgeInsets.symmetric(
@@ -161,16 +163,18 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                       onDoubleTap: widget.onMusicControlDoubleTap,
                       longPressMessage: _musicControlsTooltip,
                     ),
+                    const SizedBox(width: 6),
                     _MusicGlyphButton(
                       key: const ValueKey<String>('appbar-music-next-button'),
                       text: '>',
+                      fontSize: 30,
                       color: musicColor,
                       onTap: widget.backgroundMusicEnabled
                           ? widget.onNextTrackTapped
                           : null,
                       longPressMessage: _musicControlsTooltip,
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 20),
                   ],
                   Builder(
                     builder: (context) => IconButton(
@@ -200,6 +204,7 @@ class _MusicGlyphButton extends StatelessWidget {
   final VoidCallback? onDoubleTap;
   final String longPressMessage;
   final EdgeInsets padding;
+  final double fontSize;
 
   const _MusicGlyphButton({
     super.key,
@@ -210,6 +215,7 @@ class _MusicGlyphButton extends StatelessWidget {
     this.onDoubleTap,
     required this.longPressMessage,
     this.padding = const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+    this.fontSize = 20,
   }) : assert(text != null || child != null);
 
   @override
@@ -227,7 +233,7 @@ class _MusicGlyphButton extends StatelessWidget {
               Text(
                 text!,
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.w600,
                   color: color,
                 ),
