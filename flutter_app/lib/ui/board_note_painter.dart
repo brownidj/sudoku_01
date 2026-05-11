@@ -35,7 +35,7 @@ class BoardNotePainter {
       return;
     }
 
-    const noteImagePadding = 2.0;
+    const noteImagePadding = 1.0;
     final logicalSize = (subCellSize - (noteImagePadding * 2)).clamp(
       0.0,
       subCellSize,
