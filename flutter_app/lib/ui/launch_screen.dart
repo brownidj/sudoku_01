@@ -24,7 +24,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
     "Notes allows you to add little reminders of possibilities if you're not sure. Your options are shown in green. Press Notes again to switch them off.",
     'Use a long-press, (hold your finger down for a couple of seconds), to understand what somethings do. Also, try it on a tile that has been filled in.',
     "If your choice leads to two or more tiles being coloured pink, you've made a mistake at some point. You have a limited number of auto-corrections.",
-    'Use a long-press on the lock to see what it means.',
+    'Changing difficulty during a game will start a new game.',
     'Press Help to get some information about how to play the game.',
     'Pressing ☰ (top right) opens a drawer that allows you to make some selections.',
     'If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).',

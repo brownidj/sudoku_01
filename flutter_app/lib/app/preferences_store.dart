@@ -117,7 +117,7 @@ class PreferencesStore {
     final prefs = await SharedPreferences.getInstance();
     final stored = prefs.getDouble(keyAudioVolume);
     if (stored == null) {
-      return 0.5;
+      return 0.1;
     }
     return stored.clamp(0.0, 1.0);
   }

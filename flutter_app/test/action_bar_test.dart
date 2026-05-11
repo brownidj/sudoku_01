@@ -90,7 +90,7 @@ void main() {
     await tester.longPress(find.byKey(const ValueKey<String>('content-new-game-chip')));
     await tester.pumpAndSettle();
 
-    expect(find.text('New Game'), findsWidgets);
+    expect(find.text('Press this to start a new game.'), findsOneWidget);
   });
 
   testWidgets('New game dice animation pauses after first move and resumes on victory', (

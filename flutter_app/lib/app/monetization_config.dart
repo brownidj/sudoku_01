@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 class MonetizationConfig {
-  static const String premiumUnlockAndroid = 'premium-unlock';
+  static const String premiumUnlockAndroid = 'full_unlock';
   static const String premiumUnlockIos = 'premium_unlock';
 
   static Set<String> get productIds => {

@@ -134,12 +134,11 @@ class BoardEditCoordinator {
     required bool canChangeDifficulty,
     required bool canChangePuzzleMode,
   }) {
-    final firstPlayerChange = !before.canUndo() && after.canUndo();
     return BoardEditOutcome(
       result: result,
       statusMessage: null,
-      lockDifficulty: canChangeDifficulty && firstPlayerChange,
-      lockPuzzleMode: canChangePuzzleMode && firstPlayerChange,
+      lockDifficulty: false,
+      lockPuzzleMode: false,
     );
   }
 }

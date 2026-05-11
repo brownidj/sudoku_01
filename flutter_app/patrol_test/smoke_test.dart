@@ -37,6 +37,22 @@ Future<void> _waitForBoardControls(PatrolIntegrationTester $) async {
 }
 
 Future<void> _launchGame(PatrolIntegrationTester $) async {
+  Future<bool> tryLaunchFromStartScreen() async {
+    if ($('Play').evaluate().isNotEmpty) {
+      await $('Play').tap();
+      return true;
+    }
+    if ($('Resume').evaluate().isNotEmpty) {
+      await $('Resume').tap();
+      return true;
+    }
+    if ($('New game').evaluate().isNotEmpty) {
+      await $('New game').tap();
+      return true;
+    }
+    return false;
+  }
+
   await $.pump(const Duration(milliseconds: 500));
 
   for (var i = 0; i < 10; i += 1) {
@@ -45,8 +61,7 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
       return;
     }
 
-    if ($('Play').evaluate().isNotEmpty) {
-      await $('Play').tap();
+    if (await tryLaunchFromStartScreen()) {
       await _stabilizeBoard($);
       return;
     }
@@ -63,8 +78,7 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
       return;
     }
 
-    if ($('Play').evaluate().isNotEmpty) {
-      await $('Play').tap();
+    if (await tryLaunchFromStartScreen()) {
       await _stabilizeBoard($);
       return;
     }

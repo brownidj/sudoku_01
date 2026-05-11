@@ -5,6 +5,15 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'support/sudoku_controller_test_support.dart';
 
+Future<void> _waitForPremium(SudokuController controller) async {
+  for (var i = 0; i < 20; i += 1) {
+    if (controller.entitlement == Entitlement.premium) {
+      return;
+    }
+    await Future<void>.delayed(const Duration(milliseconds: 10));
+  }
+}
+
 void main() {
   test(
     'purchase stream update unlocks premium and persists entitlement',
@@ -20,14 +29,13 @@ void main() {
       fakeBilling.emit(
         const BillingPurchaseUpdate(
           status: BillingPurchaseStatus.purchased,
-          productId: 'premium-unlock',
+          productId: 'full_unlock',
           purchaseId: 'purchase-1',
           errorMessage: null,
           pendingCompletion: false,
         ),
       );
-      await Future<void>.delayed(Duration.zero);
-      await Future<void>.delayed(Duration.zero);
+      await _waitForPremium(controller);
 
       expect(controller.entitlement, Entitlement.premium);
       expect(controller.state.entitlement, Entitlement.premium);
@@ -49,14 +57,13 @@ void main() {
       fakeBilling.emit(
         const BillingPurchaseUpdate(
           status: BillingPurchaseStatus.restored,
-          productId: 'premium-unlock',
+          productId: 'full_unlock',
           purchaseId: 'restore-1',
           errorMessage: null,
           pendingCompletion: false,
         ),
       );
-      await Future<void>.delayed(Duration.zero);
-      await Future<void>.delayed(Duration.zero);
+      await _waitForPremium(controller);
 
       expect(controller.entitlement, Entitlement.premium);
       expect(controller.state.entitlement, Entitlement.premium);

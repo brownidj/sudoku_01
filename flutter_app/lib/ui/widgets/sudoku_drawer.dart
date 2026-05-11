@@ -32,7 +32,7 @@ class SudokuDrawer extends StatelessWidget {
     required this.onStyleChanged,
     this.audioEnabled = true,
     this.onAudioEnabledChanged,
-    this.audioVolume = 0.5,
+    this.audioVolume = 0.1,
     this.onAudioVolumeChanged,
     this.backgroundMusicEnabled = true,
     this.onBackgroundMusicEnabledChanged,

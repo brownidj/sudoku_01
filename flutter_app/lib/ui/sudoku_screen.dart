@@ -44,7 +44,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   bool _debugToolsEnabled = false;
   bool _audioEnabled = false;
   bool _backgroundMusicEnabled = false;
-  double _audioVolume = 0.5;
+  double _audioVolume = 0.1;
   @override
   void initState() {
     super.initState();

@@ -48,7 +48,7 @@ class ActionBar extends StatelessWidget {
         children: [
           if (showNewGame)
             Tooltip(
-              message: 'New Game',
+              message: 'Press this to start a new game.',
               child: Semantics(
                 label: 'New Game',
                 key: const ValueKey<String>('content-new-game-chip'),

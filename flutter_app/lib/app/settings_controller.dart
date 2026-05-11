@@ -68,7 +68,7 @@ class SettingsController {
   }
 
   void setDifficultyLocked(bool locked) {
-    _setState(_state.copyWith(canChangeDifficulty: !locked));
+    _setState(_state.copyWith(canChangeDifficulty: true));
   }
 
   void setPuzzleModeLocked(bool locked) {

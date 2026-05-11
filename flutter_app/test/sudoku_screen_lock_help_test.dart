@@ -26,7 +26,7 @@ SudokuController _buildController({FakeGameService? gameService}) {
 }
 
 void main() {
-  testWidgets('lock icon tap shows updated lock message', (
+  testWidgets('lock icon is not shown after starting a game', (
     WidgetTester tester,
   ) async {
     final controller = _buildController();
@@ -42,21 +42,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.tap(
-      find.byKey(const ValueKey<String>('top-controls-config-lock-indicator')),
-    );
-    await tester.pump(const Duration(milliseconds: 400));
-    await tester.pumpAndSettle();
-
     expect(
-      find.text(
-        "Difficulty is locked during a game. To unlock it, either double-tap the lock icon or start a 'New Game'",
-      ),
-      findsOneWidget,
+      find.byKey(const ValueKey<String>('top-controls-config-lock-indicator')),
+      findsNothing,
     );
   });
 
-  testWidgets('double-tap lock prompts and unlocks via new game', (
+  testWidgets('difficulty remains enabled after first move', (
     WidgetTester tester,
   ) async {
     final gameService = FakeGameService();
@@ -76,39 +68,11 @@ void main() {
     final difficultyDropdown = tester.widget<DropdownButton<String>>(
       find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
     );
-    expect(difficultyDropdown.onChanged, isNull);
-
-    await tester.tap(
-      find.byKey(const ValueKey<String>('top-controls-config-lock-indicator')),
-    );
-    await tester.pump(const Duration(milliseconds: 60));
-    await tester.tap(
-      find.byKey(const ValueKey<String>('top-controls-config-lock-indicator')),
-    );
-    await tester.pumpAndSettle();
-
-    expect(find.text('Unlock Settings?'), findsOneWidget);
-    expect(
-      find.text(
-        'Unlocking difficulty will start a new game and reset this board. Continue?',
-      ),
-      findsOneWidget,
-    );
-
-    final baselineNewGameCalls = gameService.newGameCalls;
-    await tester.tap(find.text('Start New Game'));
-    await tester.pumpAndSettle();
-
-    expect(gameService.newGameCalls, greaterThan(baselineNewGameCalls));
+    expect(difficultyDropdown.onChanged, isNotNull);
     expect(
       find.byKey(const ValueKey<String>('top-controls-config-lock-indicator')),
       findsNothing,
     );
-
-    final unlockedDifficultyDropdown = tester.widget<DropdownButton<String>>(
-      find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
-    );
-    expect(unlockedDifficultyDropdown.onChanged, isNotNull);
   });
 
   testWidgets('help chip appears in top controls and opens help dialog', (

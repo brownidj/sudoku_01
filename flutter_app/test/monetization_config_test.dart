@@ -6,7 +6,7 @@ void main() {
   test('uses platform-specific premium unlock IDs', () {
     expect(
       MonetizationConfig.premiumUnlockIdForPlatform(TargetPlatform.android),
-      'premium-unlock',
+      'full_unlock',
     );
     expect(
       MonetizationConfig.premiumUnlockIdForPlatform(TargetPlatform.iOS),

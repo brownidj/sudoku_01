@@ -1,6 +1,7 @@
 import 'package:flutter_app/app/billing_service.dart';
 import 'package:flutter_app/app/monetization_config.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 
 abstract class InAppPurchaseApi {
@@ -94,7 +95,9 @@ class InAppPurchaseBillingService implements BillingService {
       );
       return const <BillingProduct>[];
     }
-    AppDebug.log('[IAP] loadProducts querying ids: [$productId]');
+    AppDebug.log(
+      '[IAP] loadProducts platform=$_platformLabel querying ids: [$productId]',
+    );
     final response = await _inAppPurchaseApi.queryProductDetails({productId});
     final available = await _inAppPurchaseApi.isAvailable();
     _lastActionDiagnostics =
@@ -103,7 +106,8 @@ class InAppPurchaseBillingService implements BillingService {
         'products=${response.productDetails.length} '
         'notFound=${response.notFoundIDs}';
     AppDebug.log(
-      '[IAP] loadProducts result: products=${response.productDetails.length}, '
+      '[IAP] loadProducts result: platform=$_platformLabel '
+      'products=${response.productDetails.length}, '
       'notFound=${response.notFoundIDs}',
     );
     _productDetailsById
@@ -126,6 +130,9 @@ class InAppPurchaseBillingService implements BillingService {
   @override
   Future<BillingActionResult> buyPremium() async {
     final productId = _premiumProductId.trim();
+    AppDebug.log(
+      '[IAP] buyPremium start: platform=$_platformLabel id=$productId',
+    );
     if (productId.isEmpty) {
       _lastActionDiagnostics = 'buyPremium blocked: product id is empty';
       return BillingActionResult.productNotConfigured;
@@ -133,6 +140,7 @@ class InAppPurchaseBillingService implements BillingService {
     final available = await _inAppPurchaseApi.isAvailable();
     if (!available) {
       _lastActionDiagnostics = 'buyPremium blocked: isAvailable=false';
+      AppDebug.log('[IAP] buyPremium blocked: isAvailable=false');
       return BillingActionResult.unavailable;
     }
     if (!_productDetailsById.containsKey(productId)) {
@@ -143,6 +151,9 @@ class InAppPurchaseBillingService implements BillingService {
       _lastActionDiagnostics =
           '${_lastActionDiagnostics ?? ''} buyPremium blocked: '
           'product unavailable for id=$productId';
+      AppDebug.log(
+        '[IAP] buyPremium blocked: no ProductDetails for id=$productId',
+      );
       return BillingActionResult.productUnavailable;
     }
     try {
@@ -151,11 +162,15 @@ class InAppPurchaseBillingService implements BillingService {
       );
       _lastActionDiagnostics =
           'buyPremium requestStarted=$requestStarted id=$productId';
+      AppDebug.log(
+        '[IAP] buyPremium requestStarted=$requestStarted id=$productId',
+      );
       return requestStarted
           ? BillingActionResult.started
           : BillingActionResult.failed;
     } on Exception {
       _lastActionDiagnostics = 'buyPremium exception for id=$productId';
+      AppDebug.log('[IAP] buyPremium exception for id=$productId');
       return BillingActionResult.failed;
     }
   }
@@ -212,4 +227,6 @@ class InAppPurchaseBillingService implements BillingService {
         return BillingPurchaseStatus.error;
     }
   }
+
+  String get _platformLabel => defaultTargetPlatform.name;
 }

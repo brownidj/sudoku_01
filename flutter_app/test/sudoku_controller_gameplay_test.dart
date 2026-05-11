@@ -6,7 +6,7 @@ import 'package:flutter_app/domain/types.dart';
 import 'support/sudoku_controller_test_support.dart';
 
 void main() {
-  test('Puzzle mode stays unique, with locking and new game flow', () async {
+  test('Puzzle mode stays unique, with new game flow', () async {
     final fakeGameService = FakeGameService();
     final fakePrefs = FakePreferencesStore();
     final fakeSettings = FakeSettingsController(
@@ -44,8 +44,8 @@ void main() {
     expect(editable, isNotNull);
     controller.onCellTapped(editable!);
     controller.onDigitPressed(1);
-    expect(fakeSettings.state.canChangeDifficulty, false);
-    expect(fakeSettings.state.canChangePuzzleMode, false);
+    expect(fakeSettings.state.canChangeDifficulty, true);
+    expect(fakeSettings.state.canChangePuzzleMode, true);
 
     controller.onPuzzleModeChanged('unique');
     expect(fakeSettings.state.puzzleMode, 'unique');
