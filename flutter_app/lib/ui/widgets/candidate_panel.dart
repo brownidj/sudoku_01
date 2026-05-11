@@ -36,7 +36,7 @@ class CandidatePanel extends StatelessWidget {
 
     return Container(
       color: Theme.of(context).colorScheme.surfaceVariant,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Wrap(
         spacing: 8,
         runSpacing: 8,

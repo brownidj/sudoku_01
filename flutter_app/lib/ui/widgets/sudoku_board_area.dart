@@ -62,8 +62,8 @@ class SudokuBoardArea extends StatelessWidget {
         const candidateButtonSize = 52.0;
         const candidateSpacing = 8.0;
         const candidateHorizontalPadding = 16.0;
-        const candidateVerticalPadding = 12.0;
-        const gapBeforeCandidate = 12.0;
+        const candidateVerticalPadding = 8.0;
+        const gapBeforeCandidate = 8.0;
         final debugBannerHeight =
             (showDebugNotification && state.debugScenarioLabel != null)
             ? 42.0
@@ -165,7 +165,7 @@ class SudokuBoardArea extends StatelessWidget {
                 onDifficultyChanged: onDifficultyChanged,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             if (visibleCandidatePanelHeight > 0) ...[
               SizedBox(
                 height: visibleCandidatePanelHeight,
