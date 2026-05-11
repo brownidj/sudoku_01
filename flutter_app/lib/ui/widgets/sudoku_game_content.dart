@@ -101,7 +101,7 @@ class SudokuGameContent extends StatelessWidget {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
+                  padding: const EdgeInsets.fromLTRB(4, 10, 4, 12),
                   child: SudokuBoardArea(
                     key: tilesPanelKey,
                     state: state,
