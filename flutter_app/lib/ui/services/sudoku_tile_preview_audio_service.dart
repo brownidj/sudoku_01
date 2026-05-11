@@ -13,7 +13,7 @@ class SudokuTilePreviewAudioService {
 
   SudokuTilePreviewAudioService({
     AudioPlayer? player,
-    Duration maxClipDuration = const Duration(seconds: 3),
+    Duration maxClipDuration = const Duration(seconds: 4),
   }) : _player = player ?? AudioPlayer(),
        _maxClipDuration = maxClipDuration {
     unawaited(

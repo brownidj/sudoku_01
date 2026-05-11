@@ -53,9 +53,9 @@ class SudokuScreenServiceRegistry {
     tilePreviewAudioService = SudokuTilePreviewAudioService();
     backgroundMusicService = SudokuBackgroundMusicService();
     cellTooltipService = SudokuCellTooltipService(
-      tooltipService,
-      tilePreviewAudioService,
-      backgroundMusicService,
+      TooltipOverlayAdapter(tooltipService),
+      TilePreviewAudioControllerAdapter(tilePreviewAudioService),
+      BackgroundMusicControllerAdapter(backgroundMusicService),
     );
     effectsService = SudokuScreenEffectsService();
     effectsCoordinator = SudokuScreenEffectsCoordinator(effectsService);
