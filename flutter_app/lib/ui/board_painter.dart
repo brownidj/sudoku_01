@@ -196,7 +196,7 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   double _animalTargetSize(double cellSize) {
-    const minPadding = 4.0;
+    const minPadding = 2.0;
     final maxSize = cellSize - (minPadding * 2);
     return maxSize > 0 ? maxSize : cellSize;
   }

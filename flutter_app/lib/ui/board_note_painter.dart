@@ -35,7 +35,11 @@ class BoardNotePainter {
       return;
     }
 
-    final logicalSize = subCellSize * 0.95;
+    const noteImagePadding = 2.0;
+    final logicalSize = (subCellSize - (noteImagePadding * 2)).clamp(
+      0.0,
+      subCellSize,
+    );
     final targetPx = logicalSize * devicePixelRatio;
     final sizePx = bestNoteSize(targetPx, noteImagesBySize.keys);
     if (sizePx == 0 || !noteImagesBySize.containsKey(sizePx)) {
