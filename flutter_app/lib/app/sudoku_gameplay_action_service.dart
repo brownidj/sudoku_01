@@ -10,6 +10,7 @@ import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/puzzles.dart' as puzzles;
 import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/l10n/l10n_lookup.dart';
 
 class SudokuGameplayActionService {
   final GameService _gameService;
@@ -142,7 +143,7 @@ class SudokuGameplayActionService {
     saveGameSession();
 
     if (analysis.hasContradiction && runtime.correctionState.tokensLeft == 0) {
-      render('Contradiction detected. Use Undo to recover.');
+      render(appL10nCurrent().statusContradictionUseUndo);
       return;
     }
     render(result.message);
@@ -196,7 +197,10 @@ class SudokuGameplayActionService {
       result: result,
       saveGameSession: saveGameSession,
       render: render,
-      statusOverride: 'New game (${puzzle.difficulty}): ${puzzle.puzzleId}',
+      statusOverride: appL10nCurrent().statusNewGame(
+        puzzle.difficulty,
+        puzzle.puzzleId,
+      ),
     );
     runtime
       ..correctionState = _runtimeStateService.initialCorrectionState(

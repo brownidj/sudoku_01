@@ -168,8 +168,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(controller.state.premiumActive, isTrue);
-      await tester.ensureVisible(
+      await tester.scrollUntilVisible(
         find.byKey(const ValueKey<String>('drawer-reset-entitlement-free')),
+        120,
+        scrollable: find.byType(Scrollable).first,
       );
       await tester.pumpAndSettle();
       await tester.tap(
@@ -180,8 +182,10 @@ void main() {
 
       scaffoldState.openDrawer();
       await tester.pumpAndSettle();
-      await tester.ensureVisible(
+      await tester.scrollUntilVisible(
         find.byKey(const ValueKey<String>('drawer-premium-status')),
+        120,
+        scrollable: find.byType(Scrollable).first,
       );
       await tester.pumpAndSettle();
       expect(

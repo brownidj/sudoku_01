@@ -5,6 +5,7 @@ import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/services/sudoku_background_music_service.dart';
 import 'package:flutter_app/ui/services/sudoku_tile_preview_audio_service.dart';
 import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 abstract class CellTooltipOverlay {
   void show({
@@ -129,8 +130,8 @@ class SudokuCellTooltipService {
     );
     if (audioAsset == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Audio is not available for this tile yet.'),
+        SnackBar(
+          content: Text(UiStrings.audioUnavailableTile(context)),
         ),
       );
       return;

@@ -1,12 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_app/app/in_app_purchase_billing_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/ui/launch_screen.dart';
 
 class SudokuApp extends StatefulWidget {
-  const SudokuApp({super.key});
+  final SudokuController? controller;
+
+  const SudokuApp({super.key, this.controller});
 
   @override
   State<SudokuApp> createState() => _SudokuAppState();
@@ -14,14 +18,15 @@ class SudokuApp extends StatefulWidget {
 
 class _SudokuAppState extends State<SudokuApp> with WidgetsBindingObserver {
   late final SudokuController _controller;
+  static const Locale _fallbackLocale = Locale('en');
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _controller = SudokuController(
-      billingService: InAppPurchaseBillingService(),
-    );
+    _controller =
+        widget.controller ??
+        SudokuController(billingService: InAppPurchaseBillingService());
   }
 
   @override
@@ -45,13 +50,47 @@ class _SudokuAppState extends State<SudokuApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sudoku',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
-        useMaterial3: true,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, _) => MaterialApp(
+        onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: _controller.preferredLanguageCode == null
+            ? null
+            : Locale(_controller.preferredLanguageCode!),
+        localeListResolutionCallback: (locales, supportedLocales) {
+          if (_controller.preferredLanguageCode != null) {
+            final preferredCode = _controller.preferredLanguageCode!;
+            for (final supported in supportedLocales) {
+              if (supported.languageCode == preferredCode) {
+                return supported;
+              }
+            }
+          }
+          if (locales == null || locales.isEmpty) {
+            return _fallbackLocale;
+          }
+          for (final deviceLocale in locales) {
+            for (final supported in supportedLocales) {
+              if (supported.languageCode == deviceLocale.languageCode) {
+                return supported;
+              }
+            }
+          }
+          return _fallbackLocale;
+        },
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+          useMaterial3: true,
+        ),
+        home: LaunchScreen(controller: _controller),
       ),
-      home: LaunchScreen(controller: _controller),
     );
   }
 }

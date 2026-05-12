@@ -1,0 +1,245 @@
+{
+  "@@locale": "en",
+  "appTitle": "Sudoku",
+  "actionUndo": "Undo",
+  "actionClear": "Clear",
+  "actionNotes": "Notes",
+  "actionNewGame": "New Game",
+  "actionPlay": "Play",
+  "actionResume": "Resume",
+  "actionStartNewGame": "New game",
+  "actionPleaseWait": "Please wait...",
+  "tooltipNewGame": "Press this to start a new game.",
+  "tooltipUndo": "Use Undo to step back and clear selections you made previously. You can also use this if you run out of Corrections",
+  "tooltipClear": "Use this to clear a currently selected tile. You can only clear tiles that you have filled.",
+  "tooltipNotes": "Notes allows you to add little reminders of possibilities if you're not sure. Your options are shown in green. Press Notes again to switch them off.",
+  "tooltipDifficulty": "Choose the challenge level that allows you to make steady daily progress.",
+  "labelCorrections": "Corrections: {count}",
+  "@labelCorrections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipCorrections": "You have {limit} automatic corrections available for this puzzle. If an earlier move blocks your progress, you can use a correction to keep going. If you run out of corrections, use Undo.",
+  "@tooltipCorrections": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "difficultyEasy": "EASY",
+  "difficultyMedium": "A BIT HARDER",
+  "difficultyHard": "MUCH HARDER",
+  "difficultyVeryHard": "NIGH IMPOSSIBLE",
+  "helpTitle": "Help",
+  "helpDismiss": "OK",
+  "helpBody": "There are ***some things*** on the game screen that are a bit mysterious.\n\nTry **holding your finger** for a couple of seconds on those to see an explanation.\n\nFor example, **Corrections** shows the number of automatic corrections you have left. If an earlier move results in there being no valid option, Corrections can automatically fix that dead end and let you keep playing.\n\nUse **Undo** to step back through the selections you made previously. Doing so clears those, one at a time. You can also do this if you run out of Corrections.",
+  "startInstruction": "To start, select a square you want to add an icon to.\n",
+  "launchTitlePrefix": "The Angry Grannies bring you",
+  "launchTitle": "SuDoKu Playtime",
+  "launchSubtitle": "Take your time, enjoy each puzzle and keep your mind active.",
+  "launchErrorOpenGame": "Could not open game. Please try again.",
+  "launchHintsTitle": "Hints",
+  "tooltipPrevHint": "Previous hint",
+  "tooltipNextHint": "Next hint",
+  "launchHint1": "Notes allows you to add little reminders of possibilities if you're not sure. Your options are shown in green. Press Notes again to switch them off.",
+  "launchHint2": "Use a long-press, (hold your finger down for a couple of seconds), to understand what somethings do. Also, try it on a tile that has been filled in.",
+  "launchHint3": "If your choice leads to two or more tiles being coloured pink, you've made a mistake at some point. You have a limited number of auto-corrections.",
+  "launchHint4": "Changing difficulty during a game will start a new game.",
+  "launchHint5": "Press Help to get some information about how to play the game.",
+  "launchHint6": "Pressing ☰ (top right) opens a drawer that allows you to make some selections.",
+  "launchHint7": "If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).",
+  "launchHint8": "Press the music icon once to turn the background music off or twice, in quick succession, to turn it on.",
+  "launchHint9": "The dice starts a new game.",
+  "launchHint10": "If you've purchased the full version and it doesn't show up after an update, use 'Restore Purchases' from the drawer.",
+  "dialogActionCancel": "Cancel",
+  "dialogActionStartNewGame": "Start New Game",
+  "dialogActionUseCorrection": "Use correction",
+  "dialogUnlockSettingsTitle": "Unlock Settings?",
+  "dialogUnlockSettingsMessage": "Unlocking difficulty will start a new game and reset this board. Continue?",
+  "dialogStartNewGameTitle": "Start New Game?",
+  "dialogStartNewGameForDifficulty": "Change difficulty to {difficultyLabel} and start a new game?",
+  "@dialogStartNewGameForDifficulty": {
+    "placeholders": {
+      "difficultyLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogStartNewGameResetBoard": "Start a fresh game and reset this board?",
+  "labelLockedSettingsTitle": "Board Settings Locked",
+  "labelLockedSettingsMessage": "Difficulty is locked during a game. To unlock it, either double-tap the lock icon or start a 'New Game'",
+  "progressSheetTitle": "Your Progress",
+  "progressSheetBody": "Completed puzzles: {completedPuzzles}\nDays played: coming soon\nStreak: coming soon",
+  "@progressSheetBody": {
+    "placeholders": {
+      "completedPuzzles": {
+        "type": "int"
+      }
+    }
+  },
+  "progressCompletedPuzzles": "Completed puzzles: {count}",
+  "@progressCompletedPuzzles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressDaysPlayed": "Days played: {count}",
+  "@progressDaysPlayed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStreak": "Streak: {count}",
+  "@progressStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressBestSolveTimesTitle": "Best solve times:",
+  "progressBestSolveTimeRow": "• {difficulty}: {time}",
+  "@progressBestSolveTimeRow": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progressBestSolveTimeMissing": "--",
+  "progressResetAction": "Reset",
+  "progressResetDialogTitle": "Reset progress?",
+  "progressResetDialogMessage": "Your 'How am I doing?' data will be lost.",
+  "dialogActionOk": "OK",
+  "audioUnavailableTile": "Audio is not available for this tile yet.",
+  "correctionPromptMessage": "This board is unsatisfiable from an earlier move. Use 1 correction?",
+  "premiumFeatureIntroGeneric": "Full Version gives you the full Sudoku experience in one purchase.",
+  "premiumFeatureIntroNamed": "{featureLabel} is available in Full Version.",
+  "@premiumFeatureIntroNamed": {
+    "placeholders": {
+      "featureLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSheetTitle": "Unlock Full Version",
+  "premiumIncludesTitle": "Full Version includes:",
+  "premiumIncludesHardDifficulties": "• Hard and Nigh Impossible difficulties",
+  "premiumIncludesProgress": "• Progress tracking and personal bests",
+  "premiumIncludesThemesSounds": "• Extra themes, sounds, and celebrations",
+  "premiumOneTimePurchase": "One-time purchase. No subscription.",
+  "premiumActionNotNow": "Not now",
+  "premiumActionUnlock": "Unlock Full Version",
+  "purchaseStartedMessage": "Confirm the purchase in the App Store dialog to unlock Full Version.",
+  "restoreStartedMessage": "Restore started. Purchased items will reappear shortly.",
+  "billingUnavailable": "Purchases are unavailable on this device right now.",
+  "billingProductNotConfigured": "Full Version is not configured yet. Please try again later.",
+  "billingProductUnavailable": "Full Version product details could not be loaded. Please try again.",
+  "billingFailed": "That did not work. Please try again.",
+  "drawerTitle": "SuDoKu Playtime",
+  "drawerPuzzleStyleTitle": "Puzzle Style",
+  "styleModern": "Modern",
+  "styleClassic": "Classic",
+  "styleHighContrast": "High Contrast",
+  "drawerAudioTitle": "Audio",
+  "labelOn": "On",
+  "labelOff": "Off",
+  "drawerBackgroundMusicTitle": "Background music",
+  "drawerBackgroundMusicSubtitle": "Sounds for SuDoKu lovers",
+  "drawerVolumeTitle": "Volume",
+  "drawerVersionTitle": "Version",
+  "drawerVersionFull": "Full",
+  "drawerVersionFree": "Free",
+  "drawerPremiumProgressTitle": "Progress Tracker 🔒",
+  "drawerPremiumProgressSubtitle": "Track completed puzzles and milestones.",
+  "drawerPremiumThemesTitle": "Extra Themes 🔒",
+  "drawerPremiumThemesSubtitle": "Unlock additional visual styles.",
+  "drawerPremiumSoundsTitle": "Sounds & Celebrations 🔒",
+  "drawerPremiumSoundsSubtitle": "Unlock extra sounds and celebrations.",
+  "drawerUnlockFullVersion": "Unlock Full Version",
+  "drawerRestorePurchases": "Restore Purchases",
+  "drawerAboutChip": "About",
+  "drawerAboutTitle": "About",
+  "drawerAboutMessage": "Version: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy",
+  "@drawerAboutMessage": {
+    "placeholders": {
+      "versionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "drawerDebugTitle": "Debug",
+  "drawerDebugLoadCorrectionTitle": "Load Correction Scenario",
+  "drawerDebugLoadCorrectionSubtitle": "Temporary control for assisted-recovery testing.",
+  "drawerDebugLoadExhaustedTitle": "Load Exhausted Correction Scenario",
+  "drawerDebugLoadExhaustedSubtitle": "Temporary control for undo-only recovery testing.",
+  "drawerDebugResetEntitlementTitle": "Reset Full Version (Debug)",
+  "drawerDebugResetEntitlementSubtitle": "Sets local entitlement to Free for purchase retesting.",
+  "contentModeAnimals": "Animals (easy)",
+  "contentModeInstruments": "Instruments (tricky)",
+  "contentModeButterflies": "Butterflies (pretty!)",
+  "contentModeOpera": "Opera (unreal!)",
+  "contentModeNumbers": "Numbers (old-school)",
+  "topControlsProgress": "How am I doing?",
+  "topControlsHelp": "Help",
+  "infoSheetDismiss": "Got it",
+  "drawerLanguageTitle": "Language",
+  "drawerLanguageReset": "Reset to System Language",
+  "languageEnglish": "English",
+  "languageJapanese": "Japanese",
+  "languageGerman": "German",
+  "languageFrench": "French",
+  "languageItalian": "Italian",
+  "languagePortuguese": "Portuguese",
+  "languageHindi": "Hindi",
+  "languageSpanish": "Spanish",
+  "statusUnknownDifficulty": "Unknown difficulty: {difficulty}",
+  "@statusUnknownDifficulty": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDifficultyChangeBlocked": "Finish or start a new game before changing difficulty",
+  "statusDifficultyPremiumOnly": "This difficulty is available in Full Version.",
+  "statusPuzzleModeUnique": "Puzzle mode: unique",
+  "statusSessionRestored": "Session restored",
+  "statusCellSelected": "Cell selected",
+  "statusEntitlementRefreshed": "Entitlement refreshed",
+  "statusEntitlementUpdated": "Entitlement updated",
+  "statusCheckComplete": "Check complete",
+  "statusSolution": "Solution",
+  "statusSolved": "Solved.",
+  "statusContradictionUseUndo": "Contradiction detected. Use Undo to recover.",
+  "statusNewGame": "New game ({difficulty}): {puzzleId}",
+  "@statusNewGame": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "puzzleId": {
+        "type": "String"
+      }
+    }
+  },
+  "statusTilesCorrected": "{count} tile(s) corrected.",
+  "@statusTilesCorrected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

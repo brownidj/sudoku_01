@@ -20,6 +20,8 @@
 - Write defensive UI code (best-effort; never crash), but keep error handling narrow and intentional.
 - Keep naming consistent with existing patterns: `*Service`, `*Controller`, `*Coordinator`, `*Effects`, `*Rules`.
 - Always add explicit error types in try/catch.
+- Avoid code duplication.
+- Avoid overly clever abstractions.
 
 ### File Size Constraint
 - Keep each file under 300 lines. If a file approaches 300, split it into focused modules.

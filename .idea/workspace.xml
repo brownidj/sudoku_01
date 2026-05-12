@@ -6,24 +6,57 @@
   <component name="ChangeListManager">
     <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="feat(ui+audio+tests): refine music controls, stabilize test runs, and modularize drawer/cache&#10;•&#10;App bar music controls:&#10;◦&#10;Added &lt; ♪ &gt; controls left of hamburger with updated spacing/alignment.&#10;◦&#10;Added long-press tooltip for music controls.&#10;◦&#10;Restored chevrons to previous/next track behavior.&#10;◦&#10;Moved single/double tap background-music toggle to note icon only.&#10;◦&#10;Greyed/disabled music controls appropriately when background music is off.&#10;•&#10;Background music behavior:&#10;◦&#10;Added suspend/resume reasons in background music service.&#10;◦&#10;Pause/resume background music during victory overlay and tile-preview audio.&#10;◦&#10;Added explicit playback gate helper and startup-safe defaults to avoid unintended autoplay on resume.&#10;◦&#10;Wired “New Game” to switch to a new random background track on confirmed new game.&#10;•&#10;Audio settings UX/persistence:&#10;◦&#10;Audio default on; background music default on.&#10;◦&#10;Added persisted master volume (default 0.5) and drawer volume slider.&#10;◦&#10;Added dependency behavior between audio and background-music toggles.&#10;•&#10;Victory audio correctness:&#10;◦&#10;Ensured victory sound derives from selected victory mascot asset mapping.&#10;◦&#10;Added regression coverage for mascot→audio mapping path.&#10;•&#10;Content mode labels/hints:&#10;◦&#10;Updated dropdown labels:&#10;▪&#10;Instruments (tricky)&#10;▪&#10;Butterflies (pretty!)&#10;▪&#10;Opera (more tricky)&#10;◦&#10;Added regression test for dropdown labels.&#10;◦&#10;Added new splash hint about music controls.&#10;•&#10;Drawer + cache refactors:&#10;◦&#10;Split oversized drawer code into section modules/barrel exports.&#10;◦&#10;Split animal cache constants into dedicated catalog module.&#10;◦&#10;Reduced file sizes and improved maintainability without behavior changes.&#10;•&#10;Test and automation hardening:&#10;◦&#10;Updated integration test content-mode label expectations.&#10;◦&#10;Added playback-gate regression test.&#10;◦&#10;Hardened run_everything.sh:&#10;▪&#10;passes test dart-define to disable background music during automation&#10;▪&#10;retries/handles known flaky flutter_test_listener temp cleanup error&#10;•&#10;Versioning:&#10;◦&#10;Updated app version to 0.9.5+303.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/board_edit_coordinator.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/board_edit_coordinator.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/in_app_purchase_billing_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/in_app_purchase_billing_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/monetization_config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/monetization_config.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/CURRENT_STATE.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/CURRENT_STATE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/butterflies/metamorphic_rave.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/background/butterflies/metamorphic_rave_2.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/integration_test/app_flow_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_configuration_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_configuration_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/game_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/game_controller.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/preferences_store.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/settings_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/progress_metrics_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/progress_metrics_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_app.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_app.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_gameplay_action_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_gameplay_action_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_resolution_action_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/sudoku_resolution_action_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache_catalog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache_catalog.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/launch_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/correction_prompt_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/correction_prompt_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_configuration_flow_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_new_game_confirmation_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_new_game_confirmation_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_flow_actions.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_start_instruction_overlay_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_start_instruction_overlay_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/action_bar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/candidate_panel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/help_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/help_dialog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/info_sheet.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/info_sheet.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/premium_explainer_sheet.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/premium_explainer_sheet.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_area.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_area.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_metadata_row.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_board_metadata_row.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/patrol_test/smoke_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_aux_sections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_aux_sections.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_main_sections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_main_sections.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_sections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_drawer_sections.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_game_content.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/sudoku_version_app_bar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/widgets/top_controls.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/test/action_bar_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/action_bar_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/in_app_purchase_billing_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/in_app_purchase_billing_service_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/monetization_config_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/monetization_config_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_isolatedDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_isolatedDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_maskedDiff.png" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_maskedDiff.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_masterImage.png" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_masterImage.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_testImage.png" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/failures/sudoku_board_animals_mode_testImage.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/launch_screen_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/test/preferences_store_audio_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/preferences_store_audio_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_billing_bridge_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_billing_bridge_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_gameplay_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_gameplay_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_board_area_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_board_area_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_solution_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_controller_solution_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_debug_toggle_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_lock_help_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_screen_lock_help_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/sudoku_controller_test_support.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/check_file_sizes.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/check_file_sizes.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +64,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="894" />
+    <option name="cachedIndexableFilesCount" value="970" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -299,6 +332,7 @@
       <workItem from="1777337854263" duration="38682000" />
       <workItem from="1777604698938" duration="7771000" />
       <workItem from="1777961118985" duration="101311000" />
+      <workItem from="1778465309634" duration="34156000" />
     </task>
     <task id="LOCAL-00034" summary="Prior to refactoring">
       <option name="closed" value="true" />

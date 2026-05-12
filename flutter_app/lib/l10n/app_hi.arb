@@ -1,0 +1,245 @@
+{
+  "@@locale": "hi",
+  "appTitle": "सुडोकू",
+  "actionUndo": "पूर्ववत",
+  "actionClear": "साफ़ करें",
+  "actionNotes": "नोट्स",
+  "actionNewGame": "नया खेल",
+  "actionPlay": "खेलें",
+  "actionResume": "जारी रखें",
+  "actionStartNewGame": "नया खेल",
+  "actionPleaseWait": "कृपया प्रतीक्षा करें...",
+  "tooltipNewGame": "नया खेल शुरू करने के लिए इसे दबाएँ।",
+  "tooltipUndo": "पहले किए गए चयन हटाने के लिए पूर्ववत का उपयोग करें। यदि सुधार खत्म हो जाएँ तो भी इसका उपयोग कर सकते हैं।",
+  "tooltipClear": "अभी चुनी गई टाइल साफ़ करें। आप केवल वही टाइल साफ़ कर सकते हैं जो आपने भरी हैं।",
+  "tooltipNotes": "यदि आप निश्चित नहीं हैं, तो नोट्स संभावित विकल्प याद रखने में मदद करता है। विकल्प हरे रंग में दिखेंगे। बंद करने के लिए नोट्स फिर दबाएँ।",
+  "tooltipDifficulty": "ऐसा कठिनाई स्तर चुनें जिससे आप रोज़ नियमित प्रगति कर सकें।",
+  "labelCorrections": "सुधार: {count}",
+  "@labelCorrections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipCorrections": "इस पहेली के लिए आपके पास {limit} स्वचालित सुधार उपलब्ध हैं। पहले की कोई चाल प्रगति रोके तो सुधार उपयोग करें। सुधार खत्म हों तो पूर्ववत करें।",
+  "@tooltipCorrections": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "difficultyEasy": "आसान",
+  "difficultyMedium": "थोड़ा कठिन",
+  "difficultyHard": "बहुत कठिन",
+  "difficultyVeryHard": "लगभग असंभव",
+  "helpTitle": "मदद",
+  "helpDismiss": "ठीक है",
+  "helpBody": "गेम स्क्रीन पर ***कुछ चीज़ें*** थोड़ी रहस्यमय लग सकती हैं।\n\nउन पर **कुछ सेकंड उंगली दबाकर रखें** ताकि उनका विवरण दिखे।\n\nउदाहरण के लिए, **सुधार** बताता है कि आपके पास कितने स्वचालित सुधार बचे हैं। अगर पहले की चाल के कारण कोई वैध विकल्प न बचे, तो सुधार उस स्थिति को ठीक करके आपको खेल जारी रखने देता है।\n\n**पूर्ववत** से आप अपने पिछले चयन एक-एक करके वापस ले सकते हैं। सुधार खत्म होने पर भी यह काम आता है।",
+  "startInstruction": "शुरू करने के लिए वह वर्ग चुनें जिसमें आप आइकन जोड़ना चाहते हैं।\n",
+  "launchTitlePrefix": "The Angry Grannies प्रस्तुत करते हैं",
+  "launchTitle": "SuDoKu Playtime",
+  "launchSubtitle": "समय लें, हर पहेली का आनंद लें और दिमाग सक्रिय रखें।",
+  "launchErrorOpenGame": "गेम नहीं खुल सका। कृपया फिर से प्रयास करें।",
+  "launchHintsTitle": "संकेत",
+  "tooltipPrevHint": "पिछला संकेत",
+  "tooltipNextHint": "अगला संकेत",
+  "launchHint1": "नोट्स, निश्चित न होने पर संभावित विकल्प याद रखने में मदद करते हैं। विकल्प हरे रंग में दिखते हैं। बंद करने के लिए नोट्स फिर दबाएँ।",
+  "launchHint2": "लॉन्ग-प्रेस (कुछ सेकंड दबाकर रखें) से समझें कि चीज़ें क्या करती हैं। भरी हुई टाइल पर भी आज़माएँ।",
+  "launchHint3": "अगर आपके चयन से दो या अधिक टाइलें गुलाबी हो जाएँ, तो कहीं गलती हुई है। आपके पास सीमित स्वचालित सुधार हैं।",
+  "launchHint4": "गेम के दौरान कठिनाई बदलने पर नया खेल शुरू होगा।",
+  "launchHint5": "गेम खेलने की जानकारी के लिए Help दबाएँ।",
+  "launchHint6": "☰ (ऊपर दाएँ) दबाने से ड्रॉअर खुलता है जहाँ आप विकल्प चुन सकते हैं।",
+  "launchHint7": "यदि ध्वनियाँ परेशान करें या आप शांत वातावरण में खेलना चाहें, तो ड्रॉअर (☰) में Audio बंद करें।",
+  "launchHint8": "बैकग्राउंड म्यूज़िक बंद करने के लिए संगीत आइकन एक बार दबाएँ, चालू करने के लिए जल्दी से दो बार दबाएँ।",
+  "launchHint9": "पासा नया खेल शुरू करता है।",
+  "launchHint10": "अगर आपने फुल वर्ज़न खरीदा है और अपडेट के बाद वह दिखाई नहीं देता, तो ड्रॉअर में 'खरीद पुनर्स्थापित करें' का उपयोग करें।",
+  "dialogActionCancel": "रद्द करें",
+  "dialogActionStartNewGame": "नया खेल शुरू करें",
+  "dialogActionUseCorrection": "correction उपयोग करें",
+  "dialogUnlockSettingsTitle": "सेटिंग्स अनलॉक करें?",
+  "dialogUnlockSettingsMessage": "कठिनाई अनलॉक करने पर नया खेल शुरू होगा और यह बोर्ड रीसेट होगा। जारी रखें?",
+  "dialogStartNewGameTitle": "नया खेल शुरू करें?",
+  "dialogStartNewGameForDifficulty": "कठिनाई {difficultyLabel} करें और नया खेल शुरू करें?",
+  "@dialogStartNewGameForDifficulty": {
+    "placeholders": {
+      "difficultyLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogStartNewGameResetBoard": "नया खेल शुरू कर यह बोर्ड रीसेट करें?",
+  "labelLockedSettingsTitle": "बोर्ड सेटिंग्स लॉक हैं",
+  "labelLockedSettingsMessage": "गेम के दौरान कठिनाई लॉक रहती है। अनलॉक करने के लिए लॉक आइकन पर डबल-टैप करें या 'नया खेल' शुरू करें।",
+  "progressSheetTitle": "आपकी प्रगति",
+  "progressSheetBody": "पूर्ण पहेलियाँ: {completedPuzzles}\nखेले गए दिन: जल्द आ रहा है\nस्ट्रीक: जल्द आ रहा है",
+  "@progressSheetBody": {
+    "placeholders": {
+      "completedPuzzles": {
+        "type": "int"
+      }
+    }
+  },
+  "progressCompletedPuzzles": "पूर्ण पहेलियाँ: {count}",
+  "@progressCompletedPuzzles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressDaysPlayed": "खेले गए दिन: {count}",
+  "@progressDaysPlayed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStreak": "स्ट्रीक: {count}",
+  "@progressStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressBestSolveTimesTitle": "सर्वश्रेष्ठ समय:",
+  "progressBestSolveTimeRow": "• {difficulty}: {time}",
+  "@progressBestSolveTimeRow": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progressBestSolveTimeMissing": "--",
+  "progressResetAction": "रीसेट",
+  "progressResetDialogTitle": "प्रगति रीसेट करें?",
+  "progressResetDialogMessage": "आपका 'मैं कैसा कर रहा/रही हूँ?' डेटा खो जाएगा।",
+  "dialogActionOk": "OK",
+  "audioUnavailableTile": "इस टाइल के लिए ऑडियो अभी उपलब्ध नहीं है।",
+  "correctionPromptMessage": "पहले की चाल के कारण यह बोर्ड अब हल नहीं हो सकता। 1 correction उपयोग करें?",
+  "premiumFeatureIntroGeneric": "Full Version आपको एक खरीद में पूरा Sudoku अनुभव देता है।",
+  "premiumFeatureIntroNamed": "{featureLabel} Full Version में उपलब्ध है।",
+  "@premiumFeatureIntroNamed": {
+    "placeholders": {
+      "featureLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSheetTitle": "Full Version अनलॉक करें",
+  "premiumIncludesTitle": "Full Version में शामिल है:",
+  "premiumIncludesHardDifficulties": "• Hard और Nigh Impossible कठिनाई स्तर",
+  "premiumIncludesProgress": "• प्रगति ट्रैकिंग और व्यक्तिगत सर्वश्रेष्ठ",
+  "premiumIncludesThemesSounds": "• अतिरिक्त थीम, ध्वनियाँ और सेलिब्रेशन",
+  "premiumOneTimePurchase": "एक बार की खरीद। कोई सब्सक्रिप्शन नहीं।",
+  "premiumActionNotNow": "अभी नहीं",
+  "premiumActionUnlock": "Full Version अनलॉक करें",
+  "purchaseStartedMessage": "Full Version अनलॉक करने के लिए App Store डायलॉग में खरीद की पुष्टि करें।",
+  "restoreStartedMessage": "रीस्टोर शुरू हो गया है। खरीदी गई चीज़ें जल्द फिर दिखेंगी।",
+  "billingUnavailable": "अभी इस डिवाइस पर खरीद उपलब्ध नहीं है।",
+  "billingProductNotConfigured": "Full Version अभी कॉन्फ़िगर नहीं है। कृपया बाद में प्रयास करें।",
+  "billingProductUnavailable": "Full Version उत्पाद विवरण लोड नहीं हो सके। कृपया फिर प्रयास करें।",
+  "billingFailed": "यह काम नहीं किया। कृपया फिर प्रयास करें।",
+  "drawerTitle": "SuDoKu Playtime",
+  "drawerPuzzleStyleTitle": "पहेली शैली",
+  "styleModern": "आधुनिक",
+  "styleClassic": "क्लासिक",
+  "styleHighContrast": "उच्च कॉन्ट्रास्ट",
+  "drawerAudioTitle": "ऑडियो",
+  "labelOn": "चालू",
+  "labelOff": "बंद",
+  "drawerBackgroundMusicTitle": "बैकग्राउंड संगीत",
+  "drawerBackgroundMusicSubtitle": "SuDoKu प्रेमियों के लिए ध्वनियाँ",
+  "drawerVolumeTitle": "आवाज़",
+  "drawerVersionTitle": "संस्करण",
+  "drawerVersionFull": "पूर्ण",
+  "drawerVersionFree": "मुफ़्त",
+  "drawerPremiumProgressTitle": "प्रगति ट्रैकर 🔒",
+  "drawerPremiumProgressSubtitle": "पूर्ण पहेलियाँ और माइलस्टोन ट्रैक करें।",
+  "drawerPremiumThemesTitle": "अतिरिक्त थीम 🔒",
+  "drawerPremiumThemesSubtitle": "अतिरिक्त दृश्य शैलियाँ अनलॉक करें।",
+  "drawerPremiumSoundsTitle": "ध्वनियाँ और सेलिब्रेशन 🔒",
+  "drawerPremiumSoundsSubtitle": "अतिरिक्त ध्वनियाँ और सेलिब्रेशन अनलॉक करें।",
+  "drawerUnlockFullVersion": "Full Version अनलॉक करें",
+  "drawerRestorePurchases": "खरीद पुनर्स्थापित करें",
+  "drawerAboutChip": "जानकारी",
+  "drawerAboutTitle": "जानकारी",
+  "drawerAboutMessage": "संस्करण: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy",
+  "@drawerAboutMessage": {
+    "placeholders": {
+      "versionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "drawerDebugTitle": "डिबग",
+  "drawerDebugLoadCorrectionTitle": "Correction परिदृश्य लोड करें",
+  "drawerDebugLoadCorrectionSubtitle": "सहायता-आधारित रिकवरी परीक्षण के लिए अस्थायी नियंत्रण।",
+  "drawerDebugLoadExhaustedTitle": "Exhausted Correction परिदृश्य लोड करें",
+  "drawerDebugLoadExhaustedSubtitle": "केवल Undo रिकवरी परीक्षण के लिए अस्थायी नियंत्रण।",
+  "drawerDebugResetEntitlementTitle": "Full Version रीसेट करें (Debug)",
+  "drawerDebugResetEntitlementSubtitle": "खरीद पुनः परीक्षण हेतु स्थानीय entitlement को Free पर सेट करता है।",
+  "contentModeAnimals": "जानवर (आसान)",
+  "contentModeInstruments": "वाद्ययंत्र (कठिन)",
+  "contentModeButterflies": "तितलियाँ (सुंदर)",
+  "contentModeOpera": "ओपेरा (अद्भुत)",
+  "contentModeNumbers": "संख्याएँ (पुराना अंदाज़)",
+  "topControlsProgress": "मैं कैसा कर रहा/रही हूँ?",
+  "topControlsHelp": "मदद",
+  "infoSheetDismiss": "समझ गया/गई",
+  "drawerLanguageTitle": "भाषा",
+  "drawerLanguageReset": "सिस्टम भाषा पर रीसेट करें",
+  "languageEnglish": "अंग्रेज़ी",
+  "languageJapanese": "जापानी",
+  "languageGerman": "जर्मन",
+  "languageFrench": "फ़्रेंच",
+  "languageItalian": "इतालवी",
+  "languagePortuguese": "पुर्तगाली",
+  "languageHindi": "हिंदी",
+  "languageSpanish": "स्पेनिश",
+  "statusUnknownDifficulty": "अज्ञात कठिनाई: {difficulty}",
+  "@statusUnknownDifficulty": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDifficultyChangeBlocked": "कठिनाई बदलने से पहले खेल पूरा करें या नया खेल शुरू करें",
+  "statusDifficultyPremiumOnly": "यह कठिनाई Full Version में उपलब्ध है।",
+  "statusPuzzleModeUnique": "पहेली मोड: unique",
+  "statusSessionRestored": "सत्र पुनर्स्थापित",
+  "statusCellSelected": "सेल चयनित",
+  "statusEntitlementRefreshed": "Entitlement रिफ्रेश हुआ",
+  "statusEntitlementUpdated": "Entitlement अपडेट हुआ",
+  "statusCheckComplete": "जाँच पूरी",
+  "statusSolution": "समाधान",
+  "statusSolved": "हल हो गया।",
+  "statusContradictionUseUndo": "विरोधाभास मिला। रिकवरी के लिए Undo उपयोग करें।",
+  "statusNewGame": "नया खेल ({difficulty}): {puzzleId}",
+  "@statusNewGame": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "puzzleId": {
+        "type": "String"
+      }
+    }
+  },
+  "statusTilesCorrected": "{count} टाइल(ें) ठीक की गईं।",
+  "@statusTilesCorrected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

@@ -2,7 +2,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
-import 'package:flutter_app/ui/widgets/info_sheet.dart';
 
 class CandidatePanel extends StatelessWidget {
   final bool visible;
@@ -36,25 +35,29 @@ class CandidatePanel extends StatelessWidget {
 
     return Container(
       color: Theme.of(context).colorScheme.surfaceVariant,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Wrap(
         spacing: 8,
-        runSpacing: 8,
+        runSpacing: 6,
         children: [
           for (final digit in candidateDigits)
             Builder(
               builder: (context) {
                 return SizedBox(
-                  width: 52,
-                  height: 52,
+                  width: 48,
+                  height: 48,
                   child: GestureDetector(
                     onLongPressStart: contentMode != 'numbers'
                         ? (_) {
-                            final name = AnimalImageCache.displayNameForDigit(
-                              contentMode,
-                              digit,
-                            );
-                            showInfoSheet(context: context, message: name);
+                            final name =
+                                AnimalImageCache.displayNameForDigitTitleCase(
+                                  contentMode,
+                                  digit,
+                                );
+                            final messenger = ScaffoldMessenger.of(context);
+                            messenger
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(SnackBar(content: Text(name)));
                           }
                         : null,
                     onLongPress: onDigitLongPressed == null
@@ -94,9 +97,9 @@ class CandidatePanel extends StatelessWidget {
       return Text(AnimalImageCache.tileLabelForDigit(contentMode, digit));
     }
     final optionHeight =
-        contentMode == 'animals' && digit == 5 ? 44.0 : 38.0;
+        contentMode == 'animals' && digit == 5 ? 40.0 : 34.0;
     return SizedBox(
-      width: 38,
+      width: 34,
       height: optionHeight,
       child: FittedBox(
         fit: BoxFit.contain,

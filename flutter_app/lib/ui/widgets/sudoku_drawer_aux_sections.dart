@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
 
@@ -25,7 +26,7 @@ class SudokuDrawerAboutSection extends StatelessWidget {
             child: ActionChip(
               key: const ValueKey<String>('drawer-about-chip'),
               avatar: const Icon(Icons.info_outline, size: 18),
-              label: const Text('About'),
+              label: Text(UiStrings.drawerAboutChip(context)),
               onPressed: () async {
                 final versionLabel = await appVersionService.loadDisplayVersion();
                 if (!context.mounted) {
@@ -33,13 +34,8 @@ class SudokuDrawerAboutSection extends StatelessWidget {
                 }
                 await showInfoSheet(
                   context: context,
-                  title: 'About',
-                  message:
-                      'Version: $versionLabel\n\n'
-                      'The Angry Grannies Dev Team\n'
-                      'dev - DayDay\n'
-                      'dev - SudokuQueen\n'
-                      'tech advisor - Icy',
+                  title: UiStrings.drawerAboutTitle(context),
+                  message: UiStrings.drawerAboutMessage(context, versionLabel),
                 );
               },
             ),
@@ -79,15 +75,18 @@ class SudokuDrawerDebugSection extends StatelessWidget {
         const Divider(height: 8),
         Padding(
           padding: sectionPadding,
-          child: const Text('Debug', style: TextStyle(fontWeight: FontWeight.w600)),
+          child: Text(
+            UiStrings.drawerDebugTitle(context),
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
         ),
         ListTile(
           minVerticalPadding: 0,
           visualDensity: compactDensity,
           dense: true,
           leading: const Icon(Icons.science_outlined),
-          title: const Text('Load Correction Scenario'),
-          subtitle: const Text('Temporary control for assisted-recovery testing.'),
+          title: Text(UiStrings.drawerDebugLoadCorrectionTitle(context)),
+          subtitle: Text(UiStrings.drawerDebugLoadCorrectionSubtitle(context)),
           onTap: onLoadCorrectionScenario,
         ),
         if (onLoadExhaustedCorrectionScenario != null)
@@ -96,8 +95,8 @@ class SudokuDrawerDebugSection extends StatelessWidget {
             visualDensity: compactDensity,
             dense: true,
             leading: const Icon(Icons.warning_amber_outlined),
-            title: const Text('Load Exhausted Correction Scenario'),
-            subtitle: const Text('Temporary control for undo-only recovery testing.'),
+            title: Text(UiStrings.drawerDebugLoadExhaustedTitle(context)),
+            subtitle: Text(UiStrings.drawerDebugLoadExhaustedSubtitle(context)),
             onTap: onLoadExhaustedCorrectionScenario,
           ),
         if (onResetEntitlementToFreeSelected != null)
@@ -107,8 +106,8 @@ class SudokuDrawerDebugSection extends StatelessWidget {
             visualDensity: compactDensity,
             dense: true,
             leading: const Icon(Icons.restart_alt),
-            title: const Text('Reset Full Version (Debug)'),
-            subtitle: const Text('Sets local entitlement to Free for purchase retesting.'),
+            title: Text(UiStrings.drawerDebugResetEntitlementTitle(context)),
+            subtitle: Text(UiStrings.drawerDebugResetEntitlementSubtitle(context)),
             onTap: onResetEntitlementToFreeSelected,
           ),
       ],

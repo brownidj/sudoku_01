@@ -2,15 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/services/start_instruction_tooltip_service.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
 
 class SudokuStartInstructionOverlayService {
-  static const String _startInstructionMessage =
-      'To start, select a square you want to add an icon to.\n\n'
-      'Tip: Touch and hold (long-press) labels like Hints and Corrections '
-      'to see what they do.';
-
   final StartInstructionTooltipService _startInstructionTooltipService;
 
   bool _sheetOpen = false;
@@ -84,7 +80,10 @@ class SudokuStartInstructionOverlayService {
     }
     _sheetOpen = true;
     try {
-      await showInfoSheet(context: context, message: _startInstructionMessage);
+      await showInfoSheet(
+        context: context,
+        message: UiStrings.startInstruction(context),
+      );
     } finally {
       _sheetOpen = false;
     }

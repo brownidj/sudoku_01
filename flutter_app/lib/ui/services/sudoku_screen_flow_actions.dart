@@ -5,6 +5,7 @@ import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/premium_explainer_sheet_service.dart';
 import 'package:flutter_app/ui/services/sudoku_configuration_flow_service.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
 import 'package:flutter_app/ui/widgets/premium_explainer_sheet.dart';
 
@@ -42,14 +43,108 @@ class SudokuScreenFlowActions {
   Future<void> showProgressSheet({
     required BuildContext context,
     required int completedPuzzles,
+    required int daysPlayed,
+    required int streak,
+    required Map<String, int> bestSolveTimeSecondsByDifficulty,
+    required Future<void> Function() onResetProgressMetrics,
   }) {
-    return showInfoSheet(
+    return showModalBottomSheet<void>(
       context: context,
-      title: 'Your Progress',
-      message:
-          'Completed puzzles: $completedPuzzles\n'
-          'Days played: coming soon\n'
-          'Streak: coming soon',
+      showDragHandle: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    UiStrings.progressSheetTitle(sheetContext),
+                    style: Theme.of(sheetContext).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    UiStrings.progressSheetBody(
+                      sheetContext,
+                      completedPuzzles: completedPuzzles,
+                      daysPlayed: daysPlayed,
+                      streak: streak,
+                      bestSolveTimeSecondsByDifficulty:
+                          bestSolveTimeSecondsByDifficulty,
+                    ),
+                    style: Theme.of(sheetContext).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: const Color(0xFFFFE4EC),
+                        ),
+                        onPressed: () async {
+                          final confirmed = await showDialog<bool>(
+                            context: sheetContext,
+                            builder: (dialogContext) {
+                              return AlertDialog(
+                                title: Text(
+                                  UiStrings.progressResetDialogTitle(
+                                    dialogContext,
+                                  ),
+                                ),
+                                content: Text(
+                                  UiStrings.progressResetDialogMessage(
+                                    dialogContext,
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.of(
+                                      dialogContext,
+                                    ).pop(false),
+                                    child: Text(
+                                      UiStrings.dialogActionCancel(
+                                        dialogContext,
+                                      ),
+                                    ),
+                                  ),
+                                  FilledButton(
+                                    onPressed: () =>
+                                        Navigator.of(dialogContext).pop(true),
+                                    child: Text(
+                                      UiStrings.dialogActionOk(dialogContext),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          if (confirmed != true) {
+                            return;
+                          }
+                          await onResetProgressMetrics();
+                          if (!sheetContext.mounted) {
+                            return;
+                          }
+                          Navigator.of(sheetContext).pop();
+                        },
+                        child: Text(UiStrings.progressResetAction(sheetContext)),
+                      ),
+                      const Spacer(),
+                      FilledButton(
+                        onPressed: () => Navigator.of(sheetContext).pop(),
+                        child: Text(UiStrings.infoSheetDismiss(sheetContext)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -57,12 +152,10 @@ class SudokuScreenFlowActions {
     required BuildContext context,
     required SudokuController controller,
   }) {
-    final message = _configurationFlowService.lockedSettingsMessage(
-      controller.state,
-    );
+    final message = _configurationFlowService.lockedSettingsMessage(context);
     return showInfoSheet(
       context: context,
-      title: 'Board Settings Locked',
+      title: UiStrings.lockedSettingsTitle(context),
       message: message,
     );
   }
@@ -154,8 +247,7 @@ class SudokuScreenFlowActions {
       context: context,
       result: result,
       diagnostics: controller.lastBillingDiagnostics,
-      startedMessage:
-          'Confirm the purchase in the App Store dialog to unlock Full Version.',
+      startedMessage: UiStrings.purchaseStartedMessage(context),
     );
   }
 
@@ -168,7 +260,7 @@ class SudokuScreenFlowActions {
       context: context,
       result: result,
       diagnostics: controller.lastBillingDiagnostics,
-      startedMessage: 'Restore started. Purchased items will reappear shortly.',
+      startedMessage: UiStrings.restoreStartedMessage(context),
     );
   }
 
@@ -181,12 +273,12 @@ class SudokuScreenFlowActions {
     final baseMessage = switch (result) {
       BillingActionResult.started => startedMessage,
       BillingActionResult.unavailable =>
-        'Purchases are unavailable on this device right now.',
+        UiStrings.billingUnavailable(context),
       BillingActionResult.productNotConfigured =>
-        'Full Version is not configured yet. Please try again later.',
+        UiStrings.billingProductNotConfigured(context),
       BillingActionResult.productUnavailable =>
-        'Full Version product details could not be loaded. Please try again.',
-      BillingActionResult.failed => 'That did not work. Please try again.',
+        UiStrings.billingProductUnavailable(context),
+      BillingActionResult.failed => UiStrings.billingFailed(context),
     };
     final includeDiagnostics =
         result == BillingActionResult.productUnavailable ||

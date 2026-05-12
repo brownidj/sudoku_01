@@ -4,6 +4,7 @@ import 'package:flutter_app/app/settings_controller.dart';
 import 'package:flutter_app/app/solution_check_coordinator.dart';
 import 'package:flutter_app/app/sudoku_runtime_state.dart';
 import 'package:flutter_app/app/sudoku_runtime_state_service.dart';
+import 'package:flutter_app/l10n/l10n_lookup.dart';
 
 class SudokuResolutionActionService {
   final SolutionCheckCoordinator _solutionCoordinator;
@@ -48,7 +49,7 @@ class SudokuResolutionActionService {
       clearRevertedCells: true,
     );
     saveGameSession();
-    render('Check complete');
+    render(appL10nCurrent().statusCheckComplete);
   }
 
   void showSolution({
@@ -87,7 +88,7 @@ class SudokuResolutionActionService {
       clearRevertedCells: true,
     );
     saveGameSession();
-    render('Solution');
+    render(appL10nCurrent().statusSolution);
   }
 
   void completePuzzleWithSolution({
@@ -117,7 +118,7 @@ class SudokuResolutionActionService {
       clearRevertedCells: true,
     );
     saveGameSession();
-    render('Solved.');
+    render(appL10nCurrent().statusSolved);
   }
 
   void confirmCorrection({
@@ -141,8 +142,9 @@ class SudokuResolutionActionService {
     if (result.correctedTiles > 0) {
       runtime
         ..correctionNoticeSerial = runtime.correctionNoticeSerial + 1
-        ..correctionNoticeMessage =
-            '${result.correctedTiles} tile(s) corrected.';
+        ..correctionNoticeMessage = appL10nCurrent().statusTilesCorrected(
+          result.correctedTiles,
+        );
     }
     saveGameSession();
     render(result.status);

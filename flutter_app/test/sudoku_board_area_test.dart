@@ -58,7 +58,7 @@ UiState _state({
 
 void main() {
   testWidgets(
-    'main metadata row shows hints, corrections left, and difficulty',
+    'main metadata row shows corrections left and difficulty',
     (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
@@ -90,7 +90,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Hints: 2'), findsOneWidget);
+      expect(find.textContaining('Hints:'), findsNothing);
       expect(find.text('Corrections: 1'), findsOneWidget);
       expect(find.text('MUCH HARDER'), findsOneWidget);
     },
@@ -134,51 +134,8 @@ void main() {
     expect(
       find.text(
         'You have 2 automatic corrections available for this puzzle. '
-        'If an earlier move blocks your progress, you can use a correction to keep going '
-        'at your own pace. If you run out of corrections, use Undo.',
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('long press on hints label shows tooltip details', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
-            width: 420,
-            height: 620,
-            child: SudokuBoardArea(
-              state: _state(
-                puzzleMode: 'unique',
-                difficulty: 'easy',
-                conflictHintsLeft: 3,
-              ),
-              style: styleModern,
-              animalImages: const {},
-              noteImagesBySize: const {},
-              devicePixelRatio: 2.0,
-              candidateVisible: false,
-              candidateDigits: const [],
-              selectedNotes: const {},
-              onDigitSelected: (_) {},
-              onDigitLongPressed: null,
-              onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
-            ),
-          ),
-        ),
-      ),
-    );
-
-    await tester.longPress(find.text('Hints: 3'));
-    await tester.pumpAndSettle();
-
-    expect(
-      find.text(
-        'Hints mark conflicts in the same row, column, or 3x3 box. Use them to allow you to progress. Use Undo if you have no more Hints',
+        'If an earlier move blocks your progress, you can use a correction to keep going. '
+        'If you run out of corrections, use Undo.',
       ),
       findsOneWidget,
     );
@@ -280,7 +237,7 @@ void main() {
       await tester.longPress(find.text('P'));
       await tester.pumpAndSettle();
 
-      expect(find.text('piano'), findsOneWidget);
+      expect(find.text('Piano'), findsOneWidget);
       expect(find.text('ape'), findsNothing);
     },
   );

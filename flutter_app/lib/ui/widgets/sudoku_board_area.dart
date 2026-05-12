@@ -6,6 +6,7 @@ import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/candidate_panel.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_metadata_row.dart';
@@ -50,19 +51,18 @@ class SudokuBoardArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final correctionLimit = correctionsForDifficulty(state.difficulty);
-    final correctionsTooltipMessage =
-        'You have $correctionLimit automatic corrections available for this puzzle. '
-        'If an earlier move blocks your progress, you can use a correction to keep going '
-        'at your own pace. If you run out of corrections, use Undo.';
-    const hintsTooltipMessage =
-        'Hints mark conflicts in the same row, column, or 3x3 box. Use them to allow you to progress. Use Undo if you have no more Hints';
+    final correctionsTooltipMessage = UiStrings.correctionsTooltip(
+      context,
+      correctionLimit,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
         const maxCandidateControls = 9;
-        const candidateButtonSize = 52.0;
-        const candidateSpacing = 8.0;
+        const candidateButtonSize = 48.0;
+        const candidateColumnSpacing = 8.0;
+        const candidateRowSpacing = 6.0;
         const candidateHorizontalPadding = 16.0;
-        const candidateVerticalPadding = 8.0;
+        const candidateVerticalPadding = 6.0;
         const gapBeforeCandidate = 8.0;
         final debugBannerHeight =
             (showDebugNotification && state.debugScenarioLabel != null)
@@ -79,8 +79,8 @@ class SudokuBoardArea extends StatelessWidget {
           constraints.maxWidth - (candidateHorizontalPadding * 2),
         );
         final controlsPerRow =
-            ((candidatePanelWidth + candidateSpacing) /
-                    (candidateButtonSize + candidateSpacing))
+            ((candidatePanelWidth + candidateColumnSpacing) /
+                    (candidateButtonSize + candidateColumnSpacing))
                 .floor()
                 .clamp(1, maxCandidateControls);
         final maxRowCount =
@@ -89,7 +89,7 @@ class SudokuBoardArea extends StatelessWidget {
         final maxCandidatePanelHeight =
             (candidateVerticalPadding * 2) +
             (candidateButtonSize * maxRowCount) +
-            (candidateSpacing * max(0, maxRowCount - 1));
+            (candidateRowSpacing * max(0, maxRowCount - 1));
         final visibleCandidateCount = candidateVisible
             ? candidateDigits.length.clamp(0, maxCandidateControls)
             : 0;
@@ -101,7 +101,7 @@ class SudokuBoardArea extends StatelessWidget {
             ? 0.0
             : (candidateVerticalPadding * 2) +
                   (candidateButtonSize * visibleRowCount) +
-                  (candidateSpacing * max(0, visibleRowCount - 1));
+                  (candidateRowSpacing * max(0, visibleRowCount - 1));
         final lockedCandidateHeight = gapBeforeCandidate + maxCandidatePanelHeight;
         const layoutSafetyPadding = 9.0;
         final reservedHeight =
@@ -159,7 +159,6 @@ class SudokuBoardArea extends StatelessWidget {
               width: boardWidth,
               child: SudokuBoardMetadataRow(
                 state: state,
-                hintsTooltipMessage: hintsTooltipMessage,
                 correctionsTooltipMessage: correctionsTooltipMessage,
                 onPuzzleModeChanged: onPuzzleModeChanged,
                 onDifficultyChanged: onDifficultyChanged,

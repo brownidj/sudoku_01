@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 class LaunchScreen extends StatefulWidget {
   final SudokuController controller;
@@ -20,18 +21,6 @@ class LaunchScreen extends StatefulWidget {
 }
 
 class _LaunchScreenState extends State<LaunchScreen> {
-  static const List<String> _hints = <String>[
-    "Notes allows you to add little reminders of possibilities if you're not sure. Your options are shown in green. Press Notes again to switch them off.",
-    'Use a long-press, (hold your finger down for a couple of seconds), to understand what somethings do. Also, try it on a tile that has been filled in.',
-    "If your choice leads to two or more tiles being coloured pink, you've made a mistake at some point. You have a limited number of auto-corrections.",
-    'Changing difficulty during a game will start a new game.',
-    'Press Help to get some information about how to play the game.',
-    'Pressing ☰ (top right) opens a drawer that allows you to make some selections.',
-    'If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).',
-    'Press the music icon once to turn the background music off or twice, in quick succession, to turn it on.',
-    'The dice starts a new game.',
-  ];
-
   bool _ready = false;
   bool _openingGame = false;
   String? _launchError;
@@ -40,7 +29,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
   @override
   void initState() {
     super.initState();
-    _hintIndex = Random().nextInt(_hints.length);
+    _hintIndex = Random().nextInt(9);
     widget.controller.ready.then((_) {
       if (mounted) {
         setState(() {
@@ -91,7 +80,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
         return;
       }
       setState(() {
-        _launchError = 'Could not open game. Please try again.';
+        _launchError = UiStrings.launchErrorOpenGame(context);
       });
     } finally {
       if (mounted) {
@@ -104,6 +93,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final hints = UiStrings.launchHints(context);
     final theme = Theme.of(context);
     final titleStyle = theme.textTheme.headlineSmall;
     final introStyle = titleStyle == null
@@ -144,13 +134,13 @@ class _LaunchScreenState extends State<LaunchScreen> {
                         child: Column(
                           children: [
                             Text(
-                              'The Angry Grannies bring you',
+                              UiStrings.launchTitlePrefix(context),
                               style: introStyle,
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'SuDoKu Playtime',
+                              UiStrings.launchTitle(context),
                               style: titleStyle,
                               textAlign: TextAlign.center,
                             ),
@@ -159,7 +149,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Take your time, enjoy each puzzle and keep your mind active.',
+                        UiStrings.launchSubtitle(context),
                         style: theme.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
@@ -173,7 +163,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                             onPressed: _openingGame
                                 ? null
                                 : () => _openGame(startNewGame: false),
-                            child: const Text('Play'),
+                            child: Text(UiStrings.actionPlay(context)),
                           ),
                         )
                       else
@@ -186,7 +176,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                                 onPressed: _openingGame
                                     ? null
                                     : () => _openGame(startNewGame: false),
-                                child: const Text('Resume'),
+                                child: Text(UiStrings.actionResume(context)),
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -196,7 +186,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                                 onPressed: _openingGame
                                     ? null
                                     : () => _openGame(startNewGame: true),
-                                child: const Text('New game'),
+                                child: Text(UiStrings.actionStartNewGame(context)),
                               ),
                             ),
                           ],
@@ -207,7 +197,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                         child: Center(
                           child: _openingGame
                               ? Text(
-                                  'Please wait...',
+                                  UiStrings.actionPleaseWait(context),
                                   style: theme.textTheme.bodySmall,
                                   textAlign: TextAlign.center,
                                 )
@@ -234,19 +224,19 @@ class _LaunchScreenState extends State<LaunchScreen> {
                     Row(
                       children: [
                         IconButton(
-                          tooltip: 'Previous hint',
+                          tooltip: UiStrings.tooltipPrevHint(context),
                           onPressed: () {
                             setState(() {
                               _hintIndex =
-                                  (_hintIndex - 1 + _hints.length) %
-                                  _hints.length;
+                                  (_hintIndex - 1 + hints.length) %
+                                  hints.length;
                             });
                           },
                           icon: const Icon(Icons.chevron_left),
                         ),
                         Expanded(
                           child: Text(
-                            'Hints',
+                            UiStrings.launchHintsTitle(context),
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontSize:
                                   (theme.textTheme.titleSmall?.fontSize ?? 14) +
@@ -256,10 +246,11 @@ class _LaunchScreenState extends State<LaunchScreen> {
                           ),
                         ),
                         IconButton(
-                          tooltip: 'Next hint',
+                          tooltip: UiStrings.tooltipNextHint(context),
                           onPressed: () {
                             setState(() {
-                              _hintIndex = (_hintIndex + 1) % _hints.length;
+                              _hintIndex =
+                                  (_hintIndex + 1) % hints.length;
                             });
                           },
                           icon: const Icon(Icons.chevron_right),
@@ -271,7 +262,7 @@ class _LaunchScreenState extends State<LaunchScreen> {
                       child: Align(
                         alignment: Alignment.topCenter,
                         child: Text(
-                          _hints[_hintIndex],
+                          hints[_hintIndex],
                           style: theme.textTheme.bodySmall?.copyWith(
                             fontSize:
                                 (theme.textTheme.bodySmall?.fontSize ?? 12) + 4,

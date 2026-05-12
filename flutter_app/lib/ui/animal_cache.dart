@@ -203,6 +203,25 @@ class AnimalImageCache {
     }
   }
 
+  static String displayNameForDigitTitleCase(String contentMode, int digit) {
+    final raw = displayNameForDigit(contentMode, digit).trim();
+    if (raw.isEmpty) {
+      return raw;
+    }
+    return raw
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .map((part) => '${part[0].toUpperCase()}${part.substring(1)}')
+        .join(' ');
+  }
+
+  static String? butterflyDescriptionForDigit(int digit) {
+    if (digit < 1 || digit > AnimalCacheCatalog.butterflyDescriptions.length) {
+      return null;
+    }
+    return AnimalCacheCatalog.butterflyDescriptions[digit - 1];
+  }
+
   static String tileAssetPathForDigit({
     required String contentMode,
     required String animalStyle,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
+import 'package:flutter_app/ui/widgets/sudoku_drawer_language_section.dart';
 
 class SudokuDrawerHeaderStyleSection extends StatelessWidget {
   final EdgeInsets sectionPadding;
@@ -22,21 +24,25 @@ class SudokuDrawerHeaderStyleSection extends StatelessWidget {
         const SizedBox(height: 4),
         Padding(
           padding: sectionPadding,
-          child: const Text(
-            'SuDoKu Playtime',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+          child: Text(
+            UiStrings.drawerTitle(context),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(height: 4),
         const Divider(height: 8),
         Padding(
           padding: sectionPadding,
-          child: const Text(
-            'Puzzle Style',
-            style: TextStyle(fontWeight: FontWeight.w600),
+          child: Text(
+            UiStrings.drawerPuzzleStyleTitle(context),
+            style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
-        ...['Modern', 'Classic', 'High Contrast'].map(_buildStyleOption),
+        ...[
+          UiStrings.styleModern(context),
+          UiStrings.styleClassic(context),
+          UiStrings.styleHighContrast(context),
+        ].map(_buildStyleOption),
         const Divider(height: 8),
       ],
     );
@@ -94,11 +100,18 @@ class SudokuDrawerAudioSection extends StatelessWidget {
           minVerticalPadding: 0,
           visualDensity: compactDensity,
           dense: true,
-          title: const Text('Audio', style: TextStyle(fontWeight: FontWeight.w600)),
+          title: Text(
+            UiStrings.drawerAudioTitle(context),
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(audioEnabled ? 'On' : 'Off'),
+              Text(
+                audioEnabled
+                    ? UiStrings.labelOn(context)
+                    : UiStrings.labelOff(context),
+              ),
               Radio<bool?>(
                 value: true,
                 groupValue: audioEnabled ? true : null,
@@ -121,13 +134,13 @@ class SudokuDrawerAudioSection extends StatelessWidget {
             visualDensity: compactDensity,
             dense: true,
             title: Text(
-              'Background music',
+              UiStrings.drawerBackgroundMusicTitle(context),
               style: TextStyle(fontWeight: FontWeight.w600, color: inactiveColor),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 12),
               child: Text(
-                'Sounds for SuDoKu lovers',
+                UiStrings.drawerBackgroundMusicSubtitle(context),
                 style: TextStyle(fontStyle: FontStyle.italic, color: inactiveColor),
               ),
             ),
@@ -135,7 +148,9 @@ class SudokuDrawerAudioSection extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  backgroundMusicEnabled ? 'On' : 'Off',
+                  backgroundMusicEnabled
+                      ? UiStrings.labelOn(context)
+                      : UiStrings.labelOff(context),
                   style: TextStyle(color: inactiveColor),
                 ),
                 Radio<bool?>(
@@ -159,7 +174,7 @@ class SudokuDrawerAudioSection extends StatelessWidget {
           visualDensity: compactDensity,
           dense: true,
           title: Text(
-            'Volume',
+            UiStrings.drawerVolumeTitle(context),
             style: TextStyle(fontWeight: FontWeight.w600, color: inactiveColor),
           ),
           subtitle: SliderTheme(
@@ -210,29 +225,31 @@ class SudokuDrawerPremiumSection extends StatelessWidget {
           minVerticalPadding: 0,
           visualDensity: compactDensity,
           dense: true,
-          title: const Text('Version'),
+          title: Text(UiStrings.drawerVersionTitle(context)),
           trailing: Text(
-            state.premiumActive ? 'Full' : 'Free',
+            state.premiumActive
+                ? UiStrings.drawerVersionFull(context)
+                : UiStrings.drawerVersionFree(context),
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
         if (!state.premiumActive) ...[
           _locked(
             key: const ValueKey<String>('drawer-locked-progress-tracker'),
-            title: 'Progress Tracker 🔒',
-            subtitle: 'Track completed puzzles and milestones.',
+            title: UiStrings.drawerPremiumProgressTitle(context),
+            subtitle: UiStrings.drawerPremiumProgressSubtitle(context),
             featureKey: 'progress_tracker',
           ),
           _locked(
             key: const ValueKey<String>('drawer-locked-extra-themes'),
-            title: 'Extra Themes 🔒',
-            subtitle: 'Unlock additional visual styles.',
+            title: UiStrings.drawerPremiumThemesTitle(context),
+            subtitle: UiStrings.drawerPremiumThemesSubtitle(context),
             featureKey: 'extra_themes',
           ),
           _locked(
             key: const ValueKey<String>('drawer-locked-extra-sounds'),
-            title: 'Sounds & Celebrations 🔒',
-            subtitle: 'Unlock extra sounds and celebrations.',
+            title: UiStrings.drawerPremiumSoundsTitle(context),
+            subtitle: UiStrings.drawerPremiumSoundsSubtitle(context),
             featureKey: 'extra_sounds_and_celebrations',
           ),
           ListTile(
@@ -242,7 +259,7 @@ class SudokuDrawerPremiumSection extends StatelessWidget {
             visualDensity: compactDensity,
             dense: true,
             leading: const Icon(Icons.workspace_premium_outlined),
-            title: const Text('Unlock Full Version'),
+            title: Text(UiStrings.drawerUnlockFullVersion(context)),
             onTap: onUnlockPremiumSelected,
           ),
         ],
@@ -253,7 +270,7 @@ class SudokuDrawerPremiumSection extends StatelessWidget {
           visualDensity: compactDensity,
           dense: true,
           leading: const Icon(Icons.restore),
-          title: const Text('Restore Purchases'),
+          title: Text(UiStrings.drawerRestorePurchases(context)),
           onTap: onRestorePurchasesSelected,
         ),
       ],

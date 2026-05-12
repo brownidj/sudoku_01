@@ -136,7 +136,11 @@ void main() {
   testWidgets('progress chip opens metrics sheet with completed puzzles', (
     WidgetTester tester,
   ) async {
-    final prefs = FakePreferencesStore(completedPuzzles: 7);
+    final prefs = FakePreferencesStore(
+      completedPuzzles: 7,
+      daysPlayed: 3,
+      currentStreak: 2,
+    );
     final controller = SudokuController(
       preferencesStore: prefs,
       gameService: FakeGameService(),
@@ -159,7 +163,53 @@ void main() {
 
     expect(find.text('Your Progress'), findsOneWidget);
     expect(find.textContaining('Completed puzzles: 7'), findsOneWidget);
-    expect(find.textContaining('Days played: coming soon'), findsOneWidget);
-    expect(find.textContaining('Streak: coming soon'), findsOneWidget);
+    expect(find.textContaining('Days played: 3'), findsOneWidget);
+    expect(find.textContaining('Streak: 2'), findsOneWidget);
+    expect(find.text('Reset'), findsOneWidget);
+  });
+
+  testWidgets('progress reset requires confirmation and clears metrics', (
+    WidgetTester tester,
+  ) async {
+    final prefs = FakePreferencesStore(
+      completedPuzzles: 7,
+      daysPlayed: 4,
+      currentStreak: 3,
+      playedDates: <String>['2026-05-08', '2026-05-09'],
+      bestSolveTimeSecondsByDifficulty: <String, int>{'easy': 120},
+    );
+    final controller = SudokuController(
+      preferencesStore: prefs,
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(_defaultSettings),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    controller.onShowSolution();
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('top-controls-progress-chip')),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.ensureVisible(find.text('Reset'));
+    await tester.tap(find.text('Reset'));
+    await tester.pumpAndSettle();
+    expect(find.text('Reset progress?'), findsOneWidget);
+    expect(find.text("Your 'How am I doing?' data will be lost."), findsOneWidget);
+
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    expect(controller.completedPuzzles, 0);
+    expect(controller.daysPlayed, 0);
+    expect(controller.streak, 0);
+    expect(controller.bestSolveTimeSecondsByDifficulty, isEmpty);
   });
 }

@@ -1,0 +1,245 @@
+{
+  "@@locale": "pt",
+  "appTitle": "Sudoku",
+  "actionUndo": "Desfazer",
+  "actionClear": "Limpar",
+  "actionNotes": "Notas",
+  "actionNewGame": "Novo jogo",
+  "actionPlay": "Jogar",
+  "actionResume": "Retomar",
+  "actionStartNewGame": "Novo jogo",
+  "actionPleaseWait": "Aguarde...",
+  "tooltipNewGame": "Pressione para iniciar um novo jogo.",
+  "tooltipUndo": "Use Desfazer para voltar um passo e limpar seleções anteriores. Também pode usar isto se ficar sem Correções.",
+  "tooltipClear": "Use isto para limpar a casa atualmente selecionada. Só pode limpar casas que você preencheu.",
+  "tooltipNotes": "Notas permite adicionar lembretes de possibilidades quando não tem certeza. As opções aparecem em verde. Pressione Notas novamente para desativá-las.",
+  "tooltipDifficulty": "Escolha o nível de desafio que permita progresso diário consistente.",
+  "labelCorrections": "Correções: {count}",
+  "@labelCorrections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipCorrections": "Tem {limit} correções automáticas disponíveis para este puzzle. Se uma jogada anterior bloquear o seu progresso, pode usar uma correção para continuar. Se acabarem, use Desfazer.",
+  "@tooltipCorrections": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "difficultyEasy": "FÁCIL",
+  "difficultyMedium": "UM POUCO MAIS DIFÍCIL",
+  "difficultyHard": "MUITO MAIS DIFÍCIL",
+  "difficultyVeryHard": "QUASE IMPOSSÍVEL",
+  "helpTitle": "Ajuda",
+  "helpDismiss": "OK",
+  "helpBody": "Há ***algumas coisas*** no ecrã do jogo que podem parecer um pouco misteriosas.\n\nTente **manter o dedo pressionado** por alguns segundos para ver uma explicação.\n\nPor exemplo, **Correções** mostra quantas correções automáticas ainda tem. Se uma jogada anterior criar um bloqueio sem opções válidas, Correções pode resolver esse impasse automaticamente e permitir que continue.\n\nUse **Desfazer** para voltar pelas seleções anteriores, uma de cada vez. Isto também ajuda quando ficar sem Correções.",
+  "startInstruction": "Para começar, selecione uma casa onde quer adicionar um ícone.\n",
+  "launchTitlePrefix": "The Angry Grannies apresentam",
+  "launchTitle": "SuDoKu Playtime",
+  "launchSubtitle": "Vá com calma, aproveite cada puzzle e mantenha a mente ativa.",
+  "launchErrorOpenGame": "Não foi possível abrir o jogo. Tente novamente.",
+  "launchHintsTitle": "Dicas",
+  "tooltipPrevHint": "Dica anterior",
+  "tooltipNextHint": "Próxima dica",
+  "launchHint1": "Notas permite guardar lembretes de possibilidades quando não tem certeza. As opções aparecem em verde. Pressione Notas novamente para desativá-las.",
+  "launchHint2": "Use um toque longo (mantenha o dedo por alguns segundos) para entender o que alguns elementos fazem. Experimente também numa casa já preenchida.",
+  "launchHint3": "Se a sua escolha deixar duas ou mais casas cor-de-rosa, houve um erro em algum momento. Tem um número limitado de auto-correções.",
+  "launchHint4": "Mudar a dificuldade durante um jogo inicia um novo jogo.",
+  "launchHint5": "Pressione Ajuda para obter informações sobre como jogar.",
+  "launchHint6": "Ao pressionar ☰ (canto superior direito), abre um menu com várias opções.",
+  "launchHint7": "Se os sons incomodarem ou se quiser jogar em silêncio, pode desligar o Áudio no menu (☰).",
+  "launchHint8": "Pressione o ícone de música uma vez para desligar a música de fundo, ou duas vezes rapidamente para ligar novamente.",
+  "launchHint9": "O dado inicia um novo jogo.",
+  "launchHint10": "Se comprou a versão completa e ela não aparecer após uma atualização, use « Restaurar compras » no menu.",
+  "dialogActionCancel": "Cancelar",
+  "dialogActionStartNewGame": "Iniciar novo jogo",
+  "dialogActionUseCorrection": "Usar correção",
+  "dialogUnlockSettingsTitle": "Desbloquear configurações?",
+  "dialogUnlockSettingsMessage": "Desbloquear a dificuldade iniciará um novo jogo e redefinirá este tabuleiro. Continuar?",
+  "dialogStartNewGameTitle": "Iniciar novo jogo?",
+  "dialogStartNewGameForDifficulty": "Mudar a dificuldade para {difficultyLabel} e iniciar um novo jogo?",
+  "@dialogStartNewGameForDifficulty": {
+    "placeholders": {
+      "difficultyLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogStartNewGameResetBoard": "Iniciar um novo jogo e redefinir este tabuleiro?",
+  "labelLockedSettingsTitle": "Configurações do tabuleiro bloqueadas",
+  "labelLockedSettingsMessage": "A dificuldade fica bloqueada durante um jogo. Para desbloquear, toque duas vezes no ícone de cadeado ou inicie um 'Novo jogo'.",
+  "progressSheetTitle": "Seu progresso",
+  "progressSheetBody": "Puzzles concluídos: {completedPuzzles}\nDias jogados: em breve\nSequência: em breve",
+  "@progressSheetBody": {
+    "placeholders": {
+      "completedPuzzles": {
+        "type": "int"
+      }
+    }
+  },
+  "progressCompletedPuzzles": "Puzzles concluídos: {count}",
+  "@progressCompletedPuzzles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressDaysPlayed": "Dias jogados: {count}",
+  "@progressDaysPlayed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStreak": "Sequência: {count}",
+  "@progressStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressBestSolveTimesTitle": "Melhores tempos:",
+  "progressBestSolveTimeRow": "• {difficulty}: {time}",
+  "@progressBestSolveTimeRow": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progressBestSolveTimeMissing": "--",
+  "progressResetAction": "Repor",
+  "progressResetDialogTitle": "Repor progresso?",
+  "progressResetDialogMessage": "Os seus dados de «Como estou indo?» serão perdidos.",
+  "dialogActionOk": "OK",
+  "audioUnavailableTile": "O áudio ainda não está disponível para esta casa.",
+  "correctionPromptMessage": "Este tabuleiro está sem solução devido a uma jogada anterior. Usar 1 correção?",
+  "premiumFeatureIntroGeneric": "A Versão Completa oferece a experiência Sudoku completa numa única compra.",
+  "premiumFeatureIntroNamed": "{featureLabel} está disponível na Versão Completa.",
+  "@premiumFeatureIntroNamed": {
+    "placeholders": {
+      "featureLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSheetTitle": "Desbloquear versão completa",
+  "premiumIncludesTitle": "A versão completa inclui:",
+  "premiumIncludesHardDifficulties": "• Dificuldades Difícil e Quase impossível",
+  "premiumIncludesProgress": "• Acompanhamento de progresso e melhores marcas",
+  "premiumIncludesThemesSounds": "• Temas, sons e celebrações extra",
+  "premiumOneTimePurchase": "Compra única. Sem subscrição.",
+  "premiumActionNotNow": "Agora não",
+  "premiumActionUnlock": "Desbloquear versão completa",
+  "purchaseStartedMessage": "Confirme a compra na janela da App Store para desbloquear a Versão Completa.",
+  "restoreStartedMessage": "Restauro iniciado. Os itens comprados voltarão a aparecer em breve.",
+  "billingUnavailable": "As compras estão indisponíveis neste dispositivo neste momento.",
+  "billingProductNotConfigured": "A Versão Completa ainda não está configurada. Tente novamente mais tarde.",
+  "billingProductUnavailable": "Não foi possível carregar os detalhes do produto da Versão Completa. Tente novamente.",
+  "billingFailed": "Não foi possível concluir. Tente novamente.",
+  "drawerTitle": "SuDoKu Playtime",
+  "drawerPuzzleStyleTitle": "Estilo do puzzle",
+  "styleModern": "Moderno",
+  "styleClassic": "Clássico",
+  "styleHighContrast": "Alto contraste",
+  "drawerAudioTitle": "Audio",
+  "labelOn": "Ligado",
+  "labelOff": "Desligado",
+  "drawerBackgroundMusicTitle": "Música de fundo",
+  "drawerBackgroundMusicSubtitle": "Sons para amantes de Sudoku",
+  "drawerVolumeTitle": "Volume",
+  "drawerVersionTitle": "Version",
+  "drawerVersionFull": "Completa",
+  "drawerVersionFree": "Grátis",
+  "drawerPremiumProgressTitle": "Acompanhamento de progresso 🔒",
+  "drawerPremiumProgressSubtitle": "Acompanhe puzzles concluídos e marcos.",
+  "drawerPremiumThemesTitle": "Temas extra 🔒",
+  "drawerPremiumThemesSubtitle": "Desbloqueie estilos visuais adicionais.",
+  "drawerPremiumSoundsTitle": "Sons e celebrações 🔒",
+  "drawerPremiumSoundsSubtitle": "Desbloqueie sons e celebrações extra.",
+  "drawerUnlockFullVersion": "Desbloquear versão completa",
+  "drawerRestorePurchases": "Restaurar compras",
+  "drawerAboutChip": "Sobre",
+  "drawerAboutTitle": "Sobre",
+  "drawerAboutMessage": "Version: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy",
+  "@drawerAboutMessage": {
+    "placeholders": {
+      "versionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "drawerDebugTitle": "Debug",
+  "drawerDebugLoadCorrectionTitle": "Carregar cenário de correção",
+  "drawerDebugLoadCorrectionSubtitle": "Controlo temporário para testes de recuperação assistida.",
+  "drawerDebugLoadExhaustedTitle": "Carregar cenário sem correções",
+  "drawerDebugLoadExhaustedSubtitle": "Controlo temporário para testes de recuperação apenas com Desfazer.",
+  "drawerDebugResetEntitlementTitle": "Repor Versão Completa (Debug)",
+  "drawerDebugResetEntitlementSubtitle": "Define o direito local como Gratuito para retestar compras.",
+  "contentModeAnimals": "Animais (fácil)",
+  "contentModeInstruments": "Instrumentos (difícil)",
+  "contentModeButterflies": "Borboletas (bonito)",
+  "contentModeOpera": "Ópera (surpreendente)",
+  "contentModeNumbers": "Números (clássico)",
+  "topControlsProgress": "Como estou indo?",
+  "topControlsHelp": "Ajuda",
+  "infoSheetDismiss": "Entendi",
+  "drawerLanguageTitle": "Idioma",
+  "drawerLanguageReset": "Redefinir para o idioma do sistema",
+  "languageEnglish": "Inglês",
+  "languageJapanese": "Japonês",
+  "languageGerman": "Alemão",
+  "languageFrench": "Francês",
+  "languageItalian": "Italiano",
+  "languagePortuguese": "Português",
+  "languageHindi": "Hindi",
+  "languageSpanish": "Espanhol",
+  "statusUnknownDifficulty": "Dificuldade desconhecida: {difficulty}",
+  "@statusUnknownDifficulty": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDifficultyChangeBlocked": "Termine ou inicie um novo jogo antes de alterar a dificuldade",
+  "statusDifficultyPremiumOnly": "Esta dificuldade está disponível na Versão Completa.",
+  "statusPuzzleModeUnique": "Modo puzzle: único",
+  "statusSessionRestored": "Sessão restaurada",
+  "statusCellSelected": "Casa selecionada",
+  "statusEntitlementRefreshed": "Direito atualizado",
+  "statusEntitlementUpdated": "Direito alterado",
+  "statusCheckComplete": "Verificação concluída",
+  "statusSolution": "Solução",
+  "statusSolved": "Resolvido.",
+  "statusContradictionUseUndo": "Contradição detetada. Use Desfazer para recuperar.",
+  "statusNewGame": "Novo jogo ({difficulty}): {puzzleId}",
+  "@statusNewGame": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "puzzleId": {
+        "type": "String"
+      }
+    }
+  },
+  "statusTilesCorrected": "{count} casa(s) corrigida(s).",
+  "@statusTilesCorrected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

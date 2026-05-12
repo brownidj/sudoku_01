@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class SudokuBoardMetadataRow extends StatelessWidget {
   final UiState state;
-  final String hintsTooltipMessage;
   final String correctionsTooltipMessage;
   final ValueChanged<String>? onPuzzleModeChanged;
   final ValueChanged<String>? onDifficultyChanged;
@@ -12,7 +12,6 @@ class SudokuBoardMetadataRow extends StatelessWidget {
   const SudokuBoardMetadataRow({
     super.key,
     required this.state,
-    required this.hintsTooltipMessage,
     required this.correctionsTooltipMessage,
     required this.onPuzzleModeChanged,
     required this.onDifficultyChanged,
@@ -28,50 +27,41 @@ class SudokuBoardMetadataRow extends StatelessWidget {
             child: Transform.translate(
               offset: const Offset(-4, 0),
               child: _ManualTooltipLabel(
-                label: 'Hints: ${state.conflictHintsLeft}',
-                tooltipMessage: hintsTooltipMessage,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.center,
-            child: Transform.translate(
-              offset: const Offset(-20, 0),
-              child: _ManualTooltipLabel(
-                label: 'Corrections: ${state.correctionsLeft}',
+                label: UiStrings.correctionsLabel(context, state.correctionsLeft),
                 tooltipMessage: correctionsTooltipMessage,
               ),
             ),
           ),
         ),
+        const Expanded(child: SizedBox.shrink()),
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 2),
               child: _MetadataDropdown(
-                tooltipMessage:
-                    'Choose the challenge level that feels right for steady daily progress.',
+                tooltipMessage: UiStrings.tooltipDifficulty(context),
                 value: state.difficulty,
                 dropdownKey: const ValueKey<String>(
                   'board-difficulty-dropdown',
                 ),
                 enabled: state.canChangeDifficulty,
-                items: const [
-                  DropdownMenuItem<String>(value: 'easy', child: Text('EASY')),
+                items: [
+                  DropdownMenuItem<String>(
+                    value: 'easy',
+                    child: Text(UiStrings.difficultyEasy(context)),
+                  ),
                   DropdownMenuItem<String>(
                     value: 'medium',
-                    child: Text('A BIT HARDER'),
+                    child: Text(UiStrings.difficultyMedium(context)),
                   ),
                   DropdownMenuItem<String>(
                     value: 'hard',
-                    child: Text('MUCH HARDER'),
+                    child: Text(UiStrings.difficultyHard(context)),
                   ),
                   DropdownMenuItem<String>(
                     value: 'very_hard',
-                    child: Text('NIGH IMPOSSIBLE'),
+                    child: Text(UiStrings.difficultyVeryHard(context)),
                   ),
                 ],
                 onChanged: onDifficultyChanged,

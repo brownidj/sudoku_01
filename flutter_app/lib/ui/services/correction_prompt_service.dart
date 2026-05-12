@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 class CorrectionPromptService {
   Coord? _lastPromptCoord;
@@ -22,17 +23,15 @@ class CorrectionPromptService {
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
-          content: const Text(
-            'This board is unsatisfiable from an earlier move. Use 1 correction?',
-          ),
+          content: Text(UiStrings.correctionPromptMessage(context)),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(UiStrings.dialogActionCancel(context)),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Use correction'),
+              child: Text(UiStrings.dialogActionUseCorrection(context)),
             ),
           ],
         );

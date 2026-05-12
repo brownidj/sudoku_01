@@ -18,10 +18,11 @@ const _menuTooltip =
     'Press this to open a drawer. Use the drawer menu to change animals and style.';
 const _correctionsTooltipPrefix = 'automatic corrections available';
 const _undoTooltip =
-    'Use Undo to step back through the selections you made previously. '
-    'Undo clears each previous selection, one at a time. '
-    'You can also do this if you run out of Corrections';
+    'Use Undo to step back and clear selections you made previously. '
+    'You can also use this if you run out of Corrections';
 const _helpSnippet = 'holding your finger';
+const _undoIconLabel = '↶';
+const _clearIconLabel = '⌫';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -36,8 +37,8 @@ void main() {
     await _startGameFromLaunch(tester, buttonLabel: 'Play');
 
     expect(find.text('Notes'), findsOneWidget);
-    expect(find.text('Undo'), findsOneWidget);
-    expect(find.text('Clear'), findsOneWidget);
+    expect(_actionButtonFinder('Undo', _undoIconLabel), findsOneWidget);
+    expect(_actionButtonFinder('Clear', _clearIconLabel), findsOneWidget);
     expect(
       find.byKey(const ValueKey<String>('content-new-game-chip')),
       findsOneWidget,
@@ -96,7 +97,7 @@ void main() {
     await tester.tap(find.text('Got it'));
     await tester.pumpAndSettle();
 
-    await tester.longPress(find.widgetWithText(OutlinedButton, 'Undo'));
+    await tester.longPress(_actionButtonFinder('Undo', _undoIconLabel));
     await tester.pumpAndSettle();
     expect(find.text(_undoTooltip), findsOneWidget);
     await tester.tap(find.text('Got it'));
@@ -145,6 +146,14 @@ void main() {
     await _startGameFromLaunch(tester, buttonLabel: 'New game');
     expect(find.text('Corrections: 3'), findsOneWidget);
   });
+}
+
+Finder _actionButtonFinder(String textLabel, String iconLabel) {
+  final textMatch = find.widgetWithText(OutlinedButton, textLabel);
+  if (textMatch.evaluate().isNotEmpty) {
+    return textMatch.first;
+  }
+  return find.widgetWithText(OutlinedButton, iconLabel).first;
 }
 
 Future<void> _launchApp(WidgetTester tester) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 enum PremiumExplainerAction { dismiss, unlock }
 
@@ -11,8 +12,8 @@ class PremiumExplainerSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final featureIntro = featureLabel == null
-        ? 'Full Version gives you the full Sudoku experience in one purchase.'
-        : '$featureLabel is available in Full Version.';
+        ? UiStrings.premiumFeatureIntroGeneric(context)
+        : UiStrings.premiumFeatureIntroNamed(context, featureLabel!);
     return SafeArea(
       child: SingleChildScrollView(
         child: Padding(
@@ -22,7 +23,7 @@ class PremiumExplainerSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Unlock Full Version',
+                UiStrings.premiumSheetTitle(context),
                 key: const ValueKey<String>('premium-sheet-title'),
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
@@ -32,18 +33,18 @@ class PremiumExplainerSheet extends StatelessWidget {
               Text(featureIntro, style: theme.textTheme.bodyLarge),
               const SizedBox(height: 12),
               Text(
-                'Full Version includes:',
+                UiStrings.premiumIncludesTitle(context),
                 style: theme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
               const SizedBox(height: 6),
-              const Text('• Hard and Nigh Impossible difficulties'),
-              const Text('• Progress tracking and personal bests'),
-              const Text('• Extra themes, sounds, and celebrations'),
+              Text(UiStrings.premiumIncludesHardDifficulties(context)),
+              Text(UiStrings.premiumIncludesProgress(context)),
+              Text(UiStrings.premiumIncludesThemesSounds(context)),
               const SizedBox(height: 12),
               Text(
-                'One-time purchase. No subscription.',
+                UiStrings.premiumOneTimePurchase(context),
                 style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 16),
@@ -55,7 +56,7 @@ class PremiumExplainerSheet extends StatelessWidget {
                     onPressed: () => Navigator.of(
                       context,
                     ).pop(PremiumExplainerAction.dismiss),
-                    child: const Text('Not now'),
+                    child: Text(UiStrings.premiumActionNotNow(context)),
                   ),
                   const SizedBox(width: 8),
                   FilledButton(
@@ -63,7 +64,7 @@ class PremiumExplainerSheet extends StatelessWidget {
                     onPressed: () => Navigator.of(
                       context,
                     ).pop(PremiumExplainerAction.unlock),
-                    child: const Text('Unlock Full Version'),
+                    child: Text(UiStrings.premiumActionUnlock(context)),
                   ),
                 ],
               ),

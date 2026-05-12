@@ -114,7 +114,11 @@ void main() {
   });
 
   test('completed puzzle metric increments once per solved puzzle', () async {
-    final prefs = FakePreferencesStore(completedPuzzles: 2);
+    final prefs = FakePreferencesStore(
+      completedPuzzles: 2,
+      playedDates: <String>[],
+      currentStreak: 0,
+    );
     final controller = SudokuController(
       preferencesStore: prefs,
       gameService: FakeGameService(),
@@ -138,11 +142,19 @@ void main() {
     await Future<void>.delayed(Duration.zero);
     expect(controller.completedPuzzles, 3);
     expect(prefs.completedPuzzles, 3);
+    expect(controller.daysPlayed, 1);
+    expect(controller.streak, 1);
+    expect(
+      controller.bestSolveTimeSecondsByDifficulty['easy'],
+      greaterThan(0),
+    );
 
     controller.onCompletePuzzleWithSolution();
     await Future<void>.delayed(Duration.zero);
     expect(controller.completedPuzzles, 3);
     expect(prefs.completedPuzzles, 3);
+    expect(controller.daysPlayed, 1);
+    expect(controller.streak, 1);
   });
 
   test('abandoning an in-progress game does not increment completed puzzles', () async {

@@ -13,25 +13,37 @@ import 'package:flutter_app/domain/types.dart';
 
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
+  String? preferredLanguageCode;
   int completedPuzzles;
+  int daysPlayed;
+  int currentStreak;
+  String? lastPlayedDate;
+  List<String> playedDates;
+  Map<String, int> bestSolveTimeSecondsByDifficulty;
   Entitlement entitlement;
 
   FakePreferencesStore({
     this.savedSession,
+    this.preferredLanguageCode,
     this.completedPuzzles = 0,
+    this.daysPlayed = 0,
+    this.currentStreak = 0,
+    this.lastPlayedDate,
+    List<String>? playedDates,
+    Map<String, int>? bestSolveTimeSecondsByDifficulty,
     this.entitlement = Entitlement.free,
-  });
+  }) : playedDates = playedDates ?? <String>[],
+       bestSolveTimeSecondsByDifficulty =
+           bestSolveTimeSecondsByDifficulty ?? <String, int>{};
 
   @override
-  Future<AppPreferences> load() async {
-    return const AppPreferences(
-      animalStyle: null,
-      contentMode: null,
-      styleName: null,
-      difficulty: null,
-      puzzleMode: null,
-    );
-  }
+  Future<AppPreferences> load() async => const AppPreferences(
+    animalStyle: null,
+    contentMode: null,
+    styleName: null,
+    difficulty: null,
+    puzzleMode: null,
+  );
 
   @override
   Future<void> saveAnimalStyle(String value) async {}
@@ -52,25 +64,71 @@ class FakePreferencesStore extends PreferencesStore {
   Future<String?> loadGameSession() async => savedSession;
 
   @override
-  Future<void> saveGameSession(String value) async {
-    savedSession = value;
-  }
+  Future<void> saveGameSession(String value) async => savedSession = value;
 
   @override
   Future<int> loadCompletedPuzzles() async => completedPuzzles;
 
   @override
-  Future<void> saveCompletedPuzzles(int value) async {
-    completedPuzzles = value;
+  Future<void> saveCompletedPuzzles(int value) async => completedPuzzles = value;
+
+  @override
+  Future<int> loadDaysPlayed() async => daysPlayed;
+
+  @override
+  Future<void> saveDaysPlayed(int value) async => daysPlayed = value;
+
+  @override
+  Future<int> loadCurrentStreak() async => currentStreak;
+
+  @override
+  Future<void> saveCurrentStreak(int value) async => currentStreak = value;
+
+  @override
+  Future<String?> loadLastPlayedDate() async => lastPlayedDate;
+
+  @override
+  Future<void> saveLastPlayedDate(String value) async => lastPlayedDate = value;
+
+  @override
+  Future<List<String>> loadPlayedDates() async => List<String>.from(playedDates);
+
+  @override
+  Future<void> savePlayedDates(List<String> value) async => playedDates = List<String>.from(value);
+
+  @override
+  Future<int?> loadBestSolveTimeSeconds(String difficulty) async =>
+      bestSolveTimeSecondsByDifficulty[difficulty];
+
+  @override
+  Future<void> saveBestSolveTimeSeconds(String difficulty, int value) async =>
+      bestSolveTimeSecondsByDifficulty[difficulty] = value;
+
+  @override
+  Future<void> clearProgressMetrics() async {
+    completedPuzzles = 0;
+    daysPlayed = 0;
+    currentStreak = 0;
+    lastPlayedDate = null;
+    playedDates = <String>[];
+    bestSolveTimeSecondsByDifficulty = <String, int>{};
   }
 
   @override
   Future<Entitlement> loadEntitlement() async => entitlement;
 
   @override
-  Future<void> saveEntitlement(Entitlement value) async {
-    entitlement = value;
-  }
+  Future<void> saveEntitlement(Entitlement value) async => entitlement = value;
+
+  @override
+  Future<String?> loadPreferredLanguageCode() async => preferredLanguageCode;
+
+  @override
+  Future<void> savePreferredLanguageCode(String languageCode) async =>
+      preferredLanguageCode = languageCode;
+
+  @override
+  Future<void> clearPreferredLanguageCode() async => preferredLanguageCode = null;
 }
 
 class FakeSettingsController extends SettingsController {
@@ -83,19 +141,13 @@ class FakeSettingsController extends SettingsController {
   SettingsState get state => _state;
 
   @override
-  Future<void> load() async {
-    loadCalls += 1;
-  }
+  Future<void> load() async => loadCalls += 1;
 
   @override
-  void toggleNotesMode() {
-    _state = _state.copyWith(notesMode: !_state.notesMode);
-  }
+  void toggleNotesMode() => _state = _state.copyWith(notesMode: !_state.notesMode);
 
   @override
-  void setNotesMode(bool enabled) {
-    _state = _state.copyWith(notesMode: enabled);
-  }
+  void setNotesMode(bool enabled) => _state = _state.copyWith(notesMode: enabled);
 
   @override
   bool setDifficulty(String difficulty) {
@@ -104,34 +156,22 @@ class FakeSettingsController extends SettingsController {
   }
 
   @override
-  void setDifficultyLocked(bool locked) {
-    _state = _state.copyWith(canChangeDifficulty: !locked);
-  }
+  void setDifficultyLocked(bool locked) => _state = _state.copyWith(canChangeDifficulty: !locked);
 
   @override
-  void setPuzzleModeLocked(bool locked) {
-    _state = _state.copyWith(canChangePuzzleMode: !locked);
-  }
+  void setPuzzleModeLocked(bool locked) => _state = _state.copyWith(canChangePuzzleMode: !locked);
 
   @override
-  void setStyleName(String styleName) {
-    _state = _state.copyWith(styleName: styleName);
-  }
+  void setStyleName(String styleName) => _state = _state.copyWith(styleName: styleName);
 
   @override
-  void setContentMode(String mode) {
-    _state = _state.copyWith(contentMode: mode);
-  }
+  void setContentMode(String mode) => _state = _state.copyWith(contentMode: mode);
 
   @override
-  void setAnimalStyle(String style) {
-    _state = _state.copyWith(animalStyle: style);
-  }
+  void setAnimalStyle(String style) => _state = _state.copyWith(animalStyle: style);
 
   @override
-  void setPuzzleMode(String mode) {
-    _state = _state.copyWith(puzzleMode: mode);
-  }
+  void setPuzzleMode(String mode) => _state = _state.copyWith(puzzleMode: mode);
 }
 
 class FakeGameService extends GameService {
@@ -192,9 +232,7 @@ class FakeBillingService implements BillingService {
   @override
   String? get lastActionDiagnostics => diagnostics;
 
-  void emit(BillingPurchaseUpdate update) {
-    _updatesController.add(update);
-  }
+  void emit(BillingPurchaseUpdate update) => _updatesController.add(update);
 
   @override
   Future<bool> isAvailable() async => available;

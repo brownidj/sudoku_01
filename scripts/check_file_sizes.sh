@@ -15,6 +15,7 @@ rg --files "$ROOT_DIR" \
   | rg -v "^${ROOT_DIR}/ios/Runner/Base.lproj/" \
   | rg -v "^${ROOT_DIR}/macos/Runner/Assets.xcassets/" \
   | rg -v "^${ROOT_DIR}/macos/Runner/Base.lproj/" \
+  | rg -v "^${ROOT_DIR}/lib/l10n/app_localizations.*\\.dart$" \
   | rg -v "^${ROOT_DIR}/pubspec.lock$" \
   | rg -v "^${ROOT_DIR}/ios/Runner.xcodeproj/project.pbxproj$" \
   | rg -v "^${ROOT_DIR}/macos/Runner.xcodeproj/project.pbxproj$" \

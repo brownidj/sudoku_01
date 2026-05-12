@@ -1,0 +1,245 @@
+{
+  "@@locale": "it",
+  "appTitle": "Sudoku",
+  "actionUndo": "Annulla",
+  "actionClear": "Cancella",
+  "actionNotes": "Note",
+  "actionNewGame": "Nuova partita",
+  "actionPlay": "Gioca",
+  "actionResume": "Riprendi",
+  "actionStartNewGame": "Nuova partita",
+  "actionPleaseWait": "Attendere...",
+  "tooltipNewGame": "Premi qui per iniziare una nuova partita.",
+  "tooltipUndo": "Usa Annulla per tornare indietro e cancellare le selezioni precedenti. Puoi usarlo anche se hai finito le Correzioni.",
+  "tooltipClear": "Cancella la casella attualmente selezionata. Puoi cancellare solo le caselle che hai compilato tu.",
+  "tooltipNotes": "Le Note ti permettono di aggiungere piccoli promemoria sulle possibilità quando non sei sicuro. Le opzioni sono mostrate in verde. Premi di nuovo Note per disattivarle.",
+  "tooltipDifficulty": "Scegli il livello di sfida che ti consente di fare progressi regolari.",
+  "labelCorrections": "Correzioni: {count}",
+  "@labelCorrections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipCorrections": "Hai {limit} correzioni automatiche disponibili per questo puzzle. Se una mossa precedente blocca i tuoi progressi, puoi usare una correzione per continuare. Se finiscono, usa Annulla.",
+  "@tooltipCorrections": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "difficultyEasy": "FACILE",
+  "difficultyMedium": "UN PO' PIÙ DIFFICILE",
+  "difficultyHard": "MOLTO PIÙ DIFFICILE",
+  "difficultyVeryHard": "QUASI IMPOSSIBILE",
+  "helpTitle": "Aiuto",
+  "helpDismiss": "OK",
+  "helpBody": "Nella schermata di gioco ci sono ***alcuni elementi*** che possono sembrare un po’ misteriosi.\n\nProva a **tenere premuto** per un paio di secondi per vedere una spiegazione.\n\nPer esempio, **Correzioni** mostra quante correzioni automatiche ti restano. Se una mossa precedente porta a una situazione senza opzioni valide, Correzioni può sistemare automaticamente quel vicolo cieco e permetterti di continuare.\n\nUsa **Annulla** per tornare indietro sulle selezioni fatte in precedenza, una alla volta. Puoi farlo anche se hai esaurito le Correzioni.",
+  "startInstruction": "Per iniziare, seleziona una casella in cui vuoi aggiungere un’icona.\n",
+  "launchTitlePrefix": "The Angry Grannies presentano",
+  "launchTitle": "SuDoKu Playtime",
+  "launchSubtitle": "Prenditi il tuo tempo, goditi ogni puzzle e tieni la mente allenata.",
+  "launchErrorOpenGame": "Impossibile aprire la partita. Riprova.",
+  "launchHintsTitle": "Suggerimenti",
+  "tooltipPrevHint": "Suggerimento precedente",
+  "tooltipNextHint": "Suggerimento successivo",
+  "launchHint1": "Le Note ti permettono di salvare promemoria delle possibilità quando non sei sicuro. Le opzioni appaiono in verde. Premi di nuovo Note per disattivarle.",
+  "launchHint2": "Usa una pressione prolungata (tieni premuto per un paio di secondi) per capire a cosa servono alcuni elementi. Provala anche su una casella già compilata.",
+  "launchHint3": "Se la tua scelta rende rosa due o più caselle, c’è un errore in qualche mossa precedente. Hai un numero limitato di auto-correzioni.",
+  "launchHint4": "Cambiare difficoltà durante una partita avvia una nuova partita.",
+  "launchHint5": "Premi Aiuto per vedere informazioni su come giocare.",
+  "launchHint6": "Premendo ☰ (in alto a destra) apri il menu con varie impostazioni.",
+  "launchHint7": "Se i suoni ti danno fastidio o vuoi giocare in silenzio, puoi disattivare l’audio dal menu (☰).",
+  "launchHint8": "Premi una volta l’icona della musica per spegnere la musica di sottofondo, oppure due volte rapidamente per riaccenderla.",
+  "launchHint9": "Il dado avvia una nuova partita.",
+  "launchHint10": "Se hai acquistato la versione completa e non appare dopo un aggiornamento, usa « Ripristina acquisti » dal menu.",
+  "dialogActionCancel": "Annulla",
+  "dialogActionStartNewGame": "Avvia nuova partita",
+  "dialogActionUseCorrection": "Usa correzione",
+  "dialogUnlockSettingsTitle": "Sbloccare le impostazioni?",
+  "dialogUnlockSettingsMessage": "Sbloccare la difficoltà avvierà una nuova partita e resetterà questa griglia. Continuare?",
+  "dialogStartNewGameTitle": "Avviare una nuova partita?",
+  "dialogStartNewGameForDifficulty": "Cambiare la difficoltà in {difficultyLabel} e avviare una nuova partita?",
+  "@dialogStartNewGameForDifficulty": {
+    "placeholders": {
+      "difficultyLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogStartNewGameResetBoard": "Avviare una nuova partita e resettare questa griglia?",
+  "labelLockedSettingsTitle": "Impostazioni griglia bloccate",
+  "labelLockedSettingsMessage": "La difficoltà è bloccata durante una partita. Per sbloccarla, tocca due volte l’icona del lucchetto oppure avvia una 'Nuova partita'.",
+  "progressSheetTitle": "I tuoi progressi",
+  "progressSheetBody": "Puzzle completati: {completedPuzzles}\nGiorni giocati: in arrivo\nSerie: in arrivo",
+  "@progressSheetBody": {
+    "placeholders": {
+      "completedPuzzles": {
+        "type": "int"
+      }
+    }
+  },
+  "progressCompletedPuzzles": "Puzzle completati: {count}",
+  "@progressCompletedPuzzles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressDaysPlayed": "Giorni giocati: {count}",
+  "@progressDaysPlayed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStreak": "Serie: {count}",
+  "@progressStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressBestSolveTimesTitle": "Migliori tempi:",
+  "progressBestSolveTimeRow": "• {difficulty}: {time}",
+  "@progressBestSolveTimeRow": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progressBestSolveTimeMissing": "--",
+  "progressResetAction": "Reimposta",
+  "progressResetDialogTitle": "Reimpostare i progressi?",
+  "progressResetDialogMessage": "I tuoi dati «Come sto andando?» andranno persi.",
+  "dialogActionOk": "OK",
+  "audioUnavailableTile": "L’audio non è ancora disponibile per questa casella.",
+  "correctionPromptMessage": "Questa griglia è irrisolvibile a causa di una mossa precedente. Usare 1 correzione?",
+  "premiumFeatureIntroGeneric": "La versione completa offre l’esperienza Sudoku completa con un unico acquisto.",
+  "premiumFeatureIntroNamed": "{featureLabel} è disponibile nella versione completa.",
+  "@premiumFeatureIntroNamed": {
+    "placeholders": {
+      "featureLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSheetTitle": "Sblocca versione completa",
+  "premiumIncludesTitle": "La versione completa include:",
+  "premiumIncludesHardDifficulties": "• Difficoltà Difficile e Quasi impossibile",
+  "premiumIncludesProgress": "• Monitoraggio progressi e record personali",
+  "premiumIncludesThemesSounds": "• Temi, suoni e animazioni extra",
+  "premiumOneTimePurchase": "Acquisto una tantum. Nessun abbonamento.",
+  "premiumActionNotNow": "Non ora",
+  "premiumActionUnlock": "Sblocca versione completa",
+  "purchaseStartedMessage": "Conferma l’acquisto nella finestra dell’App Store per sbloccare la versione completa.",
+  "restoreStartedMessage": "Ripristino avviato. Gli acquisti ricompariranno a breve.",
+  "billingUnavailable": "Gli acquisti non sono disponibili su questo dispositivo al momento.",
+  "billingProductNotConfigured": "La versione completa non è ancora configurata. Riprova più tardi.",
+  "billingProductUnavailable": "Impossibile caricare i dettagli del prodotto versione completa. Riprova.",
+  "billingFailed": "Operazione non riuscita. Riprova.",
+  "drawerTitle": "SuDoKu Playtime",
+  "drawerPuzzleStyleTitle": "Stile puzzle",
+  "styleModern": "Moderno",
+  "styleClassic": "Classico",
+  "styleHighContrast": "Alto contrasto",
+  "drawerAudioTitle": "Audio",
+  "labelOn": "Attivo",
+  "labelOff": "Disattivo",
+  "drawerBackgroundMusicTitle": "Musica di sottofondo",
+  "drawerBackgroundMusicSubtitle": "Suoni per gli amanti del Sudoku",
+  "drawerVolumeTitle": "Volume",
+  "drawerVersionTitle": "Version",
+  "drawerVersionFull": "Completa",
+  "drawerVersionFree": "Gratis",
+  "drawerPremiumProgressTitle": "Tracker progressi 🔒",
+  "drawerPremiumProgressSubtitle": "Tieni traccia dei puzzle completati e dei traguardi.",
+  "drawerPremiumThemesTitle": "Temi extra 🔒",
+  "drawerPremiumThemesSubtitle": "Sblocca stili visivi aggiuntivi.",
+  "drawerPremiumSoundsTitle": "Suoni e animazioni 🔒",
+  "drawerPremiumSoundsSubtitle": "Sblocca suoni e animazioni extra.",
+  "drawerUnlockFullVersion": "Sblocca versione completa",
+  "drawerRestorePurchases": "Ripristina acquisti",
+  "drawerAboutChip": "Info",
+  "drawerAboutTitle": "Info",
+  "drawerAboutMessage": "Version: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy",
+  "@drawerAboutMessage": {
+    "placeholders": {
+      "versionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "drawerDebugTitle": "Debug",
+  "drawerDebugLoadCorrectionTitle": "Carica scenario correzione",
+  "drawerDebugLoadCorrectionSubtitle": "Controllo temporaneo per test di recupero assistito.",
+  "drawerDebugLoadExhaustedTitle": "Carica scenario correzioni esaurite",
+  "drawerDebugLoadExhaustedSubtitle": "Controllo temporaneo per test di recupero con solo Annulla.",
+  "drawerDebugResetEntitlementTitle": "Reimposta versione completa (Debug)",
+  "drawerDebugResetEntitlementSubtitle": "Imposta il diritto locale su Gratis per ritestare gli acquisti.",
+  "contentModeAnimals": "Animali (facile)",
+  "contentModeInstruments": "Strumenti (impegnativo)",
+  "contentModeButterflies": "Farfalle (carino)",
+  "contentModeOpera": "Opera (particolare)",
+  "contentModeNumbers": "Numeri (classico)",
+  "topControlsProgress": "Come sto andando?",
+  "topControlsHelp": "Aiuto",
+  "infoSheetDismiss": "Ho capito",
+  "drawerLanguageTitle": "Lingua",
+  "drawerLanguageReset": "Ripristina lingua di sistema",
+  "languageEnglish": "Inglese",
+  "languageJapanese": "Giapponese",
+  "languageGerman": "Tedesco",
+  "languageFrench": "Francese",
+  "languageItalian": "Italiano",
+  "languagePortuguese": "Portoghese",
+  "languageHindi": "Hindi",
+  "languageSpanish": "Spagnolo",
+  "statusUnknownDifficulty": "Difficoltà sconosciuta: {difficulty}",
+  "@statusUnknownDifficulty": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDifficultyChangeBlocked": "Termina o avvia una nuova partita prima di cambiare difficoltà",
+  "statusDifficultyPremiumOnly": "Questa difficoltà è disponibile nella versione completa.",
+  "statusPuzzleModeUnique": "Modalità puzzle: unica",
+  "statusSessionRestored": "Sessione ripristinata",
+  "statusCellSelected": "Casella selezionata",
+  "statusEntitlementRefreshed": "Diritto aggiornato",
+  "statusEntitlementUpdated": "Diritto modificato",
+  "statusCheckComplete": "Controllo completato",
+  "statusSolution": "Soluzione",
+  "statusSolved": "Risolto.",
+  "statusContradictionUseUndo": "Contraddizione rilevata. Usa Annulla per recuperare.",
+  "statusNewGame": "Nuova partita ({difficulty}): {puzzleId}",
+  "@statusNewGame": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "puzzleId": {
+        "type": "String"
+      }
+    }
+  },
+  "statusTilesCorrected": "{count} casella/e corretta/e.",
+  "@statusTilesCorrected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

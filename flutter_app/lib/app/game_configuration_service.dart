@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/l10n/l10n_lookup.dart';
 
 class GameConfigurationService {
   final PremiumPolicyService _premiumPolicyService;
@@ -19,18 +20,18 @@ class GameConfigurationService {
   }) {
     final nextDifficulty = difficulty.trim().toLowerCase();
     if (!['easy', 'medium', 'hard', 'very_hard'].contains(nextDifficulty)) {
-      render('Unknown difficulty: $difficulty');
+      render(appL10nCurrent().statusUnknownDifficulty(difficulty));
       return;
     }
     if (!settings.state.canChangeDifficulty) {
-      render('Finish or start a new game before changing difficulty');
+      render(appL10nCurrent().statusDifficultyChangeBlocked);
       return;
     }
     if (!_premiumPolicyService.isDifficultyUnlocked(
       nextDifficulty,
       entitlement,
     )) {
-      render('This difficulty is available in Full Version.');
+      render(appL10nCurrent().statusDifficultyPremiumOnly);
       return;
     }
     if (!settings.setDifficulty(nextDifficulty)) {
@@ -47,6 +48,6 @@ class GameConfigurationService {
     required ValueChanged<String> render,
   }) {
     settings.setPuzzleMode('unique');
-    render('Puzzle mode: unique');
+    render(appL10nCurrent().statusPuzzleModeUnique);
   }
 }

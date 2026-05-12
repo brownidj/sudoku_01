@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 class SudokuNewGameConfirmationService {
   const SudokuNewGameConfirmationService();
@@ -18,11 +19,11 @@ class SudokuNewGameConfirmationService {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
+            child: Text(UiStrings.dialogActionCancel(context)),
           ),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Start New Game'),
+            child: Text(UiStrings.dialogActionStartNewGame(context)),
           ),
         ],
       ),

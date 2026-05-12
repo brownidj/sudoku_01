@@ -13,10 +13,21 @@ class PreferencesStore {
   static const keyPuzzleMode = 'puzzle_mode';
   static const keyGameSession = 'game_session';
   static const keyCompletedPuzzles = 'completed_puzzles';
+  static const keyDaysPlayed = 'days_played';
+  static const keyCurrentStreak = 'current_streak';
+  static const keyLastPlayedDate = 'last_played_date';
+  static const keyPlayedDates = 'played_dates';
+  static const keyBestSolveTimeEasySeconds = 'best_solve_time_easy_seconds';
+  static const keyBestSolveTimeMediumSeconds =
+      'best_solve_time_medium_seconds';
+  static const keyBestSolveTimeHardSeconds = 'best_solve_time_hard_seconds';
+  static const keyBestSolveTimeVeryHardSeconds =
+      'best_solve_time_very_hard_seconds';
   static const keyEntitlement = 'entitlement';
   static const keyAudioEnabled = 'audio_enabled';
   static const keyBackgroundMusicEnabled = 'background_music_enabled';
   static const keyAudioVolume = 'audio_volume';
+  static const keyPreferredLanguageCode = 'preferred_language_code';
 
   Future<AppPreferences> load() async {
     final prefs = await SharedPreferences.getInstance();
@@ -79,6 +90,74 @@ class PreferencesStore {
     await prefs.setInt(keyCompletedPuzzles, value);
   }
 
+  Future<void> clearProgressMetrics() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(keyCompletedPuzzles);
+    await prefs.remove(keyDaysPlayed);
+    await prefs.remove(keyCurrentStreak);
+    await prefs.remove(keyLastPlayedDate);
+    await prefs.remove(keyPlayedDates);
+    await prefs.remove(keyBestSolveTimeEasySeconds);
+    await prefs.remove(keyBestSolveTimeMediumSeconds);
+    await prefs.remove(keyBestSolveTimeHardSeconds);
+    await prefs.remove(keyBestSolveTimeVeryHardSeconds);
+  }
+
+  Future<int> loadDaysPlayed() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(keyDaysPlayed) ?? 0;
+  }
+
+  Future<void> saveDaysPlayed(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(keyDaysPlayed, value);
+  }
+
+  Future<int> loadCurrentStreak() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt(keyCurrentStreak) ?? 0;
+  }
+
+  Future<void> saveCurrentStreak(int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(keyCurrentStreak, value);
+  }
+
+  Future<String?> loadLastPlayedDate() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keyLastPlayedDate);
+  }
+
+  Future<void> saveLastPlayedDate(String value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(keyLastPlayedDate, value);
+  }
+
+  Future<List<String>> loadPlayedDates() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(keyPlayedDates) ?? const <String>[];
+  }
+
+  Future<void> savePlayedDates(List<String> value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(keyPlayedDates, value);
+  }
+
+  Future<int?> loadBestSolveTimeSeconds(String difficulty) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = _bestSolveTimeKeyForDifficulty(difficulty);
+    return key == null ? null : prefs.getInt(key);
+  }
+
+  Future<void> saveBestSolveTimeSeconds(String difficulty, int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = _bestSolveTimeKeyForDifficulty(difficulty);
+    if (key == null) {
+      return;
+    }
+    await prefs.setInt(key, value);
+  }
+
   Future<Entitlement> loadEntitlement() async {
     final prefs = await SharedPreferences.getInstance();
     final rawValue = prefs.getString(keyEntitlement);
@@ -117,7 +196,7 @@ class PreferencesStore {
     final prefs = await SharedPreferences.getInstance();
     final stored = prefs.getDouble(keyAudioVolume);
     if (stored == null) {
-      return 0.1;
+      return 0.4;
     }
     return stored.clamp(0.0, 1.0);
   }
@@ -125,6 +204,21 @@ class PreferencesStore {
   Future<void> saveAudioVolume(double value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(keyAudioVolume, value.clamp(0.0, 1.0));
+  }
+
+  Future<String?> loadPreferredLanguageCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(keyPreferredLanguageCode);
+  }
+
+  Future<void> savePreferredLanguageCode(String languageCode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(keyPreferredLanguageCode, languageCode);
+  }
+
+  Future<void> clearPreferredLanguageCode() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(keyPreferredLanguageCode);
   }
 
   Entitlement _parseEntitlement(String? rawValue) {
@@ -137,6 +231,21 @@ class PreferencesStore {
       }
     }
     return Entitlement.free;
+  }
+
+  String? _bestSolveTimeKeyForDifficulty(String difficulty) {
+    switch (difficulty.trim().toLowerCase()) {
+      case 'easy':
+        return keyBestSolveTimeEasySeconds;
+      case 'medium':
+        return keyBestSolveTimeMediumSeconds;
+      case 'hard':
+        return keyBestSolveTimeHardSeconds;
+      case 'very_hard':
+        return keyBestSolveTimeVeryHardSeconds;
+      default:
+        return null;
+    }
   }
 }
 

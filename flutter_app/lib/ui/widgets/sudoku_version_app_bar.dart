@@ -39,7 +39,7 @@ class SudokuVersionAppBar extends StatefulWidget
 
 class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
   static const String _musicControlsTooltip =
-      'Press once to turn the background music off or twice, in quick succession to turn it on. Previous and Next retreat or advance the background music tune.';
+      'Press once to turn the background music off, or, twice, in quick succession to turn it on. To play a different background tune use < or >.';
   Timer? _longPressTimer;
   bool _versionPressActive = false;
   bool _longPressTriggered = false;

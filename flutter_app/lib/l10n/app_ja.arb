@@ -1,0 +1,245 @@
+{
+  "@@locale": "ja",
+  "appTitle": "数独",
+  "actionUndo": "戻す",
+  "actionClear": "消去",
+  "actionNotes": "メモ",
+  "actionNewGame": "新しいゲーム",
+  "actionPlay": "プレイ",
+  "actionResume": "再開",
+  "actionStartNewGame": "新しいゲーム",
+  "actionPleaseWait": "しばらくお待ちください...",
+  "tooltipNewGame": "新しいゲームを開始します。",
+  "tooltipUndo": "以前の選択を取り消して戻ります。修正がなくなった場合にも使えます。",
+  "tooltipClear": "現在選択中のタイルをクリアします。自分で入力したタイルのみクリアできます。",
+  "tooltipNotes": "メモは、確信がないときに候補を残すために使います。候補は緑で表示されます。もう一度メモを押すと解除されます。",
+  "tooltipDifficulty": "毎日のペースに合った難易度を選んでください。",
+  "labelCorrections": "修正: {count}",
+  "@labelCorrections": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipCorrections": "このパズルでは自動修正を {limit} 回使えます。以前の手で進行不能になった場合、修正で続行できます。修正がなくなったら Undo を使ってください。",
+  "@tooltipCorrections": {
+    "placeholders": {
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "difficultyEasy": "やさしい",
+  "difficultyMedium": "少し難しい",
+  "difficultyHard": "かなり難しい",
+  "difficultyVeryHard": "超難問",
+  "helpTitle": "ヘルプ",
+  "helpDismiss": "OK",
+  "helpBody": "ゲーム画面には、少し分かりにくい項目があります。\n\nそれらを**長押し**すると説明が表示されます。\n\n例えば **修正** は、自動修正の残り回数です。以前の手で有効な選択肢がなくなった場合、修正が行き詰まりを自動で修正して、続けて遊べます。\n\n**Undo** を使うと、以前の選択を1つずつ取り消せます。修正がなくなったときにも使えます。",
+  "startInstruction": "開始するには、アイコンを入れたいマスを選んでください。\n",
+  "launchTitlePrefix": "The Angry Grannies がお届け",
+  "launchTitle": "SuDoKu Playtime",
+  "launchSubtitle": "あせらずに、パズルを楽しみながら頭を活性化しましょう。",
+  "launchErrorOpenGame": "ゲームを開けませんでした。もう一度お試しください。",
+  "launchHintsTitle": "ヒント",
+  "tooltipPrevHint": "前のヒント",
+  "tooltipNextHint": "次のヒント",
+  "launchHint1": "メモは、確信がないときに候補を残すために使います。候補は緑で表示されます。もう一度メモを押すと解除されます。",
+  "launchHint2": "機能の説明を見るには、数秒間長押ししてください。値が入ったタイルでも試してみてください。",
+  "launchHint3": "選択によってピンクのタイルが2つ以上出る場合、どこかでミスしています。自動修正の回数には制限があります。",
+  "launchHint4": "ゲーム中に難易度を変更すると、新しいゲームが始まります。",
+  "launchHint5": "遊び方の情報は Help を押してください。",
+  "launchHint6": "右上の ☰ を押すと、各種設定メニューを開けます。",
+  "launchHint7": "音が気になる場合は、ドロワー（☰）で Audio をオフにできます。",
+  "launchHint8": "音楽アイコンを1回押すとBGMオフ、すばやく2回押すとオンになります。",
+  "launchHint9": "サイコロで新しいゲームを開始します。",
+  "launchHint10": "フルバージョンを購入済みなのにアップデート後に反映されない場合は、メニューの「購入を復元」を使ってください。",
+  "dialogActionCancel": "キャンセル",
+  "dialogActionStartNewGame": "新しいゲームを開始",
+  "dialogActionUseCorrection": "修正を使う",
+  "dialogUnlockSettingsTitle": "設定を解除しますか？",
+  "dialogUnlockSettingsMessage": "難易度のロック解除には新しいゲームの開始と盤面リセットが必要です。続行しますか？",
+  "dialogStartNewGameTitle": "新しいゲームを開始しますか？",
+  "dialogStartNewGameForDifficulty": "難易度を {difficultyLabel} に変更して新しいゲームを開始しますか？",
+  "@dialogStartNewGameForDifficulty": {
+    "placeholders": {
+      "difficultyLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogStartNewGameResetBoard": "新しいゲームを開始してこの盤面をリセットしますか？",
+  "labelLockedSettingsTitle": "盤面設定はロック中です",
+  "labelLockedSettingsMessage": "ゲーム中は難易度がロックされます。解除するにはロックアイコンをダブルタップするか「New Game」を開始してください。",
+  "progressSheetTitle": "進行状況",
+  "progressSheetBody": "完了したパズル: {completedPuzzles}\nプレイ日数: 近日対応\n連続日数: 近日対応",
+  "@progressSheetBody": {
+    "placeholders": {
+      "completedPuzzles": {
+        "type": "int"
+      }
+    }
+  },
+  "progressCompletedPuzzles": "完了したパズル: {count}",
+  "@progressCompletedPuzzles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressDaysPlayed": "プレイ日数: {count}",
+  "@progressDaysPlayed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressStreak": "連続日数: {count}",
+  "@progressStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "progressBestSolveTimesTitle": "ベストタイム:",
+  "progressBestSolveTimeRow": "• {difficulty}: {time}",
+  "@progressBestSolveTimeRow": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "progressBestSolveTimeMissing": "--",
+  "progressResetAction": "リセット",
+  "progressResetDialogTitle": "進行状況をリセットしますか？",
+  "progressResetDialogMessage": "「進み具合は？」のデータは失われます。",
+  "dialogActionOk": "OK",
+  "audioUnavailableTile": "このタイルの音声はまだ利用できません。",
+  "correctionPromptMessage": "以前の手によりこの盤面は解けません。修正を1回使いますか？",
+  "premiumFeatureIntroGeneric": "Full Version を購入すると、数独の全機能を一度の購入で利用できます。",
+  "premiumFeatureIntroNamed": "{featureLabel} は Full Version で利用できます。",
+  "@premiumFeatureIntroNamed": {
+    "placeholders": {
+      "featureLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "premiumSheetTitle": "Full Version を解除",
+  "premiumIncludesTitle": "Full Version に含まれる内容:",
+  "premiumIncludesHardDifficulties": "• Hard / Nigh Impossible の難易度",
+  "premiumIncludesProgress": "• 進捗トラッキングと自己ベスト",
+  "premiumIncludesThemesSounds": "• 追加テーマ・サウンド・演出",
+  "premiumOneTimePurchase": "買い切りです。サブスクリプションはありません。",
+  "premiumActionNotNow": "今はしない",
+  "premiumActionUnlock": "Full Version を解除",
+  "purchaseStartedMessage": "App Store の購入ダイアログで確認すると Full Version が解除されます。",
+  "restoreStartedMessage": "復元を開始しました。購入済み項目はまもなく再表示されます。",
+  "billingUnavailable": "この端末では現在購入機能を利用できません。",
+  "billingProductNotConfigured": "Full Version はまだ設定されていません。後でもう一度お試しください。",
+  "billingProductUnavailable": "Full Version の商品情報を取得できませんでした。もう一度お試しください。",
+  "billingFailed": "処理に失敗しました。もう一度お試しください。",
+  "drawerTitle": "SuDoKu Playtime",
+  "drawerPuzzleStyleTitle": "パズルスタイル",
+  "styleModern": "モダン",
+  "styleClassic": "クラシック",
+  "styleHighContrast": "ハイコントラスト",
+  "drawerAudioTitle": "オーディオ",
+  "labelOn": "オン",
+  "labelOff": "オフ",
+  "drawerBackgroundMusicTitle": "BGM",
+  "drawerBackgroundMusicSubtitle": "SuDoKu が好きな人のためのサウンド",
+  "drawerVolumeTitle": "音量",
+  "drawerVersionTitle": "バージョン",
+  "drawerVersionFull": "フル",
+  "drawerVersionFree": "無料",
+  "drawerPremiumProgressTitle": "進捗トラッカー 🔒",
+  "drawerPremiumProgressSubtitle": "完了したパズルとマイルストーンを追跡します。",
+  "drawerPremiumThemesTitle": "追加テーマ 🔒",
+  "drawerPremiumThemesSubtitle": "追加の見た目スタイルを解除します。",
+  "drawerPremiumSoundsTitle": "サウンドと演出 🔒",
+  "drawerPremiumSoundsSubtitle": "追加サウンドと演出を解除します。",
+  "drawerUnlockFullVersion": "Full Version を解除",
+  "drawerRestorePurchases": "購入を復元",
+  "drawerAboutChip": "このアプリについて",
+  "drawerAboutTitle": "このアプリについて",
+  "drawerAboutMessage": "バージョン: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy",
+  "@drawerAboutMessage": {
+    "placeholders": {
+      "versionLabel": {
+        "type": "String"
+      }
+    }
+  },
+  "drawerDebugTitle": "デバッグ",
+  "drawerDebugLoadCorrectionTitle": "修正シナリオを読み込む",
+  "drawerDebugLoadCorrectionSubtitle": "補助回復テスト用の一時コントロールです。",
+  "drawerDebugLoadExhaustedTitle": "修正枯渇シナリオを読み込む",
+  "drawerDebugLoadExhaustedSubtitle": "Undo のみ回復テスト用の一時コントロールです。",
+  "drawerDebugResetEntitlementTitle": "Full Version をリセット（デバッグ）",
+  "drawerDebugResetEntitlementSubtitle": "購入再テスト用にローカル権限を Free に戻します。",
+  "contentModeAnimals": "動物（やさしい）",
+  "contentModeInstruments": "楽器（やや難しい）",
+  "contentModeButterflies": "蝶（きれい）",
+  "contentModeOpera": "オペラ（独特）",
+  "contentModeNumbers": "数字（クラシック）",
+  "topControlsProgress": "進み具合は？",
+  "topControlsHelp": "ヘルプ",
+  "infoSheetDismiss": "閉じる",
+  "drawerLanguageTitle": "言語",
+  "drawerLanguageReset": "システム言語にリセット",
+  "languageEnglish": "英語",
+  "languageJapanese": "日本語",
+  "languageGerman": "ドイツ語",
+  "languageFrench": "フランス語",
+  "languageItalian": "イタリア語",
+  "languagePortuguese": "ポルトガル語",
+  "languageHindi": "ヒンディー語",
+  "languageSpanish": "スペイン語",
+  "statusUnknownDifficulty": "不明な難易度です: {difficulty}",
+  "@statusUnknownDifficulty": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      }
+    }
+  },
+  "statusDifficultyChangeBlocked": "難易度を変更するには、現在のゲームを終了するか新しいゲームを開始してください",
+  "statusDifficultyPremiumOnly": "この難易度は Full Version で利用できます。",
+  "statusPuzzleModeUnique": "パズルモード: unique",
+  "statusSessionRestored": "セッションを復元しました",
+  "statusCellSelected": "マスを選択しました",
+  "statusEntitlementRefreshed": "利用権を更新しました",
+  "statusEntitlementUpdated": "利用権を更新しました",
+  "statusCheckComplete": "チェック完了",
+  "statusSolution": "解答",
+  "statusSolved": "解けました。",
+  "statusContradictionUseUndo": "矛盾を検出しました。回復するには Undo を使ってください。",
+  "statusNewGame": "新しいゲーム（{difficulty}）: {puzzleId}",
+  "@statusNewGame": {
+    "placeholders": {
+      "difficulty": {
+        "type": "String"
+      },
+      "puzzleId": {
+        "type": "String"
+      }
+    }
+  },
+  "statusTilesCorrected": "{count} マスを修正しました。",
+  "@statusTilesCorrected": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
+}

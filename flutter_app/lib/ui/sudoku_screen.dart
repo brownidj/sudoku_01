@@ -44,7 +44,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   bool _debugToolsEnabled = false;
   bool _audioEnabled = false;
   bool _backgroundMusicEnabled = false;
-  double _audioVolume = 0.1;
+  double _audioVolume = 0.4;
   @override
   void initState() {
     super.initState();
@@ -173,6 +173,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
               Navigator.of(context).maybePop();
               controller.onSetEntitlement(Entitlement.free);
             },
+            selectedLanguageCode: controller.preferredLanguageCode,
+            onLanguageChanged: (languageCode) {
+              Navigator.of(context).maybePop();
+              unawaited(controller.onPreferredLanguageChanged(languageCode));
+            },
+            onResetToSystemLanguage: () {
+              Navigator.of(context).maybePop();
+              unawaited(controller.onResetPreferredLanguageToSystem());
+            },
             showDebugTools: viewModel.showDebugTools,
           ),
           body: SudokuGameContentBuilder(
@@ -217,6 +226,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
                 _flowActions.showProgressSheet(
                   context: context,
                   completedPuzzles: widget.controller.completedPuzzles,
+                  daysPlayed: widget.controller.daysPlayed,
+                  streak: widget.controller.streak,
+                  bestSolveTimeSecondsByDifficulty:
+                      widget.controller.bestSolveTimeSecondsByDifficulty,
+                  onResetProgressMetrics: widget.controller.resetProgressMetrics,
                 ),
               );
             },

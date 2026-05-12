@@ -29,10 +29,23 @@ import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/domain/types.dart';
 
 class SudokuController extends ChangeNotifier {
+  static const supportedLanguageCodes = <String>[
+    'en',
+    'ja',
+    'de',
+    'fr',
+    'it',
+    'pt',
+    'hi',
+    'es',
+  ];
+
+  late final PreferencesStore _prefs;
   late final GameController _gameController;
   late final UiController _uiController;
   late final PremiumPurchaseCoordinator _premiumPurchaseCoordinator;
   late final Future<void> ready;
+  String? _preferredLanguageCode;
 
   SudokuController({
     PreferencesStore? preferencesStore,
@@ -56,6 +69,7 @@ class SudokuController extends ChangeNotifier {
     PremiumPolicyService? premiumPolicyService,
   }) {
     final prefs = preferencesStore ?? PreferencesStore();
+    _prefs = prefs;
     final resolvedGameService = gameService ?? GameService();
     final resolvedGridUtils = gridUtils ?? GridUtils();
     final resolvedCheckService = checkService ?? CheckService();
@@ -146,7 +160,12 @@ class SudokuController extends ChangeNotifier {
   UiState get state => _gameController.state;
   bool get hadSavedSessionAtLaunch => _gameController.hadSavedSessionAtLaunch;
   int get completedPuzzles => _gameController.completedPuzzles;
+  int get daysPlayed => _gameController.daysPlayed;
+  int get streak => _gameController.streak;
+  Map<String, int> get bestSolveTimeSecondsByDifficulty =>
+      _gameController.bestSolveTimeSecondsByDifficulty;
   Entitlement get entitlement => _gameController.entitlement;
+  String? get preferredLanguageCode => _preferredLanguageCode;
 
   void start() => _gameController.start(notifyListeners);
   void onCellTapped(Coord coord) =>
@@ -190,12 +209,36 @@ class SudokuController extends ChangeNotifier {
   Future<void> flushGameSession() => _gameController.flushGameSession();
   Future<void> refreshEntitlement() =>
       _gameController.refreshEntitlement(notifyListeners);
+  Future<void> resetProgressMetrics() =>
+      _gameController.resetProgressMetrics(notifyListeners);
   Future<BillingActionResult> buyPremium() =>
       _premiumPurchaseCoordinator.buyPremium();
   Future<BillingActionResult> restorePurchases() =>
       _premiumPurchaseCoordinator.restorePurchases();
   String? get lastBillingDiagnostics =>
       _premiumPurchaseCoordinator.lastActionDiagnostics;
+
+  Future<void> onPreferredLanguageChanged(String languageCode) async {
+    final normalized = languageCode.trim().toLowerCase();
+    if (!supportedLanguageCodes.contains(normalized)) {
+      return;
+    }
+    if (_preferredLanguageCode == normalized) {
+      return;
+    }
+    await _prefs.savePreferredLanguageCode(normalized);
+    _preferredLanguageCode = normalized;
+    notifyListeners();
+  }
+
+  Future<void> onResetPreferredLanguageToSystem() async {
+    if (_preferredLanguageCode == null) {
+      return;
+    }
+    await _prefs.clearPreferredLanguageCode();
+    _preferredLanguageCode = null;
+    notifyListeners();
+  }
 
   @override
   void dispose() {
@@ -204,6 +247,12 @@ class SudokuController extends ChangeNotifier {
   }
 
   Future<void> _initialize() async {
+    final preferredLanguageCode = await _prefs.loadPreferredLanguageCode();
+    if (preferredLanguageCode != null &&
+        supportedLanguageCodes.contains(preferredLanguageCode)) {
+      _preferredLanguageCode = preferredLanguageCode;
+      notifyListeners();
+    }
     await _gameController.initialize(notifyListeners);
     _premiumPurchaseCoordinator.start(
       onPremiumEntitlementSynced: () =>

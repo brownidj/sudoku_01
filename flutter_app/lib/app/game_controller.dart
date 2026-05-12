@@ -20,6 +20,7 @@ import 'package:flutter_app/app/ui_state_mapper.dart';
 import 'package:flutter_app/application/game_service.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/l10n/l10n_lookup.dart';
 
 part 'game_controller_actions.dart';
 
@@ -39,6 +40,10 @@ class GameController {
   bool _hadSavedSessionAtLaunch = false;
   bool _completionRecordedForCurrentPuzzle = false;
   int _completedPuzzles = 0;
+  int _daysPlayed = 0;
+  int _streak = 0;
+  Map<String, int> _bestSolveTimeSecondsByDifficulty = <String, int>{};
+  DateTime _puzzleStartedAt = DateTime.now();
   Entitlement _entitlement = Entitlement.free;
 
   GameController({
@@ -86,6 +91,10 @@ class GameController {
   SettingsState get settingsState => _settings.state;
   bool get hadSavedSessionAtLaunch => _hadSavedSessionAtLaunch;
   int get completedPuzzles => _completedPuzzles;
+  int get daysPlayed => _daysPlayed;
+  int get streak => _streak;
+  Map<String, int> get bestSolveTimeSecondsByDifficulty =>
+      Map<String, int>.unmodifiable(_bestSolveTimeSecondsByDifficulty);
   Entitlement get entitlement => _entitlement;
   bool get gameOver => _runtime.gameOver;
   History get history => _runtime.history;
@@ -95,15 +104,22 @@ class GameController {
     _entitlement = await _entitlementSyncService.loadStartupEntitlement(
       fallback: _entitlement,
     );
-    _completedPuzzles = await _progressMetricsService.loadCompletedPuzzles();
+    final progressMetrics = await _progressMetricsService.loadMetrics();
+    _completedPuzzles = progressMetrics.completedPuzzles;
+    _daysPlayed = progressMetrics.daysPlayed;
+    _streak = progressMetrics.streak;
+    _bestSolveTimeSecondsByDifficulty = Map<String, int>.from(
+      progressMetrics.bestSolveTimeSecondsByDifficulty,
+    );
     final startup = await _startupService.initialize(_settings);
     _hadSavedSessionAtLaunch = startup.hadSavedSessionAtLaunch;
     if (startup.restoredRuntime != null) {
       _runtime = startup.restoredRuntime!;
       _completionRecordedForCurrentPuzzle = _runtime.puzzleSolved;
+      _puzzleStartedAt = DateTime.now();
     }
     if (startup.shouldNotifyListeners) {
-      _effects.render(notifyListeners, 'Session restored');
+      _effects.render(notifyListeners, appL10nCurrent().statusSessionRestored);
       return;
     }
     if (startup.shouldStartNewGame) {
@@ -124,7 +140,7 @@ class GameController {
       coord: coord,
     );
     _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
-    _effects.render(notifyListeners, 'Cell selected');
+    _effects.render(notifyListeners, appL10nCurrent().statusCellSelected);
   }
 
   void applyBoardEditOutcome(
@@ -147,6 +163,7 @@ class GameController {
 
   void start(VoidCallback notifyListeners) {
     _completionRecordedForCurrentPuzzle = false;
+    _puzzleStartedAt = DateTime.now();
     _actionService.startPuzzle(
       runtime: _runtime,
       settings: _settings,
@@ -173,7 +190,18 @@ class GameController {
       return;
     }
     _entitlement = refreshed;
-    _effects.render(notifyListeners, 'Entitlement refreshed');
+    _effects.render(notifyListeners, appL10nCurrent().statusEntitlementRefreshed);
+  }
+
+  Future<void> resetProgressMetrics(VoidCallback notifyListeners) async {
+    final metrics = await _progressMetricsService.resetMetrics();
+    _completedPuzzles = metrics.completedPuzzles;
+    _daysPlayed = metrics.daysPlayed;
+    _streak = metrics.streak;
+    _bestSolveTimeSecondsByDifficulty = Map<String, int>.from(
+      metrics.bestSolveTimeSecondsByDifficulty,
+    );
+    _effects.render(notifyListeners, '');
   }
 
   void persistCurrentSession() {
@@ -186,7 +214,7 @@ class GameController {
     }
     _entitlement = entitlement;
     unawaited(_entitlementSyncService.persistEntitlement(entitlement));
-    _effects.render(notifyListeners, 'Entitlement updated');
+    _effects.render(notifyListeners, appL10nCurrent().statusEntitlementUpdated);
   }
 
   void _recordPuzzleCompletionIfNeeded({required bool wasPuzzleSolved}) {
@@ -197,6 +225,21 @@ class GameController {
     }
     _completionRecordedForCurrentPuzzle = true;
     _completedPuzzles += 1;
-    unawaited(_progressMetricsService.saveCompletedPuzzles(_completedPuzzles));
+    final solveDuration = DateTime.now().difference(_puzzleStartedAt);
+    unawaited(
+      _progressMetricsService
+          .recordPuzzleCompletion(
+            completedPuzzles: _completedPuzzles,
+            difficulty: _settings.state.difficulty,
+            solveDuration: solveDuration,
+          )
+          .then((metrics) {
+            _daysPlayed = metrics.daysPlayed;
+            _streak = metrics.streak;
+            _bestSolveTimeSecondsByDifficulty = Map<String, int>.from(
+              metrics.bestSolveTimeSecondsByDifficulty,
+            );
+          }),
+    );
   }
 }

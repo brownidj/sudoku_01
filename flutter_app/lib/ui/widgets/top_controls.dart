@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 class TopControls extends StatelessWidget {
   final UiState state;
@@ -51,26 +52,26 @@ class TopControls extends StatelessWidget {
                     onContentModeChanged(value);
                   },
                   style: Theme.of(context).textTheme.titleSmall,
-                  items: const [
+                  items: [
                     DropdownMenuItem<String>(
                       value: 'animals',
-                      child: Text('Animals (easy)'),
+                      child: Text(UiStrings.contentModeAnimals(context)),
                     ),
                     DropdownMenuItem<String>(
                       value: 'instruments',
-                      child: Text('Instruments (tricky)'),
+                      child: Text(UiStrings.contentModeInstruments(context)),
                     ),
                     DropdownMenuItem<String>(
                       value: 'butterflies',
-                      child: Text('Butterflies (pretty!)'),
+                      child: Text(UiStrings.contentModeButterflies(context)),
                     ),
                     DropdownMenuItem<String>(
                       value: 'old_opera',
-                      child: Text('Opera (unreal!)'),
+                      child: Text(UiStrings.contentModeOpera(context)),
                     ),
                     DropdownMenuItem<String>(
                       value: 'numbers',
-                      child: Text('Numbers (old-school)'),
+                      child: Text(UiStrings.contentModeNumbers(context)),
                     ),
                   ],
                 ),
@@ -111,12 +112,12 @@ class TopControls extends StatelessWidget {
                           'top-controls-progress-chip',
                         ),
                         onPressed: onProgressPressed,
-                        label: const Text('How am I doing?'),
+                        label: Text(UiStrings.topControlsProgress(context)),
                       )
                     : ActionChip(
                         key: const ValueKey<String>('top-controls-help-chip'),
                         onPressed: onHelpPressed,
-                        label: const Text('Help'),
+                        label: Text(UiStrings.topControlsHelp(context)),
                       ),
               ),
             ],

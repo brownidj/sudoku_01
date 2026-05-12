@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class ActionBar extends StatelessWidget {
-  static const String undoTooltip =
-      'Use Undo to step back through the selections you made previously. '
-      'Undo clears each previous selection, one at a time. '
-      'You can also do this if you run out of Corrections';
-
   final UiState state;
   final VoidCallback onUndo;
   final VoidCallback onToggleNotesMode;
@@ -29,10 +25,13 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const narrowScreenBreakpoint = 390.0;
     const controlWidth = 52.0;
     const controlHeight = 52.0;
     const notesWidth = 100.0;
     const notesHeight = 65.0;
+    final useIconOnlyLabels =
+        MediaQuery.sizeOf(context).width <= narrowScreenBreakpoint;
 
     final compactStyle = OutlinedButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -40,6 +39,9 @@ class ActionBar extends StatelessWidget {
       tapTargetSize: MaterialTapTargetSize.padded,
       textStyle: const TextStyle(fontSize: 13),
     );
+    final actionLabelStyle = useIconOnlyLabels
+        ? const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)
+        : null;
     final animateNewGameDice = state.puzzleSolved || !state.canUndo;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -48,9 +50,9 @@ class ActionBar extends StatelessWidget {
         children: [
           if (showNewGame)
             Tooltip(
-              message: 'Press this to start a new game.',
+              message: UiStrings.tooltipNewGame(context),
               child: Semantics(
-                label: 'New Game',
+                label: UiStrings.actionNewGame(context),
                 key: const ValueKey<String>('content-new-game-chip'),
                 button: true,
                 child: Transform.translate(
@@ -78,46 +80,61 @@ class ActionBar extends StatelessWidget {
               ),
             ),
           if (showNewGame) const SizedBox(width: 48),
-          OutlinedButton(
-            style: compactStyle,
-            onPressed: onClear,
-            child: const Text('Clear'),
+          LongPressTooltip(
+            message: UiStrings.tooltipClear(context),
+            child: OutlinedButton(
+              style: compactStyle,
+              onPressed: onClear,
+              child: Text(
+                useIconOnlyLabels ? '⌫' : UiStrings.actionClear(context),
+                style: actionLabelStyle,
+              ),
+            ),
           ),
           const SizedBox(width: 6),
           LongPressTooltip(
-            message: undoTooltip,
+            message: UiStrings.tooltipUndo(context),
             child: OutlinedButton(
               style: compactStyle,
               onPressed: state.canUndo ? onUndo : null,
-              child: const Text('Undo'),
+              child: Text(
+                useIconOnlyLabels ? '↶' : UiStrings.actionUndo(context),
+                style: actionLabelStyle,
+              ),
             ),
           ),
           const Spacer(),
-          OutlinedButton(
-            style: compactStyle.copyWith(
-              fixedSize: const WidgetStatePropertyAll(
-                Size(notesWidth, notesHeight),
-              ),
-              minimumSize: const WidgetStatePropertyAll(
-                Size(notesWidth, notesHeight),
-              ),
-              backgroundColor: WidgetStatePropertyAll(
-                state.notesMode
-                    ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
-                    : null,
-              ),
-              side: WidgetStatePropertyAll(
-                BorderSide(
-                  color: state.notesMode
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.outline,
+          LongPressTooltip(
+            message: UiStrings.tooltipNotes(context),
+            child: OutlinedButton(
+              style: compactStyle.copyWith(
+                fixedSize: const WidgetStatePropertyAll(
+                  Size(notesWidth, notesHeight),
+                ),
+                minimumSize: const WidgetStatePropertyAll(
+                  Size(notesWidth, notesHeight),
+                ),
+                backgroundColor: WidgetStatePropertyAll(
+                  state.notesMode
+                      ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                      : null,
+                ),
+                side: WidgetStatePropertyAll(
+                  BorderSide(
+                    color: state.notesMode
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
+                  ),
                 ),
               ),
-            ),
-            onPressed: onToggleNotesMode,
-            child: Text(
-              'Notes',
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+              onPressed: onToggleNotesMode,
+              child: Text(
+                UiStrings.actionNotes(context),
+                style: const TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 15,
+                ),
+              ),
             ),
           ),
         ],

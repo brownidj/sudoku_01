@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
 
 UiState _state({bool canUndo = false, bool puzzleSolved = false}) {
@@ -67,7 +68,8 @@ void main() {
     await tester.longPress(find.text('Undo'));
     await tester.pumpAndSettle();
 
-    expect(find.text(ActionBar.undoTooltip), findsOneWidget);
+    final context = tester.element(find.byType(ActionBar));
+    expect(find.text(UiStrings.tooltipUndo(context)), findsOneWidget);
   });
 
   testWidgets('New game dice shows tooltip text', (
@@ -143,5 +145,33 @@ void main() {
     );
     final resumedProvider = resumedImage.image as AssetImage;
     expect(resumedProvider.assetName, 'assets/images/icons/dice-roll.gif');
+  });
+
+  testWidgets('narrow screens use icon-only labels for clear and undo', (
+    WidgetTester tester,
+  ) async {
+    tester.view.physicalSize = const Size(375, 812);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ActionBar(
+            state: _state(canUndo: true),
+            onUndo: () {},
+            onToggleNotesMode: () {},
+            onClear: () {},
+            onCheckOrSolution: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('⌫'), findsOneWidget);
+    expect(find.text('↶'), findsOneWidget);
+    expect(find.text('Clear'), findsNothing);
+    expect(find.text('Undo'), findsNothing);
   });
 }

@@ -22,6 +22,9 @@ class SudokuDrawer extends StatelessWidget {
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final VoidCallback? onResetEntitlementToFreeSelected;
+  final String? selectedLanguageCode;
+  final ValueChanged<String>? onLanguageChanged;
+  final VoidCallback? onResetToSystemLanguage;
   final bool showDebugTools;
   final AppVersionService appVersionService;
 
@@ -32,7 +35,7 @@ class SudokuDrawer extends StatelessWidget {
     required this.onStyleChanged,
     this.audioEnabled = true,
     this.onAudioEnabledChanged,
-    this.audioVolume = 0.1,
+    this.audioVolume = 0.4,
     this.onAudioVolumeChanged,
     this.backgroundMusicEnabled = true,
     this.onBackgroundMusicEnabledChanged,
@@ -42,6 +45,9 @@ class SudokuDrawer extends StatelessWidget {
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
     this.onResetEntitlementToFreeSelected,
+    this.selectedLanguageCode,
+    this.onLanguageChanged,
+    this.onResetToSystemLanguage,
     this.showDebugTools = AppDebug.enabled,
     this.appVersionService = const AppVersionService(),
   });
@@ -71,6 +77,13 @@ class SudokuDrawer extends StatelessWidget {
               onBackgroundMusicEnabledChanged: onBackgroundMusicEnabledChanged,
               audioVolume: audioVolume,
               onAudioVolumeChanged: onAudioVolumeChanged,
+            ),
+            SudokuDrawerLanguageSection(
+              sectionPadding: _sectionPadding,
+              compactDensity: _compactDensity,
+              selectedLanguageCode: selectedLanguageCode,
+              onLanguageChanged: onLanguageChanged,
+              onResetToSystemLanguage: onResetToSystemLanguage,
             ),
             SudokuDrawerPremiumSection(
               sectionPadding: _sectionPadding,

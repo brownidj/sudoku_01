@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/difficulty_labels.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/services/sudoku_new_game_confirmation_service.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 class SudokuConfigurationFlowService {
   final SudokuNewGameConfirmationService _confirmationService;
@@ -11,8 +12,8 @@ class SudokuConfigurationFlowService {
   }) : _confirmationService =
            confirmationService ?? const SudokuNewGameConfirmationService();
 
-  String lockedSettingsMessage(UiState state) {
-    return "Difficulty is locked during a game. To unlock it, either double-tap the lock icon or start a 'New Game'";
+  String lockedSettingsMessage(BuildContext context) {
+    return UiStrings.lockedSettingsMessage(context);
   }
 
   Future<void> requestUnlockByStartingNewGame({
@@ -27,9 +28,8 @@ class SudokuConfigurationFlowService {
     await _confirmationService.confirmAndRun(
       context: context,
       isMounted: isMounted,
-      title: 'Unlock Settings?',
-      message:
-          'Unlocking difficulty will start a new game and reset this board. Continue?',
+      title: UiStrings.dialogUnlockSettingsTitle(context),
+      message: UiStrings.dialogUnlockSettingsMessage(context),
       onConfirm: onConfirmNewGame,
     );
   }
@@ -62,8 +62,11 @@ class SudokuConfigurationFlowService {
     await _confirmationService.confirmAndRun(
       context: context,
       isMounted: isMounted,
-      title: 'Start New Game?',
-      message: 'Change difficulty to $difficultyLabel and start a new game?',
+      title: UiStrings.dialogStartNewGameTitle(context),
+      message: UiStrings.dialogStartNewGameForDifficulty(
+        context,
+        difficultyLabel,
+      ),
       onConfirm: () => onConfirmChange(difficulty),
     );
   }
@@ -86,8 +89,8 @@ class SudokuConfigurationFlowService {
     await _confirmationService.confirmAndRun(
       context: context,
       isMounted: isMounted,
-      title: 'Start New Game?',
-      message: 'Start a fresh game and reset this board?',
+      title: UiStrings.dialogStartNewGameTitle(context),
+      message: UiStrings.dialogStartNewGameResetBoard(context),
       onConfirm: () {
         onConfirmNewGame();
         onConfirmed?.call();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 Future<void> showInfoSheet({
   required BuildContext context,
@@ -31,7 +32,7 @@ Future<void> showInfoSheet({
                 alignment: Alignment.centerRight,
                 child: FilledButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Got it'),
+                  child: Text(UiStrings.infoSheetDismiss(context)),
                 ),
               ),
             ],
