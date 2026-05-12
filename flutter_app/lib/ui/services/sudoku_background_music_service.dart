@@ -245,19 +245,24 @@ class SudokuBackgroundMusicService {
   }
 
   Future<bool> _playAssetWithFallback(String asset) async {
-    try {
-      await _player.play(AssetSource(asset));
-      return true;
-    } catch (error) {
-      AppDebug.log('Primary background asset failed ($asset): $error');
+    final normalized = asset.startsWith('assets/')
+        ? asset.substring('assets/'.length)
+        : asset;
+    for (final candidate in <String>{normalized, asset}) {
+      try {
+        await _player.play(AssetSource(candidate));
+        return true;
+      } catch (error) {
+        AppDebug.log('Primary background asset failed ($candidate): $error');
+      }
     }
-    try {
-      await _player.play(AssetSource('assets/$asset'));
+    if (await _playBytesFromBundle('assets/$normalized')) {
       return true;
-    } catch (error) {
-      AppDebug.log('Fallback background asset failed (assets/$asset): $error');
     }
     if (await _playBytesFromBundle('assets/$asset')) {
+      return true;
+    }
+    if (await _playBytesFromBundle(normalized)) {
       return true;
     }
     if (await _playBytesFromBundle(asset)) {

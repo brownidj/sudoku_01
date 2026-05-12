@@ -7,6 +7,7 @@ import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_area.dart';
 import 'package:flutter_app/ui/widgets/top_controls.dart';
+import 'package:flutter_app/ui/widgets/victory_aurora_overlay.dart';
 import 'package:flutter_app/ui/widgets/victory_foil_overlay.dart';
 import 'package:flutter_app/ui/widgets/victory_mascot_overlay.dart';
 
@@ -82,6 +83,8 @@ class SudokuGameContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final premiumCelebrationEnabled =
+        state.premiumActive || state.entitlement == Entitlement.premium;
     return SafeArea(
       top: false,
       child: Stack(
@@ -142,6 +145,8 @@ class SudokuGameContent extends StatelessWidget {
                 child: Stack(
                   children: [
                     const Positioned.fill(child: VictoryFoilOverlay()),
+                    if (premiumCelebrationEnabled)
+                      const Positioned.fill(child: VictoryAuroraOverlay()),
                     Positioned.fill(
                       child: VictoryMascotOverlay(
                         assetPath: victoryAssetPath,

@@ -9,7 +9,10 @@ class VictoryOverlayState {
   final bool visible;
   final String? assetPath;
 
-  const VictoryOverlayState({required this.visible, required this.assetPath});
+  const VictoryOverlayState({
+    required this.visible,
+    required this.assetPath,
+  });
 
   static const VictoryOverlayState hidden = VictoryOverlayState(
     visible: false,
@@ -110,7 +113,10 @@ class SudokuVictoryOverlayService {
       return;
     }
     final asset = assets[_random.nextInt(assets.length)];
-    state.value = VictoryOverlayState(visible: true, assetPath: asset);
+    state.value = VictoryOverlayState(
+      visible: true,
+      assetPath: asset,
+    );
     _timer = Timer(duration, _hide);
   }
 

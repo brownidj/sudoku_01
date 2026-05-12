@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 
@@ -141,7 +142,7 @@ class SudokuVictoryAudioService {
       _autoStopTimer = Timer(_maxLoopDuration, () {
         unawaited(_stopLoop());
       });
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to play victory audio loop: $error');
       _currentAudioAsset = null;
       _looping = false;
@@ -149,18 +150,23 @@ class SudokuVictoryAudioService {
   }
 
   Future<bool> _playAssetWithFallback(String audioAsset) async {
-    try {
-      await _player.play(AssetSource(audioAsset));
-      return true;
-    } catch (error) {
-      AppDebug.log('Primary audio asset failed ($audioAsset): $error');
+    final normalized = audioAsset.startsWith('assets/')
+        ? audioAsset.substring('assets/'.length)
+        : audioAsset;
+    for (final candidate in <String>{normalized, audioAsset}) {
+      try {
+        await _player.play(AssetSource(candidate));
+        return true;
+      } catch (error) {
+        AppDebug.log('Primary audio asset failed ($candidate): $error');
+      }
     }
-
     try {
-      await _player.play(AssetSource('assets/$audioAsset'));
+      final data = await rootBundle.load('assets/$normalized');
+      await _player.play(BytesSource(data.buffer.asUint8List()));
       return true;
     } catch (error) {
-      AppDebug.log('Fallback audio asset failed (assets/$audioAsset): $error');
+      AppDebug.log('Fallback audio bytes failed (assets/$normalized): $error');
       return false;
     }
   }

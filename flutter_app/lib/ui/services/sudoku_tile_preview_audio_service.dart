@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_app/app/app_debug.dart';
 
 class SudokuTilePreviewAudioService {
@@ -143,23 +144,29 @@ class SudokuTilePreviewAudioService {
       _autoStopTimer = Timer(_maxClipDuration, () {
         unawaited(_stop());
       });
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to play tile preview audio: $error');
     }
   }
 
   Future<bool> _playAssetWithFallback(String asset) async {
-    try {
-      await _player.play(AssetSource(asset));
-      return true;
-    } catch (error) {
-      AppDebug.log('Primary tile audio asset failed ($asset): $error');
+    final normalized = asset.startsWith('assets/')
+        ? asset.substring('assets/'.length)
+        : asset;
+    for (final candidate in <String>{normalized, asset}) {
+      try {
+        await _player.play(AssetSource(candidate));
+        return true;
+      } catch (error) {
+        AppDebug.log('Primary tile audio asset failed ($candidate): $error');
+      }
     }
     try {
-      await _player.play(AssetSource('assets/$asset'));
+      final data = await rootBundle.load('assets/$normalized');
+      await _player.play(BytesSource(data.buffer.asUint8List()));
       return true;
     } catch (error) {
-      AppDebug.log('Fallback tile audio asset failed (assets/$asset): $error');
+      AppDebug.log('Fallback tile audio bytes failed (assets/$normalized): $error');
       return false;
     }
   }
@@ -169,7 +176,7 @@ class SudokuTilePreviewAudioService {
     _autoStopTimer = null;
     try {
       await _player.stop();
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to stop tile preview audio: $error');
     }
   }
@@ -178,7 +185,7 @@ class SudokuTilePreviewAudioService {
     await _stop();
     try {
       await _player.dispose();
-    } on Exception catch (error) {
+    } catch (error) {
       AppDebug.log('Failed to dispose tile preview audio player: $error');
     }
   }

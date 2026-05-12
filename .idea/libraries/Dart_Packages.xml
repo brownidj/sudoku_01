@@ -198,6 +198,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_localizations">
+          <value>
+            <list>
+              <option value="$USER_HOME$/development/flutter/packages/flutter_localizations/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_markdown">
           <value>
             <list>
@@ -293,6 +300,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/development/flutter/packages/integration_test/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="intl">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
             </list>
           </value>
         </entry>
@@ -748,6 +762,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_android-0.4.0+10/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_platform_interface-1.4.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_storekit-0.4.8+1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni_flutter-1.0.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/json_annotation-4.11.0/lib" />
@@ -809,6 +824,7 @@
       <root url="file://$USER_HOME$/development/flutter/bin/cache/pkg/sky_engine/lib" />
       <root url="file://$USER_HOME$/development/flutter/packages/flutter/lib" />
       <root url="file://$USER_HOME$/development/flutter/packages/flutter_driver/lib" />
+      <root url="file://$USER_HOME$/development/flutter/packages/flutter_localizations/lib" />
       <root url="file://$USER_HOME$/development/flutter/packages/flutter_test/lib" />
       <root url="file://$USER_HOME$/development/flutter/packages/flutter_web_plugins/lib" />
       <root url="file://$USER_HOME$/development/flutter/packages/fuchsia_remote_debug_protocol/lib" />
