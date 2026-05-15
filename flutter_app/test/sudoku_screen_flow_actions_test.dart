@@ -122,4 +122,104 @@ void main() {
     await tester.pumpAndSettle();
     await pending;
   });
+
+  testWidgets('locked content mode routes to premium explainer sheet', (
+    WidgetTester tester,
+  ) async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    const actions = SudokuScreenFlowActions();
+
+    late BuildContext context;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (ctx) {
+            context = ctx;
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+
+    final pending = actions.requestContentModeChange(
+      context: context,
+      controller: controller,
+      contentMode: 'butterflies',
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      find.byKey(const ValueKey<String>('premium-sheet-title')),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining('Extra Themes is available in Full Version.'),
+      findsOneWidget,
+    );
+    await tester.tap(
+      find.byKey(const ValueKey<String>('premium-sheet-dismiss-button')),
+    );
+    await tester.pumpAndSettle();
+    await pending;
+    expect(controller.state.contentMode, 'numbers');
+  });
+
+  testWidgets('unlocked content mode applies change', (WidgetTester tester) async {
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(entitlement: Entitlement.premium),
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(
+        const SettingsState(
+          notesMode: false,
+          difficulty: 'easy',
+          canChangeDifficulty: true,
+          canChangePuzzleMode: true,
+          styleName: 'Modern',
+          contentMode: 'numbers',
+          animalStyle: 'simple',
+          puzzleMode: 'multi',
+        ),
+      ),
+    );
+    await controller.ready;
+    const actions = SudokuScreenFlowActions();
+
+    late BuildContext context;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Builder(
+          builder: (ctx) {
+            context = ctx;
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
+
+    await actions.requestContentModeChange(
+      context: context,
+      controller: controller,
+      contentMode: 'butterflies',
+    );
+    await tester.pumpAndSettle();
+
+    expect(controller.state.contentMode, 'butterflies');
+    expect(find.byKey(const ValueKey<String>('premium-sheet-title')), findsNothing);
+  });
 }

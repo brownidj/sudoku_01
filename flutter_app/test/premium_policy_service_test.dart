@@ -43,5 +43,30 @@ void main() {
         isTrue,
       );
     });
+
+    test('content mode checks map through premium feature policy', () {
+      expect(service.isContentModeUnlocked('animals', Entitlement.free), isTrue);
+      expect(
+        service.isContentModeUnlocked('instruments', Entitlement.free),
+        isTrue,
+      );
+      expect(service.isContentModeUnlocked('numbers', Entitlement.free), isTrue);
+      expect(
+        service.isContentModeUnlocked('butterflies', Entitlement.free),
+        isFalse,
+      );
+      expect(
+        service.isContentModeUnlocked('old_opera', Entitlement.free),
+        isFalse,
+      );
+      expect(
+        service.isContentModeUnlocked('butterflies', Entitlement.premium),
+        isTrue,
+      );
+      expect(
+        service.isContentModeUnlocked('old_opera', Entitlement.premium),
+        isTrue,
+      );
+    });
   });
 }

@@ -1,3 +1,4 @@
+import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/domain/types.dart';
 
 class PremiumPolicyService {
@@ -15,9 +16,24 @@ class PremiumPolicyService {
     },
   };
 
+  static const Set<String> freeContentModes = <String>{
+    'animals',
+    'instruments',
+    'numbers',
+  };
+
+  static const Set<String> premiumContentModes = <String>{
+    'butterflies',
+    'old_opera',
+  };
+
   bool isUnlocked(PremiumFeature feature, Entitlement entitlement) {
     final unlocked = _unlockedByEntitlement[entitlement] ?? const {};
-    return unlocked.contains(feature);
+    final allowed = unlocked.contains(feature);
+    AppDebug.log(
+      '[PremiumPolicy] feature=$feature entitlement=$entitlement allowed=$allowed',
+    );
+    return allowed;
   }
 
   PremiumFeature? featureForDifficulty(String difficulty) {
@@ -78,14 +94,63 @@ class PremiumPolicyService {
   bool isDifficultyUnlocked(String difficulty, Entitlement entitlement) {
     final feature = featureForDifficulty(difficulty);
     if (feature == null) {
+      AppDebug.log(
+        '[PremiumPolicy] difficulty=$difficulty entitlement=$entitlement allowed=true',
+      );
       return true;
     }
-    return isUnlocked(feature, entitlement);
+    final allowed = isUnlocked(feature, entitlement);
+    AppDebug.log(
+      '[PremiumPolicy] difficulty=$difficulty entitlement=$entitlement allowed=$allowed',
+    );
+    return allowed;
   }
 
   bool isPremiumActive(Entitlement entitlement) {
     final unlocked = _unlockedByEntitlement[entitlement] ?? const {};
-    return unlocked.isNotEmpty;
+    final active = unlocked.isNotEmpty;
+    AppDebug.log(
+      '[PremiumPolicy] premiumActive entitlement=$entitlement active=$active',
+    );
+    return active;
+  }
+
+  bool isContentModeUnlocked(String contentMode, Entitlement entitlement) {
+    final mode = contentMode.trim().toLowerCase();
+    if (freeContentModes.contains(mode)) {
+      AppDebug.log(
+        '[PremiumPolicy] contentMode=$mode entitlement=$entitlement allowed=true',
+      );
+      return true;
+    }
+    if (premiumContentModes.contains(mode)) {
+      final allowed = isUnlocked(PremiumFeature.extraThemes, entitlement);
+      AppDebug.log(
+        '[PremiumPolicy] contentMode=$mode entitlement=$entitlement allowed=$allowed',
+      );
+      return allowed;
+    }
+    AppDebug.log(
+      '[PremiumPolicy] contentMode=$mode entitlement=$entitlement allowed=false (unknown)',
+    );
+    return false;
+  }
+
+  bool isBackgroundMusicThemeMode(String contentMode) {
+    final mode = contentMode.trim().toLowerCase();
+    return premiumContentModes.contains(mode);
+  }
+
+  bool areEnhancedCelebrationsUnlocked(Entitlement entitlement) {
+    return isUnlocked(PremiumFeature.extraSoundsAndCelebrations, entitlement);
+  }
+
+  bool areExtendedMetricsUnlocked(Entitlement entitlement) {
+    return isUnlocked(PremiumFeature.progressTracker, entitlement);
+  }
+
+  bool isPersonalBestUnlocked(Entitlement entitlement) {
+    return isUnlocked(PremiumFeature.personalBestHistory, entitlement);
   }
 
   Set<PremiumFeature> lockedFeatures(

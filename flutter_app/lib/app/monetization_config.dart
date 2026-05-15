@@ -27,4 +27,10 @@ class MonetizationConfig {
   static bool isPremiumUnlockConfigured(TargetPlatform platform) {
     return premiumUnlockIdForPlatform(platform).trim().isNotEmpty;
   }
+
+  // Temporary internal/dev switch used for entitlement reset QA flows.
+  static const bool enableResetToFreeDebugAction = bool.fromEnvironment(
+    'ENABLE_RESET_TO_FREE',
+    defaultValue: kDebugMode,
+  );
 }

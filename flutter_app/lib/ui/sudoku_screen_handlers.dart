@@ -2,8 +2,9 @@ part of 'sudoku_screen.dart';
 
 extension SudokuScreenHandlers on _SudokuScreenState {
   bool get _isBackgroundMusicTheme {
-    final mode = widget.controller.state.contentMode;
-    return mode == 'butterflies' || mode == 'old_opera';
+    return _premiumPolicy.isBackgroundMusicThemeMode(
+      widget.controller.state.contentMode,
+    );
   }
 
   bool get _effectiveBackgroundMusicEnabled =>

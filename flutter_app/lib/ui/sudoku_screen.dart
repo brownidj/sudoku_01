@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/app/monetization_config.dart';
 import 'package:flutter_app/app/preferences_store.dart';
+import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
@@ -34,6 +36,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   final Map<String, Map<int, ui.Image>> _animalImages = {};
   final Map<String, Map<int, Map<int, ui.Image>>> _noteImages = {};
   final _flowActions = const SudokuScreenFlowActions();
+  final _premiumPolicy = const PremiumPolicyService();
   final _startInstructionOverlayService =
       SudokuStartInstructionOverlayService();
   late final SudokuScreenServiceRegistry _services;
@@ -94,8 +97,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
           _ => null,
         };
         final supportsBackgroundMusicTheme =
-            state.contentMode == 'butterflies' ||
-            state.contentMode == 'old_opera';
+            _premiumPolicy.isBackgroundMusicThemeMode(state.contentMode);
         final viewModel = SudokuScreenViewModel.from(
           state: state,
           coordinator: _services.candidatePanelCoordinator,
@@ -170,6 +172,9 @@ class _SudokuScreenState extends State<SudokuScreen> {
               controller.onLoadExhaustedCorrectionScenario();
             },
             onResetEntitlementToFreeSelected: () {
+              if (!MonetizationConfig.enableResetToFreeDebugAction) {
+                return;
+              }
               Navigator.of(context).maybePop();
               controller.onSetEntitlement(Entitlement.free);
             },
@@ -183,6 +188,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
               unawaited(controller.onResetPreferredLanguageToSystem());
             },
             showDebugTools: viewModel.showDebugTools,
+            showResetEntitlementToFree:
+                MonetizationConfig.enableResetToFreeDebugAction,
           ),
           body: SudokuGameContentBuilder(
             victoryStateListenable: _services.victoryOverlayService.state,
@@ -225,6 +232,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
               unawaited(
                 _flowActions.showProgressSheet(
                   context: context,
+                  showExtendedMetrics: state.premiumActive,
                   completedPuzzles: widget.controller.completedPuzzles,
                   daysPlayed: widget.controller.daysPlayed,
                   streak: widget.controller.streak,
@@ -235,7 +243,15 @@ class _SudokuScreenState extends State<SudokuScreen> {
               );
             },
             onHelpPressed: () => showSudokuHelpDialog(context),
-            onContentModeChanged: controller.onContentModeChanged,
+            onContentModeChanged: (mode) {
+              unawaited(
+                _flowActions.requestContentModeChange(
+                  context: context,
+                  controller: controller,
+                  contentMode: mode,
+                ),
+              );
+            },
             onConfigurationLockTapped: () {
               unawaited(
                 _flowActions.showLockedSettingsSheet(

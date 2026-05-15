@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer_sections.dart';
@@ -26,7 +27,9 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String>? onLanguageChanged;
   final VoidCallback? onResetToSystemLanguage;
   final bool showDebugTools;
+  final bool showResetEntitlementToFree;
   final AppVersionService appVersionService;
+  final PremiumPolicyService premiumPolicyService;
 
   const SudokuDrawer({
     super.key,
@@ -49,7 +52,9 @@ class SudokuDrawer extends StatelessWidget {
     this.onLanguageChanged,
     this.onResetToSystemLanguage,
     this.showDebugTools = AppDebug.enabled,
+    this.showResetEntitlementToFree = AppDebug.enabled,
     this.appVersionService = const AppVersionService(),
+    this.premiumPolicyService = const PremiumPolicyService(),
   });
 
   @override
@@ -70,9 +75,8 @@ class SudokuDrawer extends StatelessWidget {
               compactDensity: _compactDensity,
               audioEnabled: audioEnabled,
               onAudioEnabledChanged: onAudioEnabledChanged,
-              showBackgroundMusicControls:
-                  state.contentMode == 'butterflies' ||
-                  state.contentMode == 'old_opera',
+              showBackgroundMusicControls: premiumPolicyService
+                  .isBackgroundMusicThemeMode(state.contentMode),
               backgroundMusicEnabled: backgroundMusicEnabled,
               onBackgroundMusicEnabledChanged: onBackgroundMusicEnabledChanged,
               audioVolume: audioVolume,
@@ -104,8 +108,9 @@ class SudokuDrawer extends StatelessWidget {
                 onLoadCorrectionScenario: onLoadCorrectionScenario,
                 onLoadExhaustedCorrectionScenario:
                     onLoadExhaustedCorrectionScenario,
-                onResetEntitlementToFreeSelected:
-                    onResetEntitlementToFreeSelected,
+                onResetEntitlementToFreeSelected: showResetEntitlementToFree
+                    ? onResetEntitlementToFreeSelected
+                    : null,
               ),
           ],
         ),

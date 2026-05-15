@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/billing_service.dart';
 import 'package:flutter_app/app/difficulty_labels.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/premium_explainer_sheet_service.dart';
 import 'package:flutter_app/ui/services/sudoku_configuration_flow_service.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
+import 'package:flutter_app/ui/widgets/progress_sheet.dart';
 import 'package:flutter_app/ui/widgets/premium_explainer_sheet.dart';
 
 class SudokuScreenFlowActions {
@@ -42,109 +45,21 @@ class SudokuScreenFlowActions {
 
   Future<void> showProgressSheet({
     required BuildContext context,
+    required bool showExtendedMetrics,
     required int completedPuzzles,
     required int daysPlayed,
     required int streak,
     required Map<String, int> bestSolveTimeSecondsByDifficulty,
     required Future<void> Function() onResetProgressMetrics,
   }) {
-    return showModalBottomSheet<void>(
+    return showProgressSheetModal(
       context: context,
-      showDragHandle: true,
-      builder: (sheetContext) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    UiStrings.progressSheetTitle(sheetContext),
-                    style: Theme.of(sheetContext).textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    UiStrings.progressSheetBody(
-                      sheetContext,
-                      completedPuzzles: completedPuzzles,
-                      daysPlayed: daysPlayed,
-                      streak: streak,
-                      bestSolveTimeSecondsByDifficulty:
-                          bestSolveTimeSecondsByDifficulty,
-                    ),
-                    style: Theme.of(sheetContext).textTheme.bodyLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFE4EC),
-                        ),
-                        onPressed: () async {
-                          final confirmed = await showDialog<bool>(
-                            context: sheetContext,
-                            builder: (dialogContext) {
-                              return AlertDialog(
-                                title: Text(
-                                  UiStrings.progressResetDialogTitle(
-                                    dialogContext,
-                                  ),
-                                ),
-                                content: Text(
-                                  UiStrings.progressResetDialogMessage(
-                                    dialogContext,
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.of(
-                                      dialogContext,
-                                    ).pop(false),
-                                    child: Text(
-                                      UiStrings.dialogActionCancel(
-                                        dialogContext,
-                                      ),
-                                    ),
-                                  ),
-                                  FilledButton(
-                                    onPressed: () =>
-                                        Navigator.of(dialogContext).pop(true),
-                                    child: Text(
-                                      UiStrings.dialogActionOk(dialogContext),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                          if (confirmed != true) {
-                            return;
-                          }
-                          await onResetProgressMetrics();
-                          if (!sheetContext.mounted) {
-                            return;
-                          }
-                          Navigator.of(sheetContext).pop();
-                        },
-                        child: Text(UiStrings.progressResetAction(sheetContext)),
-                      ),
-                      const Spacer(),
-                      FilledButton(
-                        onPressed: () => Navigator.of(sheetContext).pop(),
-                        child: Text(UiStrings.infoSheetDismiss(sheetContext)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+      showExtendedMetrics: showExtendedMetrics,
+      completedPuzzles: completedPuzzles,
+      daysPlayed: daysPlayed,
+      streak: streak,
+      bestSolveTimeSecondsByDifficulty: bestSolveTimeSecondsByDifficulty,
+      onResetProgressMetrics: onResetProgressMetrics,
     );
   }
 
@@ -212,6 +127,25 @@ class SudokuScreenFlowActions {
     );
   }
 
+  Future<void> requestContentModeChange({
+    required BuildContext context,
+    required SudokuController controller,
+    required String contentMode,
+  }) async {
+    if (!controller.isContentModeUnlocked(contentMode)) {
+      await showPremiumFeatureLockedSheet(
+        context: context,
+        featureLabel: _premiumPolicyService.labelForFeature(
+          PremiumFeature.extraThemes,
+        ),
+        onUnlockPremium: () =>
+            requestPremiumUnlock(context: context, controller: controller),
+      );
+      return;
+    }
+    controller.onContentModeChanged(contentMode);
+  }
+
   Future<void> showPremiumFeatureLockedSheet({
     required BuildContext context,
     required String featureLabel,
@@ -243,6 +177,17 @@ class SudokuScreenFlowActions {
     required SudokuController controller,
   }) async {
     final result = await controller.buyPremium();
+    if (kDebugMode && result == BillingActionResult.productUnavailable) {
+      controller.onSetEntitlement(Entitlement.premium);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Debug fallback: premium unlocked locally (store product unavailable).',
+          ),
+        ),
+      );
+      return;
+    }
     _showBillingResultMessage(
       context: context,
       result: result,

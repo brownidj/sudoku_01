@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 
 import 'support/sudoku_controller_test_support.dart';
@@ -163,9 +164,44 @@ void main() {
 
     expect(find.text('Your Progress'), findsOneWidget);
     expect(find.textContaining('Completed puzzles: 7'), findsOneWidget);
+    expect(find.textContaining('Days played: 3'), findsNothing);
+    expect(find.textContaining('Streak: 2'), findsNothing);
+    expect(find.text('Reset'), findsOneWidget);
+  });
+
+  testWidgets('premium progress sheet includes extended metrics', (
+    WidgetTester tester,
+  ) async {
+    final prefs = FakePreferencesStore(
+      entitlement: Entitlement.premium,
+      completedPuzzles: 7,
+      daysPlayed: 3,
+      currentStreak: 2,
+    );
+    final controller = SudokuController(
+      preferencesStore: prefs,
+      gameService: FakeGameService(),
+      settingsController: FakeSettingsController(_defaultSettings),
+    );
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    controller.onShowSolution();
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('top-controls-progress-chip')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your Progress'), findsOneWidget);
+    expect(find.textContaining('Completed puzzles: 7'), findsOneWidget);
     expect(find.textContaining('Days played: 3'), findsOneWidget);
     expect(find.textContaining('Streak: 2'), findsOneWidget);
-    expect(find.text('Reset'), findsOneWidget);
   });
 
   testWidgets('progress reset requires confirmation and clears metrics', (

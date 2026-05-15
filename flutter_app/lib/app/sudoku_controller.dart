@@ -206,6 +206,8 @@ class SudokuController extends ChangeNotifier {
       _gameController.setEntitlement(entitlement, notifyListeners);
   bool isDifficultyUnlocked(String difficulty) =>
       _gameController.isDifficultyUnlocked(difficulty);
+  bool isContentModeUnlocked(String contentMode) =>
+      _gameController.isContentModeUnlocked(contentMode);
   Future<void> flushGameSession() => _gameController.flushGameSession();
   Future<void> refreshEntitlement() =>
       _gameController.refreshEntitlement(notifyListeners);

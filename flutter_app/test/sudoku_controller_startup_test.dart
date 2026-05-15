@@ -180,6 +180,34 @@ void main() {
   );
 
   test(
+    'downgrading entitlement to free falls back from premium-only content mode',
+    () async {
+      final fakePrefs = FakePreferencesStore(entitlement: Entitlement.premium);
+      final controller = SudokuController(
+        preferencesStore: fakePrefs,
+        settingsController: FakeSettingsController(
+          const SettingsState(
+            notesMode: false,
+            difficulty: 'easy',
+            canChangeDifficulty: true,
+            canChangePuzzleMode: true,
+            styleName: 'Modern',
+            contentMode: 'butterflies',
+            animalStyle: 'simple',
+            puzzleMode: 'multi',
+          ),
+        ),
+      );
+      await controller.ready;
+
+      expect(controller.state.contentMode, 'butterflies');
+      controller.onSetEntitlement(Entitlement.free);
+      expect(controller.state.contentMode, 'animals');
+      expect(controller.state.entitlement, Entitlement.free);
+    },
+  );
+
+  test(
     'refreshEntitlement updates state and listeners when value changes',
     () async {
       final fakePrefs = FakePreferencesStore(entitlement: Entitlement.free);

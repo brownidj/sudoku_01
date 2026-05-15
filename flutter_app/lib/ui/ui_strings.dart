@@ -28,6 +28,8 @@ class UiStrings {
       _l10n(context).tooltipNotes;
   static String tooltipDifficulty(BuildContext context) =>
       _l10n(context).tooltipDifficulty;
+  static String candidateLongPressToast(BuildContext context, int digit) =>
+      _l10n(context).candidateLongPressToast(digit);
 
   static String correctionsLabel(BuildContext context, int count) =>
       _l10n(context).labelCorrections(count);
@@ -134,6 +136,13 @@ class UiStrings {
       ),
     ];
     return lines.join('\n');
+  }
+
+  static String progressSheetBodyFree(
+    BuildContext context, {
+    required int completedPuzzles,
+  }) {
+    return _l10n(context).progressCompletedPuzzles(completedPuzzles);
   }
 
   static String _formatDuration(BuildContext context, int? seconds) {

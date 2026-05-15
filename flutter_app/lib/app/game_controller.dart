@@ -180,6 +180,9 @@ class GameController {
   bool isDifficultyUnlocked(String difficulty) =>
       _premiumPolicyService.isDifficultyUnlocked(difficulty, _entitlement);
 
+  bool isContentModeUnlocked(String contentMode) =>
+      _premiumPolicyService.isContentModeUnlocked(contentMode, _entitlement);
+
   Future<void> flushGameSession() => _effects.flushPendingSave();
 
   Future<void> refreshEntitlement(VoidCallback notifyListeners) async {
@@ -190,6 +193,7 @@ class GameController {
       return;
     }
     _entitlement = refreshed;
+    _enforceContentModeForEntitlement();
     _effects.render(notifyListeners, appL10nCurrent().statusEntitlementRefreshed);
   }
 
@@ -213,8 +217,17 @@ class GameController {
       return;
     }
     _entitlement = entitlement;
+    _enforceContentModeForEntitlement();
     unawaited(_entitlementSyncService.persistEntitlement(entitlement));
     _effects.render(notifyListeners, appL10nCurrent().statusEntitlementUpdated);
+  }
+
+  void _enforceContentModeForEntitlement() {
+    final mode = _settings.state.contentMode;
+    if (_premiumPolicyService.isContentModeUnlocked(mode, _entitlement)) {
+      return;
+    }
+    _settings.setContentMode('animals');
   }
 
   void _recordPuzzleCompletionIfNeeded({required bool wasPuzzleSolved}) {
