@@ -1,0 +1,33 @@
+theme: buttons
+
+buttons:
+pearly cream flat, no rim, round two-hole button,
+red coat button with raised rim,
+blue faceted glass button,
+green marbled Bakelite button,
+golden brass embossed button,
+lavender flower-shaped button,
+brown leather-look stitched button,
+turquoise enamel button with a white centre, and
+black carved button with silver highlights.
+
+prompt:
+Create a single realistic, senior-friendly picture-Sudoku game tile image of: {subject}.
+
+Requirements:
+- Senior-friendly, realistic, attractive, tactile, and easy to recognise at small size.
+- One subject only, centred and close-up, filling about 85-90% of a square canvas.
+- Very little surrounding white space.
+- Pure #ffffff background.
+- Soft even lighting and sharp focus.
+- No clutter and no extra objects.
+- No shadows or glows.
+- Ensure strong variation across the 9 button tiles so they are instantly distinguishable at a glance.
+- Prioritize distinct silhouette and geometry per subject (flat, domed, faceted, flower, carved, stitched, embossed).
+- Keep each button's unique material cues clearly visible (glass, metal, enamel, leather-look, Bakelite, carved finish).
+- Keep color identity clearly separated between subjects while staying realistic and not oversaturated.
+- Allow moderate orientation variation between subjects (slight tilt/angle), but keep each button fully visible and recognisable.
+
+Output constraints:
+- No text, watermark, border, frame, hands, props, scenery, shadow, or additional items.
+- No cartoon, illustration, painting, CGI look, or stylization.

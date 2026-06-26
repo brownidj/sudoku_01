@@ -19,6 +19,7 @@ import 'package:flutter_app/app/premium_purchase_coordinator.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/progress_metrics_service.dart';
 import 'package:flutter_app/app/settings_controller.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_app/app/solution_check_coordinator.dart';
 import 'package:flutter_app/app/sudoku_controller_action_service.dart';
 import 'package:flutter_app/app/sudoku_runtime_state_service.dart';
@@ -249,8 +250,18 @@ class SudokuController extends ChangeNotifier {
   }
 
   Future<void> _initialize() async {
+    final screenshotLanguageCode = ScreenshotMode.languageCode
+        .trim()
+        .toLowerCase();
+    if (ScreenshotMode.enabled &&
+        screenshotLanguageCode.isNotEmpty &&
+        supportedLanguageCodes.contains(screenshotLanguageCode)) {
+      _preferredLanguageCode = screenshotLanguageCode;
+      notifyListeners();
+    }
     final preferredLanguageCode = await _prefs.loadPreferredLanguageCode();
-    if (preferredLanguageCode != null &&
+    if (_preferredLanguageCode == null &&
+        preferredLanguageCode != null &&
         supportedLanguageCodes.contains(preferredLanguageCode)) {
       _preferredLanguageCode = preferredLanguageCode;
       notifyListeners();
