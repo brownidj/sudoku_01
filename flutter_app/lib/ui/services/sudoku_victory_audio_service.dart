@@ -17,7 +17,7 @@ class SudokuVictoryAudioService {
 
   SudokuVictoryAudioService({
     AudioPlayer? player,
-    Duration maxLoopDuration = const Duration(seconds: 6),
+    Duration maxLoopDuration = const Duration(seconds: 8),
   }) : _player = player ?? AudioPlayer(),
        _maxLoopDuration = maxLoopDuration {
     unawaited(
@@ -125,6 +125,15 @@ class SudokuVictoryAudioService {
       '7_sulphur.png': 'audio/butterflies/7_sulphur.wav',
       '8_leaf.png': 'audio/butterflies/8_leaf.wav',
       '9_metalmark.png': 'audio/butterflies/9_metalmark.wav',
+      '1_cowrie.png': 'audio/shells/1_cowrie.mp3',
+      '2_scallop.png': 'audio/shells/2_scallop.mp3',
+      '3_murex.png': 'audio/shells/3_murex.mp3',
+      '4_nautilus.png': 'audio/shells/4_nautilus.mp3',
+      '5_cone.png': 'audio/shells/5_cone.mp3',
+      '6_abalone.png': 'audio/shells/6_abalone.mp3',
+      '7_turban.png': 'audio/shells/7_turban.mp3',
+      '8_moon_snail.png': 'audio/shells/8_moon_snail.mp3',
+      '9_cockle.png': 'audio/shells/9_cockle.mp3',
     };
     return explicitMap[fileName];
   }

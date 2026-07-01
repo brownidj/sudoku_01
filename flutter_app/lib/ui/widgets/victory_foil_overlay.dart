@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class VictoryFoilOverlay extends StatefulWidget {
   final int pieceCount;
 
-  const VictoryFoilOverlay({super.key, this.pieceCount = 220});
+  const VictoryFoilOverlay({super.key, this.pieceCount = 300});
 
   @override
   State<VictoryFoilOverlay> createState() => _VictoryFoilOverlayState();
@@ -13,7 +13,8 @@ class VictoryFoilOverlay extends StatefulWidget {
 
 class _VictoryFoilOverlayState extends State<VictoryFoilOverlay>
     with SingleTickerProviderStateMixin {
-  static const Duration _loopDuration = Duration(seconds: 12);
+  static const Duration _sequenceDuration = Duration(seconds: 8);
+  static const double _sequenceSeconds = 8.0;
   late final AnimationController _controller;
   late final List<_FoilPieceSpec> _pieces;
 
@@ -26,8 +27,8 @@ class _VictoryFoilOverlayState extends State<VictoryFoilOverlay>
       (_) => _FoilPieceSpec.random(random),
       growable: false,
     );
-    _controller = AnimationController(vsync: this, duration: _loopDuration)
-      ..repeat();
+    _controller = AnimationController(vsync: this, duration: _sequenceDuration)
+      ..forward();
   }
 
   @override
@@ -68,9 +69,9 @@ class _VictoryFoilPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final seconds = progress * 12.0;
+    final seconds = progress * _VictoryFoilOverlayState._sequenceSeconds;
     final overlayPaint = Paint()
-      ..color = const Color.fromRGBO(211, 211, 211, 0.25);
+      ..color = const Color.fromRGBO(211, 211, 211, 0.12);
     canvas.drawRect(Offset.zero & size, overlayPaint);
     for (final piece in pieces) {
       final cycleHeight = size.height + piece.height;
@@ -189,7 +190,7 @@ class _FoilPieceSpec {
       width: 6 + random.nextDouble() * 12,
       height: 4 + random.nextDouble() * 6,
       startX: random.nextDouble() * 2000,
-      startY: -12 + random.nextDouble() * 350,
+      startY: -200 - random.nextDouble() * 500,
       fallSpeed: 70 + random.nextDouble() * 90,
       flutterAmplitude: 1 + random.nextDouble() * 4,
       flutterFrequency: 2 + random.nextDouble() * 3,

@@ -26,6 +26,7 @@ class SudokuBoardArea extends StatelessWidget {
   final ValueChanged<Coord> onTapCell;
   final void Function(Offset, Coord) onLongPressCell;
   final bool showDebugNotification;
+  final GlobalKey? boardKey;
   final ValueChanged<String>? onPuzzleModeChanged;
   final ValueChanged<String>? onDifficultyChanged;
 
@@ -44,6 +45,7 @@ class SudokuBoardArea extends StatelessWidget {
     required this.onTapCell,
     required this.onLongPressCell,
     this.showDebugNotification = true,
+    this.boardKey,
     this.onPuzzleModeChanged,
     this.onDifficultyChanged,
   });
@@ -102,7 +104,8 @@ class SudokuBoardArea extends StatelessWidget {
             : (candidateVerticalPadding * 2) +
                   (candidateButtonSize * visibleRowCount) +
                   (candidateRowSpacing * max(0, visibleRowCount - 1));
-        final lockedCandidateHeight = gapBeforeCandidate + maxCandidatePanelHeight;
+        final lockedCandidateHeight =
+            gapBeforeCandidate + maxCandidatePanelHeight;
         const layoutSafetyPadding = 9.0;
         final reservedHeight =
             metadataHeight + lockedCandidateHeight + layoutSafetyPadding;
@@ -119,6 +122,7 @@ class SudokuBoardArea extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
+              key: boardKey,
               width: boardWidth,
               height: boardWidth,
               child: SudokuBoard(
@@ -181,7 +185,12 @@ class SudokuBoardArea extends StatelessWidget {
                 ),
               ),
             ],
-            SizedBox(height: max(0.0, maxCandidatePanelHeight - visibleCandidatePanelHeight)),
+            SizedBox(
+              height: max(
+                0.0,
+                maxCandidatePanelHeight - visibleCandidatePanelHeight,
+              ),
+            ),
           ],
         );
       },

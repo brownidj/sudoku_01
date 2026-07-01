@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/app/game_session_codec.dart';
 import 'package:flutter_app/app/grid_utils.dart';
@@ -92,7 +91,7 @@ class GameSessionService {
       final conflictHintsRaw = decoded['conflictHintsLeft'];
       final maxConflictHints = conflictHintsForDifficulty(settings.difficulty);
       final conflictHintsLeft = conflictHintsRaw is int
-          ? conflictHintsRaw.clamp(0, maxConflictHints) as int
+          ? conflictHintsRaw.clamp(0, maxConflictHints)
           : maxConflictHints;
 
       return RestoredGameSession(

@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/styles.dart';
+import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_app/ui/widgets/action_bar.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_area.dart';
 import 'package:flutter_app/ui/widgets/top_controls.dart';
-import 'package:flutter_app/ui/widgets/victory_aurora_overlay.dart';
+import 'package:flutter_app/ui/widgets/victory_autumn_leaves_overlay.dart';
+import 'package:flutter_app/ui/widgets/victory_confetti_overlay.dart';
 import 'package:flutter_app/ui/widgets/victory_foil_overlay.dart';
 import 'package:flutter_app/ui/widgets/victory_mascot_overlay.dart';
+import 'package:flutter_app/ui/widgets/victory_star_overlay.dart';
 
 class SudokuGameContent extends StatelessWidget {
   final UiState state;
@@ -27,6 +30,7 @@ class SudokuGameContent extends StatelessWidget {
   final bool showDebugNotification;
   final GlobalKey overlayStackKey;
   final GlobalKey tilesPanelKey;
+  final GlobalKey boardKey;
   final GlobalKey bottomControlsKey;
   final VoidCallback onProgressPressed;
   final VoidCallback onHelpPressed;
@@ -44,6 +48,7 @@ class SudokuGameContent extends StatelessWidget {
   final bool showVictoryOverlay;
   final String? victoryAssetPath;
   final double? victoryImageCenterY;
+  final PremiumCelebrationStyle? premiumCelebrationStyle;
 
   const SudokuGameContent({
     super.key,
@@ -62,6 +67,7 @@ class SudokuGameContent extends StatelessWidget {
     required this.showDebugNotification,
     required this.overlayStackKey,
     required this.tilesPanelKey,
+    required this.boardKey,
     required this.bottomControlsKey,
     required this.onProgressPressed,
     required this.onHelpPressed,
@@ -79,12 +85,15 @@ class SudokuGameContent extends StatelessWidget {
     required this.showVictoryOverlay,
     required this.victoryAssetPath,
     required this.victoryImageCenterY,
+    required this.premiumCelebrationStyle,
   });
 
   @override
   Widget build(BuildContext context) {
-    final premiumCelebrationEnabled =
-        state.premiumActive || state.entitlement == Entitlement.premium;
+    final premiumCelebrationEnabled = state.premiumActive;
+    final selectedCelebrationStyle = !premiumCelebrationEnabled
+        ? PremiumCelebrationStyle.foil
+        : (premiumCelebrationStyle ?? PremiumCelebrationStyle.foil);
     return SafeArea(
       top: false,
       child: Stack(
@@ -107,6 +116,7 @@ class SudokuGameContent extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(8, 10, 8, 12),
                   child: SudokuBoardArea(
                     key: tilesPanelKey,
+                    boardKey: boardKey,
                     state: state,
                     style: style,
                     animalImages: animalImages,
@@ -144,9 +154,20 @@ class SudokuGameContent extends StatelessWidget {
               child: IgnorePointer(
                 child: Stack(
                   children: [
-                    const Positioned.fill(child: VictoryFoilOverlay()),
-                    if (premiumCelebrationEnabled)
-                      const Positioned.fill(child: VictoryAuroraOverlay()),
+                    if (selectedCelebrationStyle ==
+                        PremiumCelebrationStyle.foil)
+                      const Positioned.fill(child: VictoryFoilOverlay()),
+                    if (selectedCelebrationStyle ==
+                        PremiumCelebrationStyle.stars)
+                      const Positioned.fill(child: VictoryStarOverlay()),
+                    if (selectedCelebrationStyle ==
+                        PremiumCelebrationStyle.confetti)
+                      const Positioned.fill(child: VictoryConfettiOverlay()),
+                    if (selectedCelebrationStyle ==
+                        PremiumCelebrationStyle.autumnLeaves)
+                      const Positioned.fill(
+                        child: VictoryAutumnLeavesOverlay(),
+                      ),
                     Positioned.fill(
                       child: VictoryMascotOverlay(
                         assetPath: victoryAssetPath,

@@ -18,8 +18,7 @@ class PreferencesStore {
   static const keyLastPlayedDate = 'last_played_date';
   static const keyPlayedDates = 'played_dates';
   static const keyBestSolveTimeEasySeconds = 'best_solve_time_easy_seconds';
-  static const keyBestSolveTimeMediumSeconds =
-      'best_solve_time_medium_seconds';
+  static const keyBestSolveTimeMediumSeconds = 'best_solve_time_medium_seconds';
   static const keyBestSolveTimeHardSeconds = 'best_solve_time_hard_seconds';
   static const keyBestSolveTimeVeryHardSeconds =
       'best_solve_time_very_hard_seconds';
@@ -184,7 +183,7 @@ class PreferencesStore {
       return false;
     }
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(keyBackgroundMusicEnabled) ?? true;
+    return prefs.getBool(keyBackgroundMusicEnabled) ?? false;
   }
 
   Future<void> saveBackgroundMusicEnabled(bool value) async {

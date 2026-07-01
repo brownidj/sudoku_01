@@ -11,7 +11,7 @@ class SudokuVictoryPositionService {
   void onOverlayStateChanged({
     required VictoryOverlayState overlayState,
     required GlobalKey overlayStackKey,
-    required GlobalKey tilesPanelKey,
+    required GlobalKey boardKey,
     required GlobalKey bottomControlsKey,
     required bool Function() isMounted,
   }) {
@@ -27,7 +27,7 @@ class SudokuVictoryPositionService {
       }
       final next = _layoutService.midpointBetweenTilesAndBottomControls(
         overlayStackKey: overlayStackKey,
-        tilesPanelKey: tilesPanelKey,
+        boardKey: boardKey,
         bottomControlsKey: bottomControlsKey,
       );
       if (next == null || centerY.value == next) {

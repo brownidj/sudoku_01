@@ -22,6 +22,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
     required this.viewModel,
     required this.overlayStackKey,
     required this.tilesPanelKey,
+    required this.boardKey,
     required this.bottomControlsKey,
     required this.onDigitSelected,
     required this.onDigitLongPressed,
@@ -52,6 +53,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
   final SudokuScreenViewModel viewModel;
   final GlobalKey overlayStackKey;
   final GlobalKey tilesPanelKey;
+  final GlobalKey boardKey;
   final GlobalKey bottomControlsKey;
   final ValueChanged<int> onDigitSelected;
   final ValueChanged<int>? onDigitLongPressed;
@@ -95,6 +97,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
               showDebugNotification: viewModel.showDebugNotification,
               overlayStackKey: overlayStackKey,
               tilesPanelKey: tilesPanelKey,
+              boardKey: boardKey,
               bottomControlsKey: bottomControlsKey,
               onProgressPressed: onProgressPressed,
               onHelpPressed: onHelpPressed,
@@ -112,6 +115,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
               showVictoryOverlay: victoryState.visible,
               victoryAssetPath: victoryState.assetPath,
               victoryImageCenterY: centerY,
+              premiumCelebrationStyle: victoryState.premiumCelebrationStyle,
             );
           },
         );

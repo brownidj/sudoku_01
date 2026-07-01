@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
-import 'package:flutter_app/ui/widgets/sudoku_drawer_language_section.dart';
 
 class SudokuDrawerHeaderStyleSection extends StatelessWidget {
   final EdgeInsets sectionPadding;
@@ -32,17 +31,30 @@ class SudokuDrawerHeaderStyleSection extends StatelessWidget {
         const SizedBox(height: 4),
         const Divider(height: 8),
         Padding(
+          key: const ValueKey<String>('drawer-puzzle-style-section'),
           padding: sectionPadding,
           child: Text(
             UiStrings.drawerPuzzleStyleTitle(context),
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
         ),
-        ...[
-          UiStrings.styleModern(context),
-          UiStrings.styleClassic(context),
-          UiStrings.styleHighContrast(context),
-        ].map(_buildStyleOption),
+        RadioGroup<String>(
+          groupValue: selectedStyleName,
+          onChanged: (next) {
+            if (next != null) {
+              onStyleChanged(next);
+            }
+          },
+          child: Column(
+            children: [
+              ...[
+                UiStrings.styleModern(context),
+                UiStrings.styleClassic(context),
+                UiStrings.styleHighContrast(context),
+              ].map(_buildStyleOption),
+            ],
+          ),
+        ),
         const Divider(height: 8),
       ],
     );
@@ -52,15 +64,9 @@ class SudokuDrawerHeaderStyleSection extends StatelessWidget {
     return RadioListTile<String>(
       title: Text(value),
       value: value,
-      groupValue: selectedStyleName,
       dense: true,
       visualDensity: compactDensity,
       contentPadding: sectionPadding,
-      onChanged: (next) {
-        if (next != null) {
-          onStyleChanged(next);
-        }
-      },
     );
   }
 }
@@ -96,6 +102,7 @@ class SudokuDrawerAudioSection extends StatelessWidget {
     return Column(
       children: [
         ListTile(
+          key: const ValueKey<String>('drawer-audio-section'),
           contentPadding: sectionPadding,
           minVerticalPadding: 0,
           visualDensity: compactDensity,
@@ -112,14 +119,10 @@ class SudokuDrawerAudioSection extends StatelessWidget {
                     ? UiStrings.labelOn(context)
                     : UiStrings.labelOff(context),
               ),
-              Radio<bool?>(
-                value: true,
-                groupValue: audioEnabled ? true : null,
-                toggleable: true,
-                visualDensity: VisualDensity.compact,
-                onChanged: onAudioEnabledChanged == null
-                    ? null
-                    : (enabled) => onAudioEnabledChanged!(enabled == true),
+              Switch(
+                value: audioEnabled,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                onChanged: onAudioEnabledChanged,
               ),
             ],
           ),
@@ -135,13 +138,19 @@ class SudokuDrawerAudioSection extends StatelessWidget {
             dense: true,
             title: Text(
               UiStrings.drawerBackgroundMusicTitle(context),
-              style: TextStyle(fontWeight: FontWeight.w600, color: inactiveColor),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: inactiveColor,
+              ),
             ),
             subtitle: Padding(
               padding: const EdgeInsets.only(left: 12),
               child: Text(
                 UiStrings.drawerBackgroundMusicSubtitle(context),
-                style: TextStyle(fontStyle: FontStyle.italic, color: inactiveColor),
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: inactiveColor,
+                ),
               ),
             ),
             trailing: Row(
@@ -153,20 +162,20 @@ class SudokuDrawerAudioSection extends StatelessWidget {
                       : UiStrings.labelOff(context),
                   style: TextStyle(color: inactiveColor),
                 ),
-                Radio<bool?>(
-                  value: true,
-                  groupValue: backgroundMusicEnabled ? true : null,
-                  toggleable: true,
-                  visualDensity: VisualDensity.compact,
-                  onChanged: (!audioEnabled || onBackgroundMusicEnabledChanged == null)
+                Switch(
+                  value: backgroundMusicEnabled,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  onChanged:
+                      (!audioEnabled || onBackgroundMusicEnabledChanged == null)
                       ? null
-                      : (enabled) => onBackgroundMusicEnabledChanged!(enabled == true),
+                      : onBackgroundMusicEnabledChanged,
                 ),
               ],
             ),
             onTap: (!audioEnabled || onBackgroundMusicEnabledChanged == null)
                 ? null
-                : () => onBackgroundMusicEnabledChanged!(!backgroundMusicEnabled),
+                : () =>
+                      onBackgroundMusicEnabledChanged!(!backgroundMusicEnabled),
           ),
         ListTile(
           contentPadding: sectionPadding,

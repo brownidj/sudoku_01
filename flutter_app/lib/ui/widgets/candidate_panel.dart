@@ -34,7 +34,7 @@ class CandidatePanel extends StatelessWidget {
     }
 
     return Container(
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: Wrap(
         spacing: 8,
@@ -46,34 +46,19 @@ class CandidatePanel extends StatelessWidget {
                 return SizedBox(
                   width: 48,
                   height: 48,
-                  child: GestureDetector(
-                    onLongPressStart: contentMode != 'numbers'
-                        ? (_) {
-                            final name =
-                                AnimalImageCache.displayNameForDigitTitleCase(
-                                  contentMode,
-                                  digit,
-                                );
-                            final messenger = ScaffoldMessenger.of(context);
-                            messenger
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(SnackBar(content: Text(name)));
-                          }
-                        : null,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      backgroundColor:
+                          notesMode && selectedNotes.contains(digit)
+                          ? const Color(0xFFCFEFCD)
+                          : (showImages ? Colors.white : null),
+                    ),
                     onLongPress: onDigitLongPressed == null
                         ? null
                         : () => onDigitLongPressed!(digit),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        backgroundColor:
-                            notesMode && selectedNotes.contains(digit)
-                            ? const Color(0xFFCFEFCD)
-                            : (showImages ? Colors.white : null),
-                      ),
-                      onPressed: () => onDigitSelected(digit),
-                      child: _candidateOption(digit),
-                    ),
+                    onPressed: () => onDigitSelected(digit),
+                    child: _candidateOption(digit),
                   ),
                 );
               },
@@ -96,8 +81,7 @@ class CandidatePanel extends StatelessWidget {
     if (image == null) {
       return Text(AnimalImageCache.tileLabelForDigit(contentMode, digit));
     }
-    final optionHeight =
-        contentMode == 'animals' && digit == 5 ? 40.0 : 34.0;
+    final optionHeight = contentMode == 'animals' && digit == 5 ? 40.0 : 34.0;
     return SizedBox(
       width: 34,
       height: optionHeight,

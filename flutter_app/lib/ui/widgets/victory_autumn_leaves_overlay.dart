@@ -16,12 +16,12 @@ class _VictoryAutumnLeavesOverlayState extends State<VictoryAutumnLeavesOverlay>
   static const double _sequenceSeconds = 8.0;
   static const int _leafCount = 38;
   static const List<Color> _leafColors = <Color>[
-    Color(0xFFD2691E), // chocolate
-    Color(0xFFCD5C5C), // indian red
-    Color(0xFFB8860B), // dark goldenrod
-    Color(0xFF8B4513), // saddle brown
-    Color(0xFFCC7722), // ochre
-    Color(0xFFA0522D), // sienna
+    Color(0xFFE65100), // vivid burnt orange
+    Color(0xFFC62828), // deep autumn red
+    Color(0xFFF9A825), // bright golden amber
+    Color(0xFF6D4C41), // earthy umber
+    Color(0xFFE64A19), // rich orange-red
+    Color(0xFFAD1457), // berry-magenta accent
   ];
 
   final math.Random _random = math.Random(20260516);
@@ -31,15 +31,13 @@ class _VictoryAutumnLeavesOverlayState extends State<VictoryAutumnLeavesOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: _sequenceDuration,
-    )..forward();
+    _controller = AnimationController(vsync: this, duration: _sequenceDuration)
+      ..forward();
     _leaves = List<_LeafSpec>.generate(_leafCount, (_) {
       return _LeafSpec(
         x: _random.nextDouble(),
-        y: _random.nextDouble(),
-        size: 9 + _random.nextDouble() * 15,
+        y: -0.35 - (_random.nextDouble() * 0.65),
+        size: (9 + _random.nextDouble() * 15) * 2,
         color: _leafColors[_random.nextInt(_leafColors.length)],
         fallSpeed: 26 + _random.nextDouble() * 34,
         swayAmplitude: 10 + _random.nextDouble() * 24,
@@ -117,19 +115,24 @@ class _VictoryAutumnLeavesPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final seconds = progress * _VictoryAutumnLeavesOverlayState._sequenceSeconds;
+    final seconds =
+        progress * _VictoryAutumnLeavesOverlayState._sequenceSeconds;
     for (final leaf in leaves) {
       final startX = size.width * leaf.x;
       final startY = size.height * leaf.y;
-      final y = _wrap(startY + (leaf.fallSpeed * seconds), size.height + 50) - 25;
-      final x = startX +
+      final y =
+          _wrap(startY + (leaf.fallSpeed * seconds), size.height + 140) - 70;
+      final x =
+          startX +
           leaf.swayAmplitude *
               math.sin((seconds * leaf.swayFrequency) + leaf.swayPhase);
 
       final rx = leaf.rotatePhase + (seconds * leaf.rotateXSpeed);
       final ry = leaf.rotatePhase * 0.9 + (seconds * leaf.rotateYSpeed);
       final rz = leaf.rotatePhase * 1.1 + (seconds * leaf.rotateZSpeed);
-      final alpha = (0.58 + 0.35 * math.sin(ry).abs()).clamp(0.0, 1.0).toDouble();
+      final alpha = (0.58 + 0.35 * math.sin(ry).abs())
+          .clamp(0.0, 1.0)
+          .toDouble();
 
       canvas.save();
       canvas.translate(x, y);
@@ -158,15 +161,37 @@ class _VictoryAutumnLeavesPainter extends CustomPainter {
       ..close();
     final fill = Paint()..color = color;
     final glow = Paint()
-      ..color = color.withValues(alpha: color.a * 0.35)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.2);
+      ..color = color.withValues(alpha: color.a * 0.42)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 2.6);
     canvas.drawPath(path, glow);
     canvas.drawPath(path, fill);
-    final vein = Paint()
-      ..color = Colors.brown.withValues(alpha: color.a * 0.35)
-      ..strokeWidth = 0.9
+
+    final midVein = Paint()
+      ..color = const Color(0xFF4E342E).withValues(alpha: color.a * 0.78)
+      ..strokeWidth = (size * 0.06).clamp(1.8, 3.2)
+      ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
-    canvas.drawLine(Offset(0, -h * 0.42), Offset(0, h * 0.42), vein);
+    canvas.drawLine(Offset(0, -h * 0.44), Offset(0, h * 0.44), midVein);
+
+    final sideVein = Paint()
+      ..color = const Color(0xFF5D4037).withValues(alpha: color.a * 0.65)
+      ..strokeWidth = (size * 0.032).clamp(1.1, 2.0)
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+    final levels = <double>[-0.22, -0.08, 0.08, 0.22];
+    for (final t in levels) {
+      final y = h * t;
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(w * 0.3, y - h * 0.12 * (t.sign == 0 ? 1 : t.sign)),
+        sideVein,
+      );
+      canvas.drawLine(
+        Offset(0, y),
+        Offset(-w * 0.3, y - h * 0.12 * (t.sign == 0 ? 1 : t.sign)),
+        sideVein,
+      );
+    }
   }
 
   double _wrap(double value, double period) {

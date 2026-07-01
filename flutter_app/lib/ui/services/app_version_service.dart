@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

@@ -103,6 +103,7 @@ class GameController {
     _entitlement = await _entitlementSyncService.loadStartupEntitlement(
       fallback: _entitlement,
     );
+    _enforceContentModeForEntitlement();
     final progressMetrics = await _progressMetricsService.loadMetrics();
     _completedPuzzles = progressMetrics.completedPuzzles;
     _daysPlayed = progressMetrics.daysPlayed;

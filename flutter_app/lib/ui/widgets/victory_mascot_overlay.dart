@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 
 class VictoryMascotOverlay extends StatefulWidget {
   final String? assetPath;
@@ -18,33 +20,10 @@ class VictoryMascotOverlay extends StatefulWidget {
 
 class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
     with SingleTickerProviderStateMixin {
-  static const List<String> _celebrationPrefixes = <String>[
-    'Well done!',
-    'Great job!',
-    'You nailed it!',
-    'Brilliant finish!',
-    'Excellent work!',
-    'Nice one!',
-    'You did it!',
-    'Superb effort!',
-    'Proud of you!',
-    'Keep it up!',
-    'Amazing work!',
-    'Fantastic job!',
-    'Perfect solve!',
-    'Strong finish!',
-    'Clever thinking!',
-    'Sweet success!',
-    'Top effort!',
-    'Masterful play!',
-    'Winner mindset!',
-    'Outstanding result!',
-  ];
-
   late final AnimationController _swingController;
   late final Animation<double> _swingAngle;
-  final math.Random _random = math.Random();
-  late String _message;
+  final math.Random _random = math.Random(0);
+  late int _messageIndex;
 
   @override
   void initState() {
@@ -52,7 +31,7 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
     _swingController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 900),
-    )..repeat(reverse: true);
+    );
     _swingAngle =
         Tween<double>(
           begin: -10 * math.pi / 180,
@@ -60,7 +39,14 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
         ).animate(
           CurvedAnimation(parent: _swingController, curve: Curves.easeInOut),
         );
-    _message = _buildMessage();
+    if (ScreenshotMode.enabled && ScreenshotMode.isCelebration) {
+      _swingController.value = 0.5;
+    } else {
+      _swingController.repeat(reverse: true);
+    }
+    _messageIndex = ScreenshotMode.enabled && ScreenshotMode.isCelebration
+        ? 0
+        : _random.nextInt(20);
   }
 
   @override
@@ -70,18 +56,12 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
   }
 
   @override
-  void didUpdateWidget(covariant VictoryMascotOverlay oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.assetPath != oldWidget.assetPath && widget.assetPath != null) {
-      _message = _buildMessage();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (widget.assetPath == null || widget.centerY == null) {
       return const SizedBox.shrink();
     }
+    final messages = UiStrings.victoryCelebrationMessages(context);
+    final message = messages[_messageIndex % messages.length];
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -117,7 +97,7 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Text(
-                    _message,
+                    message,
                     style: TextStyle(
                       fontFamily: 'Arial',
                       fontFamilyFallback: <String>['Helvetica', 'sans-serif'],
@@ -133,11 +113,5 @@ class _VictoryMascotOverlayState extends State<VictoryMascotOverlay>
         );
       },
     );
-  }
-
-  String _buildMessage() {
-    final prefix =
-        _celebrationPrefixes[_random.nextInt(_celebrationPrefixes.length)];
-    return '$prefix Play again!';
   }
 }

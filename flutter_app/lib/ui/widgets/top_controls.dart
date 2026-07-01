@@ -40,6 +40,7 @@ class TopControls extends StatelessWidget {
                     'animals' => 'animals',
                     'instruments' => 'instruments',
                     'butterflies' => 'butterflies',
+                    'shells' => 'shells',
                     'old_opera' => 'old_opera',
                     'numbers' => 'numbers',
                     _ => 'animals',
@@ -64,6 +65,10 @@ class TopControls extends StatelessWidget {
                     DropdownMenuItem<String>(
                       value: 'butterflies',
                       child: Text(UiStrings.contentModeButterflies(context)),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'shells',
+                      child: Text(UiStrings.contentModeShells(context)),
                     ),
                     DropdownMenuItem<String>(
                       value: 'old_opera',

@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 enum Entitlement { free, premium }
 
 enum PremiumFeature {
@@ -42,7 +40,7 @@ class Cell {
   final Set<Digit> notes;
 
   Cell({required this.value, required this.given, required Set<Digit> notes})
-      : notes = Set.unmodifiable(notes) {
+    : notes = Set.unmodifiable(notes) {
     if (value != null && !isValidDigit(value!)) {
       throw ArgumentError('Cell value must be null or 1..9');
     }

@@ -135,9 +135,7 @@ class SudokuScreenFlowActions {
     if (!controller.isContentModeUnlocked(contentMode)) {
       await showPremiumFeatureLockedSheet(
         context: context,
-        featureLabel: _premiumPolicyService.labelForFeature(
-          PremiumFeature.extraThemes,
-        ),
+        featureLabel: _premiumPolicyService.labelForFeatureKey('extra_themes'),
         onUnlockPremium: () =>
             requestPremiumUnlock(context: context, controller: controller),
       );
@@ -177,6 +175,9 @@ class SudokuScreenFlowActions {
     required SudokuController controller,
   }) async {
     final result = await controller.buyPremium();
+    if (!context.mounted) {
+      return;
+    }
     if (kDebugMode && result == BillingActionResult.productUnavailable) {
       controller.onSetEntitlement(Entitlement.premium);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -201,6 +202,9 @@ class SudokuScreenFlowActions {
     required SudokuController controller,
   }) async {
     final result = await controller.restorePurchases();
+    if (!context.mounted) {
+      return;
+    }
     _showBillingResultMessage(
       context: context,
       result: result,
@@ -215,15 +219,27 @@ class SudokuScreenFlowActions {
     required String startedMessage,
     String? diagnostics,
   }) {
+    final normalizedDiagnostics = diagnostics?.toLowerCase() ?? '';
+    final suggestRestore =
+        result == BillingActionResult.failed &&
+        (normalizedDiagnostics.contains('already own') ||
+            normalizedDiagnostics.contains('already owned') ||
+            normalizedDiagnostics.contains('item already owned') ||
+            normalizedDiagnostics.contains('duplicate product object') ||
+            normalizedDiagnostics.contains(
+              'storekit_duplicate_product_object',
+            ));
     final baseMessage = switch (result) {
       BillingActionResult.started => startedMessage,
-      BillingActionResult.unavailable =>
-        UiStrings.billingUnavailable(context),
+      BillingActionResult.unavailable => UiStrings.billingUnavailable(context),
       BillingActionResult.productNotConfigured =>
         UiStrings.billingProductNotConfigured(context),
       BillingActionResult.productUnavailable =>
         UiStrings.billingProductUnavailable(context),
-      BillingActionResult.failed => UiStrings.billingFailed(context),
+      BillingActionResult.failed =>
+        suggestRestore
+            ? '${UiStrings.billingFailed(context)} If you already own Full Version, use Restore Purchases.'
+            : UiStrings.billingFailed(context),
     };
     final includeDiagnostics =
         result == BillingActionResult.productUnavailable ||

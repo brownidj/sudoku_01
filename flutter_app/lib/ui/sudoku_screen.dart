@@ -2,23 +2,29 @@ import 'dart:async';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_app/app/monetization_config.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
+import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/application/solver.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_flow_actions.dart';
 import 'package:flutter_app/ui/services/sudoku_screen_service_registry.dart';
 import 'package:flutter_app/ui/services/sudoku_start_instruction_overlay_service.dart';
+import 'package:flutter_app/ui/services/sudoku_victory_audio_service.dart';
 import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/help_dialog.dart';
 import 'package:flutter_app/ui/widgets/sudoku_game_content_builder.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 import 'package:flutter_app/ui/widgets/sudoku_version_app_bar.dart';
-
 part 'sudoku_screen_handlers.dart';
+part 'sudoku_screen_builders.dart';
+part 'sudoku_screen_screenshot_mode.dart';
+part 'sudoku_screen_screenshot_helpers.dart';
 
 class SudokuScreen extends StatefulWidget {
   const SudokuScreen({
@@ -41,13 +47,24 @@ class _SudokuScreenState extends State<SudokuScreen> {
       SudokuStartInstructionOverlayService();
   late final SudokuScreenServiceRegistry _services;
   Future<void>? _animalLoad;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey _overlayStackKey = GlobalKey();
   final GlobalKey _tilesPanelKey = GlobalKey();
+  final GlobalKey _boardKey = GlobalKey();
   final GlobalKey _bottomControlsKey = GlobalKey();
   bool _debugToolsEnabled = false;
   bool _audioEnabled = false;
+  bool _screenshotSceneApplied = false;
   bool _backgroundMusicEnabled = false;
   double _audioVolume = 0.4;
+
+  void _updateScreenState(VoidCallback updates) {
+    if (!mounted) {
+      return;
+    }
+    setState(updates);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -57,7 +74,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
       onVictoryOverlayChanged: () {
         _services.onVictoryOverlayChanged(
           overlayStackKey: _overlayStackKey,
-          tilesPanelKey: _tilesPanelKey,
+          boardKey: _boardKey,
           bottomControlsKey: _bottomControlsKey,
           isMounted: () => mounted,
         );
@@ -65,6 +82,11 @@ class _SudokuScreenState extends State<SudokuScreen> {
     );
     _ensureAnimalAssetsRequested(widget.controller.state.contentMode);
     _loadAudioPreferences();
+    if (ScreenshotMode.enabled && !ScreenshotMode.isHome) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        unawaited(_applyScreenshotSceneIfNeeded());
+      });
+    }
   }
 
   @override
@@ -93,11 +115,10 @@ class _SudokuScreenState extends State<SudokuScreen> {
           'animals' => state.animalStyle,
           'instruments' => 'instruments',
           'butterflies' => 'butterflies',
+          'shells' => 'shells',
           'old_opera' => 'old_opera',
           _ => null,
         };
-        final supportsBackgroundMusicTheme =
-            _premiumPolicy.isBackgroundMusicThemeMode(state.contentMode);
         final viewModel = SudokuScreenViewModel.from(
           state: state,
           coordinator: _services.candidatePanelCoordinator,
@@ -106,196 +127,31 @@ class _SudokuScreenState extends State<SudokuScreen> {
         );
         final style = styleForName(state.styleName);
         return Scaffold(
+          key: _scaffoldKey,
           appBar: SudokuVersionAppBar(
             onVersionTapped: _onVersionTapped,
-            onVersionLongPressed:
-                _services.interactionController.onVersionLongPressed,
             audioEnabled: _audioEnabled,
-            showMusicControls: supportsBackgroundMusicTheme,
+            showMusicControls: _premiumPolicy.isBackgroundMusicThemeMode(
+              state.contentMode,
+            ),
             backgroundMusicEnabled: _backgroundMusicEnabled,
             onMusicControlSingleTap: _onMusicControlSingleTap,
             onMusicControlDoubleTap: _onMusicControlDoubleTap,
             onPreviousTrackTapped: _onPreviousTrackTapped,
             onNextTrackTapped: _onNextTrackTapped,
           ),
-          drawer: SudokuDrawer(
-            state: state,
-            onAnimalStyleChanged: controller.onAnimalStyleChanged,
-            onStyleChanged: controller.onStyleChanged,
-            audioEnabled: _audioEnabled,
-            onAudioEnabledChanged: _onAudioEnabledChanged,
-            backgroundMusicEnabled: _backgroundMusicEnabled,
-            onBackgroundMusicEnabledChanged: _onBackgroundMusicEnabledChanged,
-            audioVolume: _audioVolume,
-            onAudioVolumeChanged: _onAudioVolumeChanged,
-            onPremiumFeatureSelected: (feature) {
-              Navigator.of(context).maybePop();
-              unawaited(
-                _flowActions.showPremiumFeatureLockedByKeySheet(
-                  context: context,
-                  featureKey: feature,
-                  onUnlockPremium: () => _flowActions.requestPremiumUnlock(
-                    context: context,
-                    controller: controller,
-                  ),
-                ),
-              );
-            },
-            onUnlockPremiumSelected: () {
-              Navigator.of(context).maybePop();
-              unawaited(
-                _flowActions.showPremiumFeatureLockedSheet(
-                  context: context,
-                  featureLabel: 'Full Version Features',
-                  onUnlockPremium: () => _flowActions.requestPremiumUnlock(
-                    context: context,
-                    controller: controller,
-                  ),
-                ),
-              );
-            },
-            onRestorePurchasesSelected: () {
-              Navigator.of(context).maybePop();
-              unawaited(
-                _flowActions.requestRestorePurchases(
-                  context: context,
-                  controller: controller,
-                ),
-              );
-            },
-            onLoadCorrectionScenario: () {
-              Navigator.of(context).maybePop();
-              controller.onLoadCorrectionScenario();
-            },
-            onLoadExhaustedCorrectionScenario: () {
-              Navigator.of(context).maybePop();
-              controller.onLoadExhaustedCorrectionScenario();
-            },
-            onResetEntitlementToFreeSelected: () {
-              if (!MonetizationConfig.enableResetToFreeDebugAction) {
-                return;
-              }
-              Navigator.of(context).maybePop();
-              controller.onSetEntitlement(Entitlement.free);
-            },
-            selectedLanguageCode: controller.preferredLanguageCode,
-            onLanguageChanged: (languageCode) {
-              Navigator.of(context).maybePop();
-              unawaited(controller.onPreferredLanguageChanged(languageCode));
-            },
-            onResetToSystemLanguage: () {
-              Navigator.of(context).maybePop();
-              unawaited(controller.onResetPreferredLanguageToSystem());
-            },
-            showDebugTools: viewModel.showDebugTools,
-            showResetEntitlementToFree:
-                MonetizationConfig.enableResetToFreeDebugAction,
+          drawer: _buildDrawer(
+            context: context,
+            controller: controller,
+            viewModel: viewModel,
           ),
-          body: SudokuGameContentBuilder(
-            victoryStateListenable: _services.victoryOverlayService.state,
-            victoryCenterYListenable: _services.victoryPositionService.centerY,
+          body: _buildGameContent(
+            context: context,
+            controller: controller,
             state: state,
             style: style,
-            animalImages: assetVariant == null
-                ? const {}
-                : (_animalImages[assetVariant] ?? const {}),
-            noteImagesBySize: assetVariant == null
-                ? const {}
-                : (_noteImages[assetVariant] ?? const {}),
-            devicePixelRatio: MediaQuery.of(context).devicePixelRatio,
+            assetVariant: assetVariant,
             viewModel: viewModel,
-            overlayStackKey: _overlayStackKey,
-            tilesPanelKey: _tilesPanelKey,
-            bottomControlsKey: _bottomControlsKey,
-            onDigitSelected:
-                _services.interactionController.onCandidateDigitSelected,
-            onDigitLongPressed: state.notesMode
-                ? _services.interactionController.onCandidateDigitLongPressed
-                : null,
-            onTapCell: (coord) async {
-              final state = widget.controller.state;
-              await _services.interactionController.onCellTapped(
-                state: state,
-                coord: coord,
-                animalLoad: _animalLoad,
-              );
-            },
-            onLongPressCell: (globalPosition, coord) {
-              _services.showCellTooltip(
-                context: context,
-                state: controller.state,
-                coord: coord,
-                globalPosition: globalPosition,
-              );
-            },
-            onProgressPressed: () {
-              unawaited(
-                _flowActions.showProgressSheet(
-                  context: context,
-                  showExtendedMetrics: state.premiumActive,
-                  completedPuzzles: widget.controller.completedPuzzles,
-                  daysPlayed: widget.controller.daysPlayed,
-                  streak: widget.controller.streak,
-                  bestSolveTimeSecondsByDifficulty:
-                      widget.controller.bestSolveTimeSecondsByDifficulty,
-                  onResetProgressMetrics: widget.controller.resetProgressMetrics,
-                ),
-              );
-            },
-            onHelpPressed: () => showSudokuHelpDialog(context),
-            onContentModeChanged: (mode) {
-              unawaited(
-                _flowActions.requestContentModeChange(
-                  context: context,
-                  controller: controller,
-                  contentMode: mode,
-                ),
-              );
-            },
-            onConfigurationLockTapped: () {
-              unawaited(
-                _flowActions.showLockedSettingsSheet(
-                  context: context,
-                  controller: controller,
-                ),
-              );
-            },
-            onConfigurationLockDoubleTapped: () {
-              unawaited(
-                _flowActions.requestUnlockByStartingNewGame(
-                  context: context,
-                  isMounted: () => mounted,
-                  controller: controller,
-                ),
-              );
-            },
-            onPuzzleModeChanged: (mode) {
-              unawaited(
-                _flowActions.requestPuzzleModeChange(
-                  context: context,
-                  isMounted: () => mounted,
-                  controller: widget.controller,
-                  mode: mode,
-                ),
-              );
-            },
-            onSetDifficulty: (difficulty) {
-              unawaited(
-                _flowActions.requestDifficultyChange(
-                  context: context,
-                  isMounted: () => mounted,
-                  controller: widget.controller,
-                  difficulty: difficulty,
-                ),
-              );
-            },
-            onStyleChanged: controller.onStyleChanged,
-            onUndo: controller.onUndo,
-            onToggleNotesMode: controller.onToggleNotesMode,
-            onClear: controller.onClearPressed,
-            onCheckOrSolution: () => _services.interactionController
-                .onCheckOrSolutionPressed(controller.state),
-            onNewGamePressed: _onNewGamePressed,
           ),
         );
       },

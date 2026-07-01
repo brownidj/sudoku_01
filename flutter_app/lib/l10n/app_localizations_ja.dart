@@ -21,7 +21,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get actionNotes => 'メモ';
 
   @override
-  String get actionNewGame => '新しいゲーム';
+  String get actionNewShort => '新規';
+
+  @override
+  String get actionNewGame => '新しい\nゲーム';
 
   @override
   String get actionPlay => 'プレイ';
@@ -36,19 +39,24 @@ class AppLocalizationsJa extends AppLocalizations {
   String get actionPleaseWait => 'しばらくお待ちください...';
 
   @override
-  String get tooltipNewGame => '新しいゲームを開始します。';
+  String get tooltipNewGame => 'ここを押すと新しいゲームが始まります。';
 
   @override
-  String get tooltipUndo => '以前の選択を取り消して戻ります。修正がなくなった場合にも使えます。';
+  String get tooltipUndo => '「戻す」で直前の手を取り消せます。修正がなくなったときにも使えます。';
 
   @override
   String get tooltipClear => '現在選択中のタイルをクリアします。自分で入力したタイルのみクリアできます。';
 
   @override
-  String get tooltipNotes => 'メモは、確信がないときに候補を残すために使います。候補は緑で表示されます。もう一度メモを押すと解除されます。';
+  String get tooltipNotes => '迷ったときは「メモ」で候補を残せます。候補は緑で表示されます。もう一度押すとオフになります。';
 
   @override
-  String get tooltipDifficulty => '毎日のペースに合った難易度を選んでください。';
+  String get tooltipDifficulty => '自分に合った難易度を選んでください。';
+
+  @override
+  String candidateLongPressToast(int digit) {
+    return '候補 $digit';
+  }
 
   @override
   String labelCorrections(int count) {
@@ -62,7 +70,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String tooltipCorrections(int limit) {
-    return 'このパズルでは自動修正を $limit 回使えます。以前の手で進行不能になった場合、修正で続行できます。修正がなくなったら Undo を使ってください。';
+    return 'このパズルでは自動修正を $limit 回使えます。前の手で行き詰まったら、修正で先に進めます。なくなったら「戻す」を使ってください。';
   }
 
   @override
@@ -84,7 +92,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get helpDismiss => 'OK';
 
   @override
-  String get helpBody => 'ゲーム画面には、少し分かりにくい項目があります。\n\nそれらを**長押し**すると説明が表示されます。\n\n例えば **修正** は、自動修正の残り回数です。以前の手で有効な選択肢がなくなった場合、修正が行き詰まりを自動で修正して、続けて遊べます。\n\n**Undo** を使うと、以前の選択を1つずつ取り消せます。修正がなくなったときにも使えます。';
+  String get helpBody =>
+      'ゲーム画面には、最初は少し分かりにくいところがあります。\n\n気になるところを**長押し**すると説明が出ます。\n\nたとえば **修正** では、自動修正の残り回数が分かります。前の手で行き詰まってしまったときは、修正でその場を直して先に進めます。\n\n**戻す** を使うと、直前の手を1つずつ取り消せます。修正がなくなったときにも便利です。';
 
   @override
   String get startInstruction => '開始するには、アイコンを入れたいマスを選んでください。\n';
@@ -93,10 +102,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get launchTitlePrefix => 'The Angry Grannies がお届け';
 
   @override
-  String get launchTitle => 'SuDoKu Playtime';
+  String get launchTitle => 'SuDoKu Fresh';
 
   @override
-  String get launchSubtitle => 'あせらずに、パズルを楽しみながら頭を活性化しましょう。';
+  String get appBrandIos => 'SuDoKu Playtime';
+
+  @override
+  String get appBrandAndroid => 'SuDoKu Fresh';
+
+  @override
+  String get launchSubtitle => 'リラックスできる絵柄の数独';
 
   @override
   String get launchErrorOpenGame => 'ゲームを開けませんでした。もう一度お試しください。';
@@ -111,34 +126,94 @@ class AppLocalizationsJa extends AppLocalizations {
   String get tooltipNextHint => '次のヒント';
 
   @override
-  String get launchHint1 => 'メモは、確信がないときに候補を残すために使います。候補は緑で表示されます。もう一度メモを押すと解除されます。';
+  String get launchHint1 => '「メモ」を押すと候補を書き残せます。もう一度押すとオフになります。';
 
   @override
-  String get launchHint2 => '機能の説明を見るには、数秒間長押ししてください。値が入ったタイルでも試してみてください。';
+  String get launchHint2 => '長押しすると、何ができるか説明が出ます。まずはタイルでも試してみてください。';
 
   @override
-  String get launchHint3 => '選択によってピンクのタイルが2つ以上出る場合、どこかでミスしています。自動修正の回数には制限があります。';
+  String get launchHint3 => '選んだあとにピンクのタイルが2つ以上出たら、前にミスがあります。自動修正できます。';
 
   @override
   String get launchHint4 => 'ゲーム中に難易度を変更すると、新しいゲームが始まります。';
 
   @override
-  String get launchHint5 => '遊び方の情報は Help を押してください。';
+  String get launchHint5 => '遊び方を知りたいときは「ヘルプ」を押してください。';
 
   @override
-  String get launchHint6 => '右上の ☰ を押すと、各種設定メニューを開けます。';
+  String get launchHint6 => '右上の ☰ を押すとメニューが開きます。';
 
   @override
   String get launchHint7 => '音が気になる場合は、ドロワー（☰）で Audio をオフにできます。';
 
   @override
-  String get launchHint8 => '音楽アイコンを1回押すとBGMオフ、すばやく2回押すとオンになります。';
+  String get launchHint8 => '音楽アイコンを1回押すとBGMがオフ、すばやく2回押すとまたオンになります。';
 
   @override
   String get launchHint9 => 'サイコロで新しいゲームを開始します。';
 
   @override
-  String get launchHint10 => 'フルバージョンを購入済みなのにアップデート後に反映されない場合は、メニューの「購入を復元」を使ってください。';
+  String get launchHint10 => 'フルバージョンを買ったのに反映されないときは、メニューの「購入を復元」を使ってください。';
+
+  @override
+  String get victoryMessage1 => 'よくできました！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage2 => 'すばらしい！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage3 => 'やったね！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage4 => '見事なフィニッシュ！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage5 => '最高の出来です！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage6 => 'いいね！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage7 => 'できました！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage8 => 'がんばったね！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage9 => '誇らしいね！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage10 => 'その調子！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage11 => 'すごい出来！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage12 => 'ファンタスティック！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage13 => '完ぺきなクリア！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage14 => '力強い締めくくり！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage15 => 'さえていたね！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage16 => '気持ちいい成功！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage17 => '最高のがんばり！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage18 => '見事なプレイ！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage19 => '勝者の気持ちだね！ もう一度あそぼう！';
+
+  @override
+  String get victoryMessage20 => 'すばらしい結果！ もう一度あそぼう！';
 
   @override
   String get dialogActionCancel => 'キャンセル';
@@ -153,7 +228,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dialogUnlockSettingsTitle => '設定を解除しますか？';
 
   @override
-  String get dialogUnlockSettingsMessage => '難易度のロック解除には新しいゲームの開始と盤面リセットが必要です。続行しますか？';
+  String get dialogUnlockSettingsMessage =>
+      '難易度を解除すると新しいゲームが始まり、この盤面はリセットされます。続けますか？';
 
   @override
   String get dialogStartNewGameTitle => '新しいゲームを開始しますか？';
@@ -164,13 +240,14 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get dialogStartNewGameResetBoard => '新しいゲームを開始してこの盤面をリセットしますか？';
+  String get dialogStartNewGameResetBoard => '新しいゲームを始めて、今の盤面をリセットしますか？';
 
   @override
   String get labelLockedSettingsTitle => '盤面設定はロック中です';
 
   @override
-  String get labelLockedSettingsMessage => 'ゲーム中は難易度がロックされます。解除するにはロックアイコンをダブルタップするか「New Game」を開始してください。';
+  String get labelLockedSettingsMessage =>
+      'ゲーム中は難易度がロックされます。解除するにはロックをダブルタップするか、新しいゲームを始めてください。';
 
   @override
   String get progressSheetTitle => '進行状況';
@@ -213,7 +290,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get progressResetDialogTitle => '進行状況をリセットしますか？';
 
   @override
-  String get progressResetDialogMessage => '「進み具合は？」のデータは失われます。';
+  String get progressResetDialogMessage => 'これまでの進行状況はすべて消えます。';
 
   @override
   String get dialogActionOk => 'OK';
@@ -225,21 +302,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get correctionPromptMessage => '以前の手によりこの盤面は解けません。修正を1回使いますか？';
 
   @override
-  String get premiumFeatureIntroGeneric => 'Full Version を購入すると、数独の全機能を一度の購入で利用できます。';
+  String get premiumFeatureIntroGeneric => 'フルバージョンなら、SuDoKuを一度の購入でたっぷり楽しめます。';
 
   @override
   String premiumFeatureIntroNamed(String featureLabel) {
-    return '$featureLabel は Full Version で利用できます。';
+    return '$featureLabel はフルバージョンで使えます。';
   }
 
   @override
-  String get premiumSheetTitle => 'Full Version を解除';
+  String get premiumSheetTitle => 'フルバージョンを解除';
 
   @override
-  String get premiumIncludesTitle => 'Full Version に含まれる内容:';
+  String get premiumIncludesTitle => 'フルバージョンに含まれる内容:';
 
   @override
-  String get premiumIncludesHardDifficulties => '• Hard / Nigh Impossible の難易度';
+  String get premiumIncludesHardDifficulties => '• 高難度・超難問レベル';
 
   @override
   String get premiumIncludesProgress => '• 進捗トラッキングと自己ベスト';
@@ -254,28 +331,29 @@ class AppLocalizationsJa extends AppLocalizations {
   String get premiumActionNotNow => '今はしない';
 
   @override
-  String get premiumActionUnlock => 'Full Version を解除';
+  String get premiumActionUnlock => 'フルバージョンを解除';
 
   @override
-  String get purchaseStartedMessage => 'App Store の購入ダイアログで確認すると Full Version が解除されます。';
+  String get purchaseStartedMessage =>
+      'App Store の購入ダイアログで確認するとフルバージョンが解除されます。';
 
   @override
-  String get restoreStartedMessage => '復元を開始しました。購入済み項目はまもなく再表示されます。';
+  String get restoreStartedMessage => '復元を開始しました。購入した内容はまもなく戻ります。';
 
   @override
-  String get billingUnavailable => 'この端末では現在購入機能を利用できません。';
+  String get billingUnavailable => 'この端末では今は購入できません。';
 
   @override
-  String get billingProductNotConfigured => 'Full Version はまだ設定されていません。後でもう一度お試しください。';
+  String get billingProductNotConfigured => 'フルバージョンはまだ使えません。あとでもう一度試してください。';
 
   @override
-  String get billingProductUnavailable => 'Full Version の商品情報を取得できませんでした。もう一度お試しください。';
+  String get billingProductUnavailable => 'フルバージョンの情報を読み込めませんでした。もう一度試してください。';
 
   @override
   String get billingFailed => '処理に失敗しました。もう一度お試しください。';
 
   @override
-  String get drawerTitle => 'SuDoKu Playtime';
+  String get drawerTitle => 'SuDoKu Fresh';
 
   @override
   String get drawerPuzzleStyleTitle => 'パズルスタイル';
@@ -302,7 +380,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get drawerBackgroundMusicTitle => 'BGM';
 
   @override
-  String get drawerBackgroundMusicSubtitle => 'SuDoKu が好きな人のためのサウンド';
+  String get drawerBackgroundMusicSubtitle => 'ゆったり遊べるBGM';
+
+  @override
+  String get musicControlsTooltip =>
+      'ここでBGMを切り替えられます。1回押すとオフ、すばやく2回押すとまたオンになります。< と > で前の曲と次の曲に切り替えられます。';
 
   @override
   String get drawerVolumeTitle => '音量';
@@ -335,7 +417,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get drawerPremiumSoundsSubtitle => '追加サウンドと演出を解除します。';
 
   @override
-  String get drawerUnlockFullVersion => 'Full Version を解除';
+  String get drawerUnlockFullVersion => 'フルバージョンを解除';
 
   @override
   String get drawerRestorePurchases => '購入を復元';
@@ -348,7 +430,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String drawerAboutMessage(String versionLabel) {
-    return 'バージョン: $versionLabel\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy';
+    return 'バージョン: $versionLabel\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy\n\n開発チームには芸術家も音楽家もいません。このコンテンツの制作にAIを使ったことは、私たちも率直に認めます。私たちはみなかなり年配ですが、届くところまで自分たちの創造性を表現できる機会を大切にしています！';
   }
 
   @override
@@ -367,10 +449,11 @@ class AppLocalizationsJa extends AppLocalizations {
   String get drawerDebugLoadExhaustedSubtitle => 'Undo のみ回復テスト用の一時コントロールです。';
 
   @override
-  String get drawerDebugResetEntitlementTitle => 'Full Version をリセット（デバッグ）';
+  String get drawerDebugResetEntitlementTitle => 'フルバージョンをリセット（デバッグ）';
 
   @override
-  String get drawerDebugResetEntitlementSubtitle => '購入再テスト用にローカル権限を Free に戻します。';
+  String get drawerDebugResetEntitlementSubtitle =>
+      '購入再テスト用にローカル権限を Free に戻します。';
 
   @override
   String get contentModeAnimals => '動物（やさしい）';
@@ -382,10 +465,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get contentModeButterflies => '蝶（きれい）';
 
   @override
+  String get contentModeShells => '貝殻（新）';
+
+  @override
   String get contentModeOpera => 'オペラ（独特）';
 
   @override
   String get contentModeNumbers => '数字（クラシック）';
+
+  @override
+  String get appBarMenuTooltip => 'ここを押すとドロワーが開きます。ドロワーメニューで動物やスタイルを変更できます。';
 
   @override
   String get topControlsProgress => '進み具合は？';
@@ -432,10 +521,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get statusDifficultyChangeBlocked => '難易度を変更するには、現在のゲームを終了するか新しいゲームを開始してください';
+  String get statusDifficultyChangeBlocked =>
+      '難易度を変更するには、現在のゲームを終了するか新しいゲームを開始してください';
 
   @override
-  String get statusDifficultyPremiumOnly => 'この難易度は Full Version で利用できます。';
+  String get statusDifficultyPremiumOnly => 'この難易度はフルバージョンで利用できます。';
 
   @override
   String get statusPuzzleModeUnique => 'パズルモード: unique';

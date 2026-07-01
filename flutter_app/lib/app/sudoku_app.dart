@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_app/app/in_app_purchase_billing_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
@@ -53,6 +54,7 @@ class _SudokuAppState extends State<SudokuApp> with WidgetsBindingObserver {
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) => MaterialApp(
+        debugShowCheckedModeBanner: !ScreenshotMode.enabled,
         onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
         localizationsDelegates: const [
           AppLocalizations.delegate,

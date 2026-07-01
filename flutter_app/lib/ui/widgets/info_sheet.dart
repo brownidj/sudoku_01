@@ -31,6 +31,7 @@ Future<void> showInfoSheet({
               Align(
                 alignment: Alignment.centerRight,
                 child: FilledButton(
+                  key: const ValueKey<String>('info-sheet-dismiss-button'),
                   onPressed: () => Navigator.of(context).pop(),
                   child: Text(UiStrings.infoSheetDismiss(context)),
                 ),

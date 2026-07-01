@@ -21,7 +21,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actionNotes => 'Notes';
 
   @override
-  String get actionNewGame => 'New Game';
+  String get actionNewShort => 'New';
+
+  @override
+  String get actionNewGame => 'New\nGame';
 
   @override
   String get actionPlay => 'Play';
@@ -39,16 +42,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltipNewGame => 'Press this to start a new game.';
 
   @override
-  String get tooltipUndo => 'Use Undo to step back and clear selections you made previously. You can also use this if you run out of Corrections';
+  String get tooltipUndo =>
+      'Use Undo to step back and clear selections you made previously. You can also use this if you run out of Corrections';
 
   @override
-  String get tooltipClear => 'Use this to clear a currently selected tile. You can only clear tiles that you have filled.';
+  String get tooltipClear =>
+      'Use this to clear a currently selected tile. You can only clear tiles that you have filled.';
 
   @override
-  String get tooltipNotes => 'Notes allows you to add little reminders of possibilities if you\'re not sure. Your options are shown in green. Press Notes again to switch them off.';
+  String get tooltipNotes =>
+      'Notes allows you to add little reminders of possibilities if you\'re not sure. Your options are shown in green. Press Notes again to switch them off.';
 
   @override
-  String get tooltipDifficulty => 'Choose the challenge level that allows you to make steady daily progress.';
+  String get tooltipDifficulty =>
+      'Choose the challenge level that allows you to make steady daily progress.';
+
+  @override
+  String candidateLongPressToast(int digit) {
+    return 'Candidate $digit';
+  }
 
   @override
   String labelCorrections(int count) {
@@ -84,19 +96,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get helpDismiss => 'OK';
 
   @override
-  String get helpBody => 'There are ***some things*** on the game screen that are a bit mysterious.\n\nTry **holding your finger** for a couple of seconds on those to see an explanation.\n\nFor example, **Corrections** shows the number of automatic corrections you have left. If an earlier move results in there being no valid option, Corrections can automatically fix that dead end and let you keep playing.\n\nUse **Undo** to step back through the selections you made previously. Doing so clears those, one at a time. You can also do this if you run out of Corrections.';
+  String get helpBody =>
+      'There are ***some things*** on the game screen that are a bit mysterious.\n\nTry **holding your finger** for a couple of seconds on those to see an explanation.\n\nFor example, **Corrections** shows the number of automatic corrections you have left. If an earlier move results in there being no valid option, Corrections can automatically fix that dead end and let you keep playing.\n\nUse **Undo** to step back through the selections you made previously. Doing so clears those, one at a time. You can also do this if you run out of Corrections.';
 
   @override
-  String get startInstruction => 'To start, select a square you want to add an icon to.\n';
+  String get startInstruction =>
+      'To start, select a square you want to add an icon to.\n';
 
   @override
   String get launchTitlePrefix => 'The Angry Grannies bring you';
 
   @override
-  String get launchTitle => 'SuDoKu Playtime';
+  String get launchTitle => 'SuDoKu Fresh';
 
   @override
-  String get launchSubtitle => 'Take your time, enjoy each puzzle and keep your mind active.';
+  String get appBrandIos => 'SuDoKu Playtime';
+
+  @override
+  String get appBrandAndroid => 'SuDoKu Fresh';
+
+  @override
+  String get launchSubtitle => 'Relaxing picture Sudoku';
 
   @override
   String get launchErrorOpenGame => 'Could not open game. Please try again.';
@@ -111,34 +131,103 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltipNextHint => 'Next hint';
 
   @override
-  String get launchHint1 => 'Notes allows you to add little reminders of possibilities if you\'re not sure. Your options are shown in green. Press Notes again to switch them off.';
+  String get launchHint1 =>
+      'Pressing Notes allows you to add reminders of possibilities. Press Notes again to switch them off.';
 
   @override
-  String get launchHint2 => 'Use a long-press, (hold your finger down for a couple of seconds), to understand what somethings do. Also, try it on a tile that has been filled in.';
+  String get launchHint2 =>
+      'Use a long-press, (finger press for two seconds), to understand what some things do. Try it on a tile image.';
 
   @override
-  String get launchHint3 => 'If your choice leads to two or more tiles being coloured pink, you\'ve made a mistake at some point. You have a limited number of auto-corrections.';
+  String get launchHint3 =>
+      'If your choice leads to two or more pink tiles, you\'ve made an earlier mistake. You can auto-correct.';
 
   @override
-  String get launchHint4 => 'Changing difficulty during a game will start a new game.';
+  String get launchHint4 =>
+      'Changing difficulty during a game will start a new game.';
 
   @override
-  String get launchHint5 => 'Press Help to get some information about how to play the game.';
+  String get launchHint5 =>
+      'Press Help to get some information about how to play the game.';
 
   @override
-  String get launchHint6 => 'Pressing ☰ (top right) opens a drawer that allows you to make some selections.';
+  String get launchHint6 =>
+      'Pressing ☰ (top right) opens a drawer that allows you to make some selections.';
 
   @override
-  String get launchHint7 => 'If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).';
+  String get launchHint7 =>
+      'If the sounds annoy you or you want to play the game quietly, you can switch Audio off in the drawer (☰).';
 
   @override
-  String get launchHint8 => 'Press the music icon once to turn the background music off or twice, in quick succession, to turn it on.';
+  String get launchHint8 =>
+      'Press the music icon once to turn the background music off or twice, in quick succession, to turn it on.';
 
   @override
   String get launchHint9 => 'The dice starts a new game.';
 
   @override
-  String get launchHint10 => 'If you\'ve purchased the full version and it doesn\'t show up after an update, use \'Restore Purchases\' from the drawer.';
+  String get launchHint10 =>
+      'If you\'ve purchased the full version and it doesn\'t show up, use \'Restore Purchases\' from the drawer.';
+
+  @override
+  String get victoryMessage1 => 'Well done! Play again!';
+
+  @override
+  String get victoryMessage2 => 'Great job! Play again!';
+
+  @override
+  String get victoryMessage3 => 'You nailed it! Play again!';
+
+  @override
+  String get victoryMessage4 => 'Brilliant finish! Play again!';
+
+  @override
+  String get victoryMessage5 => 'Excellent work! Play again!';
+
+  @override
+  String get victoryMessage6 => 'Nice one! Play again!';
+
+  @override
+  String get victoryMessage7 => 'You did it! Play again!';
+
+  @override
+  String get victoryMessage8 => 'Superb effort! Play again!';
+
+  @override
+  String get victoryMessage9 => 'Proud of you! Play again!';
+
+  @override
+  String get victoryMessage10 => 'Keep it up! Play again!';
+
+  @override
+  String get victoryMessage11 => 'Amazing work! Play again!';
+
+  @override
+  String get victoryMessage12 => 'Fantastic job! Play again!';
+
+  @override
+  String get victoryMessage13 => 'Perfect solve! Play again!';
+
+  @override
+  String get victoryMessage14 => 'Strong finish! Play again!';
+
+  @override
+  String get victoryMessage15 => 'Clever thinking! Play again!';
+
+  @override
+  String get victoryMessage16 => 'Sweet success! Play again!';
+
+  @override
+  String get victoryMessage17 => 'Top effort! Play again!';
+
+  @override
+  String get victoryMessage18 => 'Masterful play! Play again!';
+
+  @override
+  String get victoryMessage19 => 'Winner mindset! Play again!';
+
+  @override
+  String get victoryMessage20 => 'Outstanding result! Play again!';
 
   @override
   String get dialogActionCancel => 'Cancel';
@@ -153,7 +242,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogUnlockSettingsTitle => 'Unlock Settings?';
 
   @override
-  String get dialogUnlockSettingsMessage => 'Unlocking difficulty will start a new game and reset this board. Continue?';
+  String get dialogUnlockSettingsMessage =>
+      'Unlocking difficulty will start a new game and reset this board. Continue?';
 
   @override
   String get dialogStartNewGameTitle => 'Start New Game?';
@@ -164,13 +254,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get dialogStartNewGameResetBoard => 'Start a fresh game and reset this board?';
+  String get dialogStartNewGameResetBoard =>
+      'Start a fresh game and reset this board?';
 
   @override
   String get labelLockedSettingsTitle => 'Board Settings Locked';
 
   @override
-  String get labelLockedSettingsMessage => 'Difficulty is locked during a game. To unlock it, either double-tap the lock icon or start a \'New Game\'';
+  String get labelLockedSettingsMessage =>
+      'Difficulty is locked during a game. To unlock it, either double-tap the lock icon or start a \'New Game\'';
 
   @override
   String get progressSheetTitle => 'Your Progress';
@@ -213,19 +305,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get progressResetDialogTitle => 'Reset progress?';
 
   @override
-  String get progressResetDialogMessage => 'Your \'How am I doing?\' data will be lost.';
+  String get progressResetDialogMessage =>
+      'Your \'How am I doing?\' data will be lost.';
 
   @override
   String get dialogActionOk => 'OK';
 
   @override
-  String get audioUnavailableTile => 'Audio is not available for this tile yet.';
+  String get audioUnavailableTile =>
+      'Audio is not available for this tile yet.';
 
   @override
-  String get correctionPromptMessage => 'This board is unsatisfiable from an earlier move. Use 1 correction?';
+  String get correctionPromptMessage =>
+      'This board is unsatisfiable from an earlier move. Use 1 correction?';
 
   @override
-  String get premiumFeatureIntroGeneric => 'Full Version gives you the full Sudoku experience in one purchase.';
+  String get premiumFeatureIntroGeneric =>
+      'Full Version gives you the full Sudoku experience in one purchase.';
 
   @override
   String premiumFeatureIntroNamed(String featureLabel) {
@@ -239,13 +335,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumIncludesTitle => 'Full Version includes:';
 
   @override
-  String get premiumIncludesHardDifficulties => '• Hard and Nigh Impossible difficulties';
+  String get premiumIncludesHardDifficulties =>
+      '• Hard and Nigh Impossible difficulties';
 
   @override
-  String get premiumIncludesProgress => '• Progress tracking and personal bests';
+  String get premiumIncludesProgress =>
+      '• Progress tracking and personal bests';
 
   @override
-  String get premiumIncludesThemesSounds => '• Extra themes, sounds, and celebrations';
+  String get premiumIncludesThemesSounds =>
+      '• Extra themes, sounds, and celebrations';
 
   @override
   String get premiumOneTimePurchase => 'One-time purchase. No subscription.';
@@ -257,25 +356,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get premiumActionUnlock => 'Unlock Full Version';
 
   @override
-  String get purchaseStartedMessage => 'Confirm the purchase in the App Store dialog to unlock Full Version.';
+  String get purchaseStartedMessage =>
+      'Confirm the purchase in the App Store dialog to unlock Full Version.';
 
   @override
-  String get restoreStartedMessage => 'Restore started. Purchased items will reappear shortly.';
+  String get restoreStartedMessage =>
+      'Restore started. Purchased items will reappear shortly.';
 
   @override
-  String get billingUnavailable => 'Purchases are unavailable on this device right now.';
+  String get billingUnavailable =>
+      'Purchases are unavailable on this device right now.';
 
   @override
-  String get billingProductNotConfigured => 'Full Version is not configured yet. Please try again later.';
+  String get billingProductNotConfigured =>
+      'Full Version is not configured yet. Please try again later.';
 
   @override
-  String get billingProductUnavailable => 'Full Version product details could not be loaded. Please try again.';
+  String get billingProductUnavailable =>
+      'Full Version product details could not be loaded. Please try again.';
 
   @override
   String get billingFailed => 'That did not work. Please try again.';
 
   @override
-  String get drawerTitle => 'SuDoKu Playtime';
+  String get drawerTitle => 'SuDoKu Fresh';
 
   @override
   String get drawerPuzzleStyleTitle => 'Puzzle Style';
@@ -305,6 +409,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerBackgroundMusicSubtitle => 'Sounds for SuDoKu lovers';
 
   @override
+  String get musicControlsTooltip =>
+      'Should the mood take you, here\'s some theme-inspired background music. Press once to turn it off, twice in quick succession to turn it on. Use the < and > for Previous and Next.';
+
+  @override
   String get drawerVolumeTitle => 'Volume';
 
   @override
@@ -320,7 +428,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerPremiumProgressTitle => 'Progress Tracker 🔒';
 
   @override
-  String get drawerPremiumProgressSubtitle => 'Track completed puzzles and milestones.';
+  String get drawerPremiumProgressSubtitle =>
+      'Track completed puzzles and milestones.';
 
   @override
   String get drawerPremiumThemesTitle => 'Extra Themes 🔒';
@@ -332,7 +441,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerPremiumSoundsTitle => 'Sounds & Celebrations 🔒';
 
   @override
-  String get drawerPremiumSoundsSubtitle => 'Unlock extra sounds and celebrations.';
+  String get drawerPremiumSoundsSubtitle =>
+      'Unlock extra sounds and celebrations.';
 
   @override
   String get drawerUnlockFullVersion => 'Unlock Full Version';
@@ -348,7 +458,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String drawerAboutMessage(String versionLabel) {
-    return 'Version: $versionLabel\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy';
+    return 'Version: $versionLabel\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy\n\nNone of the Dev Team are artists or musicians. We freely admit we have used AI to create this content. We are all ancient; we value the opportunity to express our creativity in as far as it goes!';
   }
 
   @override
@@ -358,19 +468,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawerDebugLoadCorrectionTitle => 'Load Correction Scenario';
 
   @override
-  String get drawerDebugLoadCorrectionSubtitle => 'Temporary control for assisted-recovery testing.';
+  String get drawerDebugLoadCorrectionSubtitle =>
+      'Temporary control for assisted-recovery testing.';
 
   @override
-  String get drawerDebugLoadExhaustedTitle => 'Load Exhausted Correction Scenario';
+  String get drawerDebugLoadExhaustedTitle =>
+      'Load Exhausted Correction Scenario';
 
   @override
-  String get drawerDebugLoadExhaustedSubtitle => 'Temporary control for undo-only recovery testing.';
+  String get drawerDebugLoadExhaustedSubtitle =>
+      'Temporary control for undo-only recovery testing.';
 
   @override
   String get drawerDebugResetEntitlementTitle => 'Reset Full Version (Debug)';
 
   @override
-  String get drawerDebugResetEntitlementSubtitle => 'Sets local entitlement to Free for purchase retesting.';
+  String get drawerDebugResetEntitlementSubtitle =>
+      'Sets local entitlement to Free for purchase retesting.';
 
   @override
   String get contentModeAnimals => 'Animals (easy)';
@@ -382,10 +496,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contentModeButterflies => 'Butterflies (pretty!)';
 
   @override
+  String get contentModeShells => 'Shells (new!)';
+
+  @override
   String get contentModeOpera => 'Opera (unreal!)';
 
   @override
   String get contentModeNumbers => 'Numbers (old-school)';
+
+  @override
+  String get appBarMenuTooltip =>
+      'Press this to open a drawer. Use the drawer menu to change animals and style.';
 
   @override
   String get topControlsProgress => 'How am I doing?';
@@ -432,10 +553,12 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get statusDifficultyChangeBlocked => 'Finish or start a new game before changing difficulty';
+  String get statusDifficultyChangeBlocked =>
+      'Finish or start a new game before changing difficulty';
 
   @override
-  String get statusDifficultyPremiumOnly => 'This difficulty is available in Full Version.';
+  String get statusDifficultyPremiumOnly =>
+      'This difficulty is available in Full Version.';
 
   @override
   String get statusPuzzleModeUnique => 'Puzzle mode: unique';
@@ -462,7 +585,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusSolved => 'Solved.';
 
   @override
-  String get statusContradictionUseUndo => 'Contradiction detected. Use Undo to recover.';
+  String get statusContradictionUseUndo =>
+      'Contradiction detected. Use Undo to recover.';
 
   @override
   String statusNewGame(String difficulty, String puzzleId) {

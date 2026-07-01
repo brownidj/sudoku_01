@@ -75,7 +75,7 @@ class SudokuStartInstructionOverlayService {
     }
     final shouldShow = await _startInstructionTooltipService
         .consumeDisplayOpportunity();
-    if (!isMounted() || !shouldShow) {
+    if (!isMounted() || !context.mounted || !shouldShow) {
       return;
     }
     _sheetOpen = true;

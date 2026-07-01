@@ -4,23 +4,35 @@ import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/ui_state.dart';
 
+enum PremiumCelebrationStyle { foil, autumnLeaves, stars, confetti }
+
 @immutable
 class VictoryOverlayState {
   final bool visible;
   final String? assetPath;
+  final PremiumCelebrationStyle? premiumCelebrationStyle;
 
   const VictoryOverlayState({
     required this.visible,
     required this.assetPath,
+    required this.premiumCelebrationStyle,
   });
 
   static const VictoryOverlayState hidden = VictoryOverlayState(
     visible: false,
     assetPath: null,
+    premiumCelebrationStyle: null,
   );
 }
 
 class SudokuVictoryOverlayService {
+  static const List<PremiumCelebrationStyle> themedPremiumCelebrationStyles =
+      <PremiumCelebrationStyle>[
+        PremiumCelebrationStyle.foil,
+        PremiumCelebrationStyle.autumnLeaves,
+        PremiumCelebrationStyle.stars,
+        PremiumCelebrationStyle.confetti,
+      ];
   static const List<String> animalCelebrationAssets = <String>[
     'assets/images/animals_chatGpT/1_cartoon_ape.png',
     'assets/images/animals_chatGpT/2_cartoon_buffalo.png',
@@ -65,10 +77,22 @@ class SudokuVictoryOverlayService {
     'assets/images/butterflies/8_leaf.png',
     'assets/images/butterflies/9_metalmark.png',
   ];
+  static const List<String> shellCelebrationAssets = <String>[
+    'assets/images/shells/1_cowrie.png',
+    'assets/images/shells/2_scallop.png',
+    'assets/images/shells/3_murex.png',
+    'assets/images/shells/4_nautilus.png',
+    'assets/images/shells/5_cone.png',
+    'assets/images/shells/6_abalone.png',
+    'assets/images/shells/7_turban.png',
+    'assets/images/shells/8_moon_snail.png',
+    'assets/images/shells/9_cockle.png',
+  ];
   static const List<String> numberCelebrationAssets = <String>[
     ...animalCelebrationAssets,
     ...instrumentCelebrationAssets,
     ...butterflyCelebrationAssets,
+    ...shellCelebrationAssets,
     ...oldOperaCelebrationAssets,
   ];
 
@@ -80,14 +104,14 @@ class SudokuVictoryOverlayService {
   Timer? _timer;
 
   SudokuVictoryOverlayService({
-    this.duration = const Duration(seconds: 10),
+    this.duration = const Duration(seconds: 8),
     math.Random? random,
   }) : _random = random ?? math.Random(),
        state = ValueNotifier<VictoryOverlayState>(VictoryOverlayState.hidden);
 
   void onUiStateChanged(UiState uiState) {
     if (uiState.puzzleSolved && !_wasPuzzleSolved) {
-      _start(uiState.contentMode);
+      _start(uiState.contentMode, uiState.premiumActive);
     } else if (!uiState.puzzleSolved && state.value.visible) {
       _hide();
     }
@@ -99,12 +123,14 @@ class SudokuVictoryOverlayService {
     state.dispose();
   }
 
-  void _start(String contentMode) {
+  void _start(String contentMode, bool premiumActive) {
     _timer?.cancel();
-    final assets = switch (contentMode) {
+    final normalizedMode = contentMode.trim().toLowerCase();
+    final assets = switch (normalizedMode) {
       'animals' => animalCelebrationAssets,
       'instruments' => instrumentCelebrationAssets,
       'butterflies' => butterflyCelebrationAssets,
+      'shells' => shellCelebrationAssets,
       'old_opera' => oldOperaCelebrationAssets,
       _ => numberCelebrationAssets,
     };
@@ -113,9 +139,15 @@ class SudokuVictoryOverlayService {
       return;
     }
     final asset = assets[_random.nextInt(assets.length)];
+    final premiumCelebrationStyle = premiumActive && normalizedMode != 'numbers'
+        ? themedPremiumCelebrationStyles[_random.nextInt(
+            themedPremiumCelebrationStyles.length,
+          )]
+        : null;
     state.value = VictoryOverlayState(
       visible: true,
       assetPath: asset,
+      premiumCelebrationStyle: premiumCelebrationStyle,
     );
     _timer = Timer(duration, _hide);
   }

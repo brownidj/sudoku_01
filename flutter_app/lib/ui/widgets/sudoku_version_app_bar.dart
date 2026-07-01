@@ -1,12 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 
 class SudokuVersionAppBar extends StatefulWidget
     implements PreferredSizeWidget {
   final VoidCallback onVersionTapped;
-  final VoidCallback onVersionLongPressed;
   final bool audioEnabled;
   final bool showMusicControls;
   final bool backgroundMusicEnabled;
@@ -14,12 +12,10 @@ class SudokuVersionAppBar extends StatefulWidget
   final VoidCallback? onMusicControlDoubleTap;
   final VoidCallback? onPreviousTrackTapped;
   final VoidCallback? onNextTrackTapped;
-  final Duration longPressThreshold;
 
   const SudokuVersionAppBar({
     super.key,
     required this.onVersionTapped,
-    required this.onVersionLongPressed,
     this.audioEnabled = true,
     this.showMusicControls = true,
     this.backgroundMusicEnabled = false,
@@ -27,7 +23,6 @@ class SudokuVersionAppBar extends StatefulWidget
     this.onMusicControlDoubleTap,
     this.onPreviousTrackTapped,
     this.onNextTrackTapped,
-    this.longPressThreshold = const Duration(milliseconds: 1500),
   });
 
   @override
@@ -38,56 +33,10 @@ class SudokuVersionAppBar extends StatefulWidget
 }
 
 class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
-  static const String _musicControlsTooltip =
-      'Press once to turn the background music off, or, twice, in quick succession to turn it on. To play a different background tune use < or >.';
-  Timer? _longPressTimer;
-  bool _versionPressActive = false;
-  bool _longPressTriggered = false;
-  String _versionLabel = 'SuDoKu Playtime';
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  void _handleTapDown(TapDownDetails _) {
-    _longPressTimer?.cancel();
-    _versionPressActive = true;
-    _longPressTriggered = false;
-    _longPressTimer = Timer(widget.longPressThreshold, () {
-      if (!_versionPressActive || _longPressTriggered) {
-        return;
-      }
-      _longPressTriggered = true;
-      widget.onVersionLongPressed();
-    });
-  }
-
-  void _handleTapUp(TapUpDetails _) {
-    _longPressTimer?.cancel();
-    _longPressTimer = null;
-    final shouldHandleAsTap = _versionPressActive && !_longPressTriggered;
-    _versionPressActive = false;
-    if (shouldHandleAsTap) {
-      widget.onVersionTapped();
-    }
-  }
-
-  void _handleTapCancel() {
-    _longPressTimer?.cancel();
-    _longPressTimer = null;
-    _versionPressActive = false;
-    _longPressTriggered = false;
-  }
-
-  @override
-  void dispose() {
-    _longPressTimer?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final versionLabel = UiStrings.launchTitle(context);
+    final musicControlsTooltip = UiStrings.musicControlsTooltip(context);
     final theme = Theme.of(context);
     final lighterDisabledMusicColor = Color.lerp(
       theme.disabledColor,
@@ -108,11 +57,9 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                 alignment: Alignment.centerLeft,
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTapDown: _handleTapDown,
-                  onTapUp: _handleTapUp,
-                  onTapCancel: _handleTapCancel,
+                  onTap: widget.onVersionTapped,
                   child: Text(
-                    _versionLabel,
+                    versionLabel,
                     key: const ValueKey<String>('version-title-text'),
                     style: TextStyle(
                       fontWeight: FontWeight.w700,
@@ -138,11 +85,15 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                       onTap: widget.backgroundMusicEnabled
                           ? widget.onPreviousTrackTapped
                           : null,
-                      longPressMessage: _musicControlsTooltip,
+                      longPressMessage: musicControlsTooltip,
                     ),
                     const SizedBox(width: 6),
                     _MusicGlyphButton(
                       key: const ValueKey<String>('appbar-music-note-text'),
+                      color: musicColor,
+                      onTap: widget.onMusicControlSingleTap,
+                      onDoubleTap: widget.onMusicControlDoubleTap,
+                      longPressMessage: musicControlsTooltip,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 2,
                         vertical: 2,
@@ -158,10 +109,6 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                           fit: BoxFit.contain,
                         ),
                       ),
-                      color: musicColor,
-                      onTap: widget.onMusicControlSingleTap,
-                      onDoubleTap: widget.onMusicControlDoubleTap,
-                      longPressMessage: _musicControlsTooltip,
                     ),
                     const SizedBox(width: 6),
                     _MusicGlyphButton(
@@ -172,7 +119,7 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                       onTap: widget.backgroundMusicEnabled
                           ? widget.onNextTrackTapped
                           : null,
-                      longPressMessage: _musicControlsTooltip,
+                      longPressMessage: musicControlsTooltip,
                     ),
                     const SizedBox(width: 20),
                   ],
@@ -181,8 +128,7 @@ class _SudokuVersionAppBarState extends State<SudokuVersionAppBar> {
                       key: const ValueKey<String>('appbar-menu-button'),
                       onPressed: () => Scaffold.of(context).openDrawer(),
                       icon: const Icon(Icons.menu),
-                      tooltip:
-                          'Press this to open a drawer. Use the drawer menu to change animals and style.',
+                      tooltip: UiStrings.appBarMenuTooltip(context),
                     ),
                   ),
                 ],

@@ -1,4 +1,3 @@
-import 'package:flutter_app/app/candidate_selection_service.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
@@ -84,10 +83,5 @@ class SudokuScreenInteractionController {
       completePuzzle: false,
       toggleDebugTools: shouldToggleDebug,
     );
-  }
-
-  void onVersionLongPressed() {
-    _candidatePanelCoordinator.onCheckOrSolution();
-    _sudokuController.onCompletePuzzleWithSolution();
   }
 }

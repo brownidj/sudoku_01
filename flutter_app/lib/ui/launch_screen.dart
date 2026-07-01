@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/ui/services/animal_asset_service.dart';
 import 'package:flutter_app/ui/sudoku_screen.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
+import 'package:flutter_app/ui/widgets/launch_screen_hint_carousel.dart';
 
 class LaunchScreen extends StatefulWidget {
   final SudokuController controller;
@@ -29,11 +31,24 @@ class _LaunchScreenState extends State<LaunchScreen> {
   @override
   void initState() {
     super.initState();
-    _hintIndex = Random().nextInt(9);
+    _hintIndex = ScreenshotMode.enabled ? 0 : Random().nextInt(9);
     widget.controller.ready.then((_) {
-      if (mounted) {
-        setState(() {
-          _ready = true;
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _ready = true;
+      });
+      if (ScreenshotMode.enabled) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) {
+            return;
+          }
+          if (ScreenshotMode.isHome) {
+            ScreenshotMode.reportReady();
+            return;
+          }
+          _startGame();
         });
       }
     });
@@ -41,8 +56,10 @@ class _LaunchScreenState extends State<LaunchScreen> {
 
   void _startGame() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (_) => SudokuScreen(controller: widget.controller),
+      PageRouteBuilder<void>(
+        pageBuilder: (_, _, _) => SudokuScreen(controller: widget.controller),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
       ),
     );
   }
@@ -96,12 +113,12 @@ class _LaunchScreenState extends State<LaunchScreen> {
     final hints = UiStrings.launchHints(context);
     final theme = Theme.of(context);
     final titleStyle = theme.textTheme.headlineSmall;
-    final introStyle = titleStyle == null
-        ? null
-        : titleStyle.copyWith(
-            fontSize: (titleStyle.fontSize ?? 24) - 6,
-            fontWeight: FontWeight.w700,
-          );
+    final introStyle = titleStyle?.copyWith(
+      fontSize: (titleStyle.fontSize ?? 24) - 6,
+      fontWeight: FontWeight.w700,
+    );
+    final showSavedSessionActions =
+        !ScreenshotMode.enabled && widget.controller.hadSavedSessionAtLaunch;
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
@@ -156,10 +173,11 @@ class _LaunchScreenState extends State<LaunchScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 24),
-                      if (!widget.controller.hadSavedSessionAtLaunch)
+                      if (!showSavedSessionActions)
                         SizedBox(
                           height: 44,
                           child: ElevatedButton(
+                            key: const ValueKey<String>('launch-play-button'),
                             onPressed: _openingGame
                                 ? null
                                 : () => _openGame(startNewGame: false),
@@ -173,6 +191,9 @@ class _LaunchScreenState extends State<LaunchScreen> {
                             SizedBox(
                               height: 44,
                               child: ElevatedButton(
+                                key: const ValueKey<String>(
+                                  'launch-resume-button',
+                                ),
                                 onPressed: _openingGame
                                     ? null
                                     : () => _openGame(startNewGame: false),
@@ -183,10 +204,15 @@ class _LaunchScreenState extends State<LaunchScreen> {
                             SizedBox(
                               height: 44,
                               child: OutlinedButton(
+                                key: const ValueKey<String>(
+                                  'launch-new-game-button',
+                                ),
                                 onPressed: _openingGame
                                     ? null
                                     : () => _openGame(startNewGame: true),
-                                child: Text(UiStrings.actionStartNewGame(context)),
+                                child: Text(
+                                  UiStrings.actionStartNewGame(context),
+                                ),
                               ),
                             ),
                           ],
@@ -217,62 +243,14 @@ class _LaunchScreenState extends State<LaunchScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 160,
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          tooltip: UiStrings.tooltipPrevHint(context),
-                          onPressed: () {
-                            setState(() {
-                              _hintIndex =
-                                  (_hintIndex - 1 + hints.length) %
-                                  hints.length;
-                            });
-                          },
-                          icon: const Icon(Icons.chevron_left),
-                        ),
-                        Expanded(
-                          child: Text(
-                            UiStrings.launchHintsTitle(context),
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontSize:
-                                  (theme.textTheme.titleSmall?.fontSize ?? 14) +
-                                  4,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        IconButton(
-                          tooltip: UiStrings.tooltipNextHint(context),
-                          onPressed: () {
-                            setState(() {
-                              _hintIndex =
-                                  (_hintIndex + 1) % hints.length;
-                            });
-                          },
-                          icon: const Icon(Icons.chevron_right),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 2),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          hints[_hintIndex],
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize:
-                                (theme.textTheme.bodySmall?.fontSize ?? 12) + 4,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              LaunchScreenHintCarousel(
+                hints: hints,
+                hintIndex: _hintIndex,
+                onHintIndexChanged: (hintIndex) {
+                  setState(() {
+                    _hintIndex = hintIndex;
+                  });
+                },
               ),
             ],
           ),

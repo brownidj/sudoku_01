@@ -28,6 +28,8 @@ class ActionBar extends StatelessWidget {
     const narrowScreenBreakpoint = 390.0;
     const controlWidth = 52.0;
     const controlHeight = 52.0;
+    const newGameWidth = 82.0;
+    const newGameHeight = 65.0;
     const notesWidth = 100.0;
     const notesHeight = 65.0;
     final useIconOnlyLabels =
@@ -42,47 +44,48 @@ class ActionBar extends StatelessWidget {
     final actionLabelStyle = useIconOnlyLabels
         ? const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)
         : null;
-    final animateNewGameDice = state.puzzleSolved || !state.canUndo;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (showNewGame)
-            Tooltip(
+            LongPressTooltip(
               message: UiStrings.tooltipNewGame(context),
-              child: Semantics(
-                label: UiStrings.actionNewGame(context),
+              child: OutlinedButton(
                 key: const ValueKey<String>('content-new-game-chip'),
-                button: true,
-                child: Transform.translate(
-                  offset: const Offset(6, -6),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onNewGamePressed,
-                    child: SizedBox(
-                      width: animateNewGameDice ? 52 : 44,
-                      height: animateNewGameDice ? 52 : 44,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          animateNewGameDice
-                              ? 'assets/images/icons/dice-roll.gif'
-                              : 'assets/images/icons/dice-roll-still.png',
-                          width: animateNewGameDice ? 52 : 44,
-                          height: animateNewGameDice ? 52 : 44,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
+                style: compactStyle.copyWith(
+                  fixedSize: const WidgetStatePropertyAll(
+                    Size(newGameWidth, newGameHeight),
+                  ),
+                  minimumSize: const WidgetStatePropertyAll(
+                    Size(newGameWidth, newGameHeight),
+                  ),
+                  backgroundColor: const WidgetStatePropertyAll(
+                    Color(0xFFFFF3B0),
+                  ),
+                  padding: const WidgetStatePropertyAll(
+                    EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  ),
+                ),
+                onPressed: onNewGamePressed,
+                child: Text(
+                  UiStrings.actionNewGame(context),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 13,
+                    height: 1.05,
                   ),
                 ),
               ),
             ),
-          if (showNewGame) const SizedBox(width: 48),
+          if (showNewGame) const SizedBox(width: 16),
           LongPressTooltip(
             message: UiStrings.tooltipClear(context),
             child: OutlinedButton(
+              key: const ValueKey<String>('action-clear-button'),
               style: compactStyle,
               onPressed: onClear,
               child: Text(
@@ -95,6 +98,7 @@ class ActionBar extends StatelessWidget {
           LongPressTooltip(
             message: UiStrings.tooltipUndo(context),
             child: OutlinedButton(
+              key: const ValueKey<String>('action-undo-button'),
               style: compactStyle,
               onPressed: state.canUndo ? onUndo : null,
               child: Text(
@@ -107,6 +111,7 @@ class ActionBar extends StatelessWidget {
           LongPressTooltip(
             message: UiStrings.tooltipNotes(context),
             child: OutlinedButton(
+              key: const ValueKey<String>('action-notes-button'),
               style: compactStyle.copyWith(
                 fixedSize: const WidgetStatePropertyAll(
                   Size(notesWidth, notesHeight),
@@ -116,7 +121,9 @@ class ActionBar extends StatelessWidget {
                 ),
                 backgroundColor: WidgetStatePropertyAll(
                   state.notesMode
-                      ? Theme.of(context).colorScheme.primary.withOpacity(0.15)
+                      ? Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.15)
                       : null,
                 ),
                 side: WidgetStatePropertyAll(

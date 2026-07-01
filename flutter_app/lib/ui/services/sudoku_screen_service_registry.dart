@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/candidate_selection_service.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
@@ -20,6 +23,8 @@ import 'package:flutter_app/ui/services/sudoku_victory_position_service.dart';
 import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
 
 class SudokuScreenServiceRegistry {
+  static const Duration _victoryEffectDuration = Duration(seconds: 8);
+
   late final CandidateSelectionService candidateSelectionService;
   late final CandidatePanelCoordinator candidatePanelCoordinator;
   late final DebugToggleService debugToggleService;
@@ -60,8 +65,13 @@ class SudokuScreenServiceRegistry {
     effectsService = SudokuScreenEffectsService();
     effectsCoordinator = SudokuScreenEffectsCoordinator(effectsService);
     correctionFlowCoordinator = SudokuCorrectionFlowCoordinator(effectsService);
-    victoryOverlayService = SudokuVictoryOverlayService();
-    victoryAudioService = SudokuVictoryAudioService();
+    victoryOverlayService = SudokuVictoryOverlayService(
+      duration: _victoryEffectDuration,
+      random: ScreenshotMode.enabled ? math.Random(0) : null,
+    );
+    victoryAudioService = SudokuVictoryAudioService(
+      maxLoopDuration: _victoryEffectDuration,
+    );
     victoryPositionService = SudokuVictoryPositionService(
       const SudokuVictoryLayoutService(),
     );
@@ -128,7 +138,7 @@ class SudokuScreenServiceRegistry {
 
   void onVictoryOverlayChanged({
     required GlobalKey overlayStackKey,
-    required GlobalKey tilesPanelKey,
+    required GlobalKey boardKey,
     required GlobalKey bottomControlsKey,
     required bool Function() isMounted,
   }) {
@@ -142,7 +152,7 @@ class SudokuScreenServiceRegistry {
     victoryPositionService.onOverlayStateChanged(
       overlayState: victoryState,
       overlayStackKey: overlayStackKey,
-      tilesPanelKey: tilesPanelKey,
+      boardKey: boardKey,
       bottomControlsKey: bottomControlsKey,
       isMounted: isMounted,
     );

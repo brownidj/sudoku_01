@@ -11,6 +11,7 @@ Future<void> showSudokuHelpDialog(BuildContext context) {
         content: MarkdownBody(data: UiStrings.helpBody(context)),
         actions: [
           TextButton(
+            key: const ValueKey<String>('help-dialog-dismiss-button'),
             onPressed: () => Navigator.of(context).pop(),
             child: Text(UiStrings.helpDismiss(context)),
           ),

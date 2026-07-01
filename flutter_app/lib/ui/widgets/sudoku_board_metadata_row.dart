@@ -82,8 +82,8 @@ class SudokuBoardMetadataRow extends StatelessWidget {
                 textStyle: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(
-                    state.canChangeDifficulty ? 0.72 : 0.38,
+                  color: Theme.of(context).colorScheme.onSurface.withValues(
+                    alpha: state.canChangeDifficulty ? 0.72 : 0.38,
                   ),
                   letterSpacing: 0.5,
                 ),
@@ -192,8 +192,8 @@ class _MetadataDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dropdownColor = enabled
-        ? Theme.of(context).colorScheme.onSurface.withOpacity(0.72)
-        : Theme.of(context).colorScheme.onSurface.withOpacity(0.38);
+        ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.72)
+        : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38);
     return LongPressTooltip(
       message: tooltipMessage,
       child: DropdownButtonHideUnderline(
@@ -253,7 +253,9 @@ class _ManualTooltipLabel extends StatelessWidget {
             label,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
               fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.72),
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.72),
             ),
           ),
         ),
@@ -277,7 +279,9 @@ class _MetadataLabel extends StatelessWidget {
           label,
           style: Theme.of(context).textTheme.labelMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.72),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.72),
           ),
         ),
       ),

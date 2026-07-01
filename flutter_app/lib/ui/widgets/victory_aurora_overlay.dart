@@ -55,12 +55,12 @@ class _VictoryAuroraPainter extends CustomPainter {
       size: size,
       t: t,
       verticalOffset: 0.22,
-      amplitude: 34,
-      thickness: 120,
+      amplitude: 44,
+      thickness: 156,
       colors: const <Color>[
-        Color(0x44E9DFC9), // champagne
-        Color(0x33B9D7D9), // pale teal
-        Color(0x22F4F1E8),
+        Color(0xFFE4A11B), // vivid gold
+        Color(0xFF13D2F0), // electric cyan
+        Color(0xFFD4FF2A), // neon lime
       ],
       drift: 0.9,
     );
@@ -69,12 +69,12 @@ class _VictoryAuroraPainter extends CustomPainter {
       size: size,
       t: t + 1.4,
       verticalOffset: 0.36,
-      amplitude: 28,
-      thickness: 100,
+      amplitude: 36,
+      thickness: 136,
       colors: const <Color>[
-        Color(0x3388AEBF), // muted silver-blue
-        Color(0x22E4DCCB),
-        Color(0x1FD6ECEE),
+        Color(0xFFFF49B0), // hot magenta
+        Color(0xFFFF7A00), // vivid orange
+        Color(0xFF7A5CFF), // saturated violet
       ],
       drift: 0.7,
     );
@@ -83,12 +83,12 @@ class _VictoryAuroraPainter extends CustomPainter {
       size: size,
       t: t + 2.1,
       verticalOffset: 0.50,
-      amplitude: 22,
-      thickness: 80,
+      amplitude: 30,
+      thickness: 116,
       colors: const <Color>[
-        Color(0x2271A3A9),
-        Color(0x1FE7E3D2),
-        Color(0x1ABDD9DB),
+        Color(0xFF00E676), // vivid green
+        Color(0xFF00B0FF), // bright blue
+        Color(0xFFFF1744), // bright red
       ],
       drift: 0.5,
     );
@@ -120,14 +120,29 @@ class _VictoryAuroraPainter extends CustomPainter {
     }
     p.close();
 
-    final bounds = Rect.fromLTWH(0, centerY - amplitude, size.width, thickness + amplitude * 2);
+    final bounds = Rect.fromLTWH(
+      0,
+      centerY - amplitude,
+      size.width,
+      thickness + amplitude * 2,
+    );
     final fill = Paint()
       ..shader = LinearGradient(
         begin: Alignment.topCenter,
         end: Alignment.bottomCenter,
         colors: colors,
       ).createShader(bounds)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 12);
+      ..blendMode = BlendMode.screen
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+    final glow = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: colors.map((c) => c.withValues(alpha: 0.95)).toList(),
+      ).createShader(bounds)
+      ..blendMode = BlendMode.plus
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 18);
+    canvas.drawPath(p, glow);
     canvas.drawPath(p, fill);
   }
 

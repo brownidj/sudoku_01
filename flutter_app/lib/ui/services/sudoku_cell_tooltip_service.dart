@@ -110,8 +110,10 @@ class SudokuCellTooltipService {
     if (value == null) {
       return;
     }
-    final name = _titleCase(
-      AnimalImageCache.displayNameForDigit(state.contentMode, value),
+    final name = AnimalImageCache.displayNameForDigitLocalizedTitleCase(
+      contentMode: state.contentMode,
+      digit: value,
+      languageCode: Localizations.localeOf(context).languageCode,
     );
     final imageAssetPath = AnimalImageCache.tileAssetPathForDigit(
       contentMode: state.contentMode,
@@ -130,9 +132,7 @@ class SudokuCellTooltipService {
     );
     if (audioAsset == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(UiStrings.audioUnavailableTile(context)),
-        ),
+        SnackBar(content: Text(UiStrings.audioUnavailableTile(context))),
       );
       return;
     }
@@ -143,24 +143,14 @@ class SudokuCellTooltipService {
     if (!started) {
       return;
     }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(name), duration: const Duration(seconds: 4)),
+      );
     _backgroundMusicService.suspend('tile-preview');
     Future<void>.delayed(_tilePreviewAudioService.maxClipDuration, () {
       _backgroundMusicService.resume('tile-preview');
     });
-  }
-
-  String _titleCase(String text) {
-    final normalized = text.replaceAll('_', ' ').trim();
-    if (normalized.isEmpty) {
-      return normalized;
-    }
-    final words = normalized.split(RegExp(r'\s+'));
-    return words
-        .map(
-          (word) => word.isEmpty
-              ? word
-              : '${word[0].toUpperCase()}${word.substring(1).toLowerCase()}',
-        )
-        .join(' ');
   }
 }

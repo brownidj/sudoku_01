@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/board_layout.dart';
@@ -196,7 +195,7 @@ class SudokuBoardPainter extends CustomPainter {
   }
 
   double _animalTargetSize(double cellSize) {
-    const minPadding = 2.0;
+    const minPadding = 3.0;
     final maxSize = cellSize - (minPadding * 2);
     return maxSize > 0 ? maxSize : cellSize;
   }

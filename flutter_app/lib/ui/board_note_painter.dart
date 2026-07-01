@@ -114,7 +114,7 @@ class BoardNotePainter {
       text: TextSpan(
         text: label,
         style: TextStyle(
-          color: style.valueColor.withOpacity(0.7),
+          color: style.valueColor.withValues(alpha: 0.7),
           fontWeight: FontWeight.w500,
           fontSize: fontSize,
         ),

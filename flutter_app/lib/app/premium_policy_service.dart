@@ -24,6 +24,7 @@ class PremiumPolicyService {
 
   static const Set<String> premiumContentModes = <String>{
     'butterflies',
+    'shells',
     'old_opera',
   };
 

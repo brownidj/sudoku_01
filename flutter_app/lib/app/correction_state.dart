@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 

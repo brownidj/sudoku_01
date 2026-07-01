@@ -12,15 +12,12 @@ class TooltipOverlayService {
     _entry?.remove();
 
     final overlay = Overlay.of(context);
-    if (overlay == null) {
-      return;
-    }
-
     final size = MediaQuery.of(context).size;
     const tooltipPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 10);
     const tooltipMargin = 8.0;
     const previewSize = 256.0;
     final hasImage = imageAssetPath != null && imageAssetPath.isNotEmpty;
+    final imagePath = hasImage ? imageAssetPath : null;
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -68,7 +65,7 @@ class TooltipOverlayService {
                     height: previewSize,
                     color: Colors.transparent,
                     child: Image.asset(
-                      imageAssetPath!,
+                      imagePath!,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                     ),

@@ -21,7 +21,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get actionNotes => 'नोट्स';
 
   @override
-  String get actionNewGame => 'नया खेल';
+  String get actionNewShort => 'नया';
+
+  @override
+  String get actionNewGame => 'नया\nखेल';
 
   @override
   String get actionPlay => 'खेलें';
@@ -36,19 +39,27 @@ class AppLocalizationsHi extends AppLocalizations {
   String get actionPleaseWait => 'कृपया प्रतीक्षा करें...';
 
   @override
-  String get tooltipNewGame => 'नया खेल शुरू करने के लिए इसे दबाएँ।';
+  String get tooltipNewGame => 'नया खेल शुरू करने के लिए यहाँ दबाएँ।';
 
   @override
-  String get tooltipUndo => 'पहले किए गए चयन हटाने के लिए पूर्ववत का उपयोग करें। यदि सुधार खत्म हो जाएँ तो भी इसका उपयोग कर सकते हैं।';
+  String get tooltipUndo =>
+      'पूर्ववत से अपनी पिछली चालें वापस लें। सुधार खत्म हो जाएँ तो भी यह काम आएगा।';
 
   @override
-  String get tooltipClear => 'अभी चुनी गई टाइल साफ़ करें। आप केवल वही टाइल साफ़ कर सकते हैं जो आपने भरी हैं।';
+  String get tooltipClear =>
+      'अभी चुनी गई टाइल साफ़ करें। आप केवल वही टाइल साफ़ कर सकते हैं जो आपने भरी हैं।';
 
   @override
-  String get tooltipNotes => 'यदि आप निश्चित नहीं हैं, तो नोट्स संभावित विकल्प याद रखने में मदद करता है। विकल्प हरे रंग में दिखेंगे। बंद करने के लिए नोट्स फिर दबाएँ।';
+  String get tooltipNotes =>
+      'पक्का न हो तो नोट्स से संभावित विकल्प चिन्हित करें। वे हरे रंग में दिखेंगे। बंद करने के लिए नोट्स फिर दबाएँ।';
 
   @override
-  String get tooltipDifficulty => 'ऐसा कठिनाई स्तर चुनें जिससे आप रोज़ नियमित प्रगति कर सकें।';
+  String get tooltipDifficulty => 'वही कठिनाई चुनें जो आपको सही लगे।';
+
+  @override
+  String candidateLongPressToast(int digit) {
+    return 'उम्मीदवार $digit';
+  }
 
   @override
   String labelCorrections(int count) {
@@ -62,7 +73,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String tooltipCorrections(int limit) {
-    return 'इस पहेली के लिए आपके पास $limit स्वचालित सुधार उपलब्ध हैं। पहले की कोई चाल प्रगति रोके तो सुधार उपयोग करें। सुधार खत्म हों तो पूर्ववत करें।';
+    return 'इस पहेली में आपके पास $limit अपने-आप होने वाले सुधार हैं। पहले की कोई चाल आपको रोक दे तो सुधार इस्तेमाल करें। सुधार खत्म हों तो पूर्ववत करें।';
   }
 
   @override
@@ -84,22 +95,31 @@ class AppLocalizationsHi extends AppLocalizations {
   String get helpDismiss => 'ठीक है';
 
   @override
-  String get helpBody => 'गेम स्क्रीन पर ***कुछ चीज़ें*** थोड़ी रहस्यमय लग सकती हैं।\n\nउन पर **कुछ सेकंड उंगली दबाकर रखें** ताकि उनका विवरण दिखे।\n\nउदाहरण के लिए, **सुधार** बताता है कि आपके पास कितने स्वचालित सुधार बचे हैं। अगर पहले की चाल के कारण कोई वैध विकल्प न बचे, तो सुधार उस स्थिति को ठीक करके आपको खेल जारी रखने देता है।\n\n**पूर्ववत** से आप अपने पिछले चयन एक-एक करके वापस ले सकते हैं। सुधार खत्म होने पर भी यह काम आता है।';
+  String get helpBody =>
+      'गेम स्क्रीन पर ***कुछ चीज़ें*** पहली नज़र में साफ़ नहीं लगेंगी।\n\nउन पर **कुछ सेकंड उंगली दबाकर रखें**, तब उनका छोटा सा विवरण दिखेगा।\n\nउदाहरण के लिए, **सुधार** बताता है कि कितने अपने-आप होने वाले सुधार बचे हैं। अगर पहले की किसी चाल से आप फँस जाएँ, तो सुधार आपको आगे बढ़ने में मदद करेगा।\n\n**पूर्ववत** से आप अपनी पिछली चालें एक-एक करके वापस ले सकते हैं। सुधार खत्म होने पर भी यह काम आता है।';
 
   @override
-  String get startInstruction => 'शुरू करने के लिए वह वर्ग चुनें जिसमें आप आइकन जोड़ना चाहते हैं।\n';
+  String get startInstruction =>
+      'शुरू करने के लिए वह वर्ग चुनें जिसमें आप आइकन जोड़ना चाहते हैं।\n';
 
   @override
   String get launchTitlePrefix => 'The Angry Grannies प्रस्तुत करते हैं';
 
   @override
-  String get launchTitle => 'SuDoKu Playtime';
+  String get launchTitle => 'SuDoKu Fresh';
 
   @override
-  String get launchSubtitle => 'समय लें, हर पहेली का आनंद लें और दिमाग सक्रिय रखें।';
+  String get appBrandIos => 'SuDoKu Playtime';
 
   @override
-  String get launchErrorOpenGame => 'गेम नहीं खुल सका। कृपया फिर से प्रयास करें।';
+  String get appBrandAndroid => 'SuDoKu Fresh';
+
+  @override
+  String get launchSubtitle => 'चित्रों वाला आरामदायक सुडोकू';
+
+  @override
+  String get launchErrorOpenGame =>
+      'गेम नहीं खुल सका। कृपया फिर से प्रयास करें।';
 
   @override
   String get launchHintsTitle => 'संकेत';
@@ -111,34 +131,100 @@ class AppLocalizationsHi extends AppLocalizations {
   String get tooltipNextHint => 'अगला संकेत';
 
   @override
-  String get launchHint1 => 'नोट्स, निश्चित न होने पर संभावित विकल्प याद रखने में मदद करते हैं। विकल्प हरे रंग में दिखते हैं। बंद करने के लिए नोट्स फिर दबाएँ।';
+  String get launchHint1 =>
+      'नोट्स से आप संभावित विकल्प याद रख सकते हैं। बंद करने के लिए नोट्स फिर दबाएँ।';
 
   @override
-  String get launchHint2 => 'लॉन्ग-प्रेस (कुछ सेकंड दबाकर रखें) से समझें कि चीज़ें क्या करती हैं। भरी हुई टाइल पर भी आज़माएँ।';
+  String get launchHint2 =>
+      'लगभग दो सेकंड दबाकर रखें, तब पता चलेगा कि कुछ चीज़ें क्या करती हैं। इसे किसी टाइल पर आज़माएँ।';
 
   @override
-  String get launchHint3 => 'अगर आपके चयन से दो या अधिक टाइलें गुलाबी हो जाएँ, तो कहीं गलती हुई है। आपके पास सीमित स्वचालित सुधार हैं।';
+  String get launchHint3 =>
+      'अगर आपके चयन से दो या ज़्यादा टाइलें गुलाबी हो जाएँ, तो पहले कहीं गलती हुई है। आप ऑटो-करेक्ट कर सकते हैं।';
 
   @override
   String get launchHint4 => 'गेम के दौरान कठिनाई बदलने पर नया खेल शुरू होगा।';
 
   @override
-  String get launchHint5 => 'गेम खेलने की जानकारी के लिए Help दबाएँ।';
+  String get launchHint5 => 'गेम कैसे खेलना है, यह देखने के लिए मदद दबाएँ।';
 
   @override
-  String get launchHint6 => '☰ (ऊपर दाएँ) दबाने से ड्रॉअर खुलता है जहाँ आप विकल्प चुन सकते हैं।';
+  String get launchHint6 => 'ऊपर दाएँ ☰ दबाने से मेन्यू खुलता है।';
 
   @override
-  String get launchHint7 => 'यदि ध्वनियाँ परेशान करें या आप शांत वातावरण में खेलना चाहें, तो ड्रॉअर (☰) में Audio बंद करें।';
+  String get launchHint7 =>
+      'यदि ध्वनियाँ परेशान करें या आप शांत वातावरण में खेलना चाहें, तो ड्रॉअर (☰) में ऑडियो बंद करें।';
 
   @override
-  String get launchHint8 => 'बैकग्राउंड म्यूज़िक बंद करने के लिए संगीत आइकन एक बार दबाएँ, चालू करने के लिए जल्दी से दो बार दबाएँ।';
+  String get launchHint8 =>
+      'बैकग्राउंड म्यूज़िक बंद करने के लिए संगीत आइकन एक बार दबाएँ, फिर चालू करने के लिए जल्दी से दो बार दबाएँ।';
 
   @override
   String get launchHint9 => 'पासा नया खेल शुरू करता है।';
 
   @override
-  String get launchHint10 => 'अगर आपने फुल वर्ज़न खरीदा है और अपडेट के बाद वह दिखाई नहीं देता, तो ड्रॉअर में \'खरीद पुनर्स्थापित करें\' का उपयोग करें।';
+  String get launchHint10 =>
+      'अगर आपने फुल वर्ज़न खरीदा है और वह नहीं दिख रहा, तो मेन्यू में \'खरीद पुनर्स्थापित करें\' दबाएँ।';
+
+  @override
+  String get victoryMessage1 => 'बहुत बढ़िया! फिर से खेलें!';
+
+  @override
+  String get victoryMessage2 => 'शानदार काम! फिर से खेलें!';
+
+  @override
+  String get victoryMessage3 => 'आपने कर दिखाया! फिर से खेलें!';
+
+  @override
+  String get victoryMessage4 => 'कमाल की समाप्ति! फिर से खेलें!';
+
+  @override
+  String get victoryMessage5 => 'उत्कृष्ट काम! फिर से खेलें!';
+
+  @override
+  String get victoryMessage6 => 'वाह! फिर से खेलें!';
+
+  @override
+  String get victoryMessage7 => 'आप सफल हुए! फिर से खेलें!';
+
+  @override
+  String get victoryMessage8 => 'बेहतरीन प्रयास! फिर से खेलें!';
+
+  @override
+  String get victoryMessage9 => 'आप पर गर्व है! फिर से खेलें!';
+
+  @override
+  String get victoryMessage10 => 'ऐसे ही आगे बढ़ें! फिर से खेलें!';
+
+  @override
+  String get victoryMessage11 => 'कमाल का काम! फिर से खेलें!';
+
+  @override
+  String get victoryMessage12 => 'लाजवाब! फिर से खेलें!';
+
+  @override
+  String get victoryMessage13 => 'एकदम सही हल! फिर से खेलें!';
+
+  @override
+  String get victoryMessage14 => 'मज़बूत समाप्ति! फिर से खेलें!';
+
+  @override
+  String get victoryMessage15 => 'बहुत समझदारी! फिर से खेलें!';
+
+  @override
+  String get victoryMessage16 => 'मीठी जीत! फिर से खेलें!';
+
+  @override
+  String get victoryMessage17 => 'उत्तम प्रयास! फिर से खेलें!';
+
+  @override
+  String get victoryMessage18 => 'माहिराना खेल! फिर से खेलें!';
+
+  @override
+  String get victoryMessage19 => 'विजेता जैसी सोच! फिर से खेलें!';
+
+  @override
+  String get victoryMessage20 => 'शानदार परिणाम! फिर से खेलें!';
 
   @override
   String get dialogActionCancel => 'रद्द करें';
@@ -147,13 +233,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get dialogActionStartNewGame => 'नया खेल शुरू करें';
 
   @override
-  String get dialogActionUseCorrection => 'correction उपयोग करें';
+  String get dialogActionUseCorrection => 'सुधार उपयोग करें';
 
   @override
   String get dialogUnlockSettingsTitle => 'सेटिंग्स अनलॉक करें?';
 
   @override
-  String get dialogUnlockSettingsMessage => 'कठिनाई अनलॉक करने पर नया खेल शुरू होगा और यह बोर्ड रीसेट होगा। जारी रखें?';
+  String get dialogUnlockSettingsMessage =>
+      'कठिनाई अनलॉक करते ही नया खेल शुरू होगा और यह बोर्ड रीसेट हो जाएगा। जारी रखें?';
 
   @override
   String get dialogStartNewGameTitle => 'नया खेल शुरू करें?';
@@ -164,13 +251,15 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get dialogStartNewGameResetBoard => 'नया खेल शुरू कर यह बोर्ड रीसेट करें?';
+  String get dialogStartNewGameResetBoard =>
+      'नया खेल शुरू करके मौजूदा बोर्ड रीसेट करें?';
 
   @override
   String get labelLockedSettingsTitle => 'बोर्ड सेटिंग्स लॉक हैं';
 
   @override
-  String get labelLockedSettingsMessage => 'गेम के दौरान कठिनाई लॉक रहती है। अनलॉक करने के लिए लॉक आइकन पर डबल-टैप करें या \'नया खेल\' शुरू करें।';
+  String get labelLockedSettingsMessage =>
+      'खेल के दौरान कठिनाई लॉक रहती है। इसे खोलने के लिए लॉक आइकन पर दो बार टैप करें या नया खेल शुरू करें।';
 
   @override
   String get progressSheetTitle => 'आपकी प्रगति';
@@ -213,7 +302,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get progressResetDialogTitle => 'प्रगति रीसेट करें?';
 
   @override
-  String get progressResetDialogMessage => 'आपका \'मैं कैसा कर रहा/रही हूँ?\' डेटा खो जाएगा।';
+  String get progressResetDialogMessage =>
+      'आपकी अब तक की पूरी प्रगति मिट जाएगी।';
 
   @override
   String get dialogActionOk => 'OK';
@@ -222,30 +312,35 @@ class AppLocalizationsHi extends AppLocalizations {
   String get audioUnavailableTile => 'इस टाइल के लिए ऑडियो अभी उपलब्ध नहीं है।';
 
   @override
-  String get correctionPromptMessage => 'पहले की चाल के कारण यह बोर्ड अब हल नहीं हो सकता। 1 correction उपयोग करें?';
+  String get correctionPromptMessage =>
+      'पहले की चाल के कारण यह बोर्ड अब हल नहीं हो सकता। 1 सुधार उपयोग करें?';
 
   @override
-  String get premiumFeatureIntroGeneric => 'Full Version आपको एक खरीद में पूरा Sudoku अनुभव देता है।';
+  String get premiumFeatureIntroGeneric =>
+      'पूर्ण संस्करण के साथ आपको पूरा SuDoKu अनुभव एक ही खरीद में मिलता है।';
 
   @override
   String premiumFeatureIntroNamed(String featureLabel) {
-    return '$featureLabel Full Version में उपलब्ध है।';
+    return '$featureLabel पूर्ण संस्करण में मिलता है।';
   }
 
   @override
-  String get premiumSheetTitle => 'Full Version अनलॉक करें';
+  String get premiumSheetTitle => 'पूर्ण संस्करण अनलॉक करें';
 
   @override
-  String get premiumIncludesTitle => 'Full Version में शामिल है:';
+  String get premiumIncludesTitle => 'पूर्ण संस्करण में शामिल है:';
 
   @override
-  String get premiumIncludesHardDifficulties => '• Hard और Nigh Impossible कठिनाई स्तर';
+  String get premiumIncludesHardDifficulties =>
+      '• कठिन और लगभग असंभव कठिनाई स्तर';
 
   @override
-  String get premiumIncludesProgress => '• प्रगति ट्रैकिंग और व्यक्तिगत सर्वश्रेष्ठ';
+  String get premiumIncludesProgress =>
+      '• प्रगति ट्रैकिंग और व्यक्तिगत सर्वश्रेष्ठ';
 
   @override
-  String get premiumIncludesThemesSounds => '• अतिरिक्त थीम, ध्वनियाँ और सेलिब्रेशन';
+  String get premiumIncludesThemesSounds =>
+      '• अतिरिक्त थीम, ध्वनियाँ और सेलिब्रेशन';
 
   @override
   String get premiumOneTimePurchase => 'एक बार की खरीद। कोई सब्सक्रिप्शन नहीं।';
@@ -254,28 +349,32 @@ class AppLocalizationsHi extends AppLocalizations {
   String get premiumActionNotNow => 'अभी नहीं';
 
   @override
-  String get premiumActionUnlock => 'Full Version अनलॉक करें';
+  String get premiumActionUnlock => 'पूर्ण संस्करण अनलॉक करें';
 
   @override
-  String get purchaseStartedMessage => 'Full Version अनलॉक करने के लिए App Store डायलॉग में खरीद की पुष्टि करें।';
+  String get purchaseStartedMessage =>
+      'पूर्ण संस्करण अनलॉक करने के लिए App Store डायलॉग में खरीद की पुष्टि करें।';
 
   @override
-  String get restoreStartedMessage => 'रीस्टोर शुरू हो गया है। खरीदी गई चीज़ें जल्द फिर दिखेंगी।';
+  String get restoreStartedMessage =>
+      'रीस्टोर शुरू हो गया है। आपकी खरीदी गई चीज़ें अभी थोड़ी देर में फिर दिखेंगी।';
 
   @override
-  String get billingUnavailable => 'अभी इस डिवाइस पर खरीद उपलब्ध नहीं है।';
+  String get billingUnavailable => 'अभी इस डिवाइस पर खरीदारी उपलब्ध नहीं है।';
 
   @override
-  String get billingProductNotConfigured => 'Full Version अभी कॉन्फ़िगर नहीं है। कृपया बाद में प्रयास करें।';
+  String get billingProductNotConfigured =>
+      'पूर्ण संस्करण अभी उपलब्ध नहीं है। कृपया बाद में फिर कोशिश करें।';
 
   @override
-  String get billingProductUnavailable => 'Full Version उत्पाद विवरण लोड नहीं हो सके। कृपया फिर प्रयास करें।';
+  String get billingProductUnavailable =>
+      'पूर्ण संस्करण की जानकारी लोड नहीं हो सकी। कृपया फिर कोशिश करें।';
 
   @override
   String get billingFailed => 'यह काम नहीं किया। कृपया फिर प्रयास करें।';
 
   @override
-  String get drawerTitle => 'SuDoKu Playtime';
+  String get drawerTitle => 'SuDoKu Fresh';
 
   @override
   String get drawerPuzzleStyleTitle => 'पहेली शैली';
@@ -302,7 +401,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get drawerBackgroundMusicTitle => 'बैकग्राउंड संगीत';
 
   @override
-  String get drawerBackgroundMusicSubtitle => 'SuDoKu प्रेमियों के लिए ध्वनियाँ';
+  String get drawerBackgroundMusicSubtitle => 'आराम से खेलने के लिए संगीत';
+
+  @override
+  String get musicControlsTooltip =>
+      'यहाँ से बैकग्राउंड म्यूज़िक चलाएँ या बंद करें। एक बार दबाने से यह बंद होगा, और जल्दी से दो बार दबाने पर फिर चालू होगा। पिछला और अगला ट्रैक चुनने के लिए < और > दबाएँ।';
 
   @override
   String get drawerVolumeTitle => 'आवाज़';
@@ -320,22 +423,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String get drawerPremiumProgressTitle => 'प्रगति ट्रैकर 🔒';
 
   @override
-  String get drawerPremiumProgressSubtitle => 'पूर्ण पहेलियाँ और माइलस्टोन ट्रैक करें।';
+  String get drawerPremiumProgressSubtitle =>
+      'पूर्ण पहेलियाँ और माइलस्टोन ट्रैक करें।';
 
   @override
   String get drawerPremiumThemesTitle => 'अतिरिक्त थीम 🔒';
 
   @override
-  String get drawerPremiumThemesSubtitle => 'अतिरिक्त दृश्य शैलियाँ अनलॉक करें।';
+  String get drawerPremiumThemesSubtitle =>
+      'अतिरिक्त दृश्य शैलियाँ अनलॉक करें।';
 
   @override
   String get drawerPremiumSoundsTitle => 'ध्वनियाँ और सेलिब्रेशन 🔒';
 
   @override
-  String get drawerPremiumSoundsSubtitle => 'अतिरिक्त ध्वनियाँ और सेलिब्रेशन अनलॉक करें।';
+  String get drawerPremiumSoundsSubtitle =>
+      'अतिरिक्त ध्वनियाँ और सेलिब्रेशन अनलॉक करें।';
 
   @override
-  String get drawerUnlockFullVersion => 'Full Version अनलॉक करें';
+  String get drawerUnlockFullVersion => 'पूर्ण संस्करण अनलॉक करें';
 
   @override
   String get drawerRestorePurchases => 'खरीद पुनर्स्थापित करें';
@@ -348,29 +454,33 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String drawerAboutMessage(String versionLabel) {
-    return 'संस्करण: $versionLabel\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy';
+    return 'संस्करण: $versionLabel\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy\n\nडेव टीम में कोई भी कलाकार या संगीतकार नहीं है। हम खुलकर मानते हैं कि इस सामग्री को बनाने के लिए हमने एआई का उपयोग किया है। हम सब बहुत पुराने हैं; अपनी रचनात्मकता को जितना भी व्यक्त कर सकते हैं, उस अवसर को हम बहुत महत्व देते हैं!';
   }
 
   @override
   String get drawerDebugTitle => 'डिबग';
 
   @override
-  String get drawerDebugLoadCorrectionTitle => 'Correction परिदृश्य लोड करें';
+  String get drawerDebugLoadCorrectionTitle => 'सुधार परिदृश्य लोड करें';
 
   @override
-  String get drawerDebugLoadCorrectionSubtitle => 'सहायता-आधारित रिकवरी परीक्षण के लिए अस्थायी नियंत्रण।';
+  String get drawerDebugLoadCorrectionSubtitle =>
+      'सहायता-आधारित रिकवरी परीक्षण के लिए अस्थायी नियंत्रण।';
 
   @override
-  String get drawerDebugLoadExhaustedTitle => 'Exhausted Correction परिदृश्य लोड करें';
+  String get drawerDebugLoadExhaustedTitle => 'सुधार-समाप्त परिदृश्य लोड करें';
 
   @override
-  String get drawerDebugLoadExhaustedSubtitle => 'केवल Undo रिकवरी परीक्षण के लिए अस्थायी नियंत्रण।';
+  String get drawerDebugLoadExhaustedSubtitle =>
+      'केवल Undo रिकवरी परीक्षण के लिए अस्थायी नियंत्रण।';
 
   @override
-  String get drawerDebugResetEntitlementTitle => 'Full Version रीसेट करें (Debug)';
+  String get drawerDebugResetEntitlementTitle =>
+      'पूर्ण संस्करण रीसेट करें (डिबग)';
 
   @override
-  String get drawerDebugResetEntitlementSubtitle => 'खरीद पुनः परीक्षण हेतु स्थानीय entitlement को Free पर सेट करता है।';
+  String get drawerDebugResetEntitlementSubtitle =>
+      'खरीद पुनः परीक्षण हेतु स्थानीय अधिकार को मुफ़्त पर सेट करता है।';
 
   @override
   String get contentModeAnimals => 'जानवर (आसान)';
@@ -382,10 +492,17 @@ class AppLocalizationsHi extends AppLocalizations {
   String get contentModeButterflies => 'तितलियाँ (सुंदर)';
 
   @override
+  String get contentModeShells => 'शंख (नया)';
+
+  @override
   String get contentModeOpera => 'ओपेरा (अद्भुत)';
 
   @override
   String get contentModeNumbers => 'संख्याएँ (पुराना अंदाज़)';
+
+  @override
+  String get appBarMenuTooltip =>
+      'ड्रॉअर खोलने के लिए यहाँ दबाएँ। जानवर और शैली बदलने के लिए ड्रॉअर मेन्यू का उपयोग करें।';
 
   @override
   String get topControlsProgress => 'मैं कैसा कर रहा/रही हूँ?';
@@ -432,10 +549,12 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
-  String get statusDifficultyChangeBlocked => 'कठिनाई बदलने से पहले खेल पूरा करें या नया खेल शुरू करें';
+  String get statusDifficultyChangeBlocked =>
+      'कठिनाई बदलने से पहले खेल पूरा करें या नया खेल शुरू करें';
 
   @override
-  String get statusDifficultyPremiumOnly => 'यह कठिनाई Full Version में उपलब्ध है।';
+  String get statusDifficultyPremiumOnly =>
+      'यह कठिनाई पूर्ण संस्करण में उपलब्ध है।';
 
   @override
   String get statusPuzzleModeUnique => 'पहेली मोड: unique';
@@ -462,7 +581,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get statusSolved => 'हल हो गया।';
 
   @override
-  String get statusContradictionUseUndo => 'विरोधाभास मिला। रिकवरी के लिए Undo उपयोग करें।';
+  String get statusContradictionUseUndo =>
+      'विरोधाभास मिला। ठीक करने के लिए पूर्ववत उपयोग करें।';
 
   @override
   String statusNewGame(String difficulty, String puzzleId) {

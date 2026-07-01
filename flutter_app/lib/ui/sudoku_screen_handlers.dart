@@ -1,6 +1,6 @@
 part of 'sudoku_screen.dart';
 
-extension SudokuScreenHandlers on _SudokuScreenState {
+extension _SudokuScreenHandlers on _SudokuScreenState {
   bool get _isBackgroundMusicTheme {
     return _premiumPolicy.isBackgroundMusicThemeMode(
       widget.controller.state.contentMode,
@@ -33,11 +33,13 @@ extension SudokuScreenHandlers on _SudokuScreenState {
         );
       },
     );
-    _startInstructionOverlayService.onStateChanged(
-      context: context,
-      state: state,
-      isMounted: () => mounted,
-    );
+    if (!ScreenshotMode.enabled) {
+      _startInstructionOverlayService.onStateChanged(
+        context: context,
+        state: state,
+        isMounted: () => mounted,
+      );
+    }
     _services.onBackgroundMusicEnabledChanged(_effectiveBackgroundMusicEnabled);
   }
 
@@ -57,9 +59,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
       _noteImages
         ..clear()
         ..addAll(bundle.noteImages);
-      if (mounted) {
-        setState(() {});
-      }
+      _updateScreenState(() {});
     } on Exception catch (error) {
       AppDebug.log('Failed to load visual assets: $error');
       _animalLoad = null;
@@ -84,7 +84,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
       appDebugEnabled: AppDebug.enabled,
     );
     if (result.toggleDebugTools) {
-      setState(() {
+      _updateScreenState(() {
         _debugToolsEnabled = !_debugToolsEnabled;
       });
     }
@@ -120,7 +120,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
 
   void _setBackgroundMusicEnabledFromAppBar(bool enabled) {
     if (enabled && !_audioEnabled) {
-      setState(() {
+      _updateScreenState(() {
         _audioEnabled = true;
         _backgroundMusicEnabled = true;
       });
@@ -137,7 +137,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
       return;
     }
     final nextBackgroundMusic = enabled ? _backgroundMusicEnabled : false;
-    setState(() {
+    _updateScreenState(() {
       _audioEnabled = enabled;
       _backgroundMusicEnabled = nextBackgroundMusic;
     });
@@ -153,7 +153,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
     if (_backgroundMusicEnabled == enabled) {
       return;
     }
-    setState(() {
+    _updateScreenState(() {
       _backgroundMusicEnabled = enabled;
     });
     _services.onBackgroundMusicEnabledChanged(_effectiveBackgroundMusicEnabled);
@@ -164,7 +164,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
     if (_audioVolume == volume) {
       return;
     }
-    setState(() {
+    _updateScreenState(() {
       _audioVolume = volume;
     });
     _services.onAudioVolumeChanged(volume);
@@ -181,7 +181,7 @@ extension SudokuScreenHandlers on _SudokuScreenState {
     }
     final nextAudio = storedAudio;
     final nextBackground = nextAudio ? storedBackground : false;
-    setState(() {
+    _updateScreenState(() {
       _audioEnabled = nextAudio;
       _backgroundMusicEnabled = nextBackground;
       _audioVolume = storedVolume;

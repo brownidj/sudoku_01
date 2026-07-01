@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
@@ -88,6 +89,8 @@ class SudokuDrawer extends StatelessWidget {
               selectedLanguageCode: selectedLanguageCode,
               onLanguageChanged: onLanguageChanged,
               onResetToSystemLanguage: onResetToSystemLanguage,
+              showExpandedMenuForScreenshot:
+                  ScreenshotMode.enabled && ScreenshotMode.isDrawerOpen,
             ),
             SudokuDrawerPremiumSection(
               sectionPadding: _sectionPadding,

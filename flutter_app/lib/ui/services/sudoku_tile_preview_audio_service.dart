@@ -120,10 +120,22 @@ class SudokuTilePreviewAudioService {
       8: 'audio/butterflies/8_leaf.wav',
       9: 'audio/butterflies/9_metalmark.wav',
     };
+    const shellAssets = <int, String>{
+      1: 'audio/shells/1_cowrie.mp3',
+      2: 'audio/shells/2_scallop.mp3',
+      3: 'audio/shells/3_murex.mp3',
+      4: 'audio/shells/4_nautilus.mp3',
+      5: 'audio/shells/5_cone.mp3',
+      6: 'audio/shells/6_abalone.mp3',
+      7: 'audio/shells/7_turban.mp3',
+      8: 'audio/shells/8_moon_snail.mp3',
+      9: 'audio/shells/9_cockle.mp3',
+    };
     return switch (normalizedMode) {
       'animals' => animalAssets[digit],
       'instruments' => instrumentAssets[digit],
       'butterflies' => butterflyAssets[digit],
+      'shells' => shellAssets[digit],
       'old_opera' => operaAssets[digit],
       _ => null,
     };
@@ -166,7 +178,9 @@ class SudokuTilePreviewAudioService {
       await _player.play(BytesSource(data.buffer.asUint8List()));
       return true;
     } catch (error) {
-      AppDebug.log('Fallback tile audio bytes failed (assets/$normalized): $error');
+      AppDebug.log(
+        'Fallback tile audio bytes failed (assets/$normalized): $error',
+      );
       return false;
     }
   }

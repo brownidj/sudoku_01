@@ -93,6 +93,7 @@ class UiController {
       'animals' ||
       'instruments' ||
       'butterflies' ||
+      'shells' ||
       'old_opera' ||
       'numbers' => mode,
       _ => 'numbers',

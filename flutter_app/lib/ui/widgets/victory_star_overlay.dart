@@ -11,6 +11,8 @@ class VictoryStarOverlay extends StatefulWidget {
 
 class _VictoryStarOverlayState extends State<VictoryStarOverlay>
     with SingleTickerProviderStateMixin {
+  static const Duration _sequenceDuration = Duration(seconds: 8);
+  static const double _sequenceSeconds = 8.0;
   static const List<Color> _colors = <Color>[
     Color(0xFFFFD54F),
     Color(0xFFFF8A80),
@@ -18,7 +20,7 @@ class _VictoryStarOverlayState extends State<VictoryStarOverlay>
     Color(0xFFA5D6A7),
     Color(0xFFCE93D8),
   ];
-  static const int _starCount = 34;
+  static const int _starCount = 68;
   final math.Random _random = math.Random();
   late final AnimationController _controller;
   late final List<_StarConfig> _stars;
@@ -26,15 +28,13 @@ class _VictoryStarOverlayState extends State<VictoryStarOverlay>
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat();
+    _controller = AnimationController(vsync: this, duration: _sequenceDuration)
+      ..forward();
     _stars = List<_StarConfig>.generate(_starCount, (_) {
       return _StarConfig(
         x: _random.nextDouble(),
         y: _random.nextDouble(),
-        size: 18 + _random.nextDouble() * 22,
+        size: 10 + _random.nextDouble() * 12,
         color: _colors[_random.nextInt(_colors.length)],
         phase: _random.nextDouble() * math.pi * 2,
         speed: 0.6 + _random.nextDouble() * 1.1,
@@ -103,7 +103,7 @@ class _VictoryStarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final seconds = progress * 1.8;
+    final seconds = progress * _VictoryStarOverlayState._sequenceSeconds;
     for (final star in stars) {
       final startX = size.width * star.x;
       final startY = size.height * star.y;

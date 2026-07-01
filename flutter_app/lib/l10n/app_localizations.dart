@@ -68,7 +68,8 @@ import 'app_localizations_pt.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -76,7 +77,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -88,12 +90,13 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
@@ -104,7 +107,7 @@ abstract class AppLocalizations {
     Locale('hi'),
     Locale('it'),
     Locale('ja'),
-    Locale('pt')
+    Locale('pt'),
   ];
 
   /// No description provided for @appTitle.
@@ -131,10 +134,16 @@ abstract class AppLocalizations {
   /// **'Notes'**
   String get actionNotes;
 
+  /// No description provided for @actionNewShort.
+  ///
+  /// In en, this message translates to:
+  /// **'New'**
+  String get actionNewShort;
+
   /// No description provided for @actionNewGame.
   ///
   /// In en, this message translates to:
-  /// **'New Game'**
+  /// **'New\nGame'**
   String get actionNewGame;
 
   /// No description provided for @actionPlay.
@@ -190,6 +199,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose the challenge level that allows you to make steady daily progress.'**
   String get tooltipDifficulty;
+
+  /// No description provided for @candidateLongPressToast.
+  ///
+  /// In en, this message translates to:
+  /// **'Candidate {digit}'**
+  String candidateLongPressToast(int digit);
 
   /// No description provided for @labelCorrections.
   ///
@@ -266,13 +281,25 @@ abstract class AppLocalizations {
   /// No description provided for @launchTitle.
   ///
   /// In en, this message translates to:
-  /// **'SuDoKu Playtime'**
+  /// **'SuDoKu Fresh'**
   String get launchTitle;
+
+  /// No description provided for @appBrandIos.
+  ///
+  /// In en, this message translates to:
+  /// **'SuDoKu Playtime'**
+  String get appBrandIos;
+
+  /// No description provided for @appBrandAndroid.
+  ///
+  /// In en, this message translates to:
+  /// **'SuDoKu Fresh'**
+  String get appBrandAndroid;
 
   /// No description provided for @launchSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Take your time, enjoy each puzzle and keep your mind active.'**
+  /// **'Relaxing picture Sudoku'**
   String get launchSubtitle;
 
   /// No description provided for @launchErrorOpenGame.
@@ -302,19 +329,19 @@ abstract class AppLocalizations {
   /// No description provided for @launchHint1.
   ///
   /// In en, this message translates to:
-  /// **'Notes allows you to add little reminders of possibilities if you\'re not sure. Your options are shown in green. Press Notes again to switch them off.'**
+  /// **'Pressing Notes allows you to add reminders of possibilities. Press Notes again to switch them off.'**
   String get launchHint1;
 
   /// No description provided for @launchHint2.
   ///
   /// In en, this message translates to:
-  /// **'Use a long-press, (hold your finger down for a couple of seconds), to understand what somethings do. Also, try it on a tile that has been filled in.'**
+  /// **'Use a long-press, (finger press for two seconds), to understand what some things do. Try it on a tile image.'**
   String get launchHint2;
 
   /// No description provided for @launchHint3.
   ///
   /// In en, this message translates to:
-  /// **'If your choice leads to two or more tiles being coloured pink, you\'ve made a mistake at some point. You have a limited number of auto-corrections.'**
+  /// **'If your choice leads to two or more pink tiles, you\'ve made an earlier mistake. You can auto-correct.'**
   String get launchHint3;
 
   /// No description provided for @launchHint4.
@@ -338,7 +365,7 @@ abstract class AppLocalizations {
   /// No description provided for @launchHint7.
   ///
   /// In en, this message translates to:
-  /// **'If the sounds annoy you or you just want to play the game in a quiet environment you can switch the Audio off in the drawer (☰).'**
+  /// **'If the sounds annoy you or you want to play the game quietly, you can switch Audio off in the drawer (☰).'**
   String get launchHint7;
 
   /// No description provided for @launchHint8.
@@ -356,8 +383,128 @@ abstract class AppLocalizations {
   /// No description provided for @launchHint10.
   ///
   /// In en, this message translates to:
-  /// **'If you\'ve purchased the full version and it doesn\'t show up after an update, use \'Restore Purchases\' from the drawer.'**
+  /// **'If you\'ve purchased the full version and it doesn\'t show up, use \'Restore Purchases\' from the drawer.'**
   String get launchHint10;
+
+  /// No description provided for @victoryMessage1.
+  ///
+  /// In en, this message translates to:
+  /// **'Well done! Play again!'**
+  String get victoryMessage1;
+
+  /// No description provided for @victoryMessage2.
+  ///
+  /// In en, this message translates to:
+  /// **'Great job! Play again!'**
+  String get victoryMessage2;
+
+  /// No description provided for @victoryMessage3.
+  ///
+  /// In en, this message translates to:
+  /// **'You nailed it! Play again!'**
+  String get victoryMessage3;
+
+  /// No description provided for @victoryMessage4.
+  ///
+  /// In en, this message translates to:
+  /// **'Brilliant finish! Play again!'**
+  String get victoryMessage4;
+
+  /// No description provided for @victoryMessage5.
+  ///
+  /// In en, this message translates to:
+  /// **'Excellent work! Play again!'**
+  String get victoryMessage5;
+
+  /// No description provided for @victoryMessage6.
+  ///
+  /// In en, this message translates to:
+  /// **'Nice one! Play again!'**
+  String get victoryMessage6;
+
+  /// No description provided for @victoryMessage7.
+  ///
+  /// In en, this message translates to:
+  /// **'You did it! Play again!'**
+  String get victoryMessage7;
+
+  /// No description provided for @victoryMessage8.
+  ///
+  /// In en, this message translates to:
+  /// **'Superb effort! Play again!'**
+  String get victoryMessage8;
+
+  /// No description provided for @victoryMessage9.
+  ///
+  /// In en, this message translates to:
+  /// **'Proud of you! Play again!'**
+  String get victoryMessage9;
+
+  /// No description provided for @victoryMessage10.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep it up! Play again!'**
+  String get victoryMessage10;
+
+  /// No description provided for @victoryMessage11.
+  ///
+  /// In en, this message translates to:
+  /// **'Amazing work! Play again!'**
+  String get victoryMessage11;
+
+  /// No description provided for @victoryMessage12.
+  ///
+  /// In en, this message translates to:
+  /// **'Fantastic job! Play again!'**
+  String get victoryMessage12;
+
+  /// No description provided for @victoryMessage13.
+  ///
+  /// In en, this message translates to:
+  /// **'Perfect solve! Play again!'**
+  String get victoryMessage13;
+
+  /// No description provided for @victoryMessage14.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong finish! Play again!'**
+  String get victoryMessage14;
+
+  /// No description provided for @victoryMessage15.
+  ///
+  /// In en, this message translates to:
+  /// **'Clever thinking! Play again!'**
+  String get victoryMessage15;
+
+  /// No description provided for @victoryMessage16.
+  ///
+  /// In en, this message translates to:
+  /// **'Sweet success! Play again!'**
+  String get victoryMessage16;
+
+  /// No description provided for @victoryMessage17.
+  ///
+  /// In en, this message translates to:
+  /// **'Top effort! Play again!'**
+  String get victoryMessage17;
+
+  /// No description provided for @victoryMessage18.
+  ///
+  /// In en, this message translates to:
+  /// **'Masterful play! Play again!'**
+  String get victoryMessage18;
+
+  /// No description provided for @victoryMessage19.
+  ///
+  /// In en, this message translates to:
+  /// **'Winner mindset! Play again!'**
+  String get victoryMessage19;
+
+  /// No description provided for @victoryMessage20.
+  ///
+  /// In en, this message translates to:
+  /// **'Outstanding result! Play again!'**
+  String get victoryMessage20;
 
   /// No description provided for @dialogActionCancel.
   ///
@@ -602,7 +749,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerTitle.
   ///
   /// In en, this message translates to:
-  /// **'SuDoKu Playtime'**
+  /// **'SuDoKu Fresh'**
   String get drawerTitle;
 
   /// No description provided for @drawerPuzzleStyleTitle.
@@ -658,6 +805,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sounds for SuDoKu lovers'**
   String get drawerBackgroundMusicSubtitle;
+
+  /// No description provided for @musicControlsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Should the mood take you, here\'s some theme-inspired background music. Press once to turn it off, twice in quick succession to turn it on. Use the < and > for Previous and Next.'**
+  String get musicControlsTooltip;
 
   /// No description provided for @drawerVolumeTitle.
   ///
@@ -746,7 +899,7 @@ abstract class AppLocalizations {
   /// No description provided for @drawerAboutMessage.
   ///
   /// In en, this message translates to:
-  /// **'Version: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy'**
+  /// **'Version: {versionLabel}\n\nThe Angry Grannies Dev Team\ndev - DayDay\ndev - SudokuQueen\ntech advisor - Icy\n\nNone of the Dev Team are artists or musicians. We freely admit we have used AI to create this content. We are all ancient; we value the opportunity to express our creativity in as far as it goes!'**
   String drawerAboutMessage(String versionLabel);
 
   /// No description provided for @drawerDebugTitle.
@@ -809,6 +962,12 @@ abstract class AppLocalizations {
   /// **'Butterflies (pretty!)'**
   String get contentModeButterflies;
 
+  /// No description provided for @contentModeShells.
+  ///
+  /// In en, this message translates to:
+  /// **'Shells (new!)'**
+  String get contentModeShells;
+
   /// No description provided for @contentModeOpera.
   ///
   /// In en, this message translates to:
@@ -820,6 +979,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Numbers (old-school)'**
   String get contentModeNumbers;
+
+  /// No description provided for @appBarMenuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Press this to open a drawer. Use the drawer menu to change animals and style.'**
+  String get appBarMenuTooltip;
 
   /// No description provided for @topControlsProgress.
   ///
@@ -984,7 +1149,8 @@ abstract class AppLocalizations {
   String statusTilesCorrected(int count);
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -993,31 +1159,46 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'pt'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+    'de',
+    'en',
+    'es',
+    'fr',
+    'hi',
+    'it',
+    'ja',
+    'pt',
+  ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'de': return AppLocalizationsDe();
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
-    case 'fr': return AppLocalizationsFr();
-    case 'hi': return AppLocalizationsHi();
-    case 'it': return AppLocalizationsIt();
-    case 'ja': return AppLocalizationsJa();
-    case 'pt': return AppLocalizationsPt();
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'hi':
+      return AppLocalizationsHi();
+    case 'it':
+      return AppLocalizationsIt();
+    case 'ja':
+      return AppLocalizationsJa();
+    case 'pt':
+      return AppLocalizationsPt();
   }
 
   throw FlutterError(
     'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
     'an issue with the localizations generation tool. Please file an issue '
     'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
+    'that was used.',
   );
 }
