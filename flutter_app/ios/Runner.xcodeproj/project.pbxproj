@@ -13,6 +13,7 @@
 		410A66131593EB5385B67E65 /* RunnerUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 49121B91FD9B868ACECF2217 /* RunnerUITests.m */; };
 		6BF494F0144827CABA9A0EF6 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1C73BE4DE7F3DE83BD8C2CC /* Pods_RunnerTests.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -66,6 +67,7 @@
 		6C98A9AF74494B5FAFE1209F /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		89075B0DCE8FAC4BFD256DA0 /* Pods-Runner-RunnerUITests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner-RunnerUITests.profile.xcconfig"; path = "Target Support Files/Pods-Runner-RunnerUITests/Pods-Runner-RunnerUITests.profile.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
 				F101667241B2EC1E1703036F /* Pods_Runner.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,6 +137,7 @@
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
+				78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */,
 				3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */,
 				9740EEB21CF90195004384FC /* Debug.xcconfig */,
 				7AFA3C8E1D35360C0083082E /* Release.xcconfig */,
@@ -257,22 +261,26 @@
 			dependencies = (
 			);
 			name = Runner;
+			packageProductDependencies = (
+				78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */,
+			);
 			productName = Runner;
 			productReference = 97C146EE1CF9000F007C117D /* Runner.app */;
 			productType = "com.apple.product-type.application";
 		};
-		D1A8F2513F1079E91BC87462 /* RunnerUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0BBB00FBB50E04079E93F53D /* Build configuration list for PBXNativeTarget "RunnerUITests" */;
-			buildPhases = (
-				F211BA75D538103C1367BB1C /* [CP] Check Pods Manifest.lock */,
-				531ECFEBAD5629EEADA087A8 /* Sources */,
-				A0E98A54B062DDC11D2E1169 /* Frameworks */,
-				C25A6B00DA90CE837EC81800 /* Resources */,
-				D1DB86F006B5DF3C0D6DFFE2 /* [CP] Embed Pods Frameworks */,
-			);
-			buildRules = (
-			);
+			D1A8F2513F1079E91BC87462 /* RunnerUITests */ = {
+				isa = PBXNativeTarget;
+				buildConfigurationList = 0BBB00FBB50E04079E93F53D /* Build configuration list for PBXNativeTarget "RunnerUITests" */;
+				buildPhases = (
+					F211BA75D538103C1367BB1C /* [CP] Check Pods Manifest.lock */,
+					531ECFEBAD5629EEADA087A8 /* Sources */,
+					A0E98A54B062DDC11D2E1169 /* Frameworks */,
+					C25A6B00DA90CE837EC81800 /* Resources */,
+					D1DB86F006B5DF3C0D6DFFE2 /* [CP] Embed Pods Frameworks */,
+					E2A5F0D12BC6408DBDF8E001 /* Copy Flutter Framework For UITests */,
+				);
+				buildRules = (
+				);
 			dependencies = (
 				1787F3B3458CD5556851D754 /* PBXTargetDependency */,
 			);
@@ -314,6 +322,9 @@
 				Base,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
+			packageReferences = (
+				781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */,
+			);
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -429,9 +440,9 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build";
 		};
-		D1DB86F006B5DF3C0D6DFFE2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			D1DB86F006B5DF3C0D6DFFE2 /* [CP] Embed Pods Frameworks */ = {
+				isa = PBXShellScriptBuildPhase;
+				buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
@@ -443,11 +454,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner-RunnerUITests/Pods-Runner-RunnerUITests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F211BA75D538103C1367BB1C /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
+				shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner-RunnerUITests/Pods-Runner-RunnerUITests-frameworks.sh\"\n";
+				showEnvVarsInLog = 0;
+			};
+			E2A5F0D12BC6408DBDF8E001 /* Copy Flutter Framework For UITests */ = {
+				isa = PBXShellScriptBuildPhase;
+				buildActionMask = 2147483647;
+				files = (
+				);
+				inputPaths = (
+					"$(BUILT_PRODUCTS_DIR)/Runner.app/Frameworks/Flutter.framework",
+				);
+				name = "Copy Flutter Framework For UITests";
+				outputPaths = (
+					"$(BUILT_PRODUCTS_DIR)/RunnerUITests-Runner.app/Frameworks/Flutter.framework",
+				);
+				runOnlyForDeploymentPostprocessing = 0;
+				shellPath = /bin/sh;
+				shellScript = "set -e\nSOURCE_FRAMEWORK=\"${BUILT_PRODUCTS_DIR}/Runner.app/Frameworks/Flutter.framework\"\nDESTINATION_DIR=\"${BUILT_PRODUCTS_DIR}/RunnerUITests-Runner.app/Frameworks\"\nif [ ! -d \"${SOURCE_FRAMEWORK}\" ]; then\n  echo \"error: Missing Flutter.framework at ${SOURCE_FRAMEWORK}\" >&2\n  exit 1\nfi\nmkdir -p \"${DESTINATION_DIR}\"\nrm -rf \"${DESTINATION_DIR}/Flutter.framework\"\ncp -R \"${SOURCE_FRAMEWORK}\" \"${DESTINATION_DIR}/Flutter.framework\"\n";
+				showEnvVarsInLog = 0;
+			};
+			F211BA75D538103C1367BB1C /* [CP] Check Pods Manifest.lock */ = {
+				isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -638,6 +666,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QL5QBFGDB7;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.topository.animalsudoku.RunnerTests;
@@ -656,6 +685,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QL5QBFGDB7;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.topository.animalsudoku.RunnerTests;
@@ -672,6 +702,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QL5QBFGDB7;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.topository.animalsudoku.RunnerTests;
@@ -959,6 +990,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		781AD8BC2B33823900A9FFBB /* XCLocalSwiftPackageReference "FlutterGeneratedPluginSwiftPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlutterGeneratedPluginSwiftPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 97C146E61CF9000F007C117D /* Project object */;
 }
