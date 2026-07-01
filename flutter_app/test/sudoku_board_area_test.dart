@@ -1,67 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_app/app/ui_state.dart';
-import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/widgets/sudoku_board_area.dart';
-
-UiState _state({
-  String puzzleMode = 'unique',
-  String difficulty = 'easy',
-  int correctionsLeft = 3,
-  int conflictHintsLeft = 3,
-  Coord? selected,
-  String? debugScenarioLabel,
-  String contentMode = 'numbers',
-  bool premiumActive = false,
-  DateTime? puzzleStartedAt,
-  DateTime? puzzleFinishedAt,
-}) {
-  final cells = List<List<CellVm>>.generate(
-    9,
-    (r) => List<CellVm>.generate(
-      9,
-      (c) => CellVm(
-        coord: Coord(r, c),
-        value: null,
-        given: false,
-        notes: const [],
-        selected: false,
-        conflicted: false,
-        incorrect: false,
-        solutionAdded: false,
-        correct: false,
-        reverted: false,
-      ),
-      growable: false,
-    ),
-    growable: false,
-  );
-  return UiState(
-    board: BoardVm(cells: cells),
-    notesMode: false,
-    difficulty: difficulty,
-    canChangeDifficulty: true,
-    canChangePuzzleMode: true,
-    styleName: 'Modern',
-    contentMode: contentMode,
-    animalStyle: 'simple',
-    puzzleMode: puzzleMode,
-    selected: selected,
-    gameOver: false,
-    correctionsLeft: correctionsLeft,
-    canUndo: false,
-    correctionPromptCoord: null,
-    debugScenarioLabel: debugScenarioLabel,
-    correctionNoticeSerial: 0,
-    correctionNoticeMessage: null,
-    conflictHintsLeft: conflictHintsLeft,
-    entitlement: premiumActive ? Entitlement.premium : Entitlement.free,
-    premiumActive: premiumActive,
-    puzzleStartedAt: puzzleStartedAt,
-    puzzleFinishedAt: puzzleFinishedAt,
-  );
-}
+import 'support/sudoku_board_area_test_support.dart';
 
 void main() {
   testWidgets('main metadata row shows corrections left and difficulty', (
@@ -74,7 +15,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(
+              state: boardAreaState(
                 puzzleMode: 'unique',
                 difficulty: 'hard',
                 conflictHintsLeft: 2,
@@ -115,7 +56,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(
+              state: boardAreaState(
                 premiumActive: true,
                 puzzleStartedAt: startedAt,
                 puzzleFinishedAt: startedAt.add(
@@ -155,7 +96,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(
+              state: boardAreaState(
                 puzzleStartedAt: startedAt,
                 puzzleFinishedAt: startedAt.add(
                   const Duration(minutes: 3, seconds: 4),
@@ -191,7 +132,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(
+              state: boardAreaState(
                 puzzleMode: 'unique',
                 difficulty: 'medium',
                 correctionsLeft: 2,
@@ -236,7 +177,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(
+              state: boardAreaState(
                 debugScenarioLabel: 'Debug scenario: corrections exhausted',
               ),
               style: styleModern,
@@ -270,7 +211,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(selected: null),
+              state: boardAreaState(selected: null),
               style: styleModern,
               animalImages: const {},
               noteImagesBySize: const {},
@@ -300,7 +241,7 @@ void main() {
             width: 420,
             height: 620,
             child: SudokuBoardArea(
-              state: _state(contentMode: 'instruments'),
+              state: boardAreaState(contentMode: 'instruments'),
               style: styleModern,
               animalImages: const {},
               noteImagesBySize: const {},

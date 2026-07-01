@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
+import 'package:flutter_app/ui/animal_cache_assets.dart';
 import 'package:flutter_app/ui/animal_cache_catalog.dart';
-import 'package:flutter_app/ui/animal_cache_localized_names.dart';
 
 class AnimalImageCache {
   static Future<Map<String, Map<int, ui.Image>>>? _future;
@@ -38,10 +38,18 @@ class AnimalImageCache {
   static Future<Map<String, Map<int, ui.Image>>> _loadAll() async {
     final simple = await _loadAnimalImagesForVariant('simple');
     final cute = await _loadAnimalImagesForVariant('cute');
-    final instruments = await _loadDigitImages(_instrumentAssetPathForDigit);
-    final butterflies = await _loadDigitImages(_butterflyAssetPathForDigit);
-    final shells = await _loadDigitImages(_shellAssetPathForDigit);
-    final oldOpera = await _loadDigitImages(_operaAssetPathForDigit);
+    final instruments = await _loadDigitImages(
+      AnimalCacheAssets.instrumentAssetPathForDigit,
+    );
+    final butterflies = await _loadDigitImages(
+      AnimalCacheAssets.butterflyAssetPathForDigit,
+    );
+    final shells = await _loadDigitImages(
+      AnimalCacheAssets.shellAssetPathForDigit,
+    );
+    final oldOpera = await _loadDigitImages(
+      AnimalCacheAssets.operaAssetPathForDigit,
+    );
     return {
       'simple': simple,
       'cute': cute,
@@ -63,11 +71,17 @@ class AnimalImageCache {
     final simpleNotes = await _loadAnimalNotesForVariant('simple');
     final cuteNotes = await _loadAnimalNotesForVariant('cute');
     final instrumentNotes = await _loadDigitImages(
-      _instrumentAssetPathForDigit,
+      AnimalCacheAssets.instrumentAssetPathForDigit,
     );
-    final butterflyNotes = await _loadDigitImages(_butterflyAssetPathForDigit);
-    final shellNotes = await _loadDigitImages(_shellAssetPathForDigit);
-    final oldOperaNotes = await _loadDigitImages(_operaAssetPathForDigit);
+    final butterflyNotes = await _loadDigitImages(
+      AnimalCacheAssets.butterflyAssetPathForDigit,
+    );
+    final shellNotes = await _loadDigitImages(
+      AnimalCacheAssets.shellAssetPathForDigit,
+    );
+    final oldOperaNotes = await _loadDigitImages(
+      AnimalCacheAssets.operaAssetPathForDigit,
+    );
     for (final size in AnimalCacheCatalog.noteSizes) {
       simple[size] = Map<int, ui.Image>.from(simpleNotes);
       cute[size] = Map<int, ui.Image>.from(cuteNotes);
@@ -92,9 +106,9 @@ class AnimalImageCache {
   ) async {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
-      final name = _animalName(d);
+      final name = AnimalCacheAssets.animalName(d);
       final data = await rootBundle.load(
-        _tileAssetPath(digit: d, name: name, variant: variant),
+        AnimalCacheAssets.tileAssetPath(digit: d, name: name, variant: variant),
       );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
@@ -114,36 +128,13 @@ class AnimalImageCache {
     return images;
   }
 
-  static String _tileAssetPath({
-    required int digit,
-    required String name,
-    required String variant,
-  }) {
-    if (variant == 'cute') {
-      return 'assets/images/animals/$digit'
-          '_cartoon_'
-          '$name'
-          '_s.png';
-    }
-    return 'assets/images/animals/$digit'
-        '_'
-        '$name'
-        '.png';
-  }
-
   static Future<Map<int, ui.Image>> _loadNotesImages({
     required String variant,
   }) async {
     final images = <int, ui.Image>{};
     for (var d = 1; d <= 9; d += 1) {
-      final name = _animalName(d);
-      final prefix = variant == 'cute' ? 'cartoon_' : '';
       final data = await rootBundle.load(
-        'assets/images/animals/$d'
-        '_'
-        '$prefix'
-        '$name'
-        '_notes.png',
+        AnimalCacheAssets.animalNotesAssetPath(digit: d, variant: variant),
       );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
@@ -158,161 +149,41 @@ class AnimalImageCache {
     return _notesCache?[variant]?[size] ?? <int, ui.Image>{};
   }
 
-  static String _animalName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.animalNames, fallback: 'ape');
-  static String nameForDigit(int digit) => _animalName(digit);
-  static String _instrumentName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.instrumentNames, fallback: 'piano');
-  static String _instrumentFileName(int digit) {
-    return _nameAt(
-      digit,
-      AnimalCacheCatalog.instrumentFileNames,
-      fallback: 'piano',
-    );
-  }
+  static String nameForDigit(int digit) => AnimalCacheAssets.animalName(digit);
+  static String displayNameForDigit(String contentMode, int digit) =>
+      AnimalCacheAssets.displayNameForDigit(contentMode, digit);
 
-  static String _operaName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.operaNames, fallback: 'bass');
-  static String _operaFileName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.operaFileNames, fallback: 'bass');
-  static String _butterflyName(int digit) {
-    return _nameAt(
-      digit,
-      AnimalCacheCatalog.butterflyNames,
-      fallback: 'monarch',
-    );
-  }
-
-  static String _butterflyFileName(int digit) {
-    return _nameAt(
-      digit,
-      AnimalCacheCatalog.butterflyFileNames,
-      fallback: '1_monarch',
-    );
-  }
-
-  static String _shellName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.shellNames, fallback: 'cowrie');
-  static String _shellFileName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.shellFileNames, fallback: '1_cowrie');
-  static String displayNameForDigit(String contentMode, int digit) {
-    switch (contentMode) {
-      case 'animals':
-        return _animalName(digit);
-      case 'instruments':
-        return _instrumentName(digit);
-      case 'old_opera':
-        return _operaName(digit);
-      case 'butterflies':
-        return _butterflyName(digit);
-      case 'shells':
-        return _shellName(digit);
-      default:
-        return digit.toString();
-    }
-  }
-
-  static String displayNameForDigitTitleCase(String contentMode, int digit) {
-    final raw = displayNameForDigit(contentMode, digit).trim();
-    if (raw.isEmpty) {
-      return raw;
-    }
-    return raw
-        .split(RegExp(r'\s+'))
-        .where((part) => part.isNotEmpty)
-        .map((part) => '${part[0].toUpperCase()}${part.substring(1)}')
-        .join(' ');
-  }
+  static String displayNameForDigitTitleCase(String contentMode, int digit) =>
+      AnimalCacheAssets.displayNameForDigitTitleCase(contentMode, digit);
 
   static String displayNameForDigitLocalizedTitleCase({
     required String contentMode,
     required int digit,
     required String languageCode,
-  }) {
-    final localized =
-        animalCacheLocalizedDisplayNames[languageCode]?[contentMode];
-    if (localized != null && digit >= 1 && digit <= localized.length) {
-      return localized[digit - 1];
-    }
-    return displayNameForDigitTitleCase(contentMode, digit);
-  }
+  }) => AnimalCacheAssets.displayNameForDigitLocalizedTitleCase(
+    contentMode: contentMode,
+    digit: digit,
+    languageCode: languageCode,
+  );
 
-  static String? butterflyDescriptionForDigit(int digit) {
-    if (digit < 1 || digit > AnimalCacheCatalog.butterflyDescriptions.length) {
-      return null;
-    }
-    return AnimalCacheCatalog.butterflyDescriptions[digit - 1];
-  }
+  static String? butterflyDescriptionForDigit(int digit) =>
+      AnimalCacheAssets.butterflyDescriptionForDigit(digit);
 
   static String tileAssetPathForDigit({
     required String contentMode,
     required String animalStyle,
     required int digit,
-  }) {
-    if (contentMode == 'instruments') {
-      return _instrumentAssetPathForDigit(digit);
-    }
-    if (contentMode == 'old_opera') {
-      return _operaAssetPathForDigit(digit);
-    }
-    if (contentMode == 'butterflies') {
-      return _butterflyAssetPathForDigit(digit);
-    }
-    if (contentMode == 'shells') {
-      return _shellAssetPathForDigit(digit);
-    }
-    final variant = AnimalCacheCatalog.variants.contains(animalStyle)
-        ? animalStyle
-        : 'simple';
-    final name = _animalName(digit);
-    return _tileAssetPath(digit: digit, name: name, variant: variant);
-  }
+  }) => AnimalCacheAssets.tileAssetPathForDigit(
+    contentMode: contentMode,
+    animalStyle: animalStyle,
+    digit: digit,
+  );
 
-  static String tileLabelForDigit(String contentMode, int digit) {
-    final displayName = switch (contentMode) {
-      'instruments' => _instrumentName(digit),
-      'old_opera' => _operaName(digit),
-      'butterflies' => _butterflyName(digit),
-      'shells' => _shellName(digit),
-      _ => '',
-    };
-    if (displayName.isEmpty) {
-      return digit.toString();
-    }
-    return displayName[0].toUpperCase();
-  }
+  static String tileLabelForDigit(String contentMode, int digit) =>
+      AnimalCacheAssets.tileLabelForDigit(contentMode, digit);
 
-  static String initialForDigit(int digit) {
-    final name = _animalName(digit);
-    return name.isEmpty ? '' : name[0].toUpperCase();
-  }
-
-  static String _nameAt(
-    int digit,
-    List<String> names, {
-    required String fallback,
-  }) {
-    if (digit < 1 || digit > names.length) {
-      return fallback;
-    }
-    return names[digit - 1];
-  }
-
-  static String _instrumentAssetPathForDigit(int digit) {
-    return 'assets/images/music/${_instrumentFileName(digit)}.png';
-  }
-
-  static String _operaAssetPathForDigit(int digit) {
-    return 'assets/images/opera/${_operaFileName(digit)}.png';
-  }
-
-  static String _butterflyAssetPathForDigit(int digit) {
-    return 'assets/images/butterflies/${_butterflyFileName(digit)}.png';
-  }
-
-  static String _shellAssetPathForDigit(int digit) {
-    return 'assets/images/shells/${_shellFileName(digit)}.png';
-  }
+  static String initialForDigit(int digit) =>
+      AnimalCacheAssets.initialForDigit(digit);
 
   static Future<ui.Image> _decodeImage(Uint8List bytes) async {
     final codec = await ui.instantiateImageCodec(bytes);
