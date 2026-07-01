@@ -8,3 +8,4 @@ TARGET@*.*
 scripts/email_testers.py
 scripts/data/playstore_testers.csv
 scripts/data/email_testers.env
+docs/OfferCodeOneTimeUseCodes_*.csv

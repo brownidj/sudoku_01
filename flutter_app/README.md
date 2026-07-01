@@ -24,6 +24,21 @@ flutter devices
 patrol test --target patrol_test/smoke_test.dart --device <device-id>
 ```
 
+Release checklist Patrol specs:
+
+```bash
+flutter devices
+./scripts/run_patrol_release_checklist.sh <simulator-id>
+```
+
+Equivalent manual commands:
+
+```bash
+patrol test --target patrol_test/release_checklist_drawer_test.dart --device <device-id>
+patrol test --target patrol_test/release_checklist_difficulties_test.dart --device <device-id>
+patrol test --target patrol_test/release_checklist_themes_test.dart --device <device-id>
+```
+
 ## CI test run
 
 Use the repo script so integration tests always run with an explicit device:
