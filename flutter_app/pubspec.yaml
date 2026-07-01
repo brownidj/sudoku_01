@@ -82,13 +82,16 @@ flutter:
     - assets/images/animals_chatGpT/
     - assets/images/music/
     - assets/images/butterflies/
+    - assets/images/shells/
     - assets/images/opera/
     - assets/audio/animals/
     - assets/audio/music/
     - assets/audio/background/
     - assets/audio/background/butterflies/
+    - assets/audio/background/shells/
     - assets/audio/background/opera/
     - assets/audio/butterflies/
+    - assets/audio/shells/
     - assets/audio/opera/
     - assets/images/icons/
     - assets/images/icons/super_granny.png

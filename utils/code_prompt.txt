@@ -1,15 +1,15 @@
-theme: fruit
+theme: buttons
 
 images:
-Strawberry,"Strong shape, red colour, recognisable seed"
-Orange slice,"Circular, fills square beautifully"
-Kiwi slice,Distinct green radial pattern
-Watermelon slice,Very bold colour contrast
-Pineapple,Texture and crown make it unique
-Banana,Iconic shape and colour
-Apple,Familiar and simple
-Pomegranate cut-open,Rich jewel-like texture
-Dragon fruit,Visually striking and unlike the others
+pearly cream flat, no rim, round two-hole button,
+red coat button with raised rim,
+blue faceted glass button,
+green marbled Bakelite button,
+golden brass embossed button,
+lavender flower-shaped button,
+brown leather-look stitched button,
+turquoise enamel button with a white centre, and
+black carved button with silver highlights.
 
 prompt:
 Create a single realistic, senior-friendly picture-Sudoku game tile image of: {subject}.

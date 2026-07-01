@@ -86,6 +86,30 @@ class AnimalCacheCatalog {
     '9_metalmark',
   ];
 
+  static const shellNames = <String>[
+    'cowrie',
+    'scallop',
+    'murex',
+    'nautilus',
+    'cone',
+    'abalone',
+    'turban',
+    'moon snail',
+    'cockle',
+  ];
+
+  static const shellFileNames = <String>[
+    '1_cowrie',
+    '2_scallop',
+    '3_murex',
+    '4_nautilus',
+    '5_cone',
+    '6_abalone',
+    '7_turban',
+    '8_moon_snail',
+    '9_cockle',
+  ];
+
   static const butterflyDescriptions = <String>[
     'The Monarch butterfly is famous for orange wings veined in black and remarkable migrations. '
         'It is found across North America, breeding in Canada and the United States, then wintering '

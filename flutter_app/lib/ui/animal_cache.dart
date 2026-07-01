@@ -2,13 +2,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_app/ui/animal_cache_catalog.dart';
+import 'package:flutter_app/ui/animal_cache_localized_names.dart';
 
 class AnimalImageCache {
-
   static Future<Map<String, Map<int, ui.Image>>>? _future;
   static Future<Map<String, Map<int, Map<int, ui.Image>>>>? _notesFuture;
   static Map<String, Map<int, Map<int, ui.Image>>>? _notesCache;
-
   static Future<Map<String, Map<int, ui.Image>>> loadAll() {
     _future ??= _loadAll().catchError((Object error, StackTrace stackTrace) {
       _future = null;
@@ -41,12 +40,14 @@ class AnimalImageCache {
     final cute = await _loadAnimalImagesForVariant('cute');
     final instruments = await _loadDigitImages(_instrumentAssetPathForDigit);
     final butterflies = await _loadDigitImages(_butterflyAssetPathForDigit);
+    final shells = await _loadDigitImages(_shellAssetPathForDigit);
     final oldOpera = await _loadDigitImages(_operaAssetPathForDigit);
     return {
       'simple': simple,
       'cute': cute,
       'instruments': instruments,
       'butterflies': butterflies,
+      'shells': shells,
       'old_opera': oldOpera,
     };
   }
@@ -57,17 +58,22 @@ class AnimalImageCache {
     final cute = <int, Map<int, ui.Image>>{};
     final instruments = <int, Map<int, ui.Image>>{};
     final butterflies = <int, Map<int, ui.Image>>{};
+    final shells = <int, Map<int, ui.Image>>{};
     final oldOpera = <int, Map<int, ui.Image>>{};
     final simpleNotes = await _loadAnimalNotesForVariant('simple');
     final cuteNotes = await _loadAnimalNotesForVariant('cute');
-    final instrumentNotes = await _loadDigitImages(_instrumentAssetPathForDigit);
+    final instrumentNotes = await _loadDigitImages(
+      _instrumentAssetPathForDigit,
+    );
     final butterflyNotes = await _loadDigitImages(_butterflyAssetPathForDigit);
+    final shellNotes = await _loadDigitImages(_shellAssetPathForDigit);
     final oldOperaNotes = await _loadDigitImages(_operaAssetPathForDigit);
     for (final size in AnimalCacheCatalog.noteSizes) {
       simple[size] = Map<int, ui.Image>.from(simpleNotes);
       cute[size] = Map<int, ui.Image>.from(cuteNotes);
       instruments[size] = Map<int, ui.Image>.from(instrumentNotes);
       butterflies[size] = Map<int, ui.Image>.from(butterflyNotes);
+      shells[size] = Map<int, ui.Image>.from(shellNotes);
       oldOpera[size] = Map<int, ui.Image>.from(oldOperaNotes);
     }
     _notesCache = {
@@ -75,6 +81,7 @@ class AnimalImageCache {
       'cute': cute,
       'instruments': instruments,
       'butterflies': butterflies,
+      'shells': shells,
       'old_opera': oldOpera,
     };
     return _notesCache!;
@@ -113,9 +120,15 @@ class AnimalImageCache {
     required String variant,
   }) {
     if (variant == 'cute') {
-      return 'assets/images/animals/${digit}_cartoon_${name}_s.png';
+      return 'assets/images/animals/$digit'
+          '_cartoon_'
+          '$name'
+          '_s.png';
     }
-    return 'assets/images/animals/${digit}_${name}.png';
+    return 'assets/images/animals/$digit'
+        '_'
+        '$name'
+        '.png';
   }
 
   static Future<Map<int, ui.Image>> _loadNotesImages({
@@ -126,7 +139,11 @@ class AnimalImageCache {
       final name = _animalName(d);
       final prefix = variant == 'cute' ? 'cartoon_' : '';
       final data = await rootBundle.load(
-        'assets/images/animals/${d}_${prefix}${name}_notes.png',
+        'assets/images/animals/$d'
+        '_'
+        '$prefix'
+        '$name'
+        '_notes.png',
       );
       final image = await _decodeImage(data.buffer.asUint8List());
       images[d] = image;
@@ -136,26 +153,16 @@ class AnimalImageCache {
 
   static Future<Map<int, ui.Image>> _loadAnimalNotesForVariant(
     String variant,
-  ) {
-    return _loadNotesImages(variant: variant);
-  }
-
+  ) => _loadNotesImages(variant: variant);
   static Map<int, ui.Image> notesFor(String variant, int size) {
     return _notesCache?[variant]?[size] ?? <int, ui.Image>{};
   }
 
-  static String _animalName(int digit) {
-    return _nameAt(digit, AnimalCacheCatalog.animalNames, fallback: 'ape');
-  }
-
-  static String nameForDigit(int digit) {
-    return _animalName(digit);
-  }
-
-  static String _instrumentName(int digit) {
-    return _nameAt(digit, AnimalCacheCatalog.instrumentNames, fallback: 'piano');
-  }
-
+  static String _animalName(int digit) =>
+      _nameAt(digit, AnimalCacheCatalog.animalNames, fallback: 'ape');
+  static String nameForDigit(int digit) => _animalName(digit);
+  static String _instrumentName(int digit) =>
+      _nameAt(digit, AnimalCacheCatalog.instrumentNames, fallback: 'piano');
   static String _instrumentFileName(int digit) {
     return _nameAt(
       digit,
@@ -164,14 +171,10 @@ class AnimalImageCache {
     );
   }
 
-  static String _operaName(int digit) {
-    return _nameAt(digit, AnimalCacheCatalog.operaNames, fallback: 'bass');
-  }
-
-  static String _operaFileName(int digit) {
-    return _nameAt(digit, AnimalCacheCatalog.operaFileNames, fallback: 'bass');
-  }
-
+  static String _operaName(int digit) =>
+      _nameAt(digit, AnimalCacheCatalog.operaNames, fallback: 'bass');
+  static String _operaFileName(int digit) =>
+      _nameAt(digit, AnimalCacheCatalog.operaFileNames, fallback: 'bass');
   static String _butterflyName(int digit) {
     return _nameAt(
       digit,
@@ -188,6 +191,10 @@ class AnimalImageCache {
     );
   }
 
+  static String _shellName(int digit) =>
+      _nameAt(digit, AnimalCacheCatalog.shellNames, fallback: 'cowrie');
+  static String _shellFileName(int digit) =>
+      _nameAt(digit, AnimalCacheCatalog.shellFileNames, fallback: '1_cowrie');
   static String displayNameForDigit(String contentMode, int digit) {
     switch (contentMode) {
       case 'animals':
@@ -198,6 +205,8 @@ class AnimalImageCache {
         return _operaName(digit);
       case 'butterflies':
         return _butterflyName(digit);
+      case 'shells':
+        return _shellName(digit);
       default:
         return digit.toString();
     }
@@ -213,6 +222,19 @@ class AnimalImageCache {
         .where((part) => part.isNotEmpty)
         .map((part) => '${part[0].toUpperCase()}${part.substring(1)}')
         .join(' ');
+  }
+
+  static String displayNameForDigitLocalizedTitleCase({
+    required String contentMode,
+    required int digit,
+    required String languageCode,
+  }) {
+    final localized =
+        animalCacheLocalizedDisplayNames[languageCode]?[contentMode];
+    if (localized != null && digit >= 1 && digit <= localized.length) {
+      return localized[digit - 1];
+    }
+    return displayNameForDigitTitleCase(contentMode, digit);
   }
 
   static String? butterflyDescriptionForDigit(int digit) {
@@ -236,6 +258,9 @@ class AnimalImageCache {
     if (contentMode == 'butterflies') {
       return _butterflyAssetPathForDigit(digit);
     }
+    if (contentMode == 'shells') {
+      return _shellAssetPathForDigit(digit);
+    }
     final variant = AnimalCacheCatalog.variants.contains(animalStyle)
         ? animalStyle
         : 'simple';
@@ -248,6 +273,7 @@ class AnimalImageCache {
       'instruments' => _instrumentName(digit),
       'old_opera' => _operaName(digit),
       'butterflies' => _butterflyName(digit),
+      'shells' => _shellName(digit),
       _ => '',
     };
     if (displayName.isEmpty) {
@@ -258,10 +284,7 @@ class AnimalImageCache {
 
   static String initialForDigit(int digit) {
     final name = _animalName(digit);
-    if (name.isEmpty) {
-      return '';
-    }
-    return name[0].toUpperCase();
+    return name.isEmpty ? '' : name[0].toUpperCase();
   }
 
   static String _nameAt(
@@ -285,6 +308,10 @@ class AnimalImageCache {
 
   static String _butterflyAssetPathForDigit(int digit) {
     return 'assets/images/butterflies/${_butterflyFileName(digit)}.png';
+  }
+
+  static String _shellAssetPathForDigit(int digit) {
+    return 'assets/images/shells/${_shellFileName(digit)}.png';
   }
 
   static Future<ui.Image> _decodeImage(Uint8List bytes) async {
