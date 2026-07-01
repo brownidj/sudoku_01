@@ -52,10 +52,6 @@ void main() {
     await _startGameFromLaunch(tester, buttonLabel: 'Play');
     await _dismissInfoSheetIfVisible(tester);
 
-    await tester.longPress(find.byIcon(Icons.menu));
-    await tester.pumpAndSettle();
-    expect(find.text(_menuTooltip), findsOneWidget);
-
     await _openDrawer(tester);
     expect(find.text('Puzzle Solution Mode'), findsNothing);
     expect(find.text('Difficulty'), findsNothing);
@@ -64,12 +60,14 @@ void main() {
       findsNothing,
     );
 
-    Navigator.of(tester.element(find.byType(Scaffold))).maybePop();
+    tester.state<ScaffoldState>(find.byType(Scaffold).first).closeDrawer();
     await tester.pumpAndSettle();
 
-    await tester.tap(
+    final helpChip = tester.widget<ActionChip>(
       find.byKey(const ValueKey<String>('top-controls-help-chip')),
     );
+    expect(helpChip.onPressed, isNotNull);
+    helpChip.onPressed!();
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.textContaining(_helpSnippet), findsOneWidget);
@@ -85,6 +83,11 @@ void main() {
       find.byKey(const ValueKey<String>('board-difficulty-dropdown')),
       findsOneWidget,
     );
+
+    final menuButton = tester.widget<IconButton>(
+      find.byKey(const ValueKey<String>('appbar-menu-button')),
+    );
+    expect(menuButton.tooltip, _menuTooltip);
   });
 
   testWidgets('board tooltips are reachable', (tester) async {
@@ -182,9 +185,12 @@ Future<void> _startGameFromLaunch(
 }
 
 Future<void> _openDrawer(WidgetTester tester) async {
-  await tester.tap(find.byIcon(Icons.menu));
+  await tester.tap(find.byKey(const ValueKey<String>('appbar-menu-button')));
   await tester.pumpAndSettle();
-  await _pumpUntilVisible(tester, find.text('SuDoKu Fresh'));
+  await _pumpUntilVisible(
+    tester,
+    find.byKey(const ValueKey<String>('drawer-puzzle-style-section')),
+  );
 }
 
 Future<void> _dismissInfoSheetIfVisible(WidgetTester tester) async {
