@@ -22,6 +22,8 @@ class GameControllerEffects {
       correctionState: runtime.correctionState,
       debugScenarioLabel: runtime.debugScenarioLabel,
       conflictHintsLeft: runtime.conflictHintsLeft,
+      puzzleStartedAt: runtime.puzzleStartedAt,
+      puzzleFinishedAt: runtime.puzzleFinishedAt,
     );
   }
 

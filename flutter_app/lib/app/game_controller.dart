@@ -43,7 +43,6 @@ class GameController {
   int _daysPlayed = 0;
   int _streak = 0;
   Map<String, int> _bestSolveTimeSecondsByDifficulty = <String, int>{};
-  DateTime _puzzleStartedAt = DateTime.now();
   Entitlement _entitlement = Entitlement.free;
 
   GameController({
@@ -116,7 +115,6 @@ class GameController {
     if (startup.restoredRuntime != null) {
       _runtime = startup.restoredRuntime!;
       _completionRecordedForCurrentPuzzle = _runtime.puzzleSolved;
-      _puzzleStartedAt = DateTime.now();
     }
     if (startup.shouldNotifyListeners) {
       _effects.render(notifyListeners, appL10nCurrent().statusSessionRestored);
@@ -158,12 +156,14 @@ class GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
-    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
+    _recordPuzzleCompletionIfNeeded(
+      wasPuzzleSolved: wasPuzzleSolved,
+      notifyListeners: notifyListeners,
+    );
   }
 
   void start(VoidCallback notifyListeners) {
     _completionRecordedForCurrentPuzzle = false;
-    _puzzleStartedAt = DateTime.now();
     _actionService.startPuzzle(
       runtime: _runtime,
       settings: _settings,
@@ -194,7 +194,10 @@ class GameController {
     }
     _entitlement = refreshed;
     _enforceContentModeForEntitlement();
-    _effects.render(notifyListeners, appL10nCurrent().statusEntitlementRefreshed);
+    _effects.render(
+      notifyListeners,
+      appL10nCurrent().statusEntitlementRefreshed,
+    );
   }
 
   Future<void> resetProgressMetrics(VoidCallback notifyListeners) async {
@@ -230,7 +233,10 @@ class GameController {
     _settings.setContentMode('animals');
   }
 
-  void _recordPuzzleCompletionIfNeeded({required bool wasPuzzleSolved}) {
+  void _recordPuzzleCompletionIfNeeded({
+    required bool wasPuzzleSolved,
+    required VoidCallback notifyListeners,
+  }) {
     if (wasPuzzleSolved ||
         !_runtime.puzzleSolved ||
         _completionRecordedForCurrentPuzzle) {
@@ -238,7 +244,11 @@ class GameController {
     }
     _completionRecordedForCurrentPuzzle = true;
     _completedPuzzles += 1;
-    final solveDuration = DateTime.now().difference(_puzzleStartedAt);
+    final finishedAt = DateTime.now();
+    _runtime.puzzleFinishedAt = finishedAt;
+    final solveDuration = finishedAt.difference(_runtime.puzzleStartedAt);
+    _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
+    _effects.render(notifyListeners, '');
     unawaited(
       _progressMetricsService
           .recordPuzzleCompletion(

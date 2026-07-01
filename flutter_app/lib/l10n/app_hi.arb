@@ -22,6 +22,14 @@
       }
     }
   },
+  "labelElapsedTime": "समय: {time}",
+  "@labelElapsedTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "tooltipCorrections": "इस पहेली के लिए आपके पास {limit} स्वचालित सुधार उपलब्ध हैं। पहले की कोई चाल प्रगति रोके तो सुधार उपयोग करें। सुधार खत्म हों तो पूर्ववत करें।",
   "@tooltipCorrections": {
     "placeholders": {

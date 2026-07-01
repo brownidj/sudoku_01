@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
@@ -27,13 +29,25 @@ class SudokuBoardMetadataRow extends StatelessWidget {
             child: Transform.translate(
               offset: const Offset(-4, 0),
               child: _ManualTooltipLabel(
-                label: UiStrings.correctionsLabel(context, state.correctionsLeft),
+                label: UiStrings.correctionsLabel(
+                  context,
+                  state.correctionsLeft,
+                ),
                 tooltipMessage: correctionsTooltipMessage,
               ),
             ),
           ),
         ),
-        const Expanded(child: SizedBox.shrink()),
+        Expanded(
+          child: Center(
+            child: state.premiumActive
+                ? _ElapsedTimeLabel(
+                    startedAt: state.puzzleStartedAt,
+                    finishedAt: state.puzzleFinishedAt,
+                  )
+                : const SizedBox.shrink(),
+          ),
+        ),
         Expanded(
           child: Align(
             alignment: Alignment.centerRight,
@@ -79,6 +93,80 @@ class SudokuBoardMetadataRow extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _ElapsedTimeLabel extends StatefulWidget {
+  final DateTime? startedAt;
+  final DateTime? finishedAt;
+
+  const _ElapsedTimeLabel({required this.startedAt, required this.finishedAt});
+
+  @override
+  State<_ElapsedTimeLabel> createState() => _ElapsedTimeLabelState();
+}
+
+class _ElapsedTimeLabelState extends State<_ElapsedTimeLabel> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _syncTimer();
+  }
+
+  @override
+  void didUpdateWidget(_ElapsedTimeLabel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.finishedAt != widget.finishedAt) {
+      _syncTimer();
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final elapsed = _elapsedSeconds();
+    return _MetadataLabel(
+      label: UiStrings.elapsedTimeLabel(context, _formatElapsed(elapsed)),
+    );
+  }
+
+  void _syncTimer() {
+    _timer?.cancel();
+    _timer = null;
+    if (widget.finishedAt != null) {
+      return;
+    }
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  int _elapsedSeconds() {
+    final startedAt = widget.startedAt ?? DateTime.now();
+    final end = widget.finishedAt ?? DateTime.now();
+    final elapsed = end.difference(startedAt).inSeconds;
+    return elapsed < 0 ? 0 : elapsed;
+  }
+
+  String _formatElapsed(int seconds) {
+    final hours = seconds ~/ 3600;
+    final minutes = (seconds % 3600) ~/ 60;
+    final remainder = seconds % 60;
+    final twoDigitMinutes = minutes.toString().padLeft(2, '0');
+    final twoDigitSeconds = remainder.toString().padLeft(2, '0');
+    if (hours > 0) {
+      return '$hours:$twoDigitMinutes:$twoDigitSeconds';
+    }
+    return '$minutes:$twoDigitSeconds';
   }
 }
 
@@ -167,6 +255,29 @@ class _ManualTooltipLabel extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Theme.of(context).colorScheme.onSurface.withOpacity(0.72),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MetadataLabel extends StatelessWidget {
+  final String label;
+
+  const _MetadataLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.labelMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.72),
           ),
         ),
       ),

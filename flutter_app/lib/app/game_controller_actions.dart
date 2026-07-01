@@ -68,7 +68,10 @@ extension GameControllerActions on GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
-    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
+    _recordPuzzleCompletionIfNeeded(
+      wasPuzzleSolved: wasPuzzleSolved,
+      notifyListeners: notifyListeners,
+    );
   }
 
   void onShowSolution(VoidCallback notifyListeners) {
@@ -82,7 +85,10 @@ extension GameControllerActions on GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
-    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
+    _recordPuzzleCompletionIfNeeded(
+      wasPuzzleSolved: wasPuzzleSolved,
+      notifyListeners: notifyListeners,
+    );
   }
 
   void onCompletePuzzleWithSolution(VoidCallback notifyListeners) {
@@ -96,7 +102,10 @@ extension GameControllerActions on GameController {
       ),
       render: (status) => _effects.render(notifyListeners, status),
     );
-    _recordPuzzleCompletionIfNeeded(wasPuzzleSolved: wasPuzzleSolved);
+    _recordPuzzleCompletionIfNeeded(
+      wasPuzzleSolved: wasPuzzleSolved,
+      notifyListeners: notifyListeners,
+    );
   }
 
   void onConfirmCorrection(VoidCallback notifyListeners) {

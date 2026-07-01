@@ -22,6 +22,14 @@
       }
     }
   },
+  "labelElapsedTime": "時間: {time}",
+  "@labelElapsedTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "tooltipCorrections": "このパズルでは自動修正を {limit} 回使えます。以前の手で進行不能になった場合、修正で続行できます。修正がなくなったら Undo を使ってください。",
   "@tooltipCorrections": {
     "placeholders": {

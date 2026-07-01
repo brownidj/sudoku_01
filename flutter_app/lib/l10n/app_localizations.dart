@@ -197,6 +197,12 @@ abstract class AppLocalizations {
   /// **'Corrections: {count}'**
   String labelCorrections(int count);
 
+  /// No description provided for @labelElapsedTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Time: {time}'**
+  String labelElapsedTime(String time);
+
   /// No description provided for @tooltipCorrections.
   ///
   /// In en, this message translates to:

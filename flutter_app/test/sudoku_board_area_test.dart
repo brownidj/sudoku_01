@@ -13,6 +13,9 @@ UiState _state({
   Coord? selected,
   String? debugScenarioLabel,
   String contentMode = 'numbers',
+  bool premiumActive = false,
+  DateTime? puzzleStartedAt,
+  DateTime? puzzleFinishedAt,
 }) {
   final cells = List<List<CellVm>>.generate(
     9,
@@ -53,48 +56,130 @@ UiState _state({
     correctionNoticeSerial: 0,
     correctionNoticeMessage: null,
     conflictHintsLeft: conflictHintsLeft,
+    entitlement: premiumActive ? Entitlement.premium : Entitlement.free,
+    premiumActive: premiumActive,
+    puzzleStartedAt: puzzleStartedAt,
+    puzzleFinishedAt: puzzleFinishedAt,
   );
 }
 
 void main() {
-  testWidgets(
-    'main metadata row shows corrections left and difficulty',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 420,
-              height: 620,
-              child: SudokuBoardArea(
-                state: _state(
-                  puzzleMode: 'unique',
-                  difficulty: 'hard',
-                  conflictHintsLeft: 2,
-                  correctionsLeft: 1,
-                ),
-                style: styleModern,
-                animalImages: const {},
-                noteImagesBySize: const {},
-                devicePixelRatio: 2.0,
-                candidateVisible: false,
-                candidateDigits: const [],
-                selectedNotes: const {},
-                onDigitSelected: (_) {},
-                onDigitLongPressed: null,
-                onTapCell: (_) {},
-                onLongPressCell: (_, __) {},
+  testWidgets('main metadata row shows corrections left and difficulty', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 420,
+            height: 620,
+            child: SudokuBoardArea(
+              state: _state(
+                puzzleMode: 'unique',
+                difficulty: 'hard',
+                conflictHintsLeft: 2,
+                correctionsLeft: 1,
               ),
+              style: styleModern,
+              animalImages: const {},
+              noteImagesBySize: const {},
+              devicePixelRatio: 2.0,
+              candidateVisible: false,
+              candidateDigits: const [],
+              selectedNotes: const {},
+              onDigitSelected: (_) {},
+              onDigitLongPressed: null,
+              onTapCell: (_) {},
+              onLongPressCell: (_, __) {},
             ),
           ),
         ),
-      );
+      ),
+    );
 
-      expect(find.textContaining('Hints:'), findsNothing);
-      expect(find.text('Corrections: 1'), findsOneWidget);
-      expect(find.text('MUCH HARDER'), findsOneWidget);
-    },
-  );
+    expect(find.textContaining('Hints:'), findsNothing);
+    expect(find.text('Corrections: 1'), findsOneWidget);
+    expect(find.text('MUCH HARDER'), findsOneWidget);
+  });
+
+  testWidgets('premium metadata row shows elapsed game time', (
+    WidgetTester tester,
+  ) async {
+    final startedAt = DateTime.now().subtract(
+      const Duration(minutes: 3, seconds: 4),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 420,
+            height: 620,
+            child: SudokuBoardArea(
+              state: _state(
+                premiumActive: true,
+                puzzleStartedAt: startedAt,
+                puzzleFinishedAt: startedAt.add(
+                  const Duration(minutes: 3, seconds: 4),
+                ),
+              ),
+              style: styleModern,
+              animalImages: const {},
+              noteImagesBySize: const {},
+              devicePixelRatio: 2.0,
+              candidateVisible: false,
+              candidateDigits: const [],
+              selectedNotes: const {},
+              onDigitSelected: (_) {},
+              onDigitLongPressed: null,
+              onTapCell: (_) {},
+              onLongPressCell: (_, __) {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('Time: 3:04'), findsOneWidget);
+  });
+
+  testWidgets('free metadata row hides elapsed game time', (
+    WidgetTester tester,
+  ) async {
+    final startedAt = DateTime.now().subtract(
+      const Duration(minutes: 3, seconds: 4),
+    );
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 420,
+            height: 620,
+            child: SudokuBoardArea(
+              state: _state(
+                puzzleStartedAt: startedAt,
+                puzzleFinishedAt: startedAt.add(
+                  const Duration(minutes: 3, seconds: 4),
+                ),
+              ),
+              style: styleModern,
+              animalImages: const {},
+              noteImagesBySize: const {},
+              devicePixelRatio: 2.0,
+              candidateVisible: false,
+              candidateDigits: const [],
+              selectedNotes: const {},
+              onDigitSelected: (_) {},
+              onDigitLongPressed: null,
+              onTapCell: (_) {},
+              onLongPressCell: (_, __) {},
+            ),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.textContaining('Time:'), findsNothing);
+  });
 
   testWidgets('long press on corrections label shows tooltip details', (
     WidgetTester tester,

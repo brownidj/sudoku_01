@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/correction_state.dart';
@@ -52,6 +53,8 @@ void main() {
       ),
       debugScenarioLabel: null,
       conflictHintsLeft: 3,
+      puzzleStartedAt: DateTime(2026, 5, 10, 9, 0),
+      puzzleFinishedAt: null,
     );
 
     var flushed = false;
@@ -66,5 +69,51 @@ void main() {
 
     expect(flushed, isTrue);
     expect(prefs.savedSession, isNotNull);
+  });
+
+  test('save and restore round trips puzzle timing fields', () async {
+    final prefs = DelayedPreferencesStore();
+    final service = GameSessionService(prefs, GridUtils());
+    final history = History.initial(GameState(board: Board.empty()));
+    const settings = SettingsState(
+      notesMode: false,
+      difficulty: 'easy',
+      canChangeDifficulty: true,
+      canChangePuzzleMode: true,
+      styleName: 'Modern',
+      contentMode: 'numbers',
+      animalStyle: 'simple',
+      puzzleMode: 'multi',
+    );
+    final startedAt = DateTime(2026, 5, 10, 9, 0);
+    final finishedAt = DateTime(2026, 5, 10, 9, 12, 30);
+
+    final save = service.save(
+      history: history,
+      selected: null,
+      gameOver: false,
+      puzzleSolved: true,
+      initialGrid: null,
+      settings: settings,
+      correctionState: CorrectionState.initial(
+        difficulty: 'easy',
+        history: history,
+      ),
+      debugScenarioLabel: null,
+      conflictHintsLeft: 3,
+      puzzleStartedAt: startedAt,
+      puzzleFinishedAt: finishedAt,
+    );
+    prefs.saveCompleter.complete();
+    await save;
+
+    final payload = jsonDecode(prefs.savedSession!) as Map<String, dynamic>;
+    expect(payload['puzzleStartedAt'], startedAt.toIso8601String());
+    expect(payload['puzzleFinishedAt'], finishedAt.toIso8601String());
+
+    final restored = await service.restore(settings);
+    expect(restored, isNotNull);
+    expect(restored!.puzzleStartedAt, startedAt);
+    expect(restored.puzzleFinishedAt, finishedAt);
   });
 }

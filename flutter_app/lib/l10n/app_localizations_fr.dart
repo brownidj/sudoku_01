@@ -56,6 +56,11 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String labelElapsedTime(String time) {
+    return 'Temps : $time';
+  }
+
+  @override
   String tooltipCorrections(int limit) {
     return 'Vous disposez de $limit corrections automatiques pour cette grille. Si un coup précédent bloque votre progression, utilisez une correction pour continuer. Si vous n’en avez plus, utilisez Annuler.';
   }

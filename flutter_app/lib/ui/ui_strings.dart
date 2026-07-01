@@ -37,6 +37,9 @@ class UiStrings {
   static String correctionsTooltip(BuildContext context, int correctionLimit) =>
       _l10n(context).tooltipCorrections(correctionLimit);
 
+  static String elapsedTimeLabel(BuildContext context, String time) =>
+      _l10n(context).labelElapsedTime(time);
+
   static String difficultyEasy(BuildContext context) =>
       _l10n(context).difficultyEasy;
   static String difficultyMedium(BuildContext context) =>
@@ -160,7 +163,8 @@ class UiStrings {
       _l10n(context).progressResetDialogTitle;
   static String progressResetDialogMessage(BuildContext context) =>
       _l10n(context).progressResetDialogMessage;
-  static String dialogActionOk(BuildContext context) => _l10n(context).dialogActionOk;
+  static String dialogActionOk(BuildContext context) =>
+      _l10n(context).dialogActionOk;
 
   static String audioUnavailableTile(BuildContext context) =>
       _l10n(context).audioUnavailableTile;
@@ -200,13 +204,15 @@ class UiStrings {
       _l10n(context).billingProductNotConfigured;
   static String billingProductUnavailable(BuildContext context) =>
       _l10n(context).billingProductUnavailable;
-  static String billingFailed(BuildContext context) => _l10n(context).billingFailed;
+  static String billingFailed(BuildContext context) =>
+      _l10n(context).billingFailed;
 
   static String drawerTitle(BuildContext context) => _l10n(context).drawerTitle;
   static String drawerPuzzleStyleTitle(BuildContext context) =>
       _l10n(context).drawerPuzzleStyleTitle;
   static String styleModern(BuildContext context) => _l10n(context).styleModern;
-  static String styleClassic(BuildContext context) => _l10n(context).styleClassic;
+  static String styleClassic(BuildContext context) =>
+      _l10n(context).styleClassic;
   static String styleHighContrast(BuildContext context) =>
       _l10n(context).styleHighContrast;
   static String drawerAudioTitle(BuildContext context) =>

@@ -54,6 +54,8 @@ class UiState {
   final int conflictHintsLeft;
   final Entitlement entitlement;
   final bool premiumActive;
+  final DateTime? puzzleStartedAt;
+  final DateTime? puzzleFinishedAt;
 
   const UiState({
     required this.board,
@@ -77,5 +79,7 @@ class UiState {
     this.conflictHintsLeft = 0,
     this.entitlement = Entitlement.free,
     this.premiumActive = false,
+    this.puzzleStartedAt,
+    this.puzzleFinishedAt,
   });
 }

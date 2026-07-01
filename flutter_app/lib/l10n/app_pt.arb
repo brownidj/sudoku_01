@@ -22,6 +22,14 @@
       }
     }
   },
+  "labelElapsedTime": "Tempo: {time}",
+  "@labelElapsedTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "tooltipCorrections": "Tem {limit} correções automáticas disponíveis para este puzzle. Se uma jogada anterior bloquear o seu progresso, pode usar uma correção para continuar. Se acabarem, use Desfazer.",
   "@tooltipCorrections": {
     "placeholders": {

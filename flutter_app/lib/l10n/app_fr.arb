@@ -22,6 +22,14 @@
       }
     }
   },
+  "labelElapsedTime": "Temps : {time}",
+  "@labelElapsedTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "tooltipCorrections": "Vous disposez de {limit} corrections automatiques pour cette grille. Si un coup précédent bloque votre progression, utilisez une correction pour continuer. Si vous n’en avez plus, utilisez Annuler.",
   "@tooltipCorrections": {
     "placeholders": {

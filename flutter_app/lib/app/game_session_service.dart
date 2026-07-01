@@ -20,6 +20,8 @@ class RestoredGameSession {
   final CorrectionState correctionState;
   final String? debugScenarioLabel;
   final int conflictHintsLeft;
+  final DateTime puzzleStartedAt;
+  final DateTime? puzzleFinishedAt;
 
   const RestoredGameSession({
     required this.history,
@@ -31,6 +33,8 @@ class RestoredGameSession {
     required this.correctionState,
     required this.debugScenarioLabel,
     required this.conflictHintsLeft,
+    required this.puzzleStartedAt,
+    required this.puzzleFinishedAt,
   });
 }
 
@@ -101,6 +105,9 @@ class GameSessionService {
         correctionState: correctionState,
         debugScenarioLabel: decoded['debugScenarioLabel'] as String?,
         conflictHintsLeft: conflictHintsLeft,
+        puzzleStartedAt:
+            _dateTimeFromJson(decoded['puzzleStartedAt']) ?? DateTime.now(),
+        puzzleFinishedAt: _dateTimeFromJson(decoded['puzzleFinishedAt']),
       );
     } on FormatException {
       return null;
@@ -119,6 +126,8 @@ class GameSessionService {
     required CorrectionState correctionState,
     required String? debugScenarioLabel,
     required int conflictHintsLeft,
+    required DateTime puzzleStartedAt,
+    required DateTime? puzzleFinishedAt,
   }) {
     final payload = <String, dynamic>{
       'version': sessionVersion,
@@ -129,6 +138,8 @@ class GameSessionService {
       'puzzleSolved': puzzleSolved,
       'debugScenarioLabel': debugScenarioLabel,
       'conflictHintsLeft': conflictHintsLeft,
+      'puzzleStartedAt': puzzleStartedAt.toIso8601String(),
+      'puzzleFinishedAt': puzzleFinishedAt?.toIso8601String(),
       'settings': <String, dynamic>{
         'notesMode': settings.notesMode,
         'difficulty': settings.difficulty,
@@ -167,5 +178,12 @@ class GameSessionService {
       }
     }
     _saveRunning = false;
+  }
+
+  DateTime? _dateTimeFromJson(Object? value) {
+    if (value is! String || value.isEmpty) {
+      return null;
+    }
+    return DateTime.tryParse(value);
   }
 }

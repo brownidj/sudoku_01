@@ -56,6 +56,11 @@ class AppLocalizationsHi extends AppLocalizations {
   }
 
   @override
+  String labelElapsedTime(String time) {
+    return 'समय: $time';
+  }
+
+  @override
   String tooltipCorrections(int limit) {
     return 'इस पहेली के लिए आपके पास $limit स्वचालित सुधार उपलब्ध हैं। पहले की कोई चाल प्रगति रोके तो सुधार उपयोग करें। सुधार खत्म हों तो पूर्ववत करें।';
   }

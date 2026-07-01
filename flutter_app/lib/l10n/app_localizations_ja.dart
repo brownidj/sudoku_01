@@ -56,6 +56,11 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
+  String labelElapsedTime(String time) {
+    return '時間: $time';
+  }
+
+  @override
   String tooltipCorrections(int limit) {
     return 'このパズルでは自動修正を $limit 回使えます。以前の手で進行不能になった場合、修正で続行できます。修正がなくなったら Undo を使ってください。';
   }

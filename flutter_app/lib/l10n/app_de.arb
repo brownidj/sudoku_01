@@ -22,6 +22,14 @@
       }
     }
   },
+  "labelElapsedTime": "Zeit: {time}",
+  "@labelElapsedTime": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
   "tooltipCorrections": "Du hast für dieses Rätsel {limit} automatische Korrekturen. Wenn ein früherer Zug dich blockiert, kannst du eine Korrektur verwenden. Wenn die Korrekturen aufgebraucht sind, nutze Rückgängig.",
   "@tooltipCorrections": {
     "placeholders": {

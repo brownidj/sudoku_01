@@ -18,6 +18,8 @@ class SudokuRuntimeState {
   int correctionNoticeSerial;
   String? correctionNoticeMessage;
   int conflictHintsLeft;
+  DateTime puzzleStartedAt;
+  DateTime? puzzleFinishedAt;
 
   SudokuRuntimeState({
     required this.history,
@@ -35,7 +37,10 @@ class SudokuRuntimeState {
     this.correctionNoticeSerial = 0,
     this.correctionNoticeMessage,
     this.conflictHintsLeft = 0,
-  }) : lastConflicts = lastConflicts ?? <Coord>{},
+    DateTime? puzzleStartedAt,
+    this.puzzleFinishedAt,
+  }) : puzzleStartedAt = puzzleStartedAt ?? DateTime.now(),
+       lastConflicts = lastConflicts ?? <Coord>{},
        incorrectCells = incorrectCells ?? <Coord>{},
        solutionAddedCells = solutionAddedCells ?? <Coord>{},
        correctCells = correctCells ?? <Coord>{};

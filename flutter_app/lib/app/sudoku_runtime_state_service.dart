@@ -39,6 +39,8 @@ class SudokuRuntimeStateService {
         conflictHintsLeft: runtime.conflictHintsLeft,
         entitlement: entitlement,
         premiumActive: premiumActive,
+        puzzleStartedAt: runtime.puzzleStartedAt,
+        puzzleFinishedAt: runtime.puzzleFinishedAt,
       ),
     );
   }
@@ -85,7 +87,9 @@ class SudokuRuntimeStateService {
       ..correctionNoticeMessage = null
       ..conflictHintsLeft = conflictHintsForDifficulty(
         settings.state.difficulty,
-      );
+      )
+      ..puzzleStartedAt = DateTime.now()
+      ..puzzleFinishedAt = null;
     settings.setDifficultyLocked(false);
     settings.setPuzzleModeLocked(false);
     clearCorrectionPromptState(runtime, clearRevertedCells: true);

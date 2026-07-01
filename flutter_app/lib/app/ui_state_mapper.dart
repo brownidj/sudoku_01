@@ -23,6 +23,8 @@ class UiStateMapperInput {
   final int conflictHintsLeft;
   final Entitlement entitlement;
   final bool premiumActive;
+  final DateTime? puzzleStartedAt;
+  final DateTime? puzzleFinishedAt;
 
   const UiStateMapperInput({
     required this.board,
@@ -45,6 +47,8 @@ class UiStateMapperInput {
     this.conflictHintsLeft = 0,
     this.entitlement = Entitlement.free,
     this.premiumActive = false,
+    this.puzzleStartedAt,
+    this.puzzleFinishedAt,
   });
 }
 
@@ -107,6 +111,8 @@ class UiStateMapper {
       conflictHintsLeft: input.conflictHintsLeft,
       entitlement: input.entitlement,
       premiumActive: input.premiumActive,
+      puzzleStartedAt: input.puzzleStartedAt,
+      puzzleFinishedAt: input.puzzleFinishedAt,
     );
   }
 }

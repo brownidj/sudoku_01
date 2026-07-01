@@ -56,6 +56,11 @@ class AppLocalizationsPt extends AppLocalizations {
   }
 
   @override
+  String labelElapsedTime(String time) {
+    return 'Tempo: $time';
+  }
+
+  @override
   String tooltipCorrections(int limit) {
     return 'Tem $limit correções automáticas disponíveis para este puzzle. Se uma jogada anterior bloquear o seu progresso, pode usar uma correção para continuar. Se acabarem, use Desfazer.';
   }
