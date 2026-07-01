@@ -1,4 +1,3 @@
-import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/domain/types.dart';
 
 class PremiumPolicyService {
@@ -30,11 +29,7 @@ class PremiumPolicyService {
 
   bool isUnlocked(PremiumFeature feature, Entitlement entitlement) {
     final unlocked = _unlockedByEntitlement[entitlement] ?? const {};
-    final allowed = unlocked.contains(feature);
-    AppDebug.log(
-      '[PremiumPolicy] feature=$feature entitlement=$entitlement allowed=$allowed',
-    );
-    return allowed;
+    return unlocked.contains(feature);
   }
 
   PremiumFeature? featureForDifficulty(String difficulty) {
@@ -95,45 +90,24 @@ class PremiumPolicyService {
   bool isDifficultyUnlocked(String difficulty, Entitlement entitlement) {
     final feature = featureForDifficulty(difficulty);
     if (feature == null) {
-      AppDebug.log(
-        '[PremiumPolicy] difficulty=$difficulty entitlement=$entitlement allowed=true',
-      );
       return true;
     }
-    final allowed = isUnlocked(feature, entitlement);
-    AppDebug.log(
-      '[PremiumPolicy] difficulty=$difficulty entitlement=$entitlement allowed=$allowed',
-    );
-    return allowed;
+    return isUnlocked(feature, entitlement);
   }
 
   bool isPremiumActive(Entitlement entitlement) {
     final unlocked = _unlockedByEntitlement[entitlement] ?? const {};
-    final active = unlocked.isNotEmpty;
-    AppDebug.log(
-      '[PremiumPolicy] premiumActive entitlement=$entitlement active=$active',
-    );
-    return active;
+    return unlocked.isNotEmpty;
   }
 
   bool isContentModeUnlocked(String contentMode, Entitlement entitlement) {
     final mode = contentMode.trim().toLowerCase();
     if (freeContentModes.contains(mode)) {
-      AppDebug.log(
-        '[PremiumPolicy] contentMode=$mode entitlement=$entitlement allowed=true',
-      );
       return true;
     }
     if (premiumContentModes.contains(mode)) {
-      final allowed = isUnlocked(PremiumFeature.extraThemes, entitlement);
-      AppDebug.log(
-        '[PremiumPolicy] contentMode=$mode entitlement=$entitlement allowed=$allowed',
-      );
-      return allowed;
+      return isUnlocked(PremiumFeature.extraThemes, entitlement);
     }
-    AppDebug.log(
-      '[PremiumPolicy] contentMode=$mode entitlement=$entitlement allowed=false (unknown)',
-    );
     return false;
   }
 
