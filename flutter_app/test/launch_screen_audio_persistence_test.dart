@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/app/preferences_store.dart';
 import 'package:flutter_app/app/sudoku_controller.dart';
-import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/launch_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';

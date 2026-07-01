@@ -75,7 +75,7 @@ void main() {
                 onDigitSelected: (_) {},
                 onDigitLongPressed: null,
                 onTapCell: (_) {},
-                onLongPressCell: (_, __) {},
+                onLongPressCell: (_, _) {},
               ),
             ),
           ),

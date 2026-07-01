@@ -72,7 +72,61 @@ void main() {
     expect(find.text(UiStrings.tooltipUndo(context)), findsOneWidget);
   });
 
-  testWidgets('New game dice shows tooltip text', (
+  testWidgets('New game chip shows tooltip text', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ActionBar(
+            state: _state(),
+            onUndo: () {},
+            onToggleNotesMode: () {},
+            onClear: () {},
+            onCheckOrSolution: () {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.longPress(
+      find.byKey(const ValueKey<String>('content-new-game-chip')),
+    );
+    await tester.pumpAndSettle();
+
+    final context = tester.element(find.byType(ActionBar));
+    expect(find.text(UiStrings.tooltipNewGame(context)), findsOneWidget);
+  });
+
+  testWidgets('New game button is visible and triggers callback', (
+    WidgetTester tester,
+  ) async {
+    var tapped = false;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ActionBar(
+            state: _state(canUndo: true),
+            onUndo: () {},
+            onToggleNotesMode: () {},
+            onClear: () {},
+            onCheckOrSolution: () {},
+            onNewGamePressed: () {
+              tapped = true;
+            },
+          ),
+        ),
+      ),
+    );
+
+    final context = tester.element(find.byType(ActionBar));
+    expect(find.text(UiStrings.actionNewGame(context)), findsOneWidget);
+    await tester.tap(
+      find.byKey(const ValueKey<String>('content-new-game-chip')),
+    );
+    await tester.pumpAndSettle();
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('New game button matches notes height', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
@@ -89,62 +143,14 @@ void main() {
       ),
     );
 
-    await tester.longPress(find.byKey(const ValueKey<String>('content-new-game-chip')));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Press this to start a new game.'), findsOneWidget);
-  });
-
-  testWidgets('New game dice animation pauses after first move and resumes on victory', (
-    WidgetTester tester,
-  ) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: ActionBar(
-            state: _state(canUndo: true),
-            onUndo: () {},
-            onToggleNotesMode: () {},
-            onClear: () {},
-            onCheckOrSolution: () {},
-            onNewGamePressed: () {},
-          ),
-        ),
-      ),
+    final newSize = tester.getSize(
+      find.byKey(const ValueKey<String>('content-new-game-chip')),
+    );
+    final notesSize = tester.getSize(
+      find.byKey(const ValueKey<String>('action-notes-button')),
     );
 
-    final pausedImage = tester.widget<Image>(
-      find.descendant(
-        of: find.byKey(const ValueKey<String>('content-new-game-chip')),
-        matching: find.byType(Image),
-      ),
-    );
-    final pausedProvider = pausedImage.image as AssetImage;
-    expect(pausedProvider.assetName, 'assets/images/icons/dice-roll-still.png');
-
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: ActionBar(
-            state: _state(canUndo: true, puzzleSolved: true),
-            onUndo: () {},
-            onToggleNotesMode: () {},
-            onClear: () {},
-            onCheckOrSolution: () {},
-            onNewGamePressed: () {},
-          ),
-        ),
-      ),
-    );
-
-    final resumedImage = tester.widget<Image>(
-      find.descendant(
-        of: find.byKey(const ValueKey<String>('content-new-game-chip')),
-        matching: find.byType(Image),
-      ),
-    );
-    final resumedProvider = resumedImage.image as AssetImage;
-    expect(resumedProvider.assetName, 'assets/images/icons/dice-roll.gif');
+    expect(newSize.height, greaterThanOrEqualTo(notesSize.height));
   });
 
   testWidgets('narrow screens use icon-only labels for clear and undo', (

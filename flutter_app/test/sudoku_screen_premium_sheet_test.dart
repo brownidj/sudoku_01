@@ -94,7 +94,9 @@ void main() {
     await tester.pump();
 
     expect(
-      find.textContaining('Purchases are unavailable on this device right now.'),
+      find.textContaining(
+        'Purchases are unavailable on this device right now.',
+      ),
       findsOneWidget,
     );
   });
@@ -103,7 +105,9 @@ void main() {
     WidgetTester tester,
   ) async {
     final controller = buildController(
-      billingService: FakeBillingService(restoreResult: BillingActionResult.started),
+      billingService: FakeBillingService(
+        restoreResult: BillingActionResult.started,
+      ),
     );
     await controller.ready;
 
@@ -133,7 +137,9 @@ void main() {
     WidgetTester tester,
   ) async {
     final controller = buildController(
-      billingService: FakeBillingService(restoreResult: BillingActionResult.failed),
+      billingService: FakeBillingService(
+        restoreResult: BillingActionResult.failed,
+      ),
     );
     await controller.ready;
 
@@ -154,5 +160,41 @@ void main() {
     await tester.pump();
 
     expect(find.text('That did not work. Please try again.'), findsOneWidget);
+  });
+
+  testWidgets('already-owned failure suggests restore purchases', (
+    WidgetTester tester,
+  ) async {
+    final billing = FakeBillingService(buyResult: BillingActionResult.failed)
+      ..diagnostics = 'SKError: item already owned';
+    final controller = buildController(billingService: billing);
+    await controller.ready;
+
+    await tester.pumpWidget(
+      MaterialApp(home: SudokuScreen(controller: controller)),
+    );
+    await tester.pumpAndSettle();
+
+    final scaffoldState = tester.state<ScaffoldState>(find.byType(Scaffold));
+    scaffoldState.openDrawer();
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('drawer-unlock-premium')),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.byKey(const ValueKey<String>('premium-sheet-unlock-button')),
+    );
+    await tester.pump();
+
+    expect(
+      find.textContaining(
+        'If you already own Full Version, use Restore Purchases.',
+      ),
+      findsOneWidget,
+    );
   });
 }

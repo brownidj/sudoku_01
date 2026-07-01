@@ -23,15 +23,10 @@ class _FakeOverlay implements CellTooltipOverlay {
 }
 
 class _FakeAudioController implements TilePreviewAudioController {
-  _FakeAudioController({
-    required this.hasAudioAsset,
-    required this.playResult,
-    this.maxDuration = const Duration(seconds: 4),
-  });
+  _FakeAudioController({required this.hasAudioAsset, required this.playResult});
 
   final bool hasAudioAsset;
   final bool playResult;
-  final Duration maxDuration;
 
   int playCalls = 0;
   String? lastMode;
@@ -43,7 +38,7 @@ class _FakeAudioController implements TilePreviewAudioController {
   }
 
   @override
-  Duration get maxClipDuration => maxDuration;
+  Duration get maxClipDuration => const Duration(seconds: 4);
 
   @override
   bool playForTile({required String contentMode, required int digit}) {
@@ -73,10 +68,7 @@ class _FakeBackgroundMusicController implements BackgroundMusicController {
   }
 }
 
-UiState _stateWithValue({
-  required String contentMode,
-  required int value,
-}) {
+UiState _stateWithValue({required String contentMode, required int value}) {
   final cells = List<List<CellVm>>.generate(
     9,
     (r) => List<CellVm>.generate(
@@ -161,6 +153,7 @@ void main() {
         coord: const Coord(0, 0),
         globalPosition: const Offset(100, 120),
       );
+      await tester.pump();
 
       expect(overlay.showCalls, 1);
       expect(
@@ -170,6 +163,7 @@ void main() {
       expect(audio.playCalls, 1);
       expect(audio.lastMode, 'butterflies');
       expect(audio.lastDigit, 1);
+      expect(find.text('Monarch'), findsOneWidget);
       expect(background.suspendCalls, 1);
       expect(background.lastSuspendReason, 'tile-preview');
       expect(find.textContaining('Audio is not available'), findsNothing);
@@ -181,10 +175,7 @@ void main() {
 
   testWidgets('shows snackbar when tile audio is unavailable', (tester) async {
     final overlay = _FakeOverlay();
-    final audio = _FakeAudioController(
-      hasAudioAsset: false,
-      playResult: false,
-    );
+    final audio = _FakeAudioController(hasAudioAsset: false, playResult: false);
     final background = _FakeBackgroundMusicController();
     final service = SudokuCellTooltipService(overlay, audio, background);
 
@@ -210,7 +201,11 @@ void main() {
     );
     await tester.pump();
 
-    expect(find.text('Audio is not available for this tile yet.'), findsOneWidget);
+    expect(
+      find.text('Audio is not available for this tile yet.'),
+      findsOneWidget,
+    );
+    expect(find.text('Ape'), findsNothing);
     expect(background.suspendCalls, 0);
   });
 }

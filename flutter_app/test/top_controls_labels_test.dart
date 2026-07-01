@@ -70,6 +70,7 @@ void main() {
 
     expect(find.text('Instruments (tricky)'), findsOneWidget);
     expect(find.text('Butterflies (pretty!)'), findsOneWidget);
+    expect(find.text('Shells (new!)'), findsOneWidget);
     expect(find.text('Opera (unreal!)'), findsOneWidget);
   });
 }

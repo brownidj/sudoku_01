@@ -67,7 +67,9 @@ void main() {
     Navigator.of(tester.element(find.byType(Scaffold))).maybePop();
     await tester.pumpAndSettle();
 
-    await tester.tap(find.byKey(const ValueKey<String>('top-controls-help-chip')));
+    await tester.tap(
+      find.byKey(const ValueKey<String>('top-controls-help-chip')),
+    );
     await tester.pumpAndSettle();
     expect(find.byType(AlertDialog), findsOneWidget);
     expect(find.textContaining(_helpSnippet), findsOneWidget);
@@ -182,7 +184,7 @@ Future<void> _startGameFromLaunch(
 Future<void> _openDrawer(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.menu));
   await tester.pumpAndSettle();
-  await _pumpUntilVisible(tester, find.text('SuDoKu Playtime'));
+  await _pumpUntilVisible(tester, find.text('SuDoKu Fresh'));
 }
 
 Future<void> _dismissInfoSheetIfVisible(WidgetTester tester) async {

@@ -7,7 +7,6 @@ Widget _harness({required bool showMusicControls, bool audioEnabled = true}) {
     home: Scaffold(
       appBar: SudokuVersionAppBar(
         onVersionTapped: () {},
-        onVersionLongPressed: () {},
         audioEnabled: audioEnabled,
         showMusicControls: showMusicControls,
         backgroundMusicEnabled: true,
@@ -26,9 +25,18 @@ void main() {
   ) async {
     await tester.pumpWidget(_harness(showMusicControls: true));
 
-    expect(find.byKey(const ValueKey<String>('appbar-music-prev-button')), findsOneWidget);
-    expect(find.byKey(const ValueKey<String>('appbar-music-note-text')), findsOneWidget);
-    expect(find.byKey(const ValueKey<String>('appbar-music-next-button')), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey<String>('appbar-music-prev-button')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('appbar-music-note-text')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('appbar-music-next-button')),
+      findsOneWidget,
+    );
   });
 
   testWidgets('hides music controls when not enabled for theme', (
@@ -36,8 +44,17 @@ void main() {
   ) async {
     await tester.pumpWidget(_harness(showMusicControls: false));
 
-    expect(find.byKey(const ValueKey<String>('appbar-music-prev-button')), findsNothing);
-    expect(find.byKey(const ValueKey<String>('appbar-music-note-text')), findsNothing);
-    expect(find.byKey(const ValueKey<String>('appbar-music-next-button')), findsNothing);
+    expect(
+      find.byKey(const ValueKey<String>('appbar-music-prev-button')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('appbar-music-note-text')),
+      findsNothing,
+    );
+    expect(
+      find.byKey(const ValueKey<String>('appbar-music-next-button')),
+      findsNothing,
+    );
   });
 }

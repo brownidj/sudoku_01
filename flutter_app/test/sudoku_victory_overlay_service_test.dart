@@ -6,7 +6,11 @@ import 'package:flutter_app/ui/services/sudoku_victory_audio_service.dart';
 import 'package:flutter_app/ui/services/sudoku_victory_overlay_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-UiState _state({required bool puzzleSolved, required String contentMode}) {
+UiState _state({
+  required bool puzzleSolved,
+  required String contentMode,
+  bool premiumActive = false,
+}) {
   final cells = List<List<CellVm>>.generate(
     9,
     (r) => List<CellVm>.generate(
@@ -46,6 +50,7 @@ UiState _state({required bool puzzleSolved, required String contentMode}) {
     debugScenarioLabel: null,
     correctionNoticeSerial: 0,
     correctionNoticeMessage: null,
+    premiumActive: premiumActive,
   );
 }
 
@@ -82,6 +87,7 @@ void main() {
         'animals',
         'instruments',
         'butterflies',
+        'shells',
         'old_opera',
       ];
       for (final mode in modes) {
@@ -91,7 +97,9 @@ void main() {
         );
         addTearDown(service.dispose);
 
-        service.onUiStateChanged(_state(puzzleSolved: false, contentMode: mode));
+        service.onUiStateChanged(
+          _state(puzzleSolved: false, contentMode: mode),
+        );
         service.onUiStateChanged(_state(puzzleSolved: true, contentMode: mode));
 
         final mascotAsset = service.state.value.assetPath;
@@ -105,4 +113,42 @@ void main() {
       }
     },
   );
+
+  test('premium themed modes choose a valid premium celebration style', () {
+    final service = SudokuVictoryOverlayService(
+      duration: const Duration(seconds: 1),
+      random: math.Random(0),
+    );
+    addTearDown(service.dispose);
+
+    const themedModes = <String>[
+      'animals',
+      'instruments',
+      'butterflies',
+      'shells',
+      'old_opera',
+    ];
+
+    for (final mode in themedModes) {
+      service.onUiStateChanged(
+        _state(puzzleSolved: false, contentMode: mode, premiumActive: true),
+      );
+      service.onUiStateChanged(
+        _state(puzzleSolved: true, contentMode: mode, premiumActive: true),
+      );
+      expect(
+        service.state.value.premiumCelebrationStyle,
+        isNotNull,
+        reason: 'Expected premium style for mode $mode',
+      );
+      expect(
+        service.state.value.premiumCelebrationStyle,
+        isIn(SudokuVictoryOverlayService.themedPremiumCelebrationStyles),
+        reason: 'Unexpected premium style for themed mode $mode',
+      );
+      service.onUiStateChanged(
+        _state(puzzleSolved: false, contentMode: mode, premiumActive: true),
+      );
+    }
+  });
 }

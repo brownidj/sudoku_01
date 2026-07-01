@@ -119,7 +119,7 @@ Future<void> _pumpBoard(
                 noteImagesBySize: const {},
                 devicePixelRatio: 1.0,
                 onTapCell: (_) {},
-                onLongPressCell: (_, __) {},
+                onLongPressCell: (_, _) {},
               ),
             ),
           ),

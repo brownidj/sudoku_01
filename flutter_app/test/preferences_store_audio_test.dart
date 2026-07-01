@@ -4,13 +4,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   group('PreferencesStore audio settings', () {
-    test('defaults audio and background music to on with 40% volume', () async {
+    test('defaults audio on, background music off, with 40% volume', () async {
       TestWidgetsFlutterBinding.ensureInitialized();
       SharedPreferences.setMockInitialValues({});
       final store = PreferencesStore();
 
       expect(await store.loadAudioEnabled(), isTrue);
-      expect(await store.loadBackgroundMusicEnabled(), isTrue);
+      expect(await store.loadBackgroundMusicEnabled(), isFalse);
       expect(await store.loadAudioVolume(), 0.4);
     });
 

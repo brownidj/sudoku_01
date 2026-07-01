@@ -4,13 +4,16 @@ import 'package:patrol/patrol.dart';
 
 import 'package:flutter_app/main.dart' as app;
 
+PatrolFinder _byKey(PatrolIntegrationTester $, String key) =>
+    $(find.byKey(ValueKey<String>(key)));
+
 Future<void> _dismissInfoSheetIfVisible(PatrolIntegrationTester $) async {
   for (var i = 0; i < 3; i += 1) {
-    final gotIt = $('Got it');
-    if (gotIt.evaluate().isEmpty) {
+    final dismiss = _byKey($, 'info-sheet-dismiss-button');
+    if (dismiss.evaluate().isEmpty) {
       return;
     }
-    await gotIt.tap();
+    await dismiss.tap();
     await $.pump(const Duration(milliseconds: 300));
   }
 }
@@ -26,8 +29,8 @@ Future<void> _stabilizeBoard(PatrolIntegrationTester $) async {
 Future<void> _waitForBoardControls(PatrolIntegrationTester $) async {
   for (var i = 0; i < 40; i += 1) {
     await _dismissInfoSheetIfVisible($);
-    final hasUndo = $('Undo').evaluate().isNotEmpty;
-    final hasNotes = $('Notes').evaluate().isNotEmpty;
+    final hasUndo = _byKey($, 'action-undo-button').evaluate().isNotEmpty;
+    final hasNotes = _byKey($, 'action-notes-button').evaluate().isNotEmpty;
     if (hasUndo && hasNotes) {
       return;
     }
@@ -38,16 +41,19 @@ Future<void> _waitForBoardControls(PatrolIntegrationTester $) async {
 
 Future<void> _launchGame(PatrolIntegrationTester $) async {
   Future<bool> tryLaunchFromStartScreen() async {
-    if ($('Play').evaluate().isNotEmpty) {
-      await $('Play').tap();
+    final play = _byKey($, 'launch-play-button');
+    if (play.evaluate().isNotEmpty) {
+      await play.tap();
       return true;
     }
-    if ($('Resume').evaluate().isNotEmpty) {
-      await $('Resume').tap();
+    final resume = _byKey($, 'launch-resume-button');
+    if (resume.evaluate().isNotEmpty) {
+      await resume.tap();
       return true;
     }
-    if ($('New game').evaluate().isNotEmpty) {
-      await $('New game').tap();
+    final newGame = _byKey($, 'launch-new-game-button');
+    if (newGame.evaluate().isNotEmpty) {
+      await newGame.tap();
       return true;
     }
     return false;
@@ -56,7 +62,7 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
   await $.pump(const Duration(milliseconds: 500));
 
   for (var i = 0; i < 10; i += 1) {
-    if ($('Undo').evaluate().isNotEmpty) {
+    if (_byKey($, 'action-undo-button').evaluate().isNotEmpty) {
       await _stabilizeBoard($);
       return;
     }
@@ -73,7 +79,7 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
   await $.pump(const Duration(milliseconds: 500));
 
   for (var i = 0; i < 20; i += 1) {
-    if ($('Undo').evaluate().isNotEmpty) {
+    if (_byKey($, 'action-undo-button').evaluate().isNotEmpty) {
       await _stabilizeBoard($);
       return;
     }
@@ -91,16 +97,16 @@ Future<void> _launchGame(PatrolIntegrationTester $) async {
 
 Future<void> _openDrawer(PatrolIntegrationTester $) async {
   await _dismissInfoSheetIfVisible($);
-  await $.tester.dragFrom(const Offset(4, 140), const Offset(320, 0));
+  await _byKey($, 'appbar-menu-button').tap();
   await $.pump(const Duration(milliseconds: 400));
-  await $('SuDoKu Playtime').waitUntilVisible();
+  await _byKey($, 'drawer-premium-status').waitUntilVisible();
 }
 
 void main() {
   patrolTest('launches a new game from the start screen', ($) async {
     await _launchGame($);
 
-    expect($('Undo'), findsOneWidget);
+    expect(_byKey($, 'action-undo-button'), findsOneWidget);
   });
 
   patrolTest('opens Help from top controls chip', ($) async {
@@ -109,36 +115,33 @@ void main() {
     await _dismissInfoSheetIfVisible($);
     await $(find.byKey(const ValueKey<String>('top-controls-help-chip'))).tap();
     await $(find.byType(AlertDialog)).waitUntilVisible();
-    final okInDialog = $(
-      find.descendant(of: find.byType(AlertDialog), matching: find.text('OK')),
-    );
-    await okInDialog.waitUntilVisible();
-
-    expect(okInDialog, findsOneWidget);
-    await okInDialog.tap();
+    final dismissButton = _byKey($, 'help-dialog-dismiss-button');
+    await dismissButton.waitUntilVisible();
+    expect(dismissButton, findsOneWidget);
+    await dismissButton.tap();
   });
 
   patrolTest('shows drawer sections', ($) async {
     await _launchGame($);
     await _openDrawer($);
 
-    await $('Puzzle Style').waitUntilVisible();
-    await $('Audio').waitUntilVisible();
-    await $('Version').waitUntilVisible();
-    await $('Restore Purchases').waitUntilVisible();
+    await _byKey($, 'drawer-puzzle-style-section').waitUntilVisible();
+    await _byKey($, 'drawer-audio-section').waitUntilVisible();
+    await _byKey($, 'drawer-premium-status').waitUntilVisible();
+    await _byKey($, 'drawer-restore-purchases').waitUntilVisible();
 
-    expect($('Puzzle Style'), findsWidgets);
-    expect($('Audio'), findsWidgets);
-    expect($('Version'), findsWidgets);
-    expect($('Restore Purchases'), findsWidgets);
+    expect(_byKey($, 'drawer-puzzle-style-section'), findsOneWidget);
+    expect(_byKey($, 'drawer-audio-section'), findsOneWidget);
+    expect(_byKey($, 'drawer-premium-status'), findsOneWidget);
+    expect(_byKey($, 'drawer-restore-purchases'), findsOneWidget);
   });
 
   patrolTest('shows main action bar controls', ($) async {
     await _launchGame($);
 
-    expect($('Notes'), findsOneWidget);
-    expect($('Undo'), findsOneWidget);
-    expect($('Clear'), findsOneWidget);
+    expect(_byKey($, 'action-notes-button'), findsOneWidget);
+    expect(_byKey($, 'action-undo-button'), findsOneWidget);
+    expect(_byKey($, 'action-clear-button'), findsOneWidget);
     expect(
       $(find.byKey(const ValueKey<String>('content-new-game-chip'))),
       findsOneWidget,

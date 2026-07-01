@@ -90,7 +90,7 @@ void main() {
               onDigitSelected: (_) {},
               onDigitLongPressed: null,
               onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
@@ -132,7 +132,7 @@ void main() {
               onDigitSelected: (_) {},
               onDigitLongPressed: null,
               onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
@@ -171,7 +171,7 @@ void main() {
               onDigitSelected: (_) {},
               onDigitLongPressed: null,
               onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
@@ -206,7 +206,7 @@ void main() {
               onDigitSelected: (_) {},
               onDigitLongPressed: null,
               onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
@@ -249,7 +249,7 @@ void main() {
               onDigitSelected: (_) {},
               onDigitLongPressed: null,
               onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
@@ -281,7 +281,7 @@ void main() {
               onDigitSelected: (_) {},
               onDigitLongPressed: null,
               onTapCell: (_) {},
-              onLongPressCell: (_, __) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
@@ -290,40 +290,39 @@ void main() {
     expect(find.text(message), findsNothing);
   });
 
-  testWidgets(
-    'instruments candidate long press shows instrument name tooltip',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
-              width: 420,
-              height: 620,
-              child: SudokuBoardArea(
-                state: _state(contentMode: 'instruments'),
-                style: styleModern,
-                animalImages: const {},
-                noteImagesBySize: const {},
-                devicePixelRatio: 2.0,
-                candidateVisible: true,
-                candidateDigits: const [1],
-                selectedNotes: const {},
-                onDigitSelected: (_) {},
-                onDigitLongPressed: null,
-                onTapCell: (_) {},
-                onLongPressCell: (_, __) {},
-              ),
+  testWidgets('candidate long press does not show name toast', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 420,
+            height: 620,
+            child: SudokuBoardArea(
+              state: _state(contentMode: 'instruments'),
+              style: styleModern,
+              animalImages: const {},
+              noteImagesBySize: const {},
+              devicePixelRatio: 2.0,
+              candidateVisible: true,
+              candidateDigits: const [1],
+              selectedNotes: const {},
+              onDigitSelected: (_) {},
+              onDigitLongPressed: null,
+              onTapCell: (_) {},
+              onLongPressCell: (_, _) {},
             ),
           ),
         ),
-      );
+      ),
+    );
 
-      expect(find.text('P'), findsOneWidget);
-      await tester.longPress(find.text('P'));
-      await tester.pumpAndSettle();
+    expect(find.text('P'), findsOneWidget);
+    await tester.longPress(find.text('P'));
+    await tester.pumpAndSettle();
 
-      expect(find.text('Piano'), findsOneWidget);
-      expect(find.text('ape'), findsNothing);
-    },
-  );
+    expect(find.text('Piano'), findsNothing);
+    expect(find.text('ape'), findsNothing);
+  });
 }

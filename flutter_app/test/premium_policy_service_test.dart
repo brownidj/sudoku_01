@@ -25,7 +25,10 @@ void main() {
 
     test('lockedFeatures returns only denied features', () {
       final features = PremiumFeature.values;
-      expect(service.lockedFeatures(features, Entitlement.free), features.toSet());
+      expect(
+        service.lockedFeatures(features, Entitlement.free),
+        features.toSet(),
+      );
       expect(service.lockedFeatures(features, Entitlement.premium), isEmpty);
     });
 
@@ -45,14 +48,24 @@ void main() {
     });
 
     test('content mode checks map through premium feature policy', () {
-      expect(service.isContentModeUnlocked('animals', Entitlement.free), isTrue);
+      expect(
+        service.isContentModeUnlocked('animals', Entitlement.free),
+        isTrue,
+      );
       expect(
         service.isContentModeUnlocked('instruments', Entitlement.free),
         isTrue,
       );
-      expect(service.isContentModeUnlocked('numbers', Entitlement.free), isTrue);
+      expect(
+        service.isContentModeUnlocked('numbers', Entitlement.free),
+        isTrue,
+      );
       expect(
         service.isContentModeUnlocked('butterflies', Entitlement.free),
+        isFalse,
+      );
+      expect(
+        service.isContentModeUnlocked('shells', Entitlement.free),
         isFalse,
       );
       expect(
@@ -61,6 +74,10 @@ void main() {
       );
       expect(
         service.isContentModeUnlocked('butterflies', Entitlement.premium),
+        isTrue,
+      );
+      expect(
+        service.isContentModeUnlocked('shells', Entitlement.premium),
         isTrue,
       );
       expect(

@@ -27,4 +27,34 @@ void main() {
     );
     expect(AnimalImageCache.tileLabelForDigit('old_opera', 3), 'T');
   });
+
+  test('localized display names return translated values when available', () {
+    expect(
+      AnimalImageCache.displayNameForDigitLocalizedTitleCase(
+        contentMode: 'animals',
+        digit: 6,
+        languageCode: 'de',
+      ),
+      'Frosch',
+    );
+    expect(
+      AnimalImageCache.displayNameForDigitLocalizedTitleCase(
+        contentMode: 'instruments',
+        digit: 1,
+        languageCode: 'ja',
+      ),
+      'ピアノ',
+    );
+  });
+
+  test('localized display names fall back to English when unavailable', () {
+    expect(
+      AnimalImageCache.displayNameForDigitLocalizedTitleCase(
+        contentMode: 'animals',
+        digit: 6,
+        languageCode: 'xx',
+      ),
+      'Frog',
+    );
+  });
 }

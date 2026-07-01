@@ -113,6 +113,20 @@ void main() {
     test('returns null for unsupported mode and invalid digits', () {
       expect(
         SudokuTilePreviewAudioService.audioAssetForTile(
+          contentMode: 'shells',
+          digit: 1,
+        ),
+        'audio/shells/1_cowrie.mp3',
+      );
+      expect(
+        SudokuTilePreviewAudioService.audioAssetForTile(
+          contentMode: 'shells',
+          digit: 9,
+        ),
+        'audio/shells/9_cockle.mp3',
+      );
+      expect(
+        SudokuTilePreviewAudioService.audioAssetForTile(
           contentMode: 'numbers',
           digit: 1,
         ),
