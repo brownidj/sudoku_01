@@ -164,6 +164,7 @@ void main() {
 
     expect(find.text('Your Progress'), findsOneWidget);
     expect(find.textContaining('Completed puzzles: 7'), findsOneWidget);
+    expect(find.textContaining('Time:'), findsNothing);
     expect(find.textContaining('Days played: 3'), findsNothing);
     expect(find.textContaining('Streak: 2'), findsNothing);
     expect(find.text('Reset'), findsOneWidget);
@@ -200,6 +201,7 @@ void main() {
 
     expect(find.text('Your Progress'), findsOneWidget);
     expect(find.textContaining('Completed puzzles: 7'), findsOneWidget);
+    expect(find.textContaining('Completed puzzles: 7\nTime:'), findsOneWidget);
     expect(find.textContaining('Days played: 3'), findsOneWidget);
     expect(find.textContaining('Streak: 2'), findsOneWidget);
   });
@@ -238,7 +240,10 @@ void main() {
     await tester.tap(find.text('Reset'));
     await tester.pumpAndSettle();
     expect(find.text('Reset progress?'), findsOneWidget);
-    expect(find.text("Your 'How am I doing?' data will be lost."), findsOneWidget);
+    expect(
+      find.text("Your 'How am I doing?' data will be lost."),
+      findsOneWidget,
+    );
 
     await tester.tap(find.text('OK'));
     await tester.pumpAndSettle();

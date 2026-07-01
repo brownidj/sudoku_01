@@ -49,6 +49,7 @@ class SudokuScreenFlowActions {
     required int completedPuzzles,
     required int daysPlayed,
     required int streak,
+    required int? currentGameElapsedSeconds,
     required Map<String, int> bestSolveTimeSecondsByDifficulty,
     required Future<void> Function() onResetProgressMetrics,
   }) {
@@ -58,6 +59,7 @@ class SudokuScreenFlowActions {
       completedPuzzles: completedPuzzles,
       daysPlayed: daysPlayed,
       streak: streak,
+      currentGameElapsedSeconds: currentGameElapsedSeconds,
       bestSolveTimeSecondsByDifficulty: bestSolveTimeSecondsByDifficulty,
       onResetProgressMetrics: onResetProgressMetrics,
     );

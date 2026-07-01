@@ -134,6 +134,7 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
             completedPuzzles: widget.controller.completedPuzzles,
             daysPlayed: widget.controller.daysPlayed,
             streak: widget.controller.streak,
+            currentGameElapsedSeconds: _currentGameElapsedSeconds(state),
             bestSolveTimeSecondsByDifficulty:
                 widget.controller.bestSolveTimeSecondsByDifficulty,
             onResetProgressMetrics: widget.controller.resetProgressMetrics,
@@ -195,5 +196,15 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
           .onCheckOrSolutionPressed(controller.state),
       onNewGamePressed: _onNewGamePressed,
     );
+  }
+
+  int? _currentGameElapsedSeconds(UiState state) {
+    final startedAt = state.puzzleStartedAt;
+    if (startedAt == null) {
+      return null;
+    }
+    final end = state.puzzleFinishedAt ?? DateTime.now();
+    final seconds = end.difference(startedAt).inSeconds;
+    return seconds < 0 ? 0 : seconds;
   }
 }

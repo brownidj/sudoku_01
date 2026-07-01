@@ -43,11 +43,17 @@ class UiStringHelpers {
     required int completedPuzzles,
     required int daysPlayed,
     required int streak,
+    required int? currentGameElapsedSeconds,
     required Map<String, int> bestSolveTimeSecondsByDifficulty,
   }) {
     final l10n = UiStrings.l10n(context);
     final lines = <String>[
       l10n.progressCompletedPuzzles(completedPuzzles),
+      if (currentGameElapsedSeconds != null)
+        UiStrings.elapsedTimeLabel(
+          context,
+          _formatDuration(context, currentGameElapsedSeconds),
+        ),
       l10n.progressDaysPlayed(daysPlayed),
       l10n.progressStreak(streak),
       l10n.progressBestSolveTimesTitle,

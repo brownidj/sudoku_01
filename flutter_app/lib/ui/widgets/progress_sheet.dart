@@ -7,6 +7,7 @@ Future<void> showProgressSheetModal({
   required int completedPuzzles,
   required int daysPlayed,
   required int streak,
+  required int? currentGameElapsedSeconds,
   required Map<String, int> bestSolveTimeSecondsByDifficulty,
   required Future<void> Function() onResetProgressMetrics,
 }) {
@@ -24,8 +25,9 @@ Future<void> showProgressSheetModal({
               children: [
                 Text(
                   UiStrings.progressSheetTitle(sheetContext),
-                  style: Theme.of(sheetContext).textTheme.titleMedium
-                      ?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(sheetContext).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -35,6 +37,7 @@ Future<void> showProgressSheetModal({
                           completedPuzzles: completedPuzzles,
                           daysPlayed: daysPlayed,
                           streak: streak,
+                          currentGameElapsedSeconds: currentGameElapsedSeconds,
                           bestSolveTimeSecondsByDifficulty:
                               bestSolveTimeSecondsByDifficulty,
                         )

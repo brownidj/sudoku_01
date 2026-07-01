@@ -99,12 +99,14 @@ class UiStrings {
     required int completedPuzzles,
     required int daysPlayed,
     required int streak,
+    required int? currentGameElapsedSeconds,
     required Map<String, int> bestSolveTimeSecondsByDifficulty,
   }) => UiStringHelpers.progressSheetBody(
     context,
     completedPuzzles: completedPuzzles,
     daysPlayed: daysPlayed,
     streak: streak,
+    currentGameElapsedSeconds: currentGameElapsedSeconds,
     bestSolveTimeSecondsByDifficulty: bestSolveTimeSecondsByDifficulty,
   );
 
