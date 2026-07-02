@@ -107,13 +107,13 @@ SuDoKu Playtime ist für Spielerinnen und Spieler gemacht, die gern etwas anders
 ## Release note
 
 **English**  
-Minor UI tweaks
+Added elapsed time for the current game in the Full version.
 
 **日本語**  
-軽微なUI調整
+フルバージョンに現在のゲームの経過時間を追加
 
 **Deutsch**  
-Kleine Anpassungen an der Benutzeroberfläche
+Verstrichene Zeit für das aktuelle Spiel in der Vollversion hinzugefügt
 
 ---
 
@@ -126,4 +126,4 @@ Sudoku, puzzle, brain, relaxing, casual, challenging, training, mind, logic, aut
 数独, パズル, 脳, リラックス, カジュアル, 挑戦, トレーニング, 頭の体操, 論理, 自動修正
 
 **Deutsch**  
-Sudoku, Rätsel, Gehirn, entspannend, casual, herausfordernd, Training, Geist, Logik, automatische Korrektur
+Sudoku, Rätsel, Gehirn, entspannend, casual, herausfordernd, Training, Logik, Auto-Korrektur
