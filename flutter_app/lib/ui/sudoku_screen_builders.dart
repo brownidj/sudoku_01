@@ -80,10 +80,6 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
         Navigator.of(context).maybePop();
         unawaited(controller.onPreferredLanguageChanged(languageCode));
       },
-      onResetToSystemLanguage: () {
-        Navigator.of(context).maybePop();
-        unawaited(controller.onResetPreferredLanguageToSystem());
-      },
       showDebugTools: viewModel.showDebugTools,
       showResetEntitlementToFree:
           MonetizationConfig.enableResetToFreeDebugAction,

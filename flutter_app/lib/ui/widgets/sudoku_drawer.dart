@@ -28,7 +28,6 @@ class SudokuDrawer extends StatelessWidget {
   final VoidCallback? onResetEntitlementToFreeSelected;
   final String? selectedLanguageCode;
   final ValueChanged<String>? onLanguageChanged;
-  final VoidCallback? onResetToSystemLanguage;
   final bool showDebugTools;
   final bool showResetEntitlementToFree;
   final AppVersionService appVersionService;
@@ -54,7 +53,6 @@ class SudokuDrawer extends StatelessWidget {
     this.onResetEntitlementToFreeSelected,
     this.selectedLanguageCode,
     this.onLanguageChanged,
-    this.onResetToSystemLanguage,
     this.showDebugTools = AppDebug.enabled,
     this.showResetEntitlementToFree = AppDebug.enabled,
     this.appVersionService = const AppVersionService(),
@@ -91,7 +89,6 @@ class SudokuDrawer extends StatelessWidget {
               compactDensity: _compactDensity,
               selectedLanguageCode: selectedLanguageCode,
               onLanguageChanged: onLanguageChanged,
-              onResetToSystemLanguage: onResetToSystemLanguage,
               showExpandedMenuForScreenshot:
                   ScreenshotMode.enabled && ScreenshotMode.isDrawerOpen,
             ),

@@ -6,7 +6,6 @@ class SudokuDrawerLanguageSection extends StatelessWidget {
   final VisualDensity compactDensity;
   final String? selectedLanguageCode;
   final ValueChanged<String>? onLanguageChanged;
-  final VoidCallback? onResetToSystemLanguage;
   final bool showExpandedMenuForScreenshot;
 
   const SudokuDrawerLanguageSection({
@@ -15,9 +14,19 @@ class SudokuDrawerLanguageSection extends StatelessWidget {
     required this.compactDensity,
     required this.selectedLanguageCode,
     this.onLanguageChanged,
-    this.onResetToSystemLanguage,
     this.showExpandedMenuForScreenshot = false,
   });
+
+  static const _languageOptions = <_LanguageOption>[
+    _LanguageOption('en', 'English'),
+    _LanguageOption('ja', '日本語'),
+    _LanguageOption('de', 'Deutsch'),
+    _LanguageOption('fr', 'Français'),
+    _LanguageOption('es', 'Español'),
+    _LanguageOption('pt', 'Português'),
+    _LanguageOption('it', 'Italiano'),
+    _LanguageOption('hi', 'हिन्दी'),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -47,51 +56,14 @@ class SudokuDrawerLanguageSection extends StatelessWidget {
                       onLanguageChanged!(value);
                     }
                   },
-            items: [
-              DropdownMenuItem<String>(
-                value: 'en',
-                child: Text(UiStrings.languageEnglish(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'ja',
-                child: Text(UiStrings.languageJapanese(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'de',
-                child: Text(UiStrings.languageGerman(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'fr',
-                child: Text(UiStrings.languageFrench(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'es',
-                child: Text(UiStrings.languageSpanish(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'pt',
-                child: Text(UiStrings.languagePortuguese(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'it',
-                child: Text(UiStrings.languageItalian(context)),
-              ),
-              DropdownMenuItem<String>(
-                value: 'hi',
-                child: Text(UiStrings.languageHindi(context)),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: sectionPadding,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: TextButton(
-              key: const ValueKey<String>('drawer-language-reset-button'),
-              onPressed: onResetToSystemLanguage,
-              child: Text(UiStrings.drawerLanguageReset(context)),
-            ),
+            items: _languageOptions
+                .map(
+                  (option) => DropdownMenuItem<String>(
+                    value: option.code,
+                    child: Text(option.nativeName),
+                  ),
+                )
+                .toList(),
           ),
         ),
         if (showExpandedMenuForScreenshot)
@@ -108,56 +80,16 @@ class SudokuDrawerLanguageSection extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _languageMenuEntry(
-                        context,
-                        'en',
-                        UiStrings.languageEnglish(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'ja',
-                        UiStrings.languageJapanese(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'de',
-                        UiStrings.languageGerman(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'fr',
-                        UiStrings.languageFrench(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'es',
-                        UiStrings.languageSpanish(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'pt',
-                        UiStrings.languagePortuguese(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'it',
-                        UiStrings.languageItalian(context),
-                        resolvedLanguageCode,
-                      ),
-                      _languageMenuEntry(
-                        context,
-                        'hi',
-                        UiStrings.languageHindi(context),
-                        resolvedLanguageCode,
-                      ),
-                    ],
+                    children: _languageOptions
+                        .map(
+                          (option) => _languageMenuEntry(
+                            context,
+                            option.code,
+                            option.nativeName,
+                            resolvedLanguageCode,
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
               ),
@@ -200,4 +132,11 @@ class SudokuDrawerLanguageSection extends StatelessWidget {
     }
     return 'en';
   }
+}
+
+class _LanguageOption {
+  final String code;
+  final String nativeName;
+
+  const _LanguageOption(this.code, this.nativeName);
 }
