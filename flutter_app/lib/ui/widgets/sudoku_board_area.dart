@@ -164,7 +164,6 @@ class SudokuBoardArea extends StatelessWidget {
               child: SudokuBoardMetadataRow(
                 state: state,
                 correctionsTooltipMessage: correctionsTooltipMessage,
-                onPuzzleModeChanged: onPuzzleModeChanged,
                 onDifficultyChanged: onDifficultyChanged,
               ),
             ),

@@ -2,6 +2,8 @@ import 'package:flutter_app/app/correction_state.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 
+const activePlayIdleTimeout = Duration(seconds: 60);
+
 class SudokuRuntimeState {
   History history;
   CorrectionState correctionState;
@@ -20,6 +22,8 @@ class SudokuRuntimeState {
   int conflictHintsLeft;
   DateTime puzzleStartedAt;
   DateTime? puzzleFinishedAt;
+  int activeElapsedSeconds;
+  DateTime? activeTimingStartedAt;
 
   SudokuRuntimeState({
     required this.history,
@@ -39,6 +43,8 @@ class SudokuRuntimeState {
     this.conflictHintsLeft = 0,
     DateTime? puzzleStartedAt,
     this.puzzleFinishedAt,
+    this.activeElapsedSeconds = 0,
+    this.activeTimingStartedAt,
   }) : puzzleStartedAt = puzzleStartedAt ?? DateTime.now(),
        lastConflicts = lastConflicts ?? <Coord>{},
        incorrectCells = incorrectCells ?? <Coord>{},

@@ -21,6 +21,8 @@ class RestoredGameSession {
   final int conflictHintsLeft;
   final DateTime puzzleStartedAt;
   final DateTime? puzzleFinishedAt;
+  final int activeElapsedSeconds;
+  final DateTime? activeTimingStartedAt;
 
   const RestoredGameSession({
     required this.history,
@@ -34,6 +36,8 @@ class RestoredGameSession {
     required this.conflictHintsLeft,
     required this.puzzleStartedAt,
     required this.puzzleFinishedAt,
+    required this.activeElapsedSeconds,
+    required this.activeTimingStartedAt,
   });
 }
 
@@ -93,6 +97,13 @@ class GameSessionService {
       final conflictHintsLeft = conflictHintsRaw is int
           ? conflictHintsRaw.clamp(0, maxConflictHints)
           : maxConflictHints;
+      final puzzleStartedAt =
+          _dateTimeFromJson(decoded['puzzleStartedAt']) ?? DateTime.now();
+      final puzzleFinishedAt = _dateTimeFromJson(decoded['puzzleFinishedAt']);
+      final activeElapsedRaw = decoded['activeElapsedSeconds'];
+      final activeElapsedSeconds = activeElapsedRaw is int
+          ? activeElapsedRaw.clamp(0, 1 << 31).toInt()
+          : _legacyActiveElapsedSeconds(puzzleStartedAt, puzzleFinishedAt);
 
       return RestoredGameSession(
         history: history,
@@ -104,9 +115,12 @@ class GameSessionService {
         correctionState: correctionState,
         debugScenarioLabel: decoded['debugScenarioLabel'] as String?,
         conflictHintsLeft: conflictHintsLeft,
-        puzzleStartedAt:
-            _dateTimeFromJson(decoded['puzzleStartedAt']) ?? DateTime.now(),
-        puzzleFinishedAt: _dateTimeFromJson(decoded['puzzleFinishedAt']),
+        puzzleStartedAt: puzzleStartedAt,
+        puzzleFinishedAt: puzzleFinishedAt,
+        activeElapsedSeconds: activeElapsedSeconds,
+        activeTimingStartedAt: _dateTimeFromJson(
+          decoded['activeTimingStartedAt'],
+        ),
       );
     } on FormatException {
       return null;
@@ -127,6 +141,8 @@ class GameSessionService {
     required int conflictHintsLeft,
     required DateTime puzzleStartedAt,
     required DateTime? puzzleFinishedAt,
+    required int activeElapsedSeconds,
+    required DateTime? activeTimingStartedAt,
   }) {
     final payload = <String, dynamic>{
       'version': sessionVersion,
@@ -139,6 +155,8 @@ class GameSessionService {
       'conflictHintsLeft': conflictHintsLeft,
       'puzzleStartedAt': puzzleStartedAt.toIso8601String(),
       'puzzleFinishedAt': puzzleFinishedAt?.toIso8601String(),
+      'activeElapsedSeconds': activeElapsedSeconds,
+      'activeTimingStartedAt': activeTimingStartedAt?.toIso8601String(),
       'settings': <String, dynamic>{
         'notesMode': settings.notesMode,
         'difficulty': settings.difficulty,
@@ -184,5 +202,13 @@ class GameSessionService {
       return null;
     }
     return DateTime.tryParse(value);
+  }
+
+  int _legacyActiveElapsedSeconds(DateTime startedAt, DateTime? finishedAt) {
+    if (finishedAt == null) {
+      return 0;
+    }
+    final seconds = finishedAt.difference(startedAt).inSeconds;
+    return seconds < 0 ? 0 : seconds;
   }
 }

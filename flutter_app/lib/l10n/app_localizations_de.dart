@@ -365,6 +365,10 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wiederherstellung gestartet. Deine Käufe sollten gleich wieder da sein.';
 
   @override
+  String get redeemCodeStartedMessage =>
+      'Gib deinen Code im App-Store-Fenster ein, um die Vollversion freizuschalten.';
+
+  @override
   String get billingUnavailable =>
       'Käufe sind auf diesem Gerät gerade nicht verfügbar.';
 
@@ -453,6 +457,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get drawerRestorePurchases => 'Käufe wiederherstellen';
+
+  @override
+  String get drawerRedeemCode => 'Code einlösen';
 
   @override
   String get drawerAboutChip => 'Info';

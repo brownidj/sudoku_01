@@ -39,6 +39,10 @@ class PremiumPurchaseCoordinator {
     return _billingService.restorePurchases();
   }
 
+  Future<BillingActionResult> redeemCode() {
+    return _billingService.redeemCode();
+  }
+
   String? get lastActionDiagnostics => _billingService.lastActionDiagnostics;
 
   void dispose() {

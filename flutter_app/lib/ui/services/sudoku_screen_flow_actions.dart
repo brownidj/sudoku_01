@@ -215,6 +215,22 @@ class SudokuScreenFlowActions {
     );
   }
 
+  Future<void> requestRedeemCode({
+    required BuildContext context,
+    required SudokuController controller,
+  }) async {
+    final result = await controller.redeemCode();
+    if (!context.mounted) {
+      return;
+    }
+    _showBillingResultMessage(
+      context: context,
+      result: result,
+      diagnostics: controller.lastBillingDiagnostics,
+      startedMessage: UiStrings.redeemCodeStartedMessage(context),
+    );
+  }
+
   void _showBillingResultMessage({
     required BuildContext context,
     required BillingActionResult result,

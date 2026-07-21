@@ -722,6 +722,12 @@ abstract class AppLocalizations {
   /// **'Restore started. Purchased items will reappear shortly.'**
   String get restoreStartedMessage;
 
+  /// No description provided for @redeemCodeStartedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your code in the App Store sheet to unlock Full Version.'**
+  String get redeemCodeStartedMessage;
+
   /// No description provided for @billingUnavailable.
   ///
   /// In en, this message translates to:
@@ -883,6 +889,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore Purchases'**
   String get drawerRestorePurchases;
+
+  /// No description provided for @drawerRedeemCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem Code'**
+  String get drawerRedeemCode;
 
   /// No description provided for @drawerAboutChip.
   ///

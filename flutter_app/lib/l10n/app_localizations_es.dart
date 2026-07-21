@@ -363,6 +363,10 @@ class AppLocalizationsEs extends AppLocalizations {
       'Restauración iniciada. Tus compras volverán a aparecer en un momento.';
 
   @override
+  String get redeemCodeStartedMessage =>
+      'Introduce tu código en la hoja de App Store para desbloquear la versión completa.';
+
+  @override
   String get billingUnavailable =>
       'Ahora mismo no se pueden hacer compras en este dispositivo.';
 
@@ -450,6 +454,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get drawerRestorePurchases => 'Restaurar compras';
+
+  @override
+  String get drawerRedeemCode => 'Canjear código';
 
   @override
   String get drawerAboutChip => 'Acerca de';

@@ -41,10 +41,12 @@ class _SudokuAppState extends State<SudokuApp> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
+      _controller.pauseActiveTiming();
       unawaited(_controller.flushGameSession());
       return;
     }
     if (state == AppLifecycleState.resumed) {
+      _controller.resumeActiveTiming();
       unawaited(_controller.refreshEntitlement());
     }
   }

@@ -362,6 +362,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Ripristino avviato. I tuoi acquisti torneranno tra poco.';
 
   @override
+  String get redeemCodeStartedMessage =>
+      'Inserisci il codice nella finestra dell’App Store per sbloccare la versione completa.';
+
+  @override
   String get billingUnavailable =>
       'Gli acquisti non sono disponibili su questo dispositivo in questo momento.';
 
@@ -447,6 +451,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get drawerRestorePurchases => 'Ripristina acquisti';
+
+  @override
+  String get drawerRedeemCode => 'Riscatta codice';
 
   @override
   String get drawerAboutChip => 'Info';

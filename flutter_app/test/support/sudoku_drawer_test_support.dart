@@ -3,7 +3,10 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
 
-UiState drawerState({bool premiumActive = false, String contentMode = 'numbers'}) {
+UiState drawerState({
+  bool premiumActive = false,
+  String contentMode = 'numbers',
+}) {
   final cells = List<List<CellVm>>.generate(
     9,
     (r) => List<CellVm>.generate(
@@ -61,11 +64,15 @@ Widget drawerHarness({
   VoidCallback? onLoadExhaustedCorrectionScenario,
   VoidCallback? onResetEntitlementToFreeSelected,
   VoidCallback? onRestorePurchasesSelected,
+  VoidCallback? onRedeemCodeSelected,
   bool showDebugTools = false,
 }) {
   return MaterialApp(
     home: SudokuDrawer(
-      state: drawerState(premiumActive: premiumActive, contentMode: contentMode),
+      state: drawerState(
+        premiumActive: premiumActive,
+        contentMode: contentMode,
+      ),
       onAnimalStyleChanged: (_) {},
       onStyleChanged: (_) {},
       audioEnabled: audioEnabled,
@@ -78,6 +85,7 @@ Widget drawerHarness({
       onLoadExhaustedCorrectionScenario: onLoadExhaustedCorrectionScenario,
       onResetEntitlementToFreeSelected: onResetEntitlementToFreeSelected,
       onRestorePurchasesSelected: onRestorePurchasesSelected,
+      onRedeemCodeSelected: onRedeemCodeSelected,
       showDebugTools: showDebugTools,
     ),
   );

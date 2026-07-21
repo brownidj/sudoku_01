@@ -25,6 +25,8 @@ class UiStateMapperInput {
   final bool premiumActive;
   final DateTime? puzzleStartedAt;
   final DateTime? puzzleFinishedAt;
+  final int activeElapsedSeconds;
+  final DateTime? activeTimingStartedAt;
 
   const UiStateMapperInput({
     required this.board,
@@ -49,6 +51,8 @@ class UiStateMapperInput {
     this.premiumActive = false,
     this.puzzleStartedAt,
     this.puzzleFinishedAt,
+    this.activeElapsedSeconds = 0,
+    this.activeTimingStartedAt,
   });
 }
 
@@ -113,6 +117,8 @@ class UiStateMapper {
       premiumActive: input.premiumActive,
       puzzleStartedAt: input.puzzleStartedAt,
       puzzleFinishedAt: input.puzzleFinishedAt,
+      activeElapsedSeconds: input.activeElapsedSeconds,
+      activeTimingStartedAt: input.activeTimingStartedAt,
     );
   }
 }

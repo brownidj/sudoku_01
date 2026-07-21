@@ -51,6 +51,15 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
           ),
         );
       },
+      onRedeemCodeSelected: () {
+        Navigator.of(context).maybePop();
+        unawaited(
+          _flowActions.requestRedeemCode(
+            context: context,
+            controller: controller,
+          ),
+        );
+      },
       onLoadCorrectionScenario: () {
         Navigator.of(context).maybePop();
         controller.onLoadCorrectionScenario();
@@ -199,12 +208,12 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
   }
 
   int? _currentGameElapsedSeconds(UiState state) {
-    final startedAt = state.puzzleStartedAt;
+    final startedAt = state.activeTimingStartedAt;
     if (startedAt == null) {
-      return null;
+      return state.activeElapsedSeconds;
     }
-    final end = state.puzzleFinishedAt ?? DateTime.now();
-    final seconds = end.difference(startedAt).inSeconds;
-    return seconds < 0 ? 0 : seconds;
+    final delta = DateTime.now().difference(startedAt).inSeconds;
+    final cappedDelta = delta.clamp(0, activePlayIdleTimeout.inSeconds).toInt();
+    return state.activeElapsedSeconds + cappedDelta;
   }
 }

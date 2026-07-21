@@ -11,6 +11,8 @@ import 'package:flutter_app/application/results.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 
+part 'fake_billing_service.dart';
+
 class FakePreferencesStore extends PreferencesStore {
   String? savedSession;
   String? preferredLanguageCode;
@@ -70,7 +72,8 @@ class FakePreferencesStore extends PreferencesStore {
   Future<int> loadCompletedPuzzles() async => completedPuzzles;
 
   @override
-  Future<void> saveCompletedPuzzles(int value) async => completedPuzzles = value;
+  Future<void> saveCompletedPuzzles(int value) async =>
+      completedPuzzles = value;
 
   @override
   Future<int> loadDaysPlayed() async => daysPlayed;
@@ -91,10 +94,12 @@ class FakePreferencesStore extends PreferencesStore {
   Future<void> saveLastPlayedDate(String value) async => lastPlayedDate = value;
 
   @override
-  Future<List<String>> loadPlayedDates() async => List<String>.from(playedDates);
+  Future<List<String>> loadPlayedDates() async =>
+      List<String>.from(playedDates);
 
   @override
-  Future<void> savePlayedDates(List<String> value) async => playedDates = List<String>.from(value);
+  Future<void> savePlayedDates(List<String> value) async =>
+      playedDates = List<String>.from(value);
 
   @override
   Future<int?> loadBestSolveTimeSeconds(String difficulty) async =>
@@ -128,7 +133,8 @@ class FakePreferencesStore extends PreferencesStore {
       preferredLanguageCode = languageCode;
 
   @override
-  Future<void> clearPreferredLanguageCode() async => preferredLanguageCode = null;
+  Future<void> clearPreferredLanguageCode() async =>
+      preferredLanguageCode = null;
 }
 
 class FakeSettingsController extends SettingsController {
@@ -144,10 +150,12 @@ class FakeSettingsController extends SettingsController {
   Future<void> load() async => loadCalls += 1;
 
   @override
-  void toggleNotesMode() => _state = _state.copyWith(notesMode: !_state.notesMode);
+  void toggleNotesMode() =>
+      _state = _state.copyWith(notesMode: !_state.notesMode);
 
   @override
-  void setNotesMode(bool enabled) => _state = _state.copyWith(notesMode: enabled);
+  void setNotesMode(bool enabled) =>
+      _state = _state.copyWith(notesMode: enabled);
 
   @override
   bool setDifficulty(String difficulty) {
@@ -156,19 +164,24 @@ class FakeSettingsController extends SettingsController {
   }
 
   @override
-  void setDifficultyLocked(bool locked) => _state = _state.copyWith(canChangeDifficulty: !locked);
+  void setDifficultyLocked(bool locked) =>
+      _state = _state.copyWith(canChangeDifficulty: !locked);
 
   @override
-  void setPuzzleModeLocked(bool locked) => _state = _state.copyWith(canChangePuzzleMode: !locked);
+  void setPuzzleModeLocked(bool locked) =>
+      _state = _state.copyWith(canChangePuzzleMode: !locked);
 
   @override
-  void setStyleName(String styleName) => _state = _state.copyWith(styleName: styleName);
+  void setStyleName(String styleName) =>
+      _state = _state.copyWith(styleName: styleName);
 
   @override
-  void setContentMode(String mode) => _state = _state.copyWith(contentMode: mode);
+  void setContentMode(String mode) =>
+      _state = _state.copyWith(contentMode: mode);
 
   @override
-  void setAnimalStyle(String style) => _state = _state.copyWith(animalStyle: style);
+  void setAnimalStyle(String style) =>
+      _state = _state.copyWith(animalStyle: style);
 
   @override
   void setPuzzleMode(String mode) => _state = _state.copyWith(puzzleMode: mode);
@@ -207,44 +220,6 @@ class SpyPremiumPolicyService extends PremiumPolicyService {
     difficultyChecks.add('$normalized:${entitlement.name}');
     return byDifficulty[normalized] ?? defaultDifficultyResult;
   }
-}
-
-class FakeBillingService implements BillingService {
-  final StreamController<BillingPurchaseUpdate> _updatesController =
-      StreamController<BillingPurchaseUpdate>.broadcast();
-  bool available;
-  BillingActionResult buyResult;
-  BillingActionResult restoreResult;
-  List<BillingProduct> products;
-  String? diagnostics;
-
-  FakeBillingService({
-    this.available = true,
-    this.buyResult = BillingActionResult.started,
-    this.restoreResult = BillingActionResult.started,
-    this.products = const <BillingProduct>[],
-  });
-
-  @override
-  Stream<BillingPurchaseUpdate> get purchaseUpdates =>
-      _updatesController.stream;
-
-  @override
-  String? get lastActionDiagnostics => diagnostics;
-
-  void emit(BillingPurchaseUpdate update) => _updatesController.add(update);
-
-  @override
-  Future<bool> isAvailable() async => available;
-
-  @override
-  Future<List<BillingProduct>> loadProducts() async => products;
-
-  @override
-  Future<BillingActionResult> buyPremium() async => buyResult;
-
-  @override
-  Future<BillingActionResult> restorePurchases() async => restoreResult;
 }
 
 Coord? firstEditableCoord(UiState state) {

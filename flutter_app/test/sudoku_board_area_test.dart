@@ -46,9 +46,6 @@ void main() {
   testWidgets('premium metadata row shows elapsed game time', (
     WidgetTester tester,
   ) async {
-    final startedAt = DateTime.now().subtract(
-      const Duration(minutes: 3, seconds: 4),
-    );
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -58,10 +55,9 @@ void main() {
             child: SudokuBoardArea(
               state: boardAreaState(
                 premiumActive: true,
-                puzzleStartedAt: startedAt,
-                puzzleFinishedAt: startedAt.add(
-                  const Duration(minutes: 3, seconds: 4),
-                ),
+                activeElapsedSeconds: 184,
+                activeTimingStartedAt: null,
+                puzzleFinishedAt: DateTime.now(),
               ),
               style: styleModern,
               animalImages: const {},
@@ -97,10 +93,10 @@ void main() {
             height: 620,
             child: SudokuBoardArea(
               state: boardAreaState(
+                activeElapsedSeconds: 184,
+                activeTimingStartedAt: null,
                 puzzleStartedAt: startedAt,
-                puzzleFinishedAt: startedAt.add(
-                  const Duration(minutes: 3, seconds: 4),
-                ),
+                puzzleFinishedAt: startedAt.add(const Duration(seconds: 184)),
               ),
               style: styleModern,
               animalImages: const {},

@@ -47,6 +47,8 @@ class GameStartupService {
           conflictHintsLeft: restoredSession.conflictHintsLeft,
           puzzleStartedAt: restoredSession.puzzleStartedAt,
           puzzleFinishedAt: restoredSession.puzzleFinishedAt,
+          activeElapsedSeconds: restoredSession.activeElapsedSeconds,
+          activeTimingStartedAt: restoredSession.activeTimingStartedAt,
         ),
         hadSavedSessionAtLaunch: true,
         shouldNotifyListeners: true,

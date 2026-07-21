@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/app/sudoku_runtime_state.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
@@ -8,14 +9,12 @@ import 'package:flutter_app/ui/widgets/long_press_tooltip.dart';
 class SudokuBoardMetadataRow extends StatelessWidget {
   final UiState state;
   final String correctionsTooltipMessage;
-  final ValueChanged<String>? onPuzzleModeChanged;
   final ValueChanged<String>? onDifficultyChanged;
 
   const SudokuBoardMetadataRow({
     super.key,
     required this.state,
     required this.correctionsTooltipMessage,
-    required this.onPuzzleModeChanged,
     required this.onDifficultyChanged,
   });
 
@@ -42,7 +41,8 @@ class SudokuBoardMetadataRow extends StatelessWidget {
           child: Center(
             child: state.premiumActive
                 ? _ElapsedTimeLabel(
-                    startedAt: state.puzzleStartedAt,
+                    activeElapsedSeconds: state.activeElapsedSeconds,
+                    activeTimingStartedAt: state.activeTimingStartedAt,
                     finishedAt: state.puzzleFinishedAt,
                   )
                 : const SizedBox.shrink(),
@@ -97,10 +97,15 @@ class SudokuBoardMetadataRow extends StatelessWidget {
 }
 
 class _ElapsedTimeLabel extends StatefulWidget {
-  final DateTime? startedAt;
+  final int activeElapsedSeconds;
+  final DateTime? activeTimingStartedAt;
   final DateTime? finishedAt;
 
-  const _ElapsedTimeLabel({required this.startedAt, required this.finishedAt});
+  const _ElapsedTimeLabel({
+    required this.activeElapsedSeconds,
+    required this.activeTimingStartedAt,
+    required this.finishedAt,
+  });
 
   @override
   State<_ElapsedTimeLabel> createState() => _ElapsedTimeLabelState();
@@ -118,7 +123,8 @@ class _ElapsedTimeLabelState extends State<_ElapsedTimeLabel> {
   @override
   void didUpdateWidget(_ElapsedTimeLabel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.finishedAt != widget.finishedAt) {
+    if (oldWidget.finishedAt != widget.finishedAt ||
+        oldWidget.activeTimingStartedAt != widget.activeTimingStartedAt) {
       _syncTimer();
     }
   }
@@ -140,7 +146,7 @@ class _ElapsedTimeLabelState extends State<_ElapsedTimeLabel> {
   void _syncTimer() {
     _timer?.cancel();
     _timer = null;
-    if (widget.finishedAt != null) {
+    if (widget.finishedAt != null || widget.activeTimingStartedAt == null) {
       return;
     }
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -151,10 +157,13 @@ class _ElapsedTimeLabelState extends State<_ElapsedTimeLabel> {
   }
 
   int _elapsedSeconds() {
-    final startedAt = widget.startedAt ?? DateTime.now();
-    final end = widget.finishedAt ?? DateTime.now();
-    final elapsed = end.difference(startedAt).inSeconds;
-    return elapsed < 0 ? 0 : elapsed;
+    final startedAt = widget.activeTimingStartedAt;
+    if (startedAt == null) {
+      return widget.activeElapsedSeconds;
+    }
+    final delta = DateTime.now().difference(startedAt).inSeconds;
+    final cappedDelta = delta.clamp(0, activePlayIdleTimeout.inSeconds).toInt();
+    return widget.activeElapsedSeconds + cappedDelta;
   }
 
   String _formatElapsed(int seconds) {

@@ -68,7 +68,7 @@ if [[ "$POSITION" != "top" && "$POSITION" != "bottom" ]]; then
 fi
 
 MAGICK_BIN="/opt/homebrew/bin/magick"
-MAX_POINTSIZE=48
+MAX_POINTSIZE=54
 
 if [[ ! -f "$INPUT" ]]; then
   echo "Input file not found: $INPUT" >&2

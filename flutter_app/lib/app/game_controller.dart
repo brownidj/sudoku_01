@@ -116,6 +116,7 @@ class GameController {
     if (startup.restoredRuntime != null) {
       _runtime = startup.restoredRuntime!;
       _completionRecordedForCurrentPuzzle = _runtime.puzzleSolved;
+      _runtimeStateService.resumeActiveTiming(_runtime);
     }
     if (startup.shouldNotifyListeners) {
       _effects.render(notifyListeners, appL10nCurrent().statusSessionRestored);
@@ -130,6 +131,7 @@ class GameController {
       _runtime.history.present.board.cellAtCoord(coord).given;
 
   void selectCell(Coord coord, VoidCallback notifyListeners) {
+    registerActiveUse();
     if (_runtime.gameOver || isGiven(coord)) {
       return;
     }
@@ -146,6 +148,7 @@ class GameController {
     BoardEditOutcome outcome,
     VoidCallback notifyListeners,
   ) {
+    registerActiveUse();
     final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.applyBoardEditOutcome(
       runtime: _runtime,
@@ -186,6 +189,18 @@ class GameController {
 
   Future<void> flushGameSession() => _effects.flushPendingSave();
 
+  void pauseActiveTiming(VoidCallback notifyListeners) {
+    _runtimeStateService.pauseActiveTiming(_runtime);
+    _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
+    _effects.render(notifyListeners, '');
+  }
+
+  void resumeActiveTiming(VoidCallback notifyListeners) {
+    _runtimeStateService.resumeActiveTiming(_runtime);
+    _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
+    _effects.render(notifyListeners, '');
+  }
+
   Future<void> refreshEntitlement(VoidCallback notifyListeners) async {
     final refreshed = await _entitlementSyncService.refreshEntitlement(
       fallback: _entitlement,
@@ -214,6 +229,10 @@ class GameController {
 
   void persistCurrentSession() {
     _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
+  }
+
+  void registerActiveUse() {
+    _runtimeStateService.registerActiveUse(_runtime);
   }
 
   void setEntitlement(Entitlement entitlement, VoidCallback notifyListeners) {
@@ -246,8 +265,9 @@ class GameController {
     _completionRecordedForCurrentPuzzle = true;
     _completedPuzzles += 1;
     final finishedAt = DateTime.now();
+    _runtimeStateService.pauseActiveTiming(_runtime, now: finishedAt);
     _runtime.puzzleFinishedAt = finishedAt;
-    final solveDuration = finishedAt.difference(_runtime.puzzleStartedAt);
+    final solveDuration = Duration(seconds: _runtime.activeElapsedSeconds);
     _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
     _effects.render(notifyListeners, '');
     unawaited(

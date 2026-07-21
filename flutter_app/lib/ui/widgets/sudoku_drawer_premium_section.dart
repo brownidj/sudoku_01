@@ -9,6 +9,8 @@ class SudokuDrawerPremiumSection extends StatelessWidget {
   final ValueChanged<String>? onPremiumFeatureSelected;
   final VoidCallback? onUnlockPremiumSelected;
   final VoidCallback? onRestorePurchasesSelected;
+  final VoidCallback? onRedeemCodeSelected;
+  final bool showRedeemCode;
 
   const SudokuDrawerPremiumSection({
     super.key,
@@ -18,6 +20,8 @@ class SudokuDrawerPremiumSection extends StatelessWidget {
     this.onPremiumFeatureSelected,
     this.onUnlockPremiumSelected,
     this.onRestorePurchasesSelected,
+    this.onRedeemCodeSelected,
+    this.showRedeemCode = false,
   });
 
   @override
@@ -67,6 +71,17 @@ class SudokuDrawerPremiumSection extends StatelessWidget {
             title: Text(UiStrings.drawerUnlockFullVersion(context)),
             onTap: onUnlockPremiumSelected,
           ),
+          if (showRedeemCode)
+            ListTile(
+              key: const ValueKey<String>('drawer-redeem-code'),
+              contentPadding: sectionPadding,
+              minVerticalPadding: 0,
+              visualDensity: compactDensity,
+              dense: true,
+              leading: const Icon(Icons.confirmation_number_outlined),
+              title: Text(UiStrings.drawerRedeemCode(context)),
+              onTap: onRedeemCodeSelected,
+            ),
         ],
         ListTile(
           key: const ValueKey<String>('drawer-restore-purchases'),

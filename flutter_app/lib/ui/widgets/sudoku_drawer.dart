@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/app/screenshot_mode.dart';
 import 'package:flutter_app/app/premium_policy_service.dart';
@@ -21,6 +22,7 @@ class SudokuDrawer extends StatelessWidget {
   final ValueChanged<String>? onPremiumFeatureSelected;
   final VoidCallback? onUnlockPremiumSelected;
   final VoidCallback? onRestorePurchasesSelected;
+  final VoidCallback? onRedeemCodeSelected;
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final VoidCallback? onResetEntitlementToFreeSelected;
@@ -46,6 +48,7 @@ class SudokuDrawer extends StatelessWidget {
     this.onPremiumFeatureSelected,
     this.onUnlockPremiumSelected,
     this.onRestorePurchasesSelected,
+    this.onRedeemCodeSelected,
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
     this.onResetEntitlementToFreeSelected,
@@ -99,6 +102,8 @@ class SudokuDrawer extends StatelessWidget {
               onPremiumFeatureSelected: onPremiumFeatureSelected,
               onUnlockPremiumSelected: onUnlockPremiumSelected,
               onRestorePurchasesSelected: onRestorePurchasesSelected,
+              onRedeemCodeSelected: onRedeemCodeSelected,
+              showRedeemCode: defaultTargetPlatform == TargetPlatform.iOS,
             ),
             SudokuDrawerAboutSection(
               sectionPadding: _sectionPadding,

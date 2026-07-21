@@ -41,6 +41,8 @@ class SudokuRuntimeStateService {
         premiumActive: premiumActive,
         puzzleStartedAt: runtime.puzzleStartedAt,
         puzzleFinishedAt: runtime.puzzleFinishedAt,
+        activeElapsedSeconds: runtime.activeElapsedSeconds,
+        activeTimingStartedAt: runtime.activeTimingStartedAt,
       ),
     );
   }
@@ -89,7 +91,9 @@ class SudokuRuntimeStateService {
         settings.state.difficulty,
       )
       ..puzzleStartedAt = DateTime.now()
-      ..puzzleFinishedAt = null;
+      ..puzzleFinishedAt = null
+      ..activeElapsedSeconds = 0
+      ..activeTimingStartedAt = DateTime.now();
     settings.setDifficultyLocked(false);
     settings.setPuzzleModeLocked(false);
     clearCorrectionPromptState(runtime, clearRevertedCells: true);
@@ -116,5 +120,43 @@ class SudokuRuntimeStateService {
     required History history,
   }) {
     return CorrectionState.initial(difficulty: difficulty, history: history);
+  }
+
+  int activeElapsedSeconds(SudokuRuntimeState runtime, {DateTime? now}) {
+    final startedAt = runtime.activeTimingStartedAt;
+    if (startedAt == null) {
+      return runtime.activeElapsedSeconds;
+    }
+    final delta = (now ?? DateTime.now()).difference(startedAt).inSeconds;
+    final cappedDelta = delta.clamp(0, activePlayIdleTimeout.inSeconds).toInt();
+    return runtime.activeElapsedSeconds + cappedDelta;
+  }
+
+  void registerActiveUse(SudokuRuntimeState runtime, {DateTime? now}) {
+    if (!_canTrackActiveTime(runtime)) {
+      return;
+    }
+    pauseActiveTiming(runtime, now: now);
+    runtime.activeTimingStartedAt = now ?? DateTime.now();
+  }
+
+  void pauseActiveTiming(SudokuRuntimeState runtime, {DateTime? now}) {
+    runtime.activeElapsedSeconds = activeElapsedSeconds(runtime, now: now);
+    runtime.activeTimingStartedAt = null;
+  }
+
+  void resumeActiveTiming(SudokuRuntimeState runtime, {DateTime? now}) {
+    if (!_canTrackActiveTime(runtime)) {
+      runtime.activeTimingStartedAt = null;
+      return;
+    }
+    pauseActiveTiming(runtime, now: now);
+    runtime.activeTimingStartedAt = now ?? DateTime.now();
+  }
+
+  bool _canTrackActiveTime(SudokuRuntimeState runtime) {
+    return !runtime.gameOver &&
+        !runtime.puzzleSolved &&
+        runtime.puzzleFinishedAt == null;
   }
 }

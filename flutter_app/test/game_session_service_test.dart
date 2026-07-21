@@ -55,6 +55,8 @@ void main() {
       conflictHintsLeft: 3,
       puzzleStartedAt: DateTime(2026, 5, 10, 9, 0),
       puzzleFinishedAt: null,
+      activeElapsedSeconds: 0,
+      activeTimingStartedAt: DateTime(2026, 5, 10, 9, 0),
     );
 
     var flushed = false;
@@ -103,6 +105,8 @@ void main() {
       conflictHintsLeft: 3,
       puzzleStartedAt: startedAt,
       puzzleFinishedAt: finishedAt,
+      activeElapsedSeconds: 420,
+      activeTimingStartedAt: null,
     );
     prefs.saveCompleter.complete();
     await save;
@@ -110,10 +114,14 @@ void main() {
     final payload = jsonDecode(prefs.savedSession!) as Map<String, dynamic>;
     expect(payload['puzzleStartedAt'], startedAt.toIso8601String());
     expect(payload['puzzleFinishedAt'], finishedAt.toIso8601String());
+    expect(payload['activeElapsedSeconds'], 420);
+    expect(payload['activeTimingStartedAt'], isNull);
 
     final restored = await service.restore(settings);
     expect(restored, isNotNull);
     expect(restored!.puzzleStartedAt, startedAt);
     expect(restored.puzzleFinishedAt, finishedAt);
+    expect(restored.activeElapsedSeconds, 420);
+    expect(restored.activeTimingStartedAt, isNull);
   });
 }

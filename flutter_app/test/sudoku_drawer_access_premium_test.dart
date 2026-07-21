@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -80,12 +81,49 @@ void main() {
       find.byKey(const ValueKey<String>('drawer-restore-purchases')),
       findsOneWidget,
     );
+    expect(
+      find.byKey(const ValueKey<String>('drawer-redeem-code')),
+      findsNothing,
+    );
 
     await tester.tap(
       find.byKey(const ValueKey<String>('drawer-restore-purchases')),
     );
     await tester.pumpAndSettle();
     expect(restoreTapped, isTrue);
+  });
+
+  testWidgets('shows redeem code action for free iOS users', (
+    WidgetTester tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+    var redeemTapped = false;
+
+    try {
+      await tester.pumpWidget(
+        drawerHarness(
+          onRedeemCodeSelected: () {
+            redeemTapped = true;
+          },
+        ),
+      );
+
+      await tester.drag(find.byType(ListView), const Offset(0, -900));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey<String>('drawer-redeem-code')),
+        findsOneWidget,
+      );
+
+      await tester.tap(
+        find.byKey(const ValueKey<String>('drawer-redeem-code')),
+      );
+      await tester.pumpAndSettle();
+      expect(redeemTapped, isTrue);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   testWidgets('shows full premium status and hides locked premium rows', (

@@ -65,6 +65,7 @@ class UiController {
   }
 
   void onToggleNotesMode(VoidCallback notifyListeners) {
+    _gameController.registerActiveUse();
     if (_gameController.gameOver) {
       return;
     }
@@ -74,6 +75,7 @@ class UiController {
   }
 
   void setNotesMode(bool enabled, VoidCallback notifyListeners) {
+    _gameController.registerActiveUse();
     if (_gameController.gameOver) {
       return;
     }
@@ -83,12 +85,14 @@ class UiController {
   }
 
   void onStyleChanged(String styleName, VoidCallback notifyListeners) {
+    _gameController.registerActiveUse();
     _settings.setStyleName(styleName);
     _gameController.persistCurrentSession();
     notifyListeners();
   }
 
   void onContentModeChanged(String mode, VoidCallback notifyListeners) {
+    _gameController.registerActiveUse();
     final nextMode = switch (mode) {
       'animals' ||
       'instruments' ||
@@ -104,6 +108,7 @@ class UiController {
   }
 
   void onAnimalStyleChanged(String style, VoidCallback notifyListeners) {
+    _gameController.registerActiveUse();
     _settings.setAnimalStyle(style == 'cute' ? 'cute' : 'simple');
     _gameController.persistCurrentSession();
     notifyListeners();

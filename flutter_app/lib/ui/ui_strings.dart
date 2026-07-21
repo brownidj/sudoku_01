@@ -157,6 +157,8 @@ class UiStrings {
       l10n(context).purchaseStartedMessage;
   static String restoreStartedMessage(BuildContext context) =>
       l10n(context).restoreStartedMessage;
+  static String redeemCodeStartedMessage(BuildContext context) =>
+      l10n(context).redeemCodeStartedMessage;
   static String billingUnavailable(BuildContext context) =>
       l10n(context).billingUnavailable;
   static String billingProductNotConfigured(BuildContext context) =>
@@ -208,6 +210,8 @@ class UiStrings {
       l10n(context).drawerUnlockFullVersion;
   static String drawerRestorePurchases(BuildContext context) =>
       l10n(context).drawerRestorePurchases;
+  static String drawerRedeemCode(BuildContext context) =>
+      l10n(context).drawerRedeemCode;
   static String drawerAboutChip(BuildContext context) =>
       l10n(context).drawerAboutChip;
   static String drawerAboutTitle(BuildContext context) =>

@@ -341,6 +341,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restoreStartedMessage => '復元を開始しました。購入した内容はまもなく戻ります。';
 
   @override
+  String get redeemCodeStartedMessage =>
+      'App Store のシートでコードを入力するとフルバージョンが解除されます。';
+
+  @override
   String get billingUnavailable => 'この端末では今は購入できません。';
 
   @override
@@ -421,6 +425,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get drawerRestorePurchases => '購入を復元';
+
+  @override
+  String get drawerRedeemCode => 'コードを使う';
 
   @override
   String get drawerAboutChip => 'このアプリについて';

@@ -24,6 +24,8 @@ class GameControllerEffects {
       conflictHintsLeft: runtime.conflictHintsLeft,
       puzzleStartedAt: runtime.puzzleStartedAt,
       puzzleFinishedAt: runtime.puzzleFinishedAt,
+      activeElapsedSeconds: runtime.activeElapsedSeconds,
+      activeTimingStartedAt: runtime.activeTimingStartedAt,
     );
   }
 

@@ -12,6 +12,8 @@ UiState boardAreaState({
   bool premiumActive = false,
   DateTime? puzzleStartedAt,
   DateTime? puzzleFinishedAt,
+  int activeElapsedSeconds = 0,
+  DateTime? activeTimingStartedAt,
 }) {
   final cells = List<List<CellVm>>.generate(
     9,
@@ -56,5 +58,7 @@ UiState boardAreaState({
     premiumActive: premiumActive,
     puzzleStartedAt: puzzleStartedAt,
     puzzleFinishedAt: puzzleFinishedAt,
+    activeElapsedSeconds: activeElapsedSeconds,
+    activeTimingStartedAt: activeTimingStartedAt,
   );
 }

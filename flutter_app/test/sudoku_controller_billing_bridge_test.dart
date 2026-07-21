@@ -96,24 +96,24 @@ void main() {
     expect(fakePrefs.entitlement, Entitlement.free);
   });
 
-  test(
-    'controller buyPremium and restorePurchases delegate to billing',
-    () async {
-      final fakeBilling = FakeBillingService(
-        buyResult: BillingActionResult.started,
-        restoreResult: BillingActionResult.unavailable,
-      );
-      final controller = SudokuController(
-        preferencesStore: FakePreferencesStore(),
-        billingService: fakeBilling,
-      );
-      await controller.ready;
+  test('controller premium billing actions delegate to billing', () async {
+    final fakeBilling = FakeBillingService(
+      buyResult: BillingActionResult.started,
+      restoreResult: BillingActionResult.unavailable,
+      redeemCodeResult: BillingActionResult.failed,
+    );
+    final controller = SudokuController(
+      preferencesStore: FakePreferencesStore(),
+      billingService: fakeBilling,
+    );
+    await controller.ready;
 
-      final buyResult = await controller.buyPremium();
-      final restoreResult = await controller.restorePurchases();
+    final buyResult = await controller.buyPremium();
+    final restoreResult = await controller.restorePurchases();
+    final redeemCodeResult = await controller.redeemCode();
 
-      expect(buyResult, BillingActionResult.started);
-      expect(restoreResult, BillingActionResult.unavailable);
-    },
-  );
+    expect(buyResult, BillingActionResult.started);
+    expect(restoreResult, BillingActionResult.unavailable);
+    expect(redeemCodeResult, BillingActionResult.failed);
+  });
 }

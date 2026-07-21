@@ -210,6 +210,10 @@ class SudokuController extends ChangeNotifier {
   bool isContentModeUnlocked(String contentMode) =>
       _gameController.isContentModeUnlocked(contentMode);
   Future<void> flushGameSession() => _gameController.flushGameSession();
+  void pauseActiveTiming() =>
+      _gameController.pauseActiveTiming(notifyListeners);
+  void resumeActiveTiming() =>
+      _gameController.resumeActiveTiming(notifyListeners);
   Future<void> refreshEntitlement() =>
       _gameController.refreshEntitlement(notifyListeners);
   Future<void> resetProgressMetrics() =>
@@ -218,6 +222,8 @@ class SudokuController extends ChangeNotifier {
       _premiumPurchaseCoordinator.buyPremium();
   Future<BillingActionResult> restorePurchases() =>
       _premiumPurchaseCoordinator.restorePurchases();
+  Future<BillingActionResult> redeemCode() =>
+      _premiumPurchaseCoordinator.redeemCode();
   String? get lastBillingDiagnostics =>
       _premiumPurchaseCoordinator.lastActionDiagnostics;
 

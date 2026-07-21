@@ -360,6 +360,10 @@ class AppLocalizationsHi extends AppLocalizations {
       'रीस्टोर शुरू हो गया है। आपकी खरीदी गई चीज़ें अभी थोड़ी देर में फिर दिखेंगी।';
 
   @override
+  String get redeemCodeStartedMessage =>
+      'पूर्ण संस्करण अनलॉक करने के लिए App Store शीट में अपना कोड दर्ज करें।';
+
+  @override
   String get billingUnavailable => 'अभी इस डिवाइस पर खरीदारी उपलब्ध नहीं है।';
 
   @override
@@ -445,6 +449,9 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get drawerRestorePurchases => 'खरीद पुनर्स्थापित करें';
+
+  @override
+  String get drawerRedeemCode => 'कोड रिडीम करें';
 
   @override
   String get drawerAboutChip => 'जानकारी';

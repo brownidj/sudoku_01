@@ -2,6 +2,7 @@ part of 'game_controller.dart';
 
 extension GameControllerActions on GameController {
   void onLoadCorrectionScenario(VoidCallback notifyListeners) {
+    registerActiveUse();
     _completionRecordedForCurrentPuzzle = false;
     _scenarioService.loadCorrectionScenario(
       runtime: _runtime,
@@ -15,6 +16,7 @@ extension GameControllerActions on GameController {
   }
 
   void onLoadExhaustedCorrectionScenario(VoidCallback notifyListeners) {
+    registerActiveUse();
     _completionRecordedForCurrentPuzzle = false;
     _scenarioService.loadExhaustedCorrectionScenario(
       runtime: _runtime,
@@ -28,6 +30,7 @@ extension GameControllerActions on GameController {
   }
 
   void onUndo(VoidCallback notifyListeners) {
+    registerActiveUse();
     _scenarioService.undo(
       runtime: _runtime,
       saveGameSession: () => _effects.saveGameSession(
@@ -39,6 +42,7 @@ extension GameControllerActions on GameController {
   }
 
   void onSetDifficulty(String difficulty, VoidCallback notifyListeners) {
+    registerActiveUse();
     _configurationService.setDifficulty(
       settings: _settings,
       entitlement: _entitlement,
@@ -49,6 +53,7 @@ extension GameControllerActions on GameController {
   }
 
   void onPuzzleModeChanged(String mode, VoidCallback notifyListeners) {
+    registerActiveUse();
     _configurationService.setPuzzleMode(
       settings: _settings,
       mode: mode,
@@ -58,6 +63,7 @@ extension GameControllerActions on GameController {
   }
 
   void onCheckSolution(VoidCallback notifyListeners) {
+    registerActiveUse();
     final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.checkSolution(
       runtime: _runtime,
@@ -75,6 +81,7 @@ extension GameControllerActions on GameController {
   }
 
   void onShowSolution(VoidCallback notifyListeners) {
+    registerActiveUse();
     final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.showSolution(
       runtime: _runtime,
@@ -89,9 +96,14 @@ extension GameControllerActions on GameController {
       wasPuzzleSolved: wasPuzzleSolved,
       notifyListeners: notifyListeners,
     );
+    if (_runtime.gameOver) {
+      _runtimeStateService.pauseActiveTiming(_runtime);
+      _effects.saveGameSession(runtime: _runtime, settings: _settings.state);
+    }
   }
 
   void onCompletePuzzleWithSolution(VoidCallback notifyListeners) {
+    registerActiveUse();
     final wasPuzzleSolved = _runtime.puzzleSolved;
     _actionService.completePuzzleWithSolution(
       runtime: _runtime,
@@ -109,6 +121,7 @@ extension GameControllerActions on GameController {
   }
 
   void onConfirmCorrection(VoidCallback notifyListeners) {
+    registerActiveUse();
     _actionService.confirmCorrection(
       runtime: _runtime,
       saveGameSession: () => _effects.saveGameSession(
@@ -120,6 +133,7 @@ extension GameControllerActions on GameController {
   }
 
   void onDismissCorrectionPrompt(VoidCallback notifyListeners) {
+    registerActiveUse();
     _actionService.dismissCorrectionPrompt(
       runtime: _runtime,
       saveGameSession: () => _effects.saveGameSession(

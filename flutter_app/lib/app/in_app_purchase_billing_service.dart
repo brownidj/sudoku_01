@@ -3,6 +3,7 @@ import 'package:flutter_app/app/monetization_config.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase_storekit/in_app_purchase_storekit.dart';
 
 abstract class InAppPurchaseApi {
   Stream<List<PurchaseDetails>> get purchaseStream;
@@ -14,6 +15,8 @@ abstract class InAppPurchaseApi {
   Future<bool> buyNonConsumable({required PurchaseParam purchaseParam});
 
   Future<void> restorePurchases({String? applicationUserName});
+
+  Future<void> presentCodeRedemptionSheet();
 
   Future<void> completePurchase(PurchaseDetails purchaseDetails);
 }
@@ -46,6 +49,13 @@ class DefaultInAppPurchaseApi implements InAppPurchaseApi {
     return _inAppPurchase.restorePurchases(
       applicationUserName: applicationUserName,
     );
+  }
+
+  @override
+  Future<void> presentCodeRedemptionSheet() {
+    final storeKitAddition = _inAppPurchase
+        .getPlatformAddition<InAppPurchaseStoreKitPlatformAddition>();
+    return storeKitAddition.presentCodeRedemptionSheet();
   }
 
   @override
@@ -188,6 +198,27 @@ class InAppPurchaseBillingService implements BillingService {
       return BillingActionResult.started;
     } on Exception {
       _lastActionDiagnostics = 'restorePurchases exception';
+      return BillingActionResult.failed;
+    }
+  }
+
+  @override
+  Future<BillingActionResult> redeemCode() async {
+    if (defaultTargetPlatform != TargetPlatform.iOS) {
+      _lastActionDiagnostics = 'redeemCode blocked: platform=$_platformLabel';
+      return BillingActionResult.unavailable;
+    }
+    final available = await _inAppPurchaseApi.isAvailable();
+    if (!available) {
+      _lastActionDiagnostics = 'redeemCode blocked: isAvailable=false';
+      return BillingActionResult.unavailable;
+    }
+    try {
+      await _inAppPurchaseApi.presentCodeRedemptionSheet();
+      _lastActionDiagnostics = 'redeemCode sheet presented';
+      return BillingActionResult.started;
+    } on Exception {
+      _lastActionDiagnostics = 'redeemCode exception';
       return BillingActionResult.failed;
     }
   }

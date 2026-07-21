@@ -364,6 +364,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Restore started. Purchased items will reappear shortly.';
 
   @override
+  String get redeemCodeStartedMessage =>
+      'Enter your code in the App Store sheet to unlock Full Version.';
+
+  @override
   String get billingUnavailable =>
       'Purchases are unavailable on this device right now.';
 
@@ -449,6 +453,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get drawerRestorePurchases => 'Restore Purchases';
+
+  @override
+  String get drawerRedeemCode => 'Redeem Code';
 
   @override
   String get drawerAboutChip => 'About';

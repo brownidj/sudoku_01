@@ -56,6 +56,8 @@ class UiState {
   final bool premiumActive;
   final DateTime? puzzleStartedAt;
   final DateTime? puzzleFinishedAt;
+  final int activeElapsedSeconds;
+  final DateTime? activeTimingStartedAt;
 
   const UiState({
     required this.board,
@@ -81,5 +83,7 @@ class UiState {
     this.premiumActive = false,
     this.puzzleStartedAt,
     this.puzzleFinishedAt,
+    this.activeElapsedSeconds = 0,
+    this.activeTimingStartedAt,
   });
 }

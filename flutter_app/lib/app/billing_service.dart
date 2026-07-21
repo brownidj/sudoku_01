@@ -49,6 +49,8 @@ abstract class BillingService {
   Future<BillingActionResult> buyPremium();
 
   Future<BillingActionResult> restorePurchases();
+
+  Future<BillingActionResult> redeemCode();
 }
 
 class NoopBillingService implements BillingService {
@@ -74,6 +76,11 @@ class NoopBillingService implements BillingService {
 
   @override
   Future<BillingActionResult> restorePurchases() async {
+    return BillingActionResult.unavailable;
+  }
+
+  @override
+  Future<BillingActionResult> redeemCode() async {
     return BillingActionResult.unavailable;
   }
 }
