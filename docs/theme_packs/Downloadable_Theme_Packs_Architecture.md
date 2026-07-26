@@ -27,8 +27,14 @@ tiles/
   tile_01.webp
   tile_02.webp
   ...
-sounds/
-  completion.mp3
+audio/
+  tiles/
+    tile_01.m4a
+    tile_02.m4a
+    ...
+    tile_09.m4a
+  music/
+    incidental_track.m4a
 ```
 
 The app would:

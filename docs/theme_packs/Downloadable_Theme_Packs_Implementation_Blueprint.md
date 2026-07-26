@@ -382,8 +382,18 @@ tiles/
   tile_08.webp
   tile_09.webp
 audio/
-  completion.mp3
-  selection.mp3
+  tiles/
+    tile_01.m4a
+    tile_02.m4a
+    tile_03.m4a
+    tile_04.m4a
+    tile_05.m4a
+    tile_06.m4a
+    tile_07.m4a
+    tile_08.m4a
+    tile_09.m4a
+  music/
+    incidental_track.m4a
 ```
 
 Do not place executable code in a pack.
@@ -423,8 +433,21 @@ Example `manifest.json`:
   ],
   "preview_path": "preview.webp",
   "audio": {
-    "completion": "audio/completion.mp3",
-    "selection": "audio/selection.mp3"
+    "tiles": [
+      {
+        "digit": 1,
+        "long_press": "audio/tiles/tile_01.m4a",
+        "celebration": "audio/tiles/tile_01.m4a"
+      },
+      {
+        "digit": 2,
+        "long_press": "audio/tiles/tile_02.m4a",
+        "celebration": "audio/tiles/tile_02.m4a"
+      }
+    ],
+    "music": [
+      "audio/music/incidental_track.m4a"
+    ]
   },
   "colours": {
     "background": "#FFF8E8",
@@ -860,8 +883,12 @@ Recommended:
 
 Recommended:
 
-- compressed formats suitable for the target platforms;
-- short effects rather than long uncompressed files;
+- M4A/AAC-LC for compact cross-platform pack audio;
+- 8-second tile clips for both long-press preview and celebration audio;
+- reuse the same tile clip for long-press and celebration unless the pack
+  intentionally needs separate audio;
+- incidental music under `audio/music/`, compressed but kept full length unless
+  a product rule sets a maximum duration;
 - consistent volume;
 - optional audio entries in the manifest;
 - graceful fallback if audio is missing.

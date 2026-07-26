@@ -65,6 +65,24 @@ rg --files "$ROOT_DIR" \
 - Make changes in one pass; keep diffs minimal and focused.
 - Maintain a `CURRENT_STATE.md` file that contains this prompt at the top of the file, then the state of the code base architecture, then a report of running any tests.
 
+### Cost Control
+- Prefer local scripts for mechanical media and build work: image resizing, WebP conversion, audio trimming, loudness normalization, manifest generation, reports, ZIP creation, and pack staging.
+- Use AI for architecture decisions, risky code changes, debugging, and review; avoid using AI for repeatable transformations that can be handled by `ffmpeg`, Pillow, shell scripts, Dart scripts, or Python scripts.
+- Batch related requests before implementation so context is read once and changes are made in one pass.
+- For substantial work, ask for the implementation plan first, then approve the smallest useful next step.
+- Lock file formats, dimensions, naming, duration, loudness, and folder layout before generating or transforming media assets.
+- Reuse existing assets where possible. For theme packs, use one normalized tile audio clip for both tile preview and celebration unless there is a strong product reason to split them.
+- Store generated packs and other build artifacts outside committed source paths by default, such as `flutter_app/build/theme_packs/`; commit scripts, templates, manifests, and reports only when useful.
+- Run narrow, relevant tests instead of the full suite unless the change has broad risk.
+- Use cheaper or smaller models for prose, checklists, reports, and mechanical planning; reserve heavier reasoning for difficult architecture or code changes.
+- Consider a local model provider such as Ollama or LM Studio for low-stakes IDE help, docs, checklists, and simple edits. Configure it through PyCharm AI Assistant provider settings where available, but keep stronger cloud models for architecture, migrations, billing, security, and difficult debugging.
+- For direct OpenAI API batch/offline jobs, consider Batch API or other lower-cost modes when latency is not important.
+- Before running an expensive prompt, classify it by required reasoning level:
+  - Use a simpler or cheaper model, or low reasoning, for Markdown edits, simple explanations, path questions, UI text changes, known commands, mechanical scripts with clear specs, media conversion after rules are fixed, reports, checklists, and straightforward tests.
+  - Use GPT-5.5 low reasoning for small code changes with obvious location, minor Flutter UI tweaks, one- or two-file refactors, scripts from detailed specs, and docs updates from known decisions.
+  - Use GPT-5.5 medium/high reasoning for architecture decisions, downloadable theme-pack design, purchase and entitlement flows, platform-managed asset delivery strategy, large refactors, unclear debugging, security/integrity logic, existing-user migrations, and changes crossing UI, app state, storage, billing, and tests.
+- When unsure, ask for a quick classification first: suggested model, reasoning level, why, risks, and cheaper alternative.
+
 ### Debugging
 - Add a debugging code system that allows all debug code to be turned off.
 - When debug code is added, make sure it complies with this prerequisite.
