@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_app/app/ui_state.dart';
+import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
 
 enum PremiumCelebrationStyle { foil, autumnLeaves, stars, confetti }
 
@@ -33,68 +34,18 @@ class SudokuVictoryOverlayService {
         PremiumCelebrationStyle.stars,
         PremiumCelebrationStyle.confetti,
       ];
-  static const List<String> animalCelebrationAssets = <String>[
-    'assets/images/animals_chatGpT/1_cartoon_ape.png',
-    'assets/images/animals_chatGpT/2_cartoon_buffalo.png',
-    'assets/images/animals_chatGpT/3_cartoon_camel.png',
-    'assets/images/animals_chatGpT/4_cartoon_dolphin.png',
-    'assets/images/animals_chatGpT/5_cartoon_elephant.png',
-    'assets/images/animals_chatGpT/6_cartoon_frog.png',
-    'assets/images/animals_chatGpT/7_cartoon_giraffe.png',
-    'assets/images/animals_chatGpT/8_cartoon_hippo.png',
-    'assets/images/animals_chatGpT/9_cartoon_iguana.png',
-  ];
-  static const List<String> instrumentCelebrationAssets = <String>[
-    'assets/images/music/piano.png',
-    'assets/images/music/banjo.png',
-    'assets/images/music/violin.png',
-    'assets/images/music/trumpet.png',
-    'assets/images/music/horn.png',
-    'assets/images/music/drum.png',
-    'assets/images/music/saxaphone.png',
-    'assets/images/music/tambourine.png',
-    'assets/images/music/ukelele.png',
-  ];
-  static const List<String> oldOperaCelebrationAssets = <String>[
-    'assets/images/opera/bass.png',
-    'assets/images/opera/baritone.png',
-    'assets/images/opera/tenor.png',
-    'assets/images/opera/mezzo_soprano.png',
-    'assets/images/opera/soprano.png',
-    'assets/images/opera/royal_court_singer.png',
-    'assets/images/opera/modern_opera.png',
-    'assets/images/opera/masked_phantom_style.png',
-    'assets/images/opera/opera_diva_comic.png',
-  ];
-  static const List<String> butterflyCelebrationAssets = <String>[
-    'assets/images/butterflies/1_monarch.png',
-    'assets/images/butterflies/2_swallowtail.png',
-    'assets/images/butterflies/3_blue_morpho.png',
-    'assets/images/butterflies/4_glasswing.png',
-    'assets/images/butterflies/5_peacock.png',
-    'assets/images/butterflies/6_zebra_longwing.png',
-    'assets/images/butterflies/7_sulphur.png',
-    'assets/images/butterflies/8_leaf.png',
-    'assets/images/butterflies/9_metalmark.png',
-  ];
-  static const List<String> shellCelebrationAssets = <String>[
-    'assets/images/shells/1_cowrie.png',
-    'assets/images/shells/2_scallop.png',
-    'assets/images/shells/3_murex.png',
-    'assets/images/shells/4_nautilus.png',
-    'assets/images/shells/5_cone.png',
-    'assets/images/shells/6_abalone.png',
-    'assets/images/shells/7_turban.png',
-    'assets/images/shells/8_moon_snail.png',
-    'assets/images/shells/9_cockle.png',
-  ];
-  static const List<String> numberCelebrationAssets = <String>[
-    ...animalCelebrationAssets,
-    ...instrumentCelebrationAssets,
-    ...butterflyCelebrationAssets,
-    ...shellCelebrationAssets,
-    ...oldOperaCelebrationAssets,
-  ];
+  static List<String> get animalCelebrationAssets =>
+      BundledThemeRepository.celebrationImagePathsForTheme('animals');
+  static List<String> get instrumentCelebrationAssets =>
+      BundledThemeRepository.celebrationImagePathsForTheme('instruments');
+  static List<String> get oldOperaCelebrationAssets =>
+      BundledThemeRepository.celebrationImagePathsForTheme('old_opera');
+  static List<String> get butterflyCelebrationAssets =>
+      BundledThemeRepository.celebrationImagePathsForTheme('butterflies');
+  static List<String> get shellCelebrationAssets =>
+      BundledThemeRepository.celebrationImagePathsForTheme('shells');
+  static List<String> get numberCelebrationAssets =>
+      BundledThemeRepository.celebrationImagePathsForTheme('numbers');
 
   final Duration duration;
   final math.Random _random;
@@ -126,14 +77,10 @@ class SudokuVictoryOverlayService {
   void _start(String contentMode, bool premiumActive) {
     _timer?.cancel();
     final normalizedMode = contentMode.trim().toLowerCase();
-    final assets = switch (normalizedMode) {
-      'animals' => animalCelebrationAssets,
-      'instruments' => instrumentCelebrationAssets,
-      'butterflies' => butterflyCelebrationAssets,
-      'shells' => shellCelebrationAssets,
-      'old_opera' => oldOperaCelebrationAssets,
-      _ => numberCelebrationAssets,
-    };
+    final themeAssets = BundledThemeRepository.celebrationImagePathsForTheme(
+      normalizedMode,
+    );
+    final assets = themeAssets.isEmpty ? numberCelebrationAssets : themeAssets;
     if (assets.isEmpty) {
       state.value = VictoryOverlayState.hidden;
       return;

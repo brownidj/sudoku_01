@@ -142,7 +142,7 @@ Remaining weakness:
 ---
 
 ## 5. Rendering and Assets
-**Location:** `lib/ui/board_*`, `lib/ui/animal_cache.dart`, `lib/ui/styles.dart`
+**Location:** `lib/ui/board_*`, `lib/ui/animal_cache.dart`, `lib/ui/styles.dart`, `lib/ui/theme/*`
 
 ### Key Parts
 - **`BoardPainter`**
@@ -153,11 +153,16 @@ Remaining weakness:
   Encapsulates board visual styling decisions.
 - **`AnimalCache`**
   Resolves animal display names and cached image access patterns.
+- **`ThemeDefinition` / `ThemeRepository`**
+  Phase 1 downloadable-theme abstraction for bundled tile, preview-audio, background-music, and celebration media.
+- **`BundledThemeRepository`**
+  Exposes the current bundled themes through the new repository contract while keeping board `styleName` separate.
 
 ### Current Assessment
 - Rendering remains well separated from state orchestration.
 - Custom painting concerns have not leaked back into controllers.
 - Asset loading is handled through dedicated UI services/cache paths.
+- Bundled theme media lookup is now centralized behind `ThemeDefinition`; compatibility facades keep existing content-mode callers stable.
 
 ---
 
@@ -206,11 +211,17 @@ Remaining weakness:
   - file-size checks
   - `flutter clean`
   - `flutter pub get`
-  - `pod install`
   - `flutter test`
   - Flutter integration tests on Android and iOS
   - Patrol tests on Android
 - iOS is validated through Flutter integration tests in this main path.
+
+### Recent verification
+- `./scripts/check_file_sizes.sh flutter_app`
+- `flutter analyze`
+- `flutter test`
+- `flutter build ios --simulator --debug`
+- `flutter test test/bundled_theme_repository_test.dart test/animal_cache_test.dart test/sudoku_tile_preview_audio_service_test.dart test/background_music_track_assets_test.dart test/sudoku_victory_audio_service_test.dart test/sudoku_victory_overlay_service_test.dart`
 
 ---
 

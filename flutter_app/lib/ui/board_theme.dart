@@ -38,14 +38,14 @@ class BoardTheme {
     Color bg;
     if (cell.conflicted) {
       bg = style.cellConflict;
-    } else if (cell.given) {
-      bg = style.highlightGiven;
     } else if (cell.selected) {
       bg = style.cellSelected;
     } else if (peerRowCol) {
       bg = style.cellPeerRowCol;
     } else if (peerBox) {
       bg = style.cellPeerBox;
+    } else if (cell.given) {
+      bg = style.cellGiven;
     } else {
       bg = style.cellDefault;
     }

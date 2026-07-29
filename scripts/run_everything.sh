@@ -183,7 +183,6 @@ require_command flutter
 require_command dart
 require_command patrol
 require_command adb
-require_command pod
 require_command python3
 
 ANDROID_DEVICE="${ANDROID_DEVICE:-$(detect_android_device)}"
@@ -202,7 +201,6 @@ run_step "./scripts/check_premium_policy_usage.sh flutter_app" ./scripts/check_p
 cd "$APP_DIR"
 run_step "flutter clean" flutter clean
 run_step "flutter pub get" flutter pub get
-run_step "pod install" bash -lc 'cd ios && pod install'
 run_step "flutter test" flutter test
 run_integration_step \
   "flutter integration test on Android (${ANDROID_DEVICE})" \

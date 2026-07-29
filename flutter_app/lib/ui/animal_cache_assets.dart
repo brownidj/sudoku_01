@@ -1,94 +1,77 @@
 import 'package:flutter_app/ui/animal_cache_catalog.dart';
 import 'package:flutter_app/ui/animal_cache_localized_names.dart';
+import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
 
 class AnimalCacheAssets {
   static String animalName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.animalNames, fallback: 'ape');
+      BundledThemeRepository.displayNameForDigit('animals', digit);
 
   static String instrumentName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.instrumentNames, fallback: 'piano');
+      BundledThemeRepository.displayNameForDigit('instruments', digit);
 
   static String instrumentFileName(int digit) {
-    return _nameAt(
-      digit,
-      AnimalCacheCatalog.instrumentFileNames,
-      fallback: 'piano',
-    );
+    return BundledThemeRepository.themeDefinitionFor(
+          'instruments',
+        ).tileForDigit(digit)?.id ??
+        'piano';
   }
 
   static String operaName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.operaNames, fallback: 'bass');
+      BundledThemeRepository.displayNameForDigit('old_opera', digit);
 
   static String operaFileName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.operaFileNames, fallback: 'bass');
+      BundledThemeRepository.themeDefinitionFor(
+        'old_opera',
+      ).tileForDigit(digit)?.id ??
+      'bass';
 
   static String butterflyName(int digit) {
-    return _nameAt(
-      digit,
-      AnimalCacheCatalog.butterflyNames,
-      fallback: 'monarch',
-    );
+    return BundledThemeRepository.displayNameForDigit('butterflies', digit);
   }
 
   static String butterflyFileName(int digit) {
-    return _nameAt(
-      digit,
-      AnimalCacheCatalog.butterflyFileNames,
-      fallback: '1_monarch',
-    );
+    return BundledThemeRepository.themeDefinitionFor(
+          'butterflies',
+        ).tileForDigit(digit)?.id ??
+        '1_monarch';
   }
 
   static String shellName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.shellNames, fallback: 'cowrie');
+      BundledThemeRepository.displayNameForDigit('shells', digit);
 
   static String shellFileName(int digit) =>
-      _nameAt(digit, AnimalCacheCatalog.shellFileNames, fallback: '1_cowrie');
+      BundledThemeRepository.themeDefinitionFor(
+        'shells',
+      ).tileForDigit(digit)?.id ??
+      '1_cowrie';
 
   static String tileAssetPath({
     required int digit,
     required String name,
     required String variant,
   }) {
-    if (variant == 'cute') {
-      return 'assets/images/animals/$digit'
-          '_cartoon_'
-          '$name'
-          '_s.png';
-    }
-    return 'assets/images/animals/$digit'
-        '_'
-        '$name'
-        '.png';
+    return BundledThemeRepository.tileImagePath(
+          themeId: 'animals',
+          digit: digit,
+          variant: variant,
+        ) ??
+        '';
   }
 
   static String animalNotesAssetPath({
     required int digit,
     required String variant,
   }) {
-    final name = animalName(digit);
-    final prefix = variant == 'cute' ? 'cartoon_' : '';
-    return 'assets/images/animals/$digit'
-        '_'
-        '$prefix'
-        '$name'
-        '_notes.png';
+    return BundledThemeRepository.tileNoteImagePath(
+          themeId: 'animals',
+          digit: digit,
+          variant: variant,
+        ) ??
+        '';
   }
 
   static String displayNameForDigit(String contentMode, int digit) {
-    switch (contentMode) {
-      case 'animals':
-        return animalName(digit);
-      case 'instruments':
-        return instrumentName(digit);
-      case 'old_opera':
-        return operaName(digit);
-      case 'butterflies':
-        return butterflyName(digit);
-      case 'shells':
-        return shellName(digit);
-      default:
-        return digit.toString();
-    }
+    return BundledThemeRepository.displayNameForDigit(contentMode, digit);
   }
 
   static String displayNameForDigitTitleCase(String contentMode, int digit) {
@@ -143,22 +126,16 @@ class AnimalCacheAssets {
     final variant = AnimalCacheCatalog.variants.contains(animalStyle)
         ? animalStyle
         : 'simple';
-    final name = animalName(digit);
-    return tileAssetPath(digit: digit, name: name, variant: variant);
+    return BundledThemeRepository.tileImagePath(
+          themeId: contentMode,
+          digit: digit,
+          variant: variant,
+        ) ??
+        '';
   }
 
   static String tileLabelForDigit(String contentMode, int digit) {
-    final displayName = switch (contentMode) {
-      'instruments' => instrumentName(digit),
-      'old_opera' => operaName(digit),
-      'butterflies' => butterflyName(digit),
-      'shells' => shellName(digit),
-      _ => '',
-    };
-    if (displayName.isEmpty) {
-      return digit.toString();
-    }
-    return displayName[0].toUpperCase();
+    return BundledThemeRepository.tileLabelForDigit(contentMode, digit);
   }
 
   static String initialForDigit(int digit) {
@@ -167,29 +144,34 @@ class AnimalCacheAssets {
   }
 
   static String instrumentAssetPathForDigit(int digit) {
-    return 'assets/images/music/${instrumentFileName(digit)}.png';
+    return BundledThemeRepository.tileImagePath(
+          themeId: 'instruments',
+          digit: digit,
+        ) ??
+        '';
   }
 
   static String operaAssetPathForDigit(int digit) {
-    return 'assets/images/opera/${operaFileName(digit)}.png';
+    return BundledThemeRepository.tileImagePath(
+          themeId: 'old_opera',
+          digit: digit,
+        ) ??
+        '';
   }
 
   static String butterflyAssetPathForDigit(int digit) {
-    return 'assets/images/butterflies/${butterflyFileName(digit)}.png';
+    return BundledThemeRepository.tileImagePath(
+          themeId: 'butterflies',
+          digit: digit,
+        ) ??
+        '';
   }
 
   static String shellAssetPathForDigit(int digit) {
-    return 'assets/images/shells/${shellFileName(digit)}.png';
-  }
-
-  static String _nameAt(
-    int digit,
-    List<String> names, {
-    required String fallback,
-  }) {
-    if (digit < 1 || digit > names.length) {
-      return fallback;
-    }
-    return names[digit - 1];
+    return BundledThemeRepository.tileImagePath(
+          themeId: 'shells',
+          digit: digit,
+        ) ??
+        '';
   }
 }

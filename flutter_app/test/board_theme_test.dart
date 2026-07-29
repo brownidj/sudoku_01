@@ -20,7 +20,7 @@ CellVm _cell({bool given = false, bool selected = false}) {
 }
 
 void main() {
-  test('given cells use the completed-grid given highlight during play', () {
+  test('given cells use the lighter given fill during play', () {
     final model = const BoardTheme(styleModern).cellModel(
       cell: _cell(given: true),
       gameOver: false,
@@ -28,10 +28,10 @@ void main() {
       peerBox: false,
     );
 
-    expect(model.background, styleModern.highlightGiven);
+    expect(model.background, styleModern.cellGiven);
   });
 
-  test('selected given cells keep the given fill and selection outline', () {
+  test('selected given cells use selection fill and selection outline', () {
     final model = const BoardTheme(styleModern).cellModel(
       cell: _cell(given: true, selected: true),
       gameOver: false,
@@ -39,7 +39,18 @@ void main() {
       peerBox: true,
     );
 
-    expect(model.background, styleModern.highlightGiven);
+    expect(model.background, styleModern.cellSelected);
     expect(model.showSelection, isTrue);
+  });
+
+  test('given peer cells use row and column highlight over given fill', () {
+    final model = const BoardTheme(styleModern).cellModel(
+      cell: _cell(given: true),
+      gameOver: false,
+      peerRowCol: true,
+      peerBox: true,
+    );
+
+    expect(model.background, styleModern.cellPeerRowCol);
   });
 }

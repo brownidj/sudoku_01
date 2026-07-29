@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/app/app_debug.dart';
+import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
 
 class SudokuTilePreviewAudioService {
   final AudioPlayer _player;
@@ -72,73 +73,13 @@ class SudokuTilePreviewAudioService {
     required String contentMode,
     required int digit,
   }) {
-    final normalizedMode = contentMode.trim().toLowerCase();
     if (digit < 1 || digit > 9) {
       return null;
     }
-    const animalAssets = <int, String>{
-      1: 'audio/animals/apes.mp3',
-      2: 'audio/animals/buffalo.mp3',
-      3: 'audio/animals/cheetah.mp3',
-      4: 'audio/animals/dolphin.mp3',
-      5: 'audio/animals/elephant.mp3',
-      6: 'audio/animals/frog.mp3',
-      7: 'audio/animals/giraffe.mp3',
-      8: 'audio/animals/hippos.mp3',
-      9: 'audio/animals/iguana.mp3',
-    };
-    const instrumentAssets = <int, String>{
-      1: 'audio/music/piano.mp3',
-      2: 'audio/music/banjo.mp3',
-      3: 'audio/music/violin.mp3',
-      4: 'audio/music/trumpet.mp3',
-      5: 'audio/music/horn.mp3',
-      6: 'audio/music/drum.mp3',
-      7: 'audio/music/saxophone.mp3',
-      8: 'audio/music/tambourine.mp3',
-      9: 'audio/music/ukulele.mp3',
-    };
-    const operaAssets = <int, String>{
-      1: 'audio/opera/bass.mp3',
-      2: 'audio/opera/baritone.mp3',
-      3: 'audio/opera/tenor.mp3',
-      4: 'audio/opera/mezzo_soprano.mp3',
-      5: 'audio/opera/soprano.mp3',
-      6: 'audio/opera/royal_court_singer.mp3',
-      7: 'audio/opera/modern_opera.mp3',
-      8: 'audio/opera/masked_phantom_style.mp3',
-      9: 'audio/opera/opera_diva_comic.mp3',
-    };
-    const butterflyAssets = <int, String>{
-      1: 'audio/butterflies/1_monarch.wav',
-      2: 'audio/butterflies/2_swallowtail.wav',
-      3: 'audio/butterflies/3_blue_morpho.wav',
-      4: 'audio/butterflies/4_glasswing.wav',
-      5: 'audio/butterflies/5_peacock.wav',
-      6: 'audio/butterflies/6_zebra_longwing.wav',
-      7: 'audio/butterflies/7_sulphur.wav',
-      8: 'audio/butterflies/8_leaf.wav',
-      9: 'audio/butterflies/9_metalmark.wav',
-    };
-    const shellAssets = <int, String>{
-      1: 'audio/shells/1_cowrie.mp3',
-      2: 'audio/shells/2_scallop.mp3',
-      3: 'audio/shells/3_murex.mp3',
-      4: 'audio/shells/4_nautilus.mp3',
-      5: 'audio/shells/5_cone.mp3',
-      6: 'audio/shells/6_abalone.mp3',
-      7: 'audio/shells/7_turban.mp3',
-      8: 'audio/shells/8_moon_snail.mp3',
-      9: 'audio/shells/9_cockle.mp3',
-    };
-    return switch (normalizedMode) {
-      'animals' => animalAssets[digit],
-      'instruments' => instrumentAssets[digit],
-      'butterflies' => butterflyAssets[digit],
-      'shells' => shellAssets[digit],
-      'old_opera' => operaAssets[digit],
-      _ => null,
-    };
+    return BundledThemeRepository.tilePreviewAudioAsset(
+      themeId: contentMode,
+      digit: digit,
+    );
   }
 
   void dispose() {

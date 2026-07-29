@@ -26,49 +26,49 @@
         <entry key="audioplayers">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers-6.7.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers-6.8.1/lib" />
             </list>
           </value>
         </entry>
         <entry key="audioplayers_android">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_android-5.2.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_android-5.3.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="audioplayers_darwin">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_darwin-6.4.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_darwin-6.5.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="audioplayers_linux">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_linux-4.2.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_linux-4.3.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="audioplayers_platform_interface">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_platform_interface-7.1.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_platform_interface-7.2.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="audioplayers_web">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_web-5.2.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_web-5.3.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="audioplayers_windows">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_windows-4.3.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_windows-4.4.1/lib" />
             </list>
           </value>
         </entry>
@@ -145,7 +145,7 @@
         <entry key="equatable">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/equatable-2.0.8/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/equatable-2.1.0/lib" />
             </list>
           </value>
         </entry>
@@ -261,6 +261,13 @@
             </list>
           </value>
         </entry>
+        <entry key="http_multi_server">
+          <value>
+            <list>
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/http_multi_server-3.2.2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="http_parser">
           <value>
             <list>
@@ -285,7 +292,7 @@
         <entry key="in_app_purchase_android">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_android-0.5.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_android-0.5.2/lib" />
             </list>
           </value>
         </entry>
@@ -299,7 +306,7 @@
         <entry key="in_app_purchase_storekit">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_storekit-0.4.10/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_storekit-0.4.11/lib" />
             </list>
           </value>
         </entry>
@@ -418,7 +425,7 @@
         <entry key="package_info_plus">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-10.1.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-10.2.1/lib" />
             </list>
           </value>
         </entry>
@@ -439,7 +446,7 @@
         <entry key="path_provider">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider-2.1.5/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider-2.1.6/lib" />
             </list>
           </value>
         </entry>
@@ -460,14 +467,14 @@
         <entry key="path_provider_linux">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.2/lib" />
             </list>
           </value>
         </entry>
         <entry key="path_provider_platform_interface">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.1.2/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.1.3/lib" />
             </list>
           </value>
         </entry>
@@ -481,21 +488,21 @@
         <entry key="patrol">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/patrol-4.6.1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/patrol-4.8.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="patrol_finders">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_finders-3.5.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_finders-3.6.0/lib" />
             </list>
           </value>
         </entry>
         <entry key="patrol_log">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_log-0.9.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_log-0.10.0/lib" />
             </list>
           </value>
         </entry>
@@ -523,7 +530,7 @@
         <entry key="posix">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/posix-6.5.0/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/posix-6.5.2/lib" />
             </list>
           </value>
         </entry>
@@ -558,7 +565,7 @@
         <entry key="shared_preferences_android">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.27/lib" />
             </list>
           </value>
         </entry>
@@ -649,7 +656,7 @@
         <entry key="synchronized">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/synchronized-3.4.0+1/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/synchronized-3.4.1+1/lib" />
             </list>
           </value>
         </entry>
@@ -677,7 +684,7 @@
         <entry key="uuid">
           <value>
             <list>
-              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/uuid-4.5.3/lib" />
+              <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/uuid-4.6.0/lib" />
             </list>
           </value>
         </entry>
@@ -743,13 +750,13 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/archive-4.0.9/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/args-2.7.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/async-2.13.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers-6.7.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_android-5.2.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_darwin-6.4.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_linux-4.2.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_platform_interface-7.1.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_web-5.2.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_windows-4.3.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers-6.8.1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_android-5.3.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_darwin-6.5.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_linux-4.3.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_platform_interface-7.2.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_web-5.3.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/audioplayers_windows-4.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/boolean_selector-2.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/characters-1.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/checked_yaml-2.0.4/lib" />
@@ -760,7 +767,7 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/crypto-3.0.7/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/cupertino_icons-1.0.9/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/dispose_scope-2.1.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/equatable-2.0.8/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/equatable-2.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/fake_async-1.3.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/ffi-2.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/ffi_leak_tracker-0.1.2/lib" />
@@ -771,12 +778,13 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_markdown-0.7.7+1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/hooks-2.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http-1.6.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_multi_server-3.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/http_parser-4.1.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/image-4.9.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase-3.3.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_android-0.5.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_android-0.5.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_platform_interface-1.4.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_storekit-0.4.10/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/in_app_purchase_storekit-0.4.11/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/intl-0.20.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni-1.0.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/jni_flutter-1.0.1/lib" />
@@ -792,27 +800,27 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/meta-1.18.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/objective_c-9.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_config-2.2.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-10.1.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-10.2.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus_platform_interface-4.1.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path-1.9.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider-2.1.5/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider-2.1.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_android-2.3.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_foundation-2.6.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.1.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.2/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_platform_interface-2.1.3/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/patrol-4.6.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_finders-3.5.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_log-0.9.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/patrol-4.8.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_finders-3.6.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/patrol_log-0.10.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/petitparser-7.0.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/platform-3.1.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.8/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/posix-6.5.0/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/posix-6.5.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/process-5.0.5/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/pub_semver-2.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/record_use-0.6.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences-2.5.5/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.27/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_foundation-2.5.6/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_linux-2.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_platform_interface-2.4.2/lib" />
@@ -824,11 +832,11 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/stream_channel-2.1.4/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/string_scanner-1.4.1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/sync_http-0.3.1/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/synchronized-3.4.0+1/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/synchronized-3.4.1+1/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/term_glyph-1.2.2/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/test_api-0.7.11/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/typed_data-1.4.0/lib" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/uuid-4.5.3/lib" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/uuid-4.6.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vector_math-2.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/vm_service-15.2.0/lib" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dev/web-1.1.1/lib" />

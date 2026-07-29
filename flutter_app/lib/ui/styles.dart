@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class BoardStyle {
   final Color boardBg;
   final Color cellDefault;
+  final Color cellGiven;
   final Color cellSelected;
   final Color cellPeerRowCol;
   final Color cellPeerBox;
@@ -31,6 +32,7 @@ class BoardStyle {
   const BoardStyle({
     required this.boardBg,
     required this.cellDefault,
+    required this.cellGiven,
     required this.cellSelected,
     required this.cellPeerRowCol,
     required this.cellPeerBox,
@@ -61,6 +63,7 @@ class BoardStyle {
 const BoardStyle styleModern = BoardStyle(
   boardBg: Colors.white,
   cellDefault: Colors.white,
+  cellGiven: Color(0x80FFF3C0),
   cellSelected: Color(0xFFCFE8FF),
   cellPeerRowCol: Color(0xFFEEF7FF),
   cellPeerBox: Color(0xFFF2F0FF),
@@ -90,6 +93,7 @@ const BoardStyle styleModern = BoardStyle(
 const BoardStyle styleClassic = BoardStyle(
   boardBg: Color(0xFFFAF7F2),
   cellDefault: Color(0xFFFAF7F2),
+  cellGiven: Color(0x80FFF3C0),
   cellSelected: Color(0xFFE6DDC6),
   cellPeerRowCol: Color(0xFFF1EAD9),
   cellPeerBox: Color(0xFFEDE4CF),
@@ -119,6 +123,7 @@ const BoardStyle styleClassic = BoardStyle(
 const BoardStyle styleHighContrast = BoardStyle(
   boardBg: Colors.white,
   cellDefault: Colors.white,
+  cellGiven: Color(0x80FFF3C0),
   cellSelected: Color(0xFFFFFF99),
   cellPeerRowCol: Color(0xFFE0E0E0),
   cellPeerBox: Color(0xFFD0D0D0),

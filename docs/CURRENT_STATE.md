@@ -216,9 +216,6 @@ Notes:
 cd /Users/david/PycharmProjects/Sudoku_01/flutter_app
 flutter clean
 flutter pub get
-cd ios
-pod install
-cd ..
 shorebird release android
 shorebird release ios
 ```
