@@ -29,8 +29,12 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  archive: ^4.0.9
+  crypto: ^3.0.7
   shared_preferences: ^2.4.26
   audioplayers: ^6.7.1
+  path: ^1.9.1
+  path_provider: ^2.1.6
   package_info_plus: ^10.1.0
   flutter_markdown: ^0.7.5
   in_app_purchase: ^3.3.0

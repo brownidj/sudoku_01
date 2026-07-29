@@ -18,27 +18,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="background of givens and languages">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Implement bundled theme abstraction phase 1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/CURRENT_STATE.md" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/CURRENT_STATE.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Flutter/Debug.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Flutter/Debug.xcconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Flutter/Profile.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Flutter/Profile.xcconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Flutter/Release.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Flutter/Release.xcconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Podfile" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Podfile.lock" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcworkspace/contents.xcworkspacedata" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcworkspace/contents.xcworkspacedata" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache_assets.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/animal_cache_assets.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/board_theme.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/board_theme.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_tracks.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_tracks.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_audio_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_victory_overlay_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/styles.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/styles.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/board_theme_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/board_theme_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/run_everything.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/run_everything.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,23 +61,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.310869028489706" />
-      <entry key="MS500" value="4.4985152266018975" />
-      <entry key="S2" value="10.34650613541812" />
-      <entry key="S5" value="14.940821519207583" />
-      <entry key="S10" value="20.1937968243213" />
-      <entry key="S30" value="32.66193799709431" />
-      <entry key="S60" value="44.11218112707912" />
-      <entry key="M2" value="55.85875302855404" />
-      <entry key="M5" value="96.37801772612224" />
-      <entry key="M10" value="184.3761331181909" />
-      <entry key="M15" value="259.73417408774793" />
-      <entry key="M30" value="400.27705523699274" />
-      <entry key="H1" value="518.9032251769133" />
-      <entry key="H2" value="603.8498009236879" />
-      <entry key="H4" value="665.7636888313401" />
-      <entry key="D1" value="980.559750979021" />
-      <entry key="W1" value="4039.096483163507" />
+      <entry key="MS100" value="1.23717175014991" />
+      <entry key="MS500" value="3.2062586727287474" />
+      <entry key="S2" value="9.060446627508968" />
+      <entry key="S5" value="17.933409580312656" />
+      <entry key="S10" value="25.416546959669567" />
+      <entry key="S30" value="33.512703975031236" />
+      <entry key="S60" value="36.85308566632865" />
+      <entry key="M2" value="44.78592424732321" />
+      <entry key="M5" value="81.03450074394264" />
+      <entry key="M10" value="161.33202493751634" />
+      <entry key="M15" value="236.70846135146635" />
+      <entry key="M30" value="388.3052530933589" />
+      <entry key="H1" value="523.7593307324221" />
+      <entry key="H2" value="622.6502555165621" />
+      <entry key="H4" value="693.5351944484992" />
+      <entry key="D1" value="1016.784940213994" />
+      <entry key="W1" value="4076.462600037102" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -105,33 +89,33 @@
       <entry key="S60" value="0.0" />
       <entry key="M2" value="0.0" />
       <entry key="M5" value="0.0" />
-      <entry key="M10" value="7.67116604865097E-178" />
-      <entry key="M15" value="8.379940255191622E-119" />
-      <entry key="M30" value="9.154201360681891E-60" />
-      <entry key="H1" value="3.0255910762496785E-30" />
-      <entry key="H2" value="1.7394226272674246E-15" />
-      <entry key="H4" value="4.170638592910618E-8" />
-      <entry key="D1" value="0.058888943052494855" />
-      <entry key="W1" value="0.6672530030959392" />
+      <entry key="M10" value="5.102387812194653E-178" />
+      <entry key="M15" value="6.385314749519343E-119" />
+      <entry key="M30" value="7.990816447346835E-60" />
+      <entry key="H1" value="2.8268032204854067E-30" />
+      <entry key="H2" value="1.6813099715655096E-15" />
+      <entry key="H4" value="4.100377996679852E-8" />
+      <entry key="D1" value="0.058722425067418656" />
+      <entry key="W1" value="0.6669831379547406" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.276237532133844" />
-      <entry key="MS500" value="4.475860071515668" />
-      <entry key="S2" value="10.333649511968597" />
-      <entry key="S5" value="14.933461459432916" />
-      <entry key="S10" value="20.18886307133908" />
-      <entry key="S30" value="32.659326146131754" />
-      <entry key="S60" value="44.11044661091264" />
-      <entry key="M2" value="55.85766968655367" />
-      <entry key="M5" value="96.37729110994118" />
-      <entry key="M10" value="184.37541132864087" />
-      <entry key="M15" value="259.7334616814877" />
-      <entry key="M30" value="400.2764637821258" />
-      <entry key="H1" value="518.9028245620709" />
-      <entry key="H2" value="603.8495619974158" />
-      <entry key="H4" value="665.76355460859" />
-      <entry key="D1" value="980.6186055925956" />
-      <entry key="W1" value="4039.7637177487495" />
+      <entry key="MS100" value="1.2117111237592706" />
+      <entry key="MS500" value="3.1930040681212466" />
+      <entry key="S2" value="9.051315065756413" />
+      <entry key="S5" value="17.925963713990956" />
+      <entry key="S10" value="25.41110520020455" />
+      <entry key="S30" value="33.510243162935716" />
+      <entry key="S60" value="36.85171997894875" />
+      <entry key="M2" value="44.78508610728774" />
+      <entry key="M5" value="81.03389315869448" />
+      <entry key="M10" value="161.3314005434849" />
+      <entry key="M15" value="236.70782203397857" />
+      <entry key="M30" value="388.304688424933" />
+      <entry key="H1" value="523.7589322137718" />
+      <entry key="H2" value="622.6500124513163" />
+      <entry key="H4" value="693.5350564240877" />
+      <entry key="D1" value="1016.8436273958762" />
+      <entry key="W1" value="4077.1295646202475" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -394,15 +378,7 @@
       <workItem from="1784513445178" duration="20717000" />
       <workItem from="1784697925533" duration="8008000" />
       <workItem from="1784948373673" duration="12407000" />
-      <workItem from="1785290641687" duration="2768000" />
-    </task>
-    <task id="LOCAL-00036" summary="Added various files to commit">
-      <option name="closed" value="true" />
-      <created>1772936618826</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1772936618826</updated>
+      <workItem from="1785290641687" duration="3486000" />
     </task>
     <task id="LOCAL-00037" summary="Post refactoring, before Notes icon colour change">
       <option name="closed" value="true" />
@@ -788,7 +764,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785108128136</updated>
     </task>
-    <option name="localTasksCounter" value="85" />
+    <task id="LOCAL-00085" summary="Implement bundled theme abstraction phase 1">
+      <option name="closed" value="true" />
+      <created>1785293640568</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1785293640568</updated>
+    </task>
+    <option name="localTasksCounter" value="86" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -826,7 +810,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="After PR 3 refactoring" />
     <MESSAGE value="Patrol tests done and passed" />
     <MESSAGE value="Added flutter integration tests" />
     <MESSAGE value="Corrections should now step back until the incorrectly selected tile is removed." />
@@ -851,7 +834,8 @@
     <MESSAGE value="feat(ui+audio+tests): refine music controls, stabilize test runs, and modularize drawer/cache&#10;•&#10;App bar music controls:&#10;◦&#10;Added &lt; ♪ &gt; controls left of hamburger with updated spacing/alignment.&#10;◦&#10;Added long-press tooltip for music controls.&#10;◦&#10;Restored chevrons to previous/next track behavior.&#10;◦&#10;Moved single/double tap background-music toggle to note icon only.&#10;◦&#10;Greyed/disabled music controls appropriately when background music is off.&#10;•&#10;Background music behavior:&#10;◦&#10;Added suspend/resume reasons in background music service.&#10;◦&#10;Pause/resume background music during victory overlay and tile-preview audio.&#10;◦&#10;Added explicit playback gate helper and startup-safe defaults to avoid unintended autoplay on resume.&#10;◦&#10;Wired “New Game” to switch to a new random background track on confirmed new game.&#10;•&#10;Audio settings UX/persistence:&#10;◦&#10;Audio default on; background music default on.&#10;◦&#10;Added persisted master volume (default 0.5) and drawer volume slider.&#10;◦&#10;Added dependency behavior between audio and background-music toggles.&#10;•&#10;Victory audio correctness:&#10;◦&#10;Ensured victory sound derives from selected victory mascot asset mapping.&#10;◦&#10;Added regression coverage for mascot→audio mapping path.&#10;•&#10;Content mode labels/hints:&#10;◦&#10;Updated dropdown labels:&#10;▪&#10;Instruments (tricky)&#10;▪&#10;Butterflies (pretty!)&#10;▪&#10;Opera (more tricky)&#10;◦&#10;Added regression test for dropdown labels.&#10;◦&#10;Added new splash hint about music controls.&#10;•&#10;Drawer + cache refactors:&#10;◦&#10;Split oversized drawer code into section modules/barrel exports.&#10;◦&#10;Split animal cache constants into dedicated catalog module.&#10;◦&#10;Reduced file sizes and improved maintainability without behavior changes.&#10;•&#10;Test and automation hardening:&#10;◦&#10;Updated integration test content-mode label expectations.&#10;◦&#10;Added playback-gate regression test.&#10;◦&#10;Hardened run_everything.sh:&#10;▪&#10;passes test dart-define to disable background music during automation&#10;▪&#10;retries/handles known flaky flutter_test_listener temp cleanup error&#10;•&#10;Versioning:&#10;◦&#10;Updated app version to 0.9.5+303." />
     <MESSAGE value="Commit of all new assets, screenshots, etc" />
     <MESSAGE value="background of givens and languages" />
-    <option name="LAST_COMMIT_MESSAGE" value="background of givens and languages" />
+    <MESSAGE value="Implement bundled theme abstraction phase 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement bundled theme abstraction phase 1" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
