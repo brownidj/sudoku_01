@@ -60,6 +60,10 @@ void main() {
       await tester.drag(find.byType(ListView), const Offset(0, -1200));
       await tester.pumpAndSettle();
       expect(find.text('Load Correction Scenario'), findsNothing);
+      expect(
+        find.byKey(const ValueKey<String>('drawer-theme-pack-test')),
+        findsNothing,
+      );
 
       Navigator.of(tester.element(find.byType(SudokuScreen))).maybePop();
       await tester.pumpAndSettle();
@@ -71,6 +75,12 @@ void main() {
       await tester.drag(find.byType(ListView), const Offset(0, -1200));
       await tester.pumpAndSettle();
       expect(find.text('Load Correction Scenario'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey<String>('drawer-theme-pack-test')),
+        120,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Theme pack test'), findsOneWidget);
     },
   );
 

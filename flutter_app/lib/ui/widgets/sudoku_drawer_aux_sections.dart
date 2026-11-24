@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
 import 'package:flutter_app/ui/services/app_version_service.dart';
 import 'package:flutter_app/ui/widgets/info_sheet.dart';
@@ -28,7 +29,8 @@ class SudokuDrawerAboutSection extends StatelessWidget {
               avatar: const Icon(Icons.info_outline, size: 18),
               label: Text(UiStrings.drawerAboutChip(context)),
               onPressed: () async {
-                final versionLabel = await appVersionService.loadDisplayVersion();
+                final versionLabel = await appVersionService
+                    .loadDisplayVersion();
                 if (!context.mounted) {
                   return;
                 }
@@ -52,6 +54,7 @@ class SudokuDrawerDebugSection extends StatelessWidget {
   final VoidCallback? onLoadCorrectionScenario;
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final VoidCallback? onResetEntitlementToFreeSelected;
+  final VoidCallback? onThemePackTestSelected;
 
   const SudokuDrawerDebugSection({
     super.key,
@@ -60,13 +63,16 @@ class SudokuDrawerDebugSection extends StatelessWidget {
     this.onLoadCorrectionScenario,
     this.onLoadExhaustedCorrectionScenario,
     this.onResetEntitlementToFreeSelected,
+    this.onThemePackTestSelected,
   });
 
   @override
   Widget build(BuildContext context) {
-    final visible = onLoadCorrectionScenario != null ||
+    final visible =
+        onLoadCorrectionScenario != null ||
         onLoadExhaustedCorrectionScenario != null ||
-        onResetEntitlementToFreeSelected != null;
+        onResetEntitlementToFreeSelected != null ||
+        (kDebugMode && onThemePackTestSelected != null);
     if (!visible) {
       return const SizedBox.shrink();
     }
@@ -107,8 +113,18 @@ class SudokuDrawerDebugSection extends StatelessWidget {
             dense: true,
             leading: const Icon(Icons.restart_alt),
             title: Text(UiStrings.drawerDebugResetEntitlementTitle(context)),
-            subtitle: Text(UiStrings.drawerDebugResetEntitlementSubtitle(context)),
+            subtitle: Text(
+              UiStrings.drawerDebugResetEntitlementSubtitle(context),
+            ),
             onTap: onResetEntitlementToFreeSelected,
+          ),
+        if (kDebugMode && onThemePackTestSelected != null)
+          ListTile(
+            key: const ValueKey<String>('drawer-theme-pack-test'),
+            leading: const Icon(Icons.download_for_offline_outlined),
+            title: const Text('Theme pack test'),
+            subtitle: const Text('Marine Life delivery and installed tiles'),
+            onTap: onThemePackTestSelected,
           ),
       ],
     );

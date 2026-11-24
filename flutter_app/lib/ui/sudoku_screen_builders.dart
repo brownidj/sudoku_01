@@ -75,6 +75,17 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
         Navigator.of(context).maybePop();
         controller.onSetEntitlement(Entitlement.free);
       },
+      onThemePackTestSelected: () {
+        final navigator = Navigator.of(context);
+        navigator.pop();
+        unawaited(
+          navigator.push<void>(
+            MaterialPageRoute<void>(
+              builder: (_) => const MarineThemePackTestScreen(),
+            ),
+          ),
+        );
+      },
       selectedLanguageCode: controller.preferredLanguageCode,
       onLanguageChanged: (languageCode) {
         Navigator.of(context).maybePop();

@@ -8,6 +8,9 @@ import 'package:path/path.dart' as p;
 
 class LocalThemePackExtractor {
   static const int maxArchiveFileBytes = 20 * 1024 * 1024;
+  static const int maxCompressedBytes = 64 * 1024 * 1024;
+  static const int maxExtractedBytes = 128 * 1024 * 1024;
+  static const int maxArchiveEntries = 1024;
 
   final ThemeStoragePaths storagePaths;
 
@@ -16,6 +19,9 @@ class LocalThemePackExtractor {
   Future<Directory> extractToStaging(File zipFile) async {
     if (!await zipFile.exists()) {
       throw ThemeZipNotFoundException(zipFile.path);
+    }
+    if (await zipFile.length() > maxCompressedBytes) {
+      throw InvalidThemeZipException(zipFile.path);
     }
     await storagePaths.ensureBaseDirectories();
     final stagingDirectory = await Directory(
@@ -26,6 +32,10 @@ class LocalThemePackExtractor {
     ).create(recursive: true);
     try {
       final archive = _decode(zipFile, await zipFile.readAsBytes());
+      if (archive.length > maxArchiveEntries) {
+        throw InvalidThemeZipException(zipFile.path);
+      }
+      var extractedBytes = 0;
       for (final entry in archive) {
         final relativePath = safeThemeRelativePath(entry.name);
         rejectBlockedThemeFileExtension(relativePath);
@@ -41,7 +51,9 @@ class LocalThemePackExtractor {
         if (!entry.isFile) {
           continue;
         }
-        if (entry.size > maxArchiveFileBytes) {
+        extractedBytes += entry.size;
+        if (entry.size > maxArchiveFileBytes ||
+            extractedBytes > maxExtractedBytes) {
           throw InvalidThemeZipException(zipFile.path);
         }
         final outputFile = File(p.join(stagingDirectory.path, relativePath));

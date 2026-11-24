@@ -1,0 +1,138 @@
+# Marine Life developer pilot
+
+This debug screen exercises Apple delivery, the shared ZIP installer and loading
+the installed tile images from private application storage. Full Version and
+StoreKit purchases are not required. It does not add Marine Life to the regular
+game's theme selector; that belongs to the later theme browser integration.
+
+## Prepare the asset server
+
+From the repository root, generate the two Apple archives if needed:
+
+```sh
+python3 scripts/build_marine_theme_pack.py --package-apple
+```
+
+The output directory is `flutter_app/build/theme_packs/`. The server needs both
+`marine_v1.aar` and `theme_catalogue_v1.aar`. These are Apple's asset archives,
+not Android libraries. Generated files are ignored by Git and can be recreated.
+
+Apple's mock server requires a TLS server identity, with its private key, in
+your Mac's keychain. Its certificate must match the hostname/IP passed to the
+server and be trusted by the simulator or physical device. If needed, follow
+[Apple's certificate and local-testing guide](https://developer.apple.com/documentation/backgroundassets/testing-asset-packs-locally).
+Select the server identity when `ba-serve` prompts; do not select a root CA as
+the server identity. The helper does not create certificates, change trust,
+alter device settings, or upload anything.
+
+For a simulator on this Mac:
+
+```sh
+bash scripts/serve_marine_theme_packs.sh localhost
+```
+
+For a physical iPhone, pass this Mac's reachable hostname or LAN IP instead of
+`localhost`, with a matching certificate. For example, if its hostname is
+`Mac.local`:
+
+```sh
+bash scripts/serve_marine_theme_packs.sh Mac.local
+```
+
+The default port is 63245; an optional second argument changes it. Keep the
+server terminal open. Stop it with Control-C when finished. The helper uses
+native delivery version 1 for both archives; these native versions are separate
+from the theme manifest's content version.
+
+## Configure the test device
+
+Enable Developer Mode where required. On the simulated or physical iPhone,
+open Settings → Developer → Background Assets Testing → Development Overrides
+and enter the server's base URL in URL Override, for example:
+
+```text
+https://localhost:63245
+```
+
+Use the Mac hostname/IP for a physical device. Include the HTTPS scheme and
+port and omit paths to individual archives. If using a development CA, install
+and explicitly trust it on the test device as Apple documents. A certificate
+or hostname mismatch cannot be fixed by unlocking Full Version.
+
+No server, certificate/trust changes or URL override was activated by the code
+implementation. Those steps are required before a local download can work.
+
+## Open the test screen
+
+Rebuild and run a debug build containing the App Group/signing changes. From
+`flutter_app/`, the previously used simulator can be selected explicitly:
+
+```sh
+flutter run --debug -d 0964BE76-B88B-4875-8682-8C7C17609DBA
+```
+
+1. Start or resume a game.
+2. Tap the version text at the top **seven times within four seconds**.
+3. Open the drawer and scroll down to the developer section.
+4. Tap **Theme pack test**.
+
+The entry and screen are restricted to debug builds. No network request occurs
+when opening the drawer. Opening the test screen checks native support and
+configuration and reads existing local files; it does not fetch packs.
+
+## Exercise the flow
+
+1. **Check setup**: expect Apple supported and App Group configured to be true
+   on a newly rebuilt iOS 26+ app. A failed support/configuration check disables
+   native download actions and displays the reason.
+2. **Fetch catalogue**: downloads/opens Apple's `theme_catalogue` asset pack,
+   parses the free Marine Life descriptor and atomically caches a valid copy.
+   A failed refresh can use the previous valid cache, with a visible warning.
+3. **Download and install**: requests `marine`, copies the native ZIP to an
+   owned temporary directory, verifies exact size/SHA-256, then calls the shared
+   installer with expected theme ID/version and current app build. After
+   activation, all nine tile images appear using `RepositoryThemeLoader` and
+   file-backed images.
+4. **Cancel** while fetching/downloading/verifying: requests native cancellation
+   or cancels before activation and removes temporary files. Native
+   cancellation may finish asynchronously. The screen permits leaving after a
+   successful cancellation request. A cancellation arriving after activation
+   does not undo a successful installation.
+5. To retry a failed operation, press **Fetch catalogue** or **Download and
+   install** again. There is no automatic retry loop in this developer screen.
+6. **Verify offline**: stop the server/disconnect networking first. This action
+   never calls Apple delivery: it validates installed files and reloads them
+   using the shared loader. Restarting the app and returning to the screen
+   should show the same installed tiles.
+7. **Remove Apple delivery copy**: available after a valid installation. This
+   removes Apple's copy of `marine` while preserving the game installation.
+   Verify offline again to prove it is independent of native delivery storage.
+8. **Remove installed pilot**: removes only the private `marine` installation.
+   The cached catalogue remains. Reinstalling the same valid version is safe;
+   a different version requires explicit removal in this pilot workflow.
+
+For a fresh network-download test, remove the Apple delivery copy while the
+private installation is still valid, then remove the installed pilot and
+download again with the server running. Otherwise Apple may reuse its already
+downloaded archive. Updates to catalogue/asset archives also require Apple's
+native cache/update handling; pressing Fetch is not a guarantee of a fresh
+network transfer when a native pack is already available.
+
+Use Xcode's debugger or the displayed error for native/TLS failures. A checksum
+failure, wrong theme/version or incompatible manifest must leave `current.json`
+unmodified and retain any previous valid installation. The regular game's
+current puzzle and bundled themes should remain usable throughout testing.
+
+## Manual checks for this change
+
+From `flutter_app/`:
+
+```sh
+flutter analyze
+flutter test test/marine_theme_pack_pilot_test.dart test/marine_theme_pack_test_screen_test.dart test/local_theme_pack_installer_test.dart test/sudoku_screen_debug_toggle_test.dart
+```
+
+Then perform the real local-server/device flow above. Mocked Dart tests cannot
+establish that Apple signing, TLS, development overrides or native delivery
+work on a device. No Flutter analysis, tests or app builds were run by the
+assistant for this implementation, following `docs/CURRENT_STATE.md`.

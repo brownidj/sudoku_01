@@ -1109,8 +1109,9 @@ Deviations:
 
 Phase 3: Apple-hosting investigation and the requested pilot preparation/native
 bridge steps are implemented locally. Shared App Group setup and development
-provisioning are complete. Runtime verification, installation integration and
-hosted delivery remain outstanding; distribution signing is not yet verified.
+provisioning are complete. A debug-only delivery/install/offline test screen
+now connects the native bridge to the shared installer. Runtime verification
+and hosted delivery remain outstanding; distribution signing is not verified.
 Phase 4 and later phases: not started.
 
 ### Phase 3: Remote catalogue and download
@@ -1120,9 +1121,9 @@ Phase 4 and later phases: not started.
 - [x] Add the native Apple Background Download extension target and Flutter bridge.
 - [x] Configure the shared App Group, Apple hosting keys and development provisioning.
 - [x] Prepare local Apple asset archives for the pilot catalogue and free theme pack.
-- [ ] Implement catalogue caching and offline fallback.
-- [ ] Implement download progress for the selected provider.
-- [ ] Add ZIP size/checksum and catalogue-to-manifest identity verification.
+- [x] Implement native-pilot catalogue caching and offline fallback.
+- [x] Display native-pilot download progress in the developer test screen.
+- [x] Add pilot ZIP size/checksum and catalogue-to-manifest identity verification.
 - [ ] Add retry, cancellation and temporary-file cleanup.
 - [ ] Configure and verify the HTTPS fallback for Android and older iOS.
 - [ ] Verify the Apple pilot locally and through TestFlight.
@@ -1473,15 +1474,115 @@ the native bridge's `getConfiguration()` reports supported/configured on that
 newly signed build. An older installed simulator/device build will not contain
 the new information-property-list keys or entitlements until rebuilt.
 
-Next work is step 4: local native delivery and shared validation/installation
-testing. Actual Apple-hosted downloads require the later App Store Connect /
-TestFlight setup or Apple's local development mock server. Phase 3 as a whole
-remains in progress; the theme browser remains Phase 4.
+Step 4's developer test harness is implemented below; running the real native
+delivery/installation flow remains a manual verification task. Actual
+Apple-hosted downloads require the later App Store Connect / TestFlight setup
+or Apple's local development mock server. Phase 3 as a whole remains in
+progress; the theme browser remains Phase 4.
 
 Suggested commit message:
 
 ```text
 Configure shared App Group and signing for Apple theme packs
+```
+
+#### Step 4 developer test harness — 2026-11-24
+
+Implemented a debug-only **Theme pack test** entry in the existing developer
+drawer section, enabled by seven version-title taps within four seconds. The
+free Marine Life pilot requires no Full Version entitlement or store purchase.
+The normal game startup performs no pilot network requests.
+
+The screen checks native support/App Group configuration, loads existing local
+metadata, fetches the pilot catalogue, displays native delivery progress and
+installs through `LocalThemePackInstaller`. It can cancel an active request,
+reload/validate installed assets offline, remove only the pilot installation,
+or remove Apple's delivery copy after a private installation is verified.
+The installed nine tiles are displayed using `RepositoryThemeLoader` and
+file-backed images. This is a developer delivery/installation test, not the
+Phase 4 theme browser or regular game theme-selection integration.
+
+Integrity/lifecycle details:
+
+- Only a unique, active, explicitly free `marine` entry is accepted, with the
+  expected native pack ID, versioned relative ZIP path, bounded size, SHA-256
+  and compatible app build. Paid or malformed entries are rejected.
+- A valid native catalogue is cached atomically under
+  `themes/catalogue/apple_pilot.json`. Failed refreshes preserve the old valid
+  cache and show a warning when it is used. Cache reads and offline installation
+  verification do not call the native delivery service.
+- Copy the ZIP into an owned `themes/temp/marine_pilot_*/` directory before
+  hashing/extraction, so native updates cannot replace bytes after verification.
+  Verify exact size and SHA-256 before extraction.
+- The shared installer now accepts optional expected theme ID/version, current
+  app build and a cancellation callback, and checks them before activation.
+  Existing local callers remain compatible. The extractor also enforces
+  compressed, total extracted and entry-count limits.
+- Keep both the previous installation and Apple's delivery copy on failure.
+  Same-version installation is idempotent after validation. Different versions
+  require explicit removal in this pilot; an update/replacement workflow remains
+  future work. Temporary files are cleaned after success, failure/cancellation.
+- Cancellation is accepted until activation begins. Once committed, a valid
+  installation is not rolled back by a late cancellation. Removing the native
+  delivery copy is a separate explicit action after local verification.
+- Manual retry uses the same Fetch/Download buttons; no automatic retry policy
+  or general HTTPS fallback is implemented by this harness.
+
+Files created:
+
+- `flutter_app/lib/ui/debug/marine_theme_pack_test_screen.dart`
+- `flutter_app/lib/ui/theme/marine_theme_pack_pilot.dart`
+- `flutter_app/test/marine_theme_pack_pilot_test.dart`
+- `flutter_app/test/marine_theme_pack_test_screen_test.dart`
+- `scripts/serve_marine_theme_packs.sh`
+- `docs/theme_packs/Marine_Life_Pilot_Testing.md`
+
+Files modified:
+
+- `flutter_app/lib/ui/sudoku_screen.dart`
+- `flutter_app/lib/ui/sudoku_screen_builders.dart`
+- `flutter_app/lib/ui/widgets/sudoku_drawer.dart`
+- `flutter_app/lib/ui/widgets/sudoku_drawer_aux_sections.dart`
+- `flutter_app/lib/ui/theme/local_theme_pack_installer.dart`
+- `flutter_app/lib/ui/theme/local_theme_pack_extractor.dart`
+- `flutter_app/test/sudoku_screen_debug_toggle_test.dart`
+- This blueprint.
+
+Tests added cover service installation/discovery, offline loading, catalogue
+fallback, invalid size/SHA-256, manifest identity/version/build mismatch,
+cancellation and cleanup, retaining a valid installation, damaged assets,
+explicit delivery removal and rejecting paid/incompatible catalogue entries.
+The screen test checks unsupported setup, disabled download actions and the
+offline action. The existing screen test now checks the seven-tap menu gate.
+
+Verification performed: Dart formatting/parser checks, shell syntax validation
+for the server helper and Git whitespace checks. Tests, Flutter analysis, native
+downloads and application builds run by AI Assistant: **None — manual
+verification requested**, following `docs/CURRENT_STATE.md`.
+
+From `flutter_app/`, run:
+
+```sh
+flutter analyze
+flutter test test/marine_theme_pack_pilot_test.dart test/marine_theme_pack_test_screen_test.dart test/local_theme_pack_installer_test.dart test/sudoku_screen_debug_toggle_test.dart
+```
+
+Follow [Marine Life pilot testing](Marine_Life_Pilot_Testing.md) for asset
+generation, trusted TLS server identity, `ba-serve`, the device's Development
+URL Override, opening the debug screen and the download/offline/removal checks.
+The helper does not create certificates, change trust, configure device
+overrides, upload anything or build the application. No local server or native
+download was started by this implementation.
+
+Outstanding: execute real iOS local-server testing and native integration
+validation, production retry/update policies, general provider/HTTPS fallback,
+TestFlight distribution/asset publication and the Phase 4 theme browser. Review
+the changes and commit after manual verification; Phase 3 remains in progress.
+
+Suggested commit message:
+
+```text
+Add Marine Life developer delivery and installation test flow
 ```
 
 ### Phase 4: Theme browser UI

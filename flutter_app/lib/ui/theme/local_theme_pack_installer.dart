@@ -28,14 +28,34 @@ class LocalThemePackInstaller {
        extractor =
            extractor ?? LocalThemePackExtractor(storagePaths: storagePaths);
 
-  Future<InstalledTheme> installFromZip(File zipFile) async {
+  Future<InstalledTheme> installFromZip(
+    File zipFile, {
+    String? expectedThemeId,
+    int? expectedVersion,
+    int? appBuild,
+    void Function()? checkCancelled,
+  }) async {
     Directory? stagingDirectory;
     Directory? installingDirectory;
     Directory? finalDirectory;
     try {
+      checkCancelled?.call();
       stagingDirectory = await extractor.extractToStaging(zipFile);
       final validatedPack = await validator.validate(stagingDirectory);
       final manifest = validatedPack.manifest;
+      if ((expectedThemeId != null && manifest.themeId != expectedThemeId) ||
+          (expectedVersion != null &&
+              manifest.themeVersion != expectedVersion)) {
+        throw const InvalidThemeManifestException(
+          'Manifest does not match the requested theme and version.',
+        );
+      }
+      if (appBuild != null && (manifest.minimumAppBuild ?? 0) > appBuild) {
+        throw const InvalidThemeManifestException(
+          'This theme requires a newer app build.',
+        );
+      }
+      checkCancelled?.call();
       await _rejectDuplicate(manifest.themeId, manifest.themeVersion);
 
       await storagePaths
@@ -57,6 +77,9 @@ class LocalThemePackInstaller {
       }
 
       await _copyDirectory(validatedPack.rootDirectory, installingDirectory);
+      // Cancellation is accepted until activation starts. Once committed, the
+      // valid installation wins over a late cancellation request.
+      checkCancelled?.call();
       await installingDirectory.rename(finalDirectory.path);
       installingDirectory = null;
       final installedAt = DateTime.now().toUtc();
