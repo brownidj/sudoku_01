@@ -16,8 +16,9 @@ for pack_archive in marine_v1.aar theme_catalogue_v1.aar; do
   fi
 done
 
-echo "Serving the Marine Life pilot at https://$pack_host:$pack_port"
-echo "Select a TLS identity trusted by your test device and matching $pack_host."
+echo "Starting the Marine Life asset server at https://$pack_host:$pack_port"
+echo "Selecting a TLS identity automatically for $pack_host (no identity picker)."
+echo "The identity must be trusted by your Mac and test device."
 echo "Set the device's Background Assets Development URL Override to that base URL."
 echo "For a physical iPhone, pass this Mac's reachable hostname or LAN IP."
 
@@ -26,4 +27,5 @@ exec xcrun ba-serve serve \
   "$pack_output/theme_catalogue_v1.aar" \
   --asset-pack-versions 1 1 \
   --host "$pack_host" \
-  --port "$pack_port"
+  --port "$pack_port" \
+  --choose-identity-automatically

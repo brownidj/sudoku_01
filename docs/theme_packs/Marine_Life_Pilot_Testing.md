@@ -21,9 +21,10 @@ Apple's mock server requires a TLS server identity, with its private key, in
 your Mac's keychain. Its certificate must match the hostname/IP passed to the
 server and be trusted by the simulator or physical device. If needed, follow
 [Apple's certificate and local-testing guide](https://developer.apple.com/documentation/backgroundassets/testing-asset-packs-locally).
-Select the server identity when `ba-serve` prompts; do not select a root CA as
-the server identity. The helper does not create certificates, change trust,
-alter device settings, or upload anything.
+The helper uses `--choose-identity-automatically` to select the server identity
+matching the host, without opening Apple's identity picker. macOS may still
+ask permission to use the identity's private key. The helper does not create
+certificates, change trust, alter device settings, or upload anything.
 
 For a simulator on this Mac:
 
@@ -43,6 +44,21 @@ The default port is 63245; an optional second argument changes it. Keep the
 server terminal open. Stop it with Control-C when finished. The helper uses
 native delivery version 1 for both archives; these native versions are separate
 from the theme manifest's content version.
+
+If an older server process is waiting at “Choose an identity in the panel to
+continue”, stop it with Control-C and run the helper again. The updated helper
+does not use that dialog. Its initial “Starting” message is not confirmation
+that the HTTPS listener is ready.
+
+If identity selection fails, check the localhost SSL policy from Terminal:
+
+```sh
+security find-identity -v -p ssl-server -s localhost
+```
+
+The localhost identity must have its private key and a trusted certificate
+chain. `CSSMERR_TP_NOT_TRUSTED` means trust still needs configuring; repeatedly
+restarting the server or changing the app's App Group cannot fix it.
 
 ## Configure the test device
 
@@ -122,6 +138,31 @@ Use Xcode's debugger or the displayed error for native/TLS failures. A checksum
 failure, wrong theme/version or incompatible manifest must leave `current.json`
 unmodified and retain any previous valid installation. The regular game's
 current puzzle and bundled themes should remain usable throughout testing.
+
+### Simulator helper failure after downloading
+
+On the iOS 26.5 simulator runtime (23F77), the pilot was observed downloading
+`theme_catalogue` successfully, then failing while moving the pack into Apple's
+managed container. The helper log reported `NSCocoaErrorDomain` code `4099`:
+`com.apple.spaceattributiond` could not be found. The resulting app error was
+“Couldn't communicate with a helper application.” This is a simulator system
+service failure; the two green setup checks only establish native API support
+and App Group configuration.
+
+Inspect the relevant log with:
+
+```sh
+xcrun simctl spawn booted log show --last 10m --style compact --predicate 'subsystem == "com.apple.backgroundassets.managed" OR eventMessage CONTAINS "com.apple.spaceattributiond"'
+```
+
+If the same missing-service error occurs, use a physical iPhone with iOS 26+
+and the Mac's reachable hostname in the development URL override (not
+`localhost`), or retry on another simulator runtime. Neither alternative has
+been verified for this failure yet. Changing App Groups, rebuilding archives,
+or unlocking Full Version does not provide the missing system service. The
+native bridge now retains NSError domains/codes and adds simulator recovery
+guidance for helper connection failures. It does not bypass Apple's delivery
+or integrity checks.
 
 ## Manual checks for this change
 

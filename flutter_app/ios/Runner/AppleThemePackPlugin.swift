@@ -238,6 +238,33 @@ private final class AppleThemePackWorker {
   }
 
   private static func flutterError(_ error: Error) -> FlutterError {
-    FlutterError(code: "apple_asset_error", message: error.localizedDescription, details: nil)
+    // Keep the NSError chain: localizedDescription alone hides which Apple
+    // service failed (and makes runtime failures look like app setup errors).
+    var errors: [[String: Any]] = []
+    var current: NSError? = error as NSError
+    while let native = current, errors.count < 8 {
+      errors.append([
+        "domain": native.domain,
+        "code": native.code,
+        "message": native.localizedDescription,
+      ])
+      current = native.userInfo[NSUnderlyingErrorKey] as? NSError
+    }
+    var message = error.localizedDescription
+    #if targetEnvironment(simulator)
+    let helperFailure = errors.contains {
+      ($0["domain"] as? String == NSCocoaErrorDomain
+        && [4097, 4099].contains($0["code"] as? Int ?? 0))
+        || ($0["message"] as? String ?? "").localizedCaseInsensitiveContains("helper application")
+    }
+    if helperFailure {
+      message += " Simulator's Apple Background Assets helper failed. "
+        + "Check the simulator log for a missing system service such as "
+        + "com.apple.spaceattributiond. If missing, test on a physical iPhone "
+        + "or another simulator runtime. Check setup only verifies App Group "
+        + "configuration; it does not verify Apple's system services."
+    }
+    #endif
+    return FlutterError(code: "apple_asset_error", message: message, details: ["errors": errors])
   }
 }
