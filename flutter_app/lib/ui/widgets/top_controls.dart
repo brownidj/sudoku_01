@@ -3,6 +3,7 @@ import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
 
 class TopControls extends StatelessWidget {
+  final bool marineAvailable;
   final UiState state;
   final VoidCallback onProgressPressed;
   final VoidCallback onHelpPressed;
@@ -13,6 +14,7 @@ class TopControls extends StatelessWidget {
 
   const TopControls({
     super.key,
+    this.marineAvailable = false,
     required this.state,
     required this.onProgressPressed,
     required this.onHelpPressed,
@@ -43,6 +45,7 @@ class TopControls extends StatelessWidget {
                     'shells' => 'shells',
                     'old_opera' => 'old_opera',
                     'numbers' => 'numbers',
+                    'marine' when marineAvailable => 'marine',
                     _ => 'animals',
                   },
                   iconSize: 20,
@@ -54,6 +57,11 @@ class TopControls extends StatelessWidget {
                   },
                   style: Theme.of(context).textTheme.titleSmall,
                   items: [
+                    if (marineAvailable)
+                      const DropdownMenuItem<String>(
+                        value: 'marine',
+                        child: Text('Marine Life'),
+                      ),
                     DropdownMenuItem<String>(
                       value: 'animals',
                       child: Text(UiStrings.contentModeAnimals(context)),

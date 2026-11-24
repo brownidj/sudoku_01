@@ -10,8 +10,10 @@ import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/widgets/sudoku_game_content.dart';
 
 class SudokuGameContentBuilder extends StatelessWidget {
+  final bool marineAvailable;
   const SudokuGameContentBuilder({
     super.key,
+    this.marineAvailable = false,
     required this.victoryStateListenable,
     required this.victoryCenterYListenable,
     required this.state,
@@ -82,6 +84,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
           valueListenable: victoryCenterYListenable,
           builder: (context, centerY, _) {
             return SudokuGameContent(
+              marineAvailable: marineAvailable,
               state: state,
               style: style,
               animalImages: animalImages,

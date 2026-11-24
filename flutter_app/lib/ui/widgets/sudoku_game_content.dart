@@ -15,6 +15,7 @@ import 'package:flutter_app/ui/widgets/victory_mascot_overlay.dart';
 import 'package:flutter_app/ui/widgets/victory_star_overlay.dart';
 
 class SudokuGameContent extends StatelessWidget {
+  final bool marineAvailable;
   final UiState state;
   final BoardStyle style;
   final Map<int, ui.Image> animalImages;
@@ -52,6 +53,7 @@ class SudokuGameContent extends StatelessWidget {
 
   const SudokuGameContent({
     super.key,
+    this.marineAvailable = false,
     required this.state,
     required this.style,
     required this.animalImages,
@@ -102,6 +104,7 @@ class SudokuGameContent extends StatelessWidget {
           Column(
             children: [
               TopControls(
+                marineAvailable: marineAvailable,
                 state: state,
                 onProgressPressed: onProgressPressed,
                 onHelpPressed: onHelpPressed,

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class TooltipOverlayService {
@@ -64,8 +66,10 @@ class TooltipOverlayService {
                     width: previewSize,
                     height: previewSize,
                     color: Colors.transparent,
-                    child: Image.asset(
-                      imagePath!,
+                    child: Image(
+                      image: imagePath!.startsWith('/')
+                          ? FileImage(File(imagePath))
+                          : AssetImage(imagePath) as ImageProvider,
                       fit: BoxFit.contain,
                       filterQuality: FilterQuality.high,
                     ),

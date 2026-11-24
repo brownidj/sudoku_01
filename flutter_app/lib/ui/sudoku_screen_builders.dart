@@ -75,16 +75,15 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
         Navigator.of(context).maybePop();
         controller.onSetEntitlement(Entitlement.free);
       },
-      onThemePackTestSelected: () {
+      onThemePackTestSelected: () async {
         final navigator = Navigator.of(context);
         navigator.pop();
-        unawaited(
-          navigator.push<void>(
-            MaterialPageRoute<void>(
-              builder: (_) => const MarineThemePackTestScreen(),
-            ),
+        await navigator.push<void>(
+          MaterialPageRoute<void>(
+            builder: (_) => const MarineThemePackTestScreen(),
           ),
         );
+        if (mounted) await _refreshMarineTheme();
       },
       selectedLanguageCode: controller.preferredLanguageCode,
       onLanguageChanged: (languageCode) {
@@ -106,6 +105,7 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
     required SudokuScreenViewModel viewModel,
   }) {
     return SudokuGameContentBuilder(
+      marineAvailable: _marineAvailable,
       victoryStateListenable: _services.victoryOverlayService.state,
       victoryCenterYListenable: _services.victoryPositionService.centerY,
       state: state,

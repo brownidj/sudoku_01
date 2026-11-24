@@ -18,12 +18,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Add Marine Life developer delivery and installation test flow">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner/AppleThemePackPlugin.swift" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner/AppleThemePackPlugin.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" afterDir="false" />
-    </list>
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Improve Apple asset helper failure diagnostics" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -61,23 +56,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0000000000093925" />
-      <entry key="S30" value="1.0009787357588578" />
-      <entry key="S60" value="1.0991785658768858" />
-      <entry key="M2" value="2.1099529508817807" />
-      <entry key="M5" value="10.169890426998768" />
-      <entry key="M10" value="29.592248277277847" />
-      <entry key="M15" value="51.790985995851024" />
-      <entry key="M30" value="141.89610061519255" />
-      <entry key="H1" value="381.5142310360038" />
-      <entry key="H2" value="790.5620831232964" />
-      <entry key="H4" value="1228.1107325673063" />
-      <entry key="D1" value="2073.8439707857856" />
-      <entry key="W1" value="5237.135855231418" />
+      <entry key="MS100" value="1.0274147322288443" />
+      <entry key="MS500" value="1.6824190523712754" />
+      <entry key="S2" value="3.6916178776296316" />
+      <entry key="S5" value="6.352268512195579" />
+      <entry key="S10" value="9.178328715299319" />
+      <entry key="S30" value="12.981584938609144" />
+      <entry key="S60" value="14.374349575356778" />
+      <entry key="M2" value="15.362060520553081" />
+      <entry key="M5" value="17.505854812224058" />
+      <entry key="M10" value="22.62036199066998" />
+      <entry key="M15" value="32.31976938517707" />
+      <entry key="M30" value="89.92234988951687" />
+      <entry key="H1" value="287.1562809157571" />
+      <entry key="H2" value="681.4105231414168" />
+      <entry key="H4" value="1143.9151969982054" />
+      <entry key="D1" value="2065.5433116446316" />
+      <entry key="W1" value="5248.777885316685" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -89,33 +84,33 @@
       <entry key="S60" value="0.0" />
       <entry key="M2" value="0.0" />
       <entry key="M5" value="0.0" />
-      <entry key="M10" value="1.1179322758528094E-184" />
-      <entry key="M15" value="2.320653658829942E-123" />
-      <entry key="M30" value="4.817316326368569E-62" />
-      <entry key="H1" value="2.1948385649902523E-31" />
-      <entry key="H2" value="4.684910420691448E-16" />
-      <entry key="H4" value="2.1644653891185143E-8" />
-      <entry key="D1" value="0.05279082400955366" />
-      <entry key="W1" value="0.6569137446047538" />
+      <entry key="M10" value="1.2542986422182924E-185" />
+      <entry key="M15" value="5.398427850367786E-124" />
+      <entry key="M30" value="2.323451710358375E-62" />
+      <entry key="H1" value="1.524287279471402E-31" />
+      <entry key="H2" value="3.904212186179763E-16" />
+      <entry key="H4" value="1.9759079397027054E-8" />
+      <entry key="D1" value="0.05199494435054657" />
+      <entry key="W1" value="0.6554897032334822" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9592641193252643" />
-      <entry key="MS500" value="0.9917167307382933" />
-      <entry key="S2" value="0.9979227189990506" />
-      <entry key="S5" value="0.999168569213607" />
-      <entry key="S10" value="0.9995841981706091" />
-      <entry key="S30" value="1.0008400303447762" />
-      <entry key="S60" value="1.0991049091282326" />
-      <entry key="M2" value="2.1098941151415196" />
-      <entry key="M5" value="10.169799197535351" />
-      <entry key="M10" value="29.592123175592526" />
-      <entry key="M15" value="51.790842863500444" />
-      <entry key="M30" value="141.89590118315724" />
-      <entry key="H1" value="381.51393980203073" />
-      <entry key="H2" value="790.5617628026507" />
-      <entry key="H4" value="1228.110476186056" />
-      <entry key="D1" value="2073.896687345231" />
-      <entry key="W1" value="5237.7927442526625" />
+      <entry key="MS100" value="0.9989529164376283" />
+      <entry key="MS500" value="1.6712950046397352" />
+      <entry key="S2" value="3.6849934399046376" />
+      <entry key="S5" value="6.347698131501342" />
+      <entry key="S10" value="9.175008940221632" />
+      <entry key="S30" value="12.980003670700716" />
+      <entry key="S60" value="14.373470888632083" />
+      <entry key="M2" value="15.36158914454486" />
+      <entry key="M5" value="17.505637314387837" />
+      <entry key="M10" value="22.620226264143756" />
+      <entry key="M15" value="32.31965038756005" />
+      <entry key="M30" value="89.92220799147034" />
+      <entry key="H1" value="287.15605495806875" />
+      <entry key="H2" value="681.4102441198613" />
+      <entry key="H4" value="1143.9149568519533" />
+      <entry key="D1" value="2065.595232418887" />
+      <entry key="W1" value="5249.43335020349" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -393,15 +388,7 @@
       <workItem from="1791023093089" duration="105000" />
       <workItem from="1791023445347" duration="4215000" />
       <workItem from="1793409045380" duration="320000" />
-      <workItem from="1795479528119" duration="10065000" />
-    </task>
-    <task id="LOCAL-00042" summary="First pass of the correction code">
-      <option name="closed" value="true" />
-      <created>1773101361956</created>
-      <option name="number" value="00042" />
-      <option name="presentableId" value="LOCAL-00042" />
-      <option name="project" value="LOCAL" />
-      <updated>1773101361956</updated>
+      <workItem from="1795479528119" duration="11425000" />
     </task>
     <task id="LOCAL-00043" summary="Prior to refactoring of 595 flutter_app/lib/app/sudoku_controller.dart&#10;                        385 flutter_app/lib/app/game_session_service.dart">
       <option name="closed" value="true" />
@@ -787,7 +774,15 @@
       <option name="project" value="LOCAL" />
       <updated>1795485619870</updated>
     </task>
-    <option name="localTasksCounter" value="91" />
+    <task id="LOCAL-00091" summary="Improve Apple asset helper failure diagnostics">
+      <option name="closed" value="true" />
+      <created>1795490810319</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1795490810319</updated>
+    </task>
+    <option name="localTasksCounter" value="92" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -825,7 +820,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated version to 0.6.1+154" />
     <MESSAGE value="Updated version to 0.8.2+225" />
     <MESSAGE value="Updated version to 0.8.2+226" />
     <MESSAGE value="Updated version to 0.8.2+227" />
@@ -850,7 +844,8 @@
     <MESSAGE value="Prepare Marine Life pilot and Apple theme delivery bridge" />
     <MESSAGE value="Configure shared App Group and signing for Apple theme packs" />
     <MESSAGE value="Add Marine Life developer delivery and installation test flow" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Marine Life developer delivery and installation test flow" />
+    <MESSAGE value="Improve Apple asset helper failure diagnostics" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improve Apple asset helper failure diagnostics" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />

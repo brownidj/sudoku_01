@@ -1,6 +1,45 @@
 part of 'sudoku_screen.dart';
 
 extension _SudokuScreenHandlers on _SudokuScreenState {
+  Future<void> _refreshMarineTheme() async {
+    try {
+      final theme = await MarineGameTheme.load();
+      final images = theme == null
+          ? <int, ui.Image>{}
+          : await MarineGameTheme.decode(theme);
+      if (!mounted) {
+        for (final image in images.values) {
+          image.dispose();
+        }
+        return;
+      }
+      _updateScreenState(() {
+        _ownedMarineImages.addAll(images.values);
+        _marineChecked = true;
+        MarineGameTheme.definition = theme;
+        _marineAvailable = theme != null;
+        _animalImages['marine'] = images;
+        _noteImages['marine'] = {
+          for (final size in [16, 20, 24, 32]) size: images,
+        };
+      });
+    } catch (error) {
+      AppDebug.log('Marine Life is unavailable: $error');
+      if (!mounted) return;
+      _updateScreenState(() {
+        _marineChecked = true;
+        MarineGameTheme.definition = null;
+        _marineAvailable = false;
+        _animalImages.remove('marine');
+        _noteImages.remove('marine');
+      });
+    }
+    if (mounted && !_marineAvailable &&
+        widget.controller.state.contentMode == 'marine') {
+      widget.controller.onContentModeChanged('animals');
+    }
+  }
+
   bool get _isBackgroundMusicTheme {
     return _premiumPolicy.isBackgroundMusicThemeMode(
       widget.controller.state.contentMode,
@@ -16,6 +55,10 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
     }
     final controller = widget.controller;
     final state = controller.state;
+    if (_marineChecked && !_marineAvailable && state.contentMode == 'marine') {
+      controller.onContentModeChanged('animals');
+      return;
+    }
     _ensureAnimalAssetsRequested(state.contentMode);
     _services.onControllerChanged(
       context: context,
@@ -54,10 +97,8 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
     try {
       final bundle = await widget.animalAssetService.load();
       _animalImages
-        ..clear()
         ..addAll(bundle.animalImages);
       _noteImages
-        ..clear()
         ..addAll(bundle.noteImages);
       _updateScreenState(() {});
     } on Exception catch (error) {

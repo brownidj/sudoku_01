@@ -16,6 +16,7 @@ class PremiumPolicyService {
   };
 
   static const Set<String> freeContentModes = <String>{
+    'marine',
     'animals',
     'instruments',
     'numbers',

@@ -1,6 +1,7 @@
 import 'package:flutter_app/ui/animal_cache_catalog.dart';
 import 'package:flutter_app/ui/animal_cache_localized_names.dart';
 import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
+import 'package:flutter_app/ui/theme/marine_game_theme.dart';
 
 class AnimalCacheAssets {
   static String animalName(int digit) =>
@@ -71,6 +72,10 @@ class AnimalCacheAssets {
   }
 
   static String displayNameForDigit(String contentMode, int digit) {
+    if (contentMode == 'marine') {
+      return MarineGameTheme.definition?.tileForDigit(digit)?.displayName ??
+          digit.toString();
+    }
     return BundledThemeRepository.displayNameForDigit(contentMode, digit);
   }
 
@@ -111,6 +116,9 @@ class AnimalCacheAssets {
     required String animalStyle,
     required int digit,
   }) {
+    if (contentMode == 'marine') {
+      return MarineGameTheme.definition?.tileForDigit(digit)?.imagePath ?? '';
+    }
     if (contentMode == 'instruments') {
       return instrumentAssetPathForDigit(digit);
     }
