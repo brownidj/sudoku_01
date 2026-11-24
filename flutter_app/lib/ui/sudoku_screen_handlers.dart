@@ -97,8 +97,8 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
   Future<void> _loadAnimalImages() async {
     try {
       final bundle = await widget.animalAssetService.load();
-      _animalImages..addAll(bundle.animalImages);
-      _noteImages..addAll(bundle.noteImages);
+      _animalImages.addAll(bundle.animalImages);
+      _noteImages.addAll(bundle.noteImages);
       _updateScreenState(() {});
     } on Exception catch (error) {
       AppDebug.log('Failed to load visual assets: $error');
