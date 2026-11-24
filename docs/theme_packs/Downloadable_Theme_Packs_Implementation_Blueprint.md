@@ -14,6 +14,12 @@ The design assumes:
 - paid packs are unlocked through the relevant platform store;
 - downloaded packs can be updated, deleted and restored.
 
+Hosting direction updated on 2026-11-24: investigate Apple-Hosted Background
+Assets first for iOS/iPadOS 26 and later, with a separate HTTPS delivery route
+for Android and older supported iOS versions. See the Phase 3 investigation in
+section 22. References to a shared HTTPS downloader below describe the fallback
+route; they do not mean Apple provides public ZIP hosting for other platforms.
+
 The central design principle is that the game should work with a common `ThemeDefinition` model regardless of whether a theme is bundled or downloaded.
 
 ---
@@ -742,9 +748,18 @@ Disadvantages:
 - server maintenance;
 - privacy and security obligations.
 
-### Recommendation
+### Current hosting direction
 
-Start with static HTTPS hosting and platform purchase validation. Add a backend only if download abuse, promotions or cross-platform entitlement requirements justify it.
+Use Apple-Hosted Background Assets as the first delivery route to investigate
+for iOS/iPadOS 26 and later. Retain static HTTPS hosting as the proposed delivery
+route for Android and older supported iOS versions. Apple hosting cannot serve
+as the shared public CDN for those clients.
+
+Keep theme definitions, theme IDs, manifest validation, installation and
+purchase entitlements independent of the delivery provider. Add an entitlement
+backend only if download abuse, promotions or cross-platform entitlement
+requirements justify it. The Apple-specific setup and remaining decisions are
+recorded under Phase 3 in section 22.
 
 ---
 
@@ -1092,15 +1107,296 @@ Deviations:
 - Phase 1 did not contain a concrete `ThemeLoader`; Phase 2 adds the minimal `ThemeLoader` interface and `RepositoryThemeLoader` implementation described by this blueprint so installed packs do not need a parallel loading path.
 - The sample ZIP pack is generated inside `local_theme_pack_installer_test.dart` rather than checked in as a binary fixture. This keeps the repository small and lets the tests generate matching and mismatched checksums deterministically.
 
-Phase 3 and later phases: not started.
+Phase 3: Apple-hosting investigation and the requested pilot preparation/native
+bridge steps are implemented locally. App Group/signing setup, runtime
+verification, installation integration and hosted delivery remain outstanding.
+Phase 4 and later phases: not started.
 
 ### Phase 3: Remote catalogue and download
 
-- [ ] Host a test catalogue and pack.
-- [ ] Implement catalogue caching.
-- [ ] Implement download progress.
-- [ ] Add checksum verification.
-- [ ] Add retry and cancellation.
+- [x] Investigate Apple hosting and record the platform split.
+- [ ] Add a delivery-provider boundary shared by native Apple and HTTPS routes.
+- [x] Add the native Apple Background Download extension target and Flutter bridge.
+- [ ] Configure the shared App Group, Apple hosting keys and provisioning.
+- [x] Prepare local Apple asset archives for the pilot catalogue and free theme pack.
+- [ ] Implement catalogue caching and offline fallback.
+- [ ] Implement download progress for the selected provider.
+- [ ] Add ZIP size/checksum and catalogue-to-manifest identity verification.
+- [ ] Add retry, cancellation and temporary-file cleanup.
+- [ ] Configure and verify the HTTPS fallback for Android and older iOS.
+- [ ] Verify the Apple pilot locally and through TestFlight.
+
+#### Apple-hosting investigation — 2026-11-24
+
+David selected exploration of Apple hosting before implementing the original
+HTTPS-only Phase 3. This changes delivery, while retaining the shared theme
+model, loader and Phase 2 installation validation.
+
+Findings:
+
+- Apple-Hosted Background Assets is intended for additional app content and
+  includes up to 200 GB of compressed assets with Apple Developer Program
+  membership. Production delivery is through TestFlight and the App Store.
+- Managed Background Assets supports iOS/iPadOS 26 and later. The app currently
+  has an iOS 15 deployment target; keep that target and gate the native delivery
+  code by OS availability. The extension requires its own compatible target.
+- Android and iOS 15–25 need a separate delivery provider. They cannot request
+  Apple-hosted content using ordinary HTTPS ZIP links.
+- This Mac has Xcode 27.2, the BackgroundAssets framework, the Apple-hosted
+  Background Download extension template, `ba-package` and `ba-serve`.
+- At investigation time, Runner had no Background Download extension or App
+  Group entitlement. The extension has since been added in the implementation
+  recorded below; App Group setup remains outstanding.
+
+Proposed provider split:
+
+| Client | Delivery provider | Game-facing theme representation |
+| --- | --- | --- |
+| iOS/iPadOS 26+ with configured Apple hosting | Native `AssetPackManager` through a Flutter platform channel | Existing `ThemeDefinition` and validated installed theme |
+| iOS 15–25 | HTTPS catalogue and ZIP download | Same |
+| Android | HTTPS catalogue and ZIP download | Same |
+| macOS | Separate follow-up decision; retain existing bundled/local behaviour initially | Same |
+
+Provider selection must consider OS support and native configuration. An Apple
+download or purchase error must not silently bypass entitlement checks by
+switching providers. Both providers use the same immutable theme IDs, content
+versions and ownership rules.
+
+Native integration plan (see implementation status below):
+
+1. Add an Apple-hosted, managed Background Download extension to Runner.
+2. Register a shared App Group for Runner and the extension under the existing
+   developer team, then configure the matching signing profiles. The group ID
+   and extension bundle ID have not been registered or changed by this work.
+3. Configure `BAAppGroupID`, `BAHasManagedAssetPacks = YES` and
+   `BAUsesAppleHosting = YES` in the host app as Apple documents.
+4. Bridge pack discovery, availability, progress, cancellation and removal to
+   Dart using `AssetPackManager`. Guard APIs by their actual OS availability;
+   several newer convenience APIs require versions later than iOS 26.0.
+5. Package one free, on-demand theme and a small catalogue pack. Keep theme
+   catalogue metadata separate from Apple's packaging manifest. Apple-hosted
+   packs do not support the packaging manifest's custom `userInfo` dictionary.
+6. Exercise native delivery using Apple's local HTTPS mock server, then verify
+   actual Apple delivery through TestFlight. Local testing requires a trusted
+   server certificate and the device's Background Assets development override.
+   No certificate, trust setting or development override has been changed.
+
+Storage and installer integration proposal:
+
+- Apple stores its downloaded asset-pack contents in system-managed storage;
+  resolve files using its API rather than assuming a sandbox directory.
+- For the first pilot, include the canonical theme ZIP inside the Apple asset
+  pack. Both providers can then feed the same ZIP into the existing Phase 2
+  installer without introducing a second manifest/asset validation path.
+- The game's validated installation remains in the private Application Support
+  directory at `themes/installed/<theme-id>/versions/<version>/`, with
+  `current.json` as the active-version pointer. Files remain available offline.
+- During native installation, both the Apple delivery copy and the extracted
+  game installation may exist. Remove the Apple delivery copy only after the
+  private installation succeeds; never remove a previous working theme first.
+- An update to Apple's delivery copy does not automatically update the game's
+  private installation. A later update action must validate and activate the
+  new content. The Phase 4 update workflow must account for this explicitly.
+- HTTPS catalogue caching belongs under `themes/catalogue/`; partial ZIP files
+  belong under `themes/temp/`. iOS container UUIDs are not stable paths and must
+  never be hard-coded.
+
+Integrity and lifecycle work required for either route:
+
+- Compare the ZIP's actual size and SHA-256 with trusted catalogue metadata.
+- Compare the extracted manifest's theme ID, content version and minimum app
+  build with the requested descriptor before writing `current.json`.
+- Preserve the previous working installation on failure. Extend the existing
+  installer rather than allowing downloaded content to bypass its validation.
+- Abort and clean up partial transfers on cancellation. Report completion only
+  after installation has committed successfully.
+- Keep catalogue refresh and downloads off the app's critical launch path;
+  cached and bundled themes must work without the network.
+- Treat automatic Apple transport updates and game content updates as separate
+  operations. Keep paid entitlements in Phase 5, independent of hosting.
+
+Remaining external configuration:
+
+- Register the App Group and extension identifier and configure provisioning.
+- Create and upload the pilot asset packs in App Store Connect and test them.
+- Choose an HTTPS host for the fallback catalogue, previews and ZIPs.
+
+The investigation itself did not implement native delivery or publish hosting.
+Provisional HTTPS implementation files were removed when the hosting direction
+changed. Subsequent implementation is recorded separately below.
+
+Verification performed for the investigation: read Apple's current
+documentation, inspected the installed SDK/template and packaging-tool help,
+and checked Runner's existing deployment and target configuration. No builds,
+Flutter analysis, tests, signing changes, uploads or commits were performed.
+
+Primary references:
+
+- [Apple-hosted asset-pack overview](https://developer.apple.com/help/app-store-connect/manage-asset-packs/overview-of-apple-hosted-asset-packs)
+- [Downloading Apple-hosted asset packs](https://developer.apple.com/documentation/backgroundassets/downloading-apple-hosted-asset-packs)
+- [Creating managed asset packs](https://developer.apple.com/documentation/backgroundassets/creating-managed-asset-packs)
+- [Testing asset packs locally](https://developer.apple.com/documentation/backgroundassets/testing-asset-packs-locally)
+
+#### Steps 1 and 2 implementation — 2026-11-24
+
+Scope requested: prepare the Marine Life pilot and add the Apple Background
+Download extension plus Flutter bridge. App Group registration, signing,
+runtime download/install testing and uploading are later steps.
+
+Step 1: complete locally.
+
+- Builder: `scripts/build_marine_theme_pack.py`; uses Pillow already listed in
+  `requirements.txt` and does not modify the source images.
+- Input: the nine images under `flutter_app/assets/images/marine/`, in the
+  digit order documented in section 24.
+- Output: nine square 512×512 WebP tiles, a 768×768 preview and schema-1
+  `manifest.json`, including per-asset SHA-256 checksums. Padding preserves
+  image aspect ratio and transparency. The pilot has no audio.
+- The canonical `marine_v1.zip` is 566,590 bytes, with SHA-256
+  `1fca72660f55e0b7939e4186af568521f85b814b3b41cab4611ea7b08d138876`.
+  Content version is 1; minimum app build is 359. These values describe this
+  build; use the generated report after rebuilding with a later app version.
+- Apple on-demand archive `marine_v1.aar` uses asset-pack ID `marine` and
+  exposes the ZIP as `ThemePacks/marine_v1.zip`.
+- Apple on-demand archive `theme_catalogue_v1.aar` uses asset-pack ID
+  `theme_catalogue`. It exposes `ThemeCatalogue/catalogue.json` and the separate
+  browser preview at `ThemePreviews/marine_v1.webp`.
+- The Apple pilot catalogue includes `apple_asset_pack_id`, `archive_path`,
+  `preview_path`, ZIP checksum/size, content version and compatibility metadata.
+  These provider-specific fields supplement the common theme identity. It is
+  not an HTTPS catalogue with fabricated public download URLs.
+- All generated artifacts are under `flutter_app/build/theme_packs/`, an ignored
+  build-output directory. Keep the builder in Git and regenerate these files
+  when needed; archive release artifacts separately before cleaning `build/`.
+- No changes to `pubspec.yaml` are required: downloadable images are not added
+  to the bundled Flutter asset list.
+
+Rebuild from the repository root:
+
+```sh
+python3 scripts/build_marine_theme_pack.py --package-apple
+```
+
+Omit `--package-apple` to generate only the shared ZIP, preview, manifests and
+catalogue on a machine without Xcode. Apple archives use `.aar` for Apple's
+asset archive format; these are not Android library archives.
+
+Step 2: source implementation complete; not app-built or runtime-verified.
+
+Files created:
+
+- `flutter_app/ios/ThemePackDownloader/DownloaderExtension.swift`
+- `flutter_app/ios/ThemePackDownloader/Info.plist`
+- `flutter_app/ios/Runner/AppleThemePackPlugin.swift`
+- `flutter_app/lib/ui/theme/apple_theme_pack_delivery.dart`
+- `flutter_app/test/apple_theme_pack_delivery_test.dart`
+- `scripts/build_marine_theme_pack.py`
+
+Files modified:
+
+- `flutter_app/ios/Runner.xcodeproj/project.pbxproj`
+- `flutter_app/ios/Runner/AppDelegate.swift`
+- This blueprint.
+
+The new `ThemePackDownloader` ExtensionKit target uses Xcode's
+`StoreDownloaderExtension` pattern, targets iOS 26, and is a build dependency of
+Runner embedded under the app's `Extensions/` directory. It supports Debug,
+Release and Profile, with build/version values taken from Flutter's generated
+configuration to match the host app. Its local bundle identifier is
+`org.topository.animalsudoku.ThemePackDownloader`; it has not been registered in
+the developer portal. Runner retains its existing iOS 15 minimum and weak-links
+BackgroundAssets. No team, App Group entitlement or provisioning profile was
+assigned to the extension.
+
+`AppleThemePackPlugin` is registered with the existing implicit Flutter engine.
+The method channel is `org.topository.animalsudoku/apple_theme_packs`; progress
+uses the corresponding `/progress` event channel. The Dart API provides:
+
+- `getConfiguration()`: OS support and App Group/hosting configuration status;
+- `listAssetPacks()`: native pack IDs, Apple delivery versions and sizes;
+- `ensureAvailable(assetPackId:, relativePath:)`: request delivery and resolve
+  a pack-owned local file;
+- `localPath(assetPackId:, relativePath:)`: resolve an existing file offline;
+- `progress`: pack-tagged waiting/paused/downloading/available/cancelled/failed
+  events;
+- `cancelDownload(assetPackId)`: request native cancellation;
+- `removeAssetPack(assetPackId)`: remove only the Apple-managed delivery copy.
+
+The bridge checks OS availability, including APIs introduced after 26.0,
+rejects unsafe IDs and relative paths, checks pack membership before returning
+a file URL, rejects duplicate active requests, and returns platform errors to
+the caller. Progress cancellation uses Apple's `Progress.cancel()` together
+with the request task; it may finish asynchronously. Unsubscribing from progress
+does not cancel a background request.
+
+Nothing downloads during plugin registration or normal game startup. Until
+step 3 configures the host's Background Assets keys and a valid shared App
+Group, `getConfiguration()` reports `configured: false` and delivery operations
+return `not_configured`. Android and pre-iOS-26 support queries return
+unsupported rather than attempting an Apple download.
+
+Example for the future installer/browser integration, after step 3:
+
+```dart
+final delivery = AppleThemePackDelivery();
+final configuration = await delivery.getConfiguration();
+if (configuration.supported && configuration.configured) {
+  final path = await delivery.ensureAvailable(
+    assetPackId: 'marine',
+    relativePath: 'ThemePacks/marine_v1.zip',
+  );
+  // Next: verify ZIP size/SHA-256 and manifest identity, then invoke the shared
+  // local installer. Native availability alone is not a validated install.
+}
+```
+
+Remaining step 3 setup:
+
+1. Select the existing developer team for `ThemePackDownloader` in Xcode and
+   register its bundle ID.
+2. Register one App Group shared by Runner and ThemePackDownloader, enable the
+   capability on both targets, and configure their entitlement files/profiles.
+3. Add `BAAppGroupID` with that exact group ID,
+   `BAHasManagedAssetPacks = YES` and `BAUsesAppleHosting = YES` to Runner's
+   information property list as Apple documents. Do not invent a public
+   `BAManifestURL` for Apple-hosted delivery.
+
+Verification performed for steps 1–2:
+
+- Built both Apple asset archives with the installed `ba-package` tool.
+- Verified ZIP integrity, every image checksum and output dimensions, and
+  checked that source image bytes were unchanged. Inspected the preview.
+- Parsed the Swift sources, validated the property lists/project syntax, and
+  inspected target dependency, embedding and build-configuration references.
+- Formatted the Dart files and checked Git whitespace errors.
+
+Tests created: bridge tests for configuration, unsupported platforms, missing
+plugin, discovery, request forwarding, safe paths, error propagation, explicit
+cancellation/removal and progress events.
+
+Flutter analysis, unit tests and application builds run by AI Assistant:
+**None — manual verification requested**, following `docs/CURRENT_STATE.md`.
+Asset packaging above is not a successful Runner build or an Apple-hosted
+download test.
+
+Manual verification from `flutter_app/`:
+
+```sh
+flutter analyze
+flutter test test/apple_theme_pack_delivery_test.dart
+```
+
+After step 3 signing/setup, build and run the iOS app, check that the new target
+embeds correctly, and verify native delivery against Apple's local mock server
+before TestFlight. The normal game should still launch without initiating any
+pack requests. Full ZIP validation/installation integration, retry policy,
+catalogue caching, HTTPS fallback and the Phase 4 browser remain outstanding.
+
+Suggested commit message:
+
+```text
+Prepare Marine Life pilot and Apple theme delivery bridge
+```
 
 ### Phase 4: Theme browser UI
 
@@ -1155,6 +1451,26 @@ Recommended command-line validation should check:
 ---
 
 ## 24. Suggested first pack
+
+Pilot selected by David on 2026-11-24: **Marine Life** (`marine`). Use the nine
+existing PNG images in `flutter_app/assets/images/marine/`, restored from
+`assets/images/unused/marine/`. This is the source directory for pack preparation;
+do not use the former `unused/marine/` location or copy images from Sudoku_02.
+
+| Digit | Source image | Tile label |
+| --- | --- | --- |
+| 1 | `1_butterflyfish.png` | Butterflyfish |
+| 2 | `2_octopus.png` | Octopus |
+| 3 | `3_crab.png` | Crab |
+| 4 | `4_seahorse.png` | Seahorse |
+| 5 | `5_starfish.png` | Starfish |
+| 6 | `6_walrus.png` | Walrus |
+| 7 | `7_shark.png` | Shark |
+| 8 | `8_jellyfish.png` | Jellyfish |
+| 9 | `9_turtle.png` | Turtle |
+
+Keep these source images outside the app's bundled asset list when preparing
+the downloadable pilot; the pack builder reads them directly from disk.
 
 Use one small free pack as the pilot.
 
