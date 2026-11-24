@@ -1108,8 +1108,9 @@ Deviations:
 - The sample ZIP pack is generated inside `local_theme_pack_installer_test.dart` rather than checked in as a binary fixture. This keeps the repository small and lets the tests generate matching and mismatched checksums deterministically.
 
 Phase 3: Apple-hosting investigation and the requested pilot preparation/native
-bridge steps are implemented locally. App Group/signing setup, runtime
-verification, installation integration and hosted delivery remain outstanding.
+bridge steps are implemented locally. Shared App Group setup and development
+provisioning are complete. Runtime verification, installation integration and
+hosted delivery remain outstanding; distribution signing is not yet verified.
 Phase 4 and later phases: not started.
 
 ### Phase 3: Remote catalogue and download
@@ -1117,7 +1118,7 @@ Phase 4 and later phases: not started.
 - [x] Investigate Apple hosting and record the platform split.
 - [ ] Add a delivery-provider boundary shared by native Apple and HTTPS routes.
 - [x] Add the native Apple Background Download extension target and Flutter bridge.
-- [ ] Configure the shared App Group, Apple hosting keys and provisioning.
+- [x] Configure the shared App Group, Apple hosting keys and development provisioning.
 - [x] Prepare local Apple asset archives for the pilot catalogue and free theme pack.
 - [ ] Implement catalogue caching and offline fallback.
 - [ ] Implement download progress for the selected provider.
@@ -1350,7 +1351,7 @@ if (configuration.supported && configuration.configured) {
 }
 ```
 
-Remaining step 3 setup:
+Step 3 setup plan (completed below for development provisioning):
 
 1. Select the existing developer team for `ThemePackDownloader` in Xcode and
    register its bundle ID.
@@ -1396,6 +1397,91 @@ Suggested commit message:
 
 ```text
 Prepare Marine Life pilot and Apple theme delivery bridge
+```
+
+#### Step 3 implementation — 2026-11-24
+
+Status: shared App Group and automatic signing are configured, and Xcode has
+issued matching development profiles for both targets. A successful app build,
+device runtime check and distribution signing are not claimed.
+
+Identifiers:
+
+| Setting | Value |
+| --- | --- |
+| Developer team | `QL5QBFGDB7` (existing David Browning team) |
+| Host bundle ID | `org.topository.animalsudoku` |
+| Extension bundle ID | `org.topository.animalsudoku.ThemePackDownloader` |
+| Shared App Group | `group.org.topository.animalsudoku.theme-packs` |
+
+Files created:
+
+- `flutter_app/ios/Runner/Runner.entitlements`
+- `flutter_app/ios/ThemePackDownloader/ThemePackDownloader.entitlements`
+
+Both entitlement files declare the same single
+`com.apple.security.application-groups` entry.
+
+Files modified:
+
+- `flutter_app/ios/Runner/Info.plist`: added `BAAppGroupID`,
+  `BAHasManagedAssetPacks = true` and `BAUsesAppleHosting = true`; no unmanaged
+  `BAManifestURL` was added.
+- `flutter_app/ios/Runner.xcodeproj/project.pbxproj`: added both entitlement
+  references, wired `CODE_SIGN_ENTITLEMENTS` for both targets in Debug, Release
+  and Profile, selected the existing developer team and automatic signing, and
+  enabled the App Groups capability on both targets.
+- This blueprint: recorded implementation and verification status.
+
+Provisioning performed:
+
+- Opened Runner's Signing & Capabilities in Xcode. Both targets show David
+  Browning, automatic signing, the shared App Group and an Xcode Managed Profile.
+- Xcode issued fresh development profiles for the host and extension on
+  2026-11-24. Decoded the profiles and verified that each has team `QL5QBFGDB7`,
+  its expected application identifier and the exact shared group entitlement.
+- This confirms Apple-side development registration/provisioning, rather than
+  only local entitlement declarations. Profiles and signing credentials remain
+  in Xcode's user-data storage and are not added to the repository.
+- An older cached App Store distribution profile lacks the new group. Let
+  automatic signing refresh distribution profiles when preparing the first
+  archive; do not select that old profile manually. Distribution profile
+  creation and an App Store archive have not been verified in this step.
+
+Verification performed:
+
+- Property-list and Xcode project syntax validation passed.
+- Checked all six target/configuration combinations for matching team,
+  automatic signing and entitlement paths; verified the group matches the host
+  `BAAppGroupID` exactly.
+- Verified matching Apple-issued development profiles for both bundle IDs.
+- Git whitespace validation passed.
+
+Tests created or modified: none; this step changes signing/configuration only.
+Flutter analysis, unit tests and application builds run by AI Assistant:
+**None — manual verification requested**, following `docs/CURRENT_STATE.md`.
+
+Manual verification from `flutter_app/`:
+
+```sh
+flutter build ios --simulator --debug
+```
+
+Then select Runner and a physical iOS 26+ device in Xcode and build/run using
+the new managed profiles. Check that the normal app still launches and that
+the native bridge's `getConfiguration()` reports supported/configured on that
+newly signed build. An older installed simulator/device build will not contain
+the new information-property-list keys or entitlements until rebuilt.
+
+Next work is step 4: local native delivery and shared validation/installation
+testing. Actual Apple-hosted downloads require the later App Store Connect /
+TestFlight setup or Apple's local development mock server. Phase 3 as a whole
+remains in progress; the theme browser remains Phase 4.
+
+Suggested commit message:
+
+```text
+Configure shared App Group and signing for Apple theme packs
 ```
 
 ### Phase 4: Theme browser UI
