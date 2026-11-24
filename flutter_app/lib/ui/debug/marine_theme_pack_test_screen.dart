@@ -209,7 +209,8 @@ class _MarineThemePackTestScreenState extends State<MarineThemePackTestScreen> {
               'Configure Apple’s local HTTPS asset server and the device’s '
               'Background Assets URL override before downloading. '
               'This screen tests delivery, installation and tile loading; '
-              'game theme selection comes with the theme browser.',
+              'after installation, return to the game and choose Marine Life '
+              'from the theme selector.',
             ),
             const SizedBox(height: 12),
             SelectableText(

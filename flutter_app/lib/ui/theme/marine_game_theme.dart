@@ -24,15 +24,18 @@ class MarineGameTheme {
         validated.manifest.themeVersion != installed.version) {
       throw const FormatException('Marine Life metadata is inconsistent.');
     }
-    return RepositoryThemeLoader(installedThemeStore: store)
-        .loadInstalledTheme('marine');
+    return RepositoryThemeLoader(
+      installedThemeStore: store,
+    ).loadInstalledTheme('marine');
   }
 
   static Future<Map<int, ui.Image>> decode(ThemeDefinition theme) async {
     final images = <int, ui.Image>{};
     try {
       for (var digit = 1; digit <= 9; digit++) {
-        final bytes = await File(theme.tileForDigit(digit)!.imagePath).readAsBytes();
+        final bytes = await File(
+          theme.tileForDigit(digit)!.imagePath,
+        ).readAsBytes();
         final codec = await ui.instantiateImageCodec(bytes);
         try {
           images[digit] = (await codec.getNextFrame()).image;

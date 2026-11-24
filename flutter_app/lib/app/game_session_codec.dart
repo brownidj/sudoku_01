@@ -256,6 +256,7 @@ class GameSessionCodec {
         value == 'butterflies' ||
         value == 'shells' ||
         value == 'old_opera' ||
+        value == 'marine' ||
         value == 'numbers') {
       return value;
     }

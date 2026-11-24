@@ -48,6 +48,41 @@ UiState _state() {
 }
 
 void main() {
+  testWidgets(
+    'Marine Life is selectable only when installed assets are ready',
+    (tester) async {
+      String? selected;
+      Widget controls(bool available) => MaterialApp(
+        home: Scaffold(
+          body: TopControls(
+            marineAvailable: available,
+            state: _state(),
+            onProgressPressed: () {},
+            onHelpPressed: () {},
+            onContentModeChanged: (value) => selected = value,
+            onConfigurationLockTapped: () {},
+            onConfigurationLockDoubleTapped: () {},
+            onStyleChanged: (_) {},
+          ),
+        ),
+      );
+      await tester.pumpWidget(controls(false));
+      expect(
+        tester
+            .widget<DropdownButton<String>>(find.byType(DropdownButton<String>))
+            .items!
+            .any((item) => item.value == 'marine'),
+        isFalse,
+      );
+      await tester.pumpWidget(controls(true));
+      await tester.tap(find.byType(DropdownButton<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Marine Life').last);
+      await tester.pumpAndSettle();
+      expect(selected, 'marine');
+    },
+  );
+
   testWidgets('content mode dropdown shows updated labels', (tester) async {
     await tester.pumpWidget(
       MaterialApp(

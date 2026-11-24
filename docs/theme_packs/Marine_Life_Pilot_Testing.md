@@ -2,8 +2,11 @@
 
 This debug screen exercises Apple delivery, the shared ZIP installer and loading
 the installed tile images from private application storage. Full Version and
-StoreKit purchases are not required. It does not add Marine Life to the regular
-game's theme selector; that belongs to the later theme browser integration.
+StoreKit purchases are not required. Once installed, Marine Life appears in the
+regular game's theme selector after returning from this screen. Select it to
+use the downloaded tiles in the current puzzle. Selection is saved across app
+restarts. Missing, invalid or undecodable installations fall back to Animals.
+This narrow pilot integration does not implement the full theme browser.
 
 ## Prepare the asset server
 
@@ -98,6 +101,14 @@ configuration and reads existing local files; it does not fetch packs.
 
 ## Exercise the flow
 
+After installing, return to the puzzle and open the theme dropdown above the
+board (the control showing Animals, Instruments, etc.). Choose **Marine Life**.
+The board, tile picker and notes use the private installed images. Long-press
+previews use the installed file paths and names. The pilot contains no audio.
+Normal game startup only reads local files; it never fetches packs. The option
+appears only after local validation and image decoding succeed. Returning from
+the developer test screen refreshes availability after installation/removal.
+
 1. **Check setup**: expect Apple supported and App Group configured to be true
    on a newly rebuilt iOS 26+ app. A failed support/configuration check disables
    native download actions and displays the reason.
@@ -171,9 +182,15 @@ From `flutter_app/`:
 ```sh
 flutter analyze
 flutter test test/marine_theme_pack_pilot_test.dart test/marine_theme_pack_test_screen_test.dart test/local_theme_pack_installer_test.dart test/sudoku_screen_debug_toggle_test.dart
+flutter test test/marine_theme_selection_test.dart test/top_controls_labels_test.dart test/sudoku_screen_asset_loading_test.dart
 ```
 
 Then perform the real local-server/device flow above. Mocked Dart tests cannot
 establish that Apple signing, TLS, development overrides or native delivery
 work on a device. No Flutter analysis, tests or app builds were run by the
 assistant for this implementation, following `docs/CURRENT_STATE.md`.
+
+For the gameplay integration, also check that selecting Marine Life preserves
+the current puzzle, notes and undo history; restart offline and confirm the
+selection persists. Remove the installed pilot from the test screen and return
+to the game: Animals should be selected and Marine Life should disappear.

@@ -34,7 +34,8 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
         _noteImages.remove('marine');
       });
     }
-    if (mounted && !_marineAvailable &&
+    if (mounted &&
+        !_marineAvailable &&
         widget.controller.state.contentMode == 'marine') {
       widget.controller.onContentModeChanged('animals');
     }
@@ -96,10 +97,8 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
   Future<void> _loadAnimalImages() async {
     try {
       final bundle = await widget.animalAssetService.load();
-      _animalImages
-        ..addAll(bundle.animalImages);
-      _noteImages
-        ..addAll(bundle.noteImages);
+      _animalImages..addAll(bundle.animalImages);
+      _noteImages..addAll(bundle.noteImages);
       _updateScreenState(() {});
     } on Exception catch (error) {
       AppDebug.log('Failed to load visual assets: $error');
