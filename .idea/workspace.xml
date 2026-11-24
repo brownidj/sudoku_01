@@ -18,9 +18,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Implement bundled theme abstraction phase 1">
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Implement bundled theme abstraction phase 2 begun">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/CURRENT_STATE.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/CURRENT_STATE.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/OfferCodeOneTimeUseCodes_dcc6a2f5-6339-41cb-8fa6-bc2324afe3d2.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/docs/OfferCodeOneTimeUseCodes_dcc6a2f5-6339-41cb-8fa6-bc2324afe3d2.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/analysis_options.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/analysis_options.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner.xcodeproj/project.pbxproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/pubspec.yaml" afterDir="false" />
     </list>
@@ -30,7 +35,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="1512" />
+    <option name="cachedIndexableFilesCount" value="1532" />
     <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
   </component>
   <component name="FileTemplateManagerImpl">
@@ -61,23 +66,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.23717175014991" />
-      <entry key="MS500" value="3.2062586727287474" />
-      <entry key="S2" value="9.060446627508968" />
-      <entry key="S5" value="17.933409580312656" />
-      <entry key="S10" value="25.416546959669567" />
-      <entry key="S30" value="33.512703975031236" />
-      <entry key="S60" value="36.85308566632865" />
-      <entry key="M2" value="44.78592424732321" />
-      <entry key="M5" value="81.03450074394264" />
-      <entry key="M10" value="161.33202493751634" />
-      <entry key="M15" value="236.70846135146635" />
-      <entry key="M30" value="388.3052530933589" />
-      <entry key="H1" value="523.7593307324221" />
-      <entry key="H2" value="622.6502555165621" />
-      <entry key="H4" value="693.5351944484992" />
-      <entry key="D1" value="1016.784940213994" />
-      <entry key="W1" value="4076.462600037102" />
+      <entry key="MS100" value="1.1951127516042188" />
+      <entry key="MS500" value="2.767293308462887" />
+      <entry key="S2" value="9.528959753789206" />
+      <entry key="S5" value="15.893177873030215" />
+      <entry key="S10" value="19.868933700948606" />
+      <entry key="S30" value="26.9097635570893" />
+      <entry key="S60" value="31.83692497088648" />
+      <entry key="M2" value="42.17105308110979" />
+      <entry key="M5" value="93.74672839570741" />
+      <entry key="M10" value="179.46937936955635" />
+      <entry key="M15" value="249.3314654789069" />
+      <entry key="M30" value="423.54040933880043" />
+      <entry key="H1" value="675.3246421421021" />
+      <entry key="H2" value="935.4416135092381" />
+      <entry key="H4" value="1140.7116143376584" />
+      <entry key="D1" value="1614.0344122219424" />
+      <entry key="W1" value="4698.011261703804" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -89,33 +94,33 @@
       <entry key="S60" value="0.0" />
       <entry key="M2" value="0.0" />
       <entry key="M5" value="0.0" />
-      <entry key="M10" value="5.102387812194653E-178" />
-      <entry key="M15" value="6.385314749519343E-119" />
-      <entry key="M30" value="7.990816447346835E-60" />
-      <entry key="H1" value="2.8268032204854067E-30" />
-      <entry key="H2" value="1.6813099715655096E-15" />
-      <entry key="H4" value="4.100377996679852E-8" />
-      <entry key="D1" value="0.058722425067418656" />
-      <entry key="W1" value="0.6669831379547406" />
+      <entry key="M10" value="1.6381760562699028E-180" />
+      <entry key="M15" value="1.389655175810216E-120" />
+      <entry key="M30" value="1.1788363651542538E-60" />
+      <entry key="H1" value="1.0857423106585835E-30" />
+      <entry key="H2" value="1.0419895923945893E-15" />
+      <entry key="H4" value="3.227986357459827E-8" />
+      <entry key="D1" value="0.05642721489215257" />
+      <entry key="W1" value="0.6631949808092807" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="1.2117111237592706" />
-      <entry key="MS500" value="3.1930040681212466" />
-      <entry key="S2" value="9.051315065756413" />
-      <entry key="S5" value="17.925963713990956" />
-      <entry key="S10" value="25.41110520020455" />
-      <entry key="S30" value="33.510243162935716" />
-      <entry key="S60" value="36.85171997894875" />
-      <entry key="M2" value="44.78508610728774" />
-      <entry key="M5" value="81.03389315869448" />
-      <entry key="M10" value="161.3314005434849" />
-      <entry key="M15" value="236.70782203397857" />
-      <entry key="M30" value="388.304688424933" />
-      <entry key="H1" value="523.7589322137718" />
-      <entry key="H2" value="622.6500124513163" />
-      <entry key="H4" value="693.5350564240877" />
-      <entry key="D1" value="1016.8436273958762" />
-      <entry key="W1" value="4077.1295646202475" />
+      <entry key="MS100" value="1.1692259312648725" />
+      <entry key="MS500" value="2.7543856505912876" />
+      <entry key="S2" value="9.518364019704721" />
+      <entry key="S5" value="15.886319996915315" />
+      <entry key="S10" value="19.86467211315266" />
+      <entry key="S30" value="26.907787520437356" />
+      <entry key="S60" value="31.83573024003327" />
+      <entry key="M2" value="42.170199838166965" />
+      <entry key="M5" value="93.74580013238757" />
+      <entry key="M10" value="179.4684274404816" />
+      <entry key="M15" value="249.3305577213235" />
+      <entry key="M30" value="423.5396107051916" />
+      <entry key="H1" value="675.3240012542952" />
+      <entry key="H2" value="935.4411711013138" />
+      <entry key="H4" value="1140.7113450861575" />
+      <entry key="D1" value="1614.090776476627" />
+      <entry key="W1" value="4698.674434017642" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -158,6 +163,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;python.packages.toolwindow.project.migrated.to.right.top.v2&quot;: &quot;true&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;ml.llm.LLMThirdPartyAiProvidersConfigurable&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
@@ -201,9 +207,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
+      <option name="RUN_AS_SCRIPT" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bgt.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -226,9 +232,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="false" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
+      <option name="RUN_AS_SCRIPT" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/butterfly_sound.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -251,9 +257,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
+      <option name="RUN_AS_SCRIPT" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/utils/generate_animal_images.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -276,9 +282,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
+      <option name="RUN_AS_SCRIPT" value="" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
@@ -298,9 +304,9 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="DEBUG_JUST_MY_CODE" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="RUN_TOOL" value="" />
+      <option name="RUN_AS_SCRIPT" value="" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/tests&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
@@ -319,8 +325,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-PY-261.26222.68" />
-        <option value="bundled-python-sdk-50341a9f1f9c-c2ffad84badb-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-261.26222.68" />
+        <option value="bundled-js-predefined-d6986cc7102b-56aff7b04f6f-JavaScript-PY-263.7307.206" />
+        <option value="bundled-python-sdk-34611be1ca5a-e0583fc556d1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-263.7307.206" />
       </set>
     </attachedChunks>
   </component>
@@ -378,15 +384,19 @@
       <workItem from="1784513445178" duration="20717000" />
       <workItem from="1784697925533" duration="8008000" />
       <workItem from="1784948373673" duration="12407000" />
-      <workItem from="1785290641687" duration="3486000" />
-    </task>
-    <task id="LOCAL-00037" summary="Post refactoring, before Notes icon colour change">
-      <option name="closed" value="true" />
-      <created>1772937739615</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1772937739615</updated>
+      <workItem from="1785290641687" duration="6370000" />
+      <workItem from="1785562067730" duration="18000" />
+      <workItem from="1785562133634" duration="116000" />
+      <workItem from="1786403665913" duration="63000" />
+      <workItem from="1786403841467" duration="4124000" />
+      <workItem from="1787006954969" duration="510000" />
+      <workItem from="1789703158248" duration="3791000" />
+      <workItem from="1789973621450" duration="2000" />
+      <workItem from="1791022387106" duration="392000" />
+      <workItem from="1791023093089" duration="105000" />
+      <workItem from="1791023445347" duration="4215000" />
+      <workItem from="1793409045380" duration="320000" />
+      <workItem from="1795479528119" duration="1533000" />
     </task>
     <task id="LOCAL-00038" summary="Adjusted animal icon colours">
       <option name="closed" value="true" />
@@ -772,7 +782,15 @@
       <option name="project" value="LOCAL" />
       <updated>1785293640568</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="Implement bundled theme abstraction phase 2 begun">
+      <option name="closed" value="true" />
+      <created>1785294486949</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1785294486949</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -810,7 +828,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Patrol tests done and passed" />
     <MESSAGE value="Added flutter integration tests" />
     <MESSAGE value="Corrections should now step back until the incorrectly selected tile is removed." />
     <MESSAGE value="PR 3 &amp; 4 completed" />
@@ -835,7 +852,8 @@
     <MESSAGE value="Commit of all new assets, screenshots, etc" />
     <MESSAGE value="background of givens and languages" />
     <MESSAGE value="Implement bundled theme abstraction phase 1" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement bundled theme abstraction phase 1" />
+    <MESSAGE value="Implement bundled theme abstraction phase 2 begun" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement bundled theme abstraction phase 2 begun" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />

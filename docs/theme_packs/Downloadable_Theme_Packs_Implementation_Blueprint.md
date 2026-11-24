@@ -979,33 +979,142 @@ Also test:
 
 ### Phase 2: Local pack installation
 
-- Define `manifest.json`.
-- Create a sample ZIP pack.
-- Install from a local test file.
-- Load theme assets from application storage.
-- Add uninstall support.
+- [x] Define `manifest.json`.
+- [x] Create a sample ZIP pack.
+- [x] Install from a local test file.
+- [x] Load theme assets from application storage.
+- [x] Add uninstall support.
+
+Phase 2 implementation status: complete.
+
+Files created:
+
+- `flutter_app/lib/ui/theme/composite_theme_repository.dart`
+- `flutter_app/lib/ui/theme/installed_theme.dart`
+- `flutter_app/lib/ui/theme/installed_theme_repository.dart`
+- `flutter_app/lib/ui/theme/installed_theme_store.dart`
+- `flutter_app/lib/ui/theme/local_theme_pack_developer_installer.dart`
+- `flutter_app/lib/ui/theme/local_theme_pack_extractor.dart`
+- `flutter_app/lib/ui/theme/local_theme_pack_installer.dart`
+- `flutter_app/lib/ui/theme/theme_loader.dart`
+- `flutter_app/lib/ui/theme/theme_manifest.dart`
+- `flutter_app/lib/ui/theme/theme_pack_errors.dart`
+- `flutter_app/lib/ui/theme/theme_pack_path_safety.dart`
+- `flutter_app/lib/ui/theme/theme_pack_validator.dart`
+- `flutter_app/lib/ui/theme/theme_storage_paths.dart`
+- `flutter_app/test/local_theme_pack_installer_test.dart`
+
+Files modified:
+
+- `flutter_app/lib/main.dart`
+- `flutter_app/pubspec.yaml`
+- `flutter_app/pubspec.lock`
+- `docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md`
+
+Local installation flow:
+
+1. A developer supplies a local ZIP file to `LocalThemePackInstaller.installFromZip`.
+2. `LocalThemePackExtractor` verifies the ZIP exists, rejects invalid ZIP signatures, rejects unsafe archive paths, rejects symlinks and blocked executable/native/script extensions, and extracts into `themes/temp/<timestamp>.staging/`.
+3. `ThemePackValidator` locates the single `manifest.json`, parses it into `ThemeManifest`, validates required fields, validates the supported schema version, validates theme id and version, checks referenced asset paths stay inside the extracted theme directory, checks image/audio extensions, confirms referenced assets exist, and verifies SHA-256 checksums where `checksums` entries are present.
+4. `LocalThemePackInstaller` compares the incoming pack with bundled and installed themes. Duplicate theme ids are rejected and reported as incoming `newer`, `identical` or `older`; Phase 2 does not perform an update workflow.
+5. The validated pack is copied to `installed/<theme-id>/versions/<version>.installing/`, then renamed to `installed/<theme-id>/versions/<version>/`.
+6. `InstalledThemeStore` writes `installed/<theme-id>/current.json` after the version directory is complete.
+7. Temporary staging and `.installing` directories are removed after success or failure.
+8. `RepositoryThemeLoader`, `InstalledThemeRepository` and `CompositeThemeRepository` make the installed theme discoverable through the same `ThemeRepository`/`ThemeLoader` architecture as bundled themes.
+
+Repository location and installed-pack structure:
+
+```text
+<application-support-directory>/
+  themes/
+    installed/
+      <theme-id>/
+        current.json
+        versions/
+          <version>/
+            manifest.json
+            preview.webp
+            tiles/
+            audio/
+    temp/
+      <timestamp>.staging/
+```
+
+`current.json` remains the active-version pointer:
+
+```json
+{
+  "active_version": 2,
+  "installed_at": "2026-07-29T00:00:00.000Z",
+  "validated": true
+}
+```
+
+Supported manifest version: `schema_version: 1`.
+
+Validation and checksum behaviour:
+
+- Required manifest fields are `schema_version`, `theme_id`, `theme_version`, `display_name`, `tile_count`, `tiles` and `preview_path`.
+- `theme_id` must match `^[a-z][a-z0-9_-]{2,63}$`.
+- `theme_version` must be greater than zero.
+- `tile_count` must be `9`, and `tiles` must contain exactly nine entries.
+- Referenced image assets must use `.jpg`, `.jpeg`, `.png` or `.webp`.
+- Referenced audio assets must use `.m4a`, `.mp3` or `.wav`.
+- Archive and manifest paths are normalized and rejected if absolute, empty or traversing outside the extracted theme directory.
+- SHA-256 checksums are optional, but every manifest `checksums` entry must be a 64-character hexadecimal digest and must match the referenced file.
+
+Developer-only local install mechanism:
+
+```sh
+flutter run \
+  --dart-define=ENABLE_LOCAL_THEME_PACK_INSTALLER=true \
+  --dart-define=LOCAL_THEME_PACK_ZIP=/absolute/path/to/theme.zip
+```
+
+This hook is isolated in `LocalThemePackDeveloperInstaller`, runs before `SudokuApp` starts, performs no networking, and is disabled unless both dart defines are supplied.
+
+Tests added:
+
+- successful installation of a valid local pack;
+- invalid ZIP;
+- missing ZIP file;
+- missing manifest;
+- malformed manifest;
+- missing asset;
+- checksum mismatch;
+- duplicate pack;
+- path traversal attempt;
+- cleanup after failed installation;
+- successful discovery by `ThemeLoader` and the shared repository.
+
+Deviations:
+
+- Phase 1 did not contain a concrete `ThemeLoader`; Phase 2 adds the minimal `ThemeLoader` interface and `RepositoryThemeLoader` implementation described by this blueprint so installed packs do not need a parallel loading path.
+- The sample ZIP pack is generated inside `local_theme_pack_installer_test.dart` rather than checked in as a binary fixture. This keeps the repository small and lets the tests generate matching and mismatched checksums deterministically.
+
+Phase 3 and later phases: not started.
 
 ### Phase 3: Remote catalogue and download
 
-- Host a test catalogue and pack.
-- Implement catalogue caching.
-- Implement download progress.
-- Add checksum verification.
-- Add retry and cancellation.
+- [ ] Host a test catalogue and pack.
+- [ ] Implement catalogue caching.
+- [ ] Implement download progress.
+- [ ] Add checksum verification.
+- [ ] Add retry and cancellation.
 
 ### Phase 4: Theme browser UI
 
-- Show bundled and remote packs.
-- Display installation states.
-- Add download, remove and update actions.
-- Add storage-size information.
+- [ ] Show bundled and remote packs.
+- [ ] Display installation states.
+- [ ] Add download, remove and update actions.
+- [ ] Add storage-size information.
 
 ### Phase 5: Purchases
 
-- Add product identifiers.
-- Implement entitlement checks.
-- Add purchase and restore flows.
-- Ensure purchase completion is independent of download success.
+- [ ] Add product identifiers.
+- [ ] Implement entitlement checks.
+- [ ] Add purchase and restore flows.
+- [ ] Ensure purchase completion is independent of download success.
 
 ### Phase 6: Production hardening
 

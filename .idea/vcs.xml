@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AgentCommitMessageProject"><![CDATA[{
+  "mode": "CUSTOM",
+  "instruction": "Generate a concise commit message for the Sudoku Playtime project.\n\nThe first line must:\n- use the imperative mood\n- be no longer than 72 characters\n- describe the main functional change\n\nAdd a short bullet list only when the commit contains multiple meaningful changes.\nPrefer descriptions of player-visible behaviour over implementation details.\nDo not mention AI, generated code, or file names unless essential."
+}]]></component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
