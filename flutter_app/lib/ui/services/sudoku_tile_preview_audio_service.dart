@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
+import 'package:flutter_app/ui/theme/marine_game_theme.dart';
 
 class SudokuTilePreviewAudioService {
   final AudioPlayer _player;
@@ -76,6 +77,9 @@ class SudokuTilePreviewAudioService {
     if (digit < 1 || digit > 9) {
       return null;
     }
+    if (contentMode == 'marine') {
+      return MarineGameTheme.definition?.audio?.tilePreviewAssetForDigit(digit);
+    }
     return BundledThemeRepository.tilePreviewAudioAsset(
       themeId: contentMode,
       digit: digit,
@@ -103,6 +107,10 @@ class SudokuTilePreviewAudioService {
   }
 
   Future<bool> _playAssetWithFallback(String asset) async {
+    if (asset.startsWith('/')) {
+      await _player.play(DeviceFileSource(asset));
+      return true;
+    }
     final normalized = asset.startsWith('assets/')
         ? asset.substring('assets/'.length)
         : asset;

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the image-only Marine Life pilot; optionally package it for Apple.
+"""Build the Marine Life pilot with creature sounds and music for Apple.
 
 Requires Pillow with WebP support. Does not change source images, bundle assets,
 sign anything, upload content, or run Flutter/Xcode application builds.
@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import re
+import shutil
 import subprocess
 import tempfile
 import zipfile
@@ -52,7 +53,7 @@ def build(output, package_apple):
         raise ValueError("Cannot determine minimum app build from pubspec.yaml.")
     app_build = int(version.group(1))
     source = PROJECT / "flutter_app/assets/images/marine"
-    root = output / "marine_v1"
+    root = output / "marine_v2"
     (root / "tiles").mkdir(parents=True, exist_ok=True)
     entries, images, source_hashes = [], [], {}
     for digit, (tile_id, label) in enumerate(TILES, start=1):
@@ -89,19 +90,45 @@ def build(output, package_apple):
         draw.text((x + 128, y + 238), TILES[index][1], fill="#163F50", anchor="mm")
     preview.save(root / "preview.webp", "WEBP", quality=86, method=6)
     assets = ["preview.webp", *(entry["path"] for entry in entries)]
+    image_assets = list(assets)
+    audio_source = PROJECT / "flutter_app/assets/audio/marine"
+    music_source = PROJECT / "flutter_app/assets/audio/unused/marine"
+    tile_audio, music, audio_hashes = [], [], {}
+    for digit, (tile_id, _) in enumerate(TILES, start=1):
+        filename = "1_butterfly.mp3" if digit == 1 else f"{digit}_{tile_id}.mp3"
+        source_path = audio_source / filename
+        relative = f"audio/tiles/{digit:02d}.mp3"
+        (root / relative).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source_path, root / relative)
+        audio_hashes[str(source_path.relative_to(PROJECT))] = digest(source_path)
+        assets.append(relative)
+        tile_audio.append({"digit": digit, "long_press": relative})
+    # Include the nine original songs, without the numbered alternate takes.
+    for source_path in sorted(music_source.glob("*.mp3")):
+        if re.search(r"-\d+$", source_path.stem):
+            continue
+        relative = f"audio/music/{source_path.name}"
+        (root / relative).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source_path, root / relative)
+        audio_hashes[str(source_path.relative_to(PROJECT))] = digest(source_path)
+        assets.append(relative)
+        music.append(relative)
+    if len(music) != 9:
+        raise ValueError("Expected nine original Marine Life background songs.")
     manifest = {
         "schema_version": 1,
         "theme_id": "marine",
-        "theme_version": 1,
+        "theme_version": 2,
         "display_name": "Marine Life",
         "tile_count": 9,
         "tiles": entries,
         "preview_path": "preview.webp",
         "minimum_app_build": app_build,
+        "audio": {"tiles": tile_audio, "music": music},
         "checksums": {name: digest(root / name) for name in assets},
     }
     write_json(root / "manifest.json", manifest)
-    archive_path = output / "marine_v1.zip"
+    archive_path = output / "marine_v2.zip"
     with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as archive:
         for name in sorted(["manifest.json", *assets]):
             # Stable ZIP metadata makes unchanged inputs produce the same hash.
@@ -117,12 +144,12 @@ def build(output, package_apple):
         "themes": [
             {
                 "id": "marine",
-                "version": 1,
+                "version": 2,
                 "display_name": "Marine Life",
                 "description": "Nine familiar sea creatures.",
                 "apple_asset_pack_id": "marine",
-                "archive_path": "ThemePacks/marine_v1.zip",
-                "preview_path": "ThemePreviews/marine_v1.webp",
+                "archive_path": "ThemePacks/marine_v2.zip",
+                "preview_path": "ThemePreviews/marine_v2.webp",
                 "sha256": digest(archive_path),
                 "file_size_bytes": archive_path.stat().st_size,
                 "minimum_app_build": app_build,
@@ -133,23 +160,23 @@ def build(output, package_apple):
     }
     write_json(output / "catalogue.json", catalogue)
     apple_manifests = {
-        "marine_v1": {
+        "marine_v2": {
             "assetPackID": "marine",
             "downloadPolicy": {"onDemand": {}},
             "fileSelectors": [
                 {
-                    "fileSource": "marine_v1.zip",
-                    "fileDestination": "ThemePacks/marine_v1.zip",
+                    "fileSource": "marine_v2.zip",
+                    "fileDestination": "ThemePacks/marine_v2.zip",
                 }
             ],
             "platforms": ["iOS"],
         },
-        "theme_catalogue_v1": {
+        "theme_catalogue_v2": {
             "assetPackID": "theme_catalogue",
             "downloadPolicy": {"onDemand": {}},
             "fileSelectors": [
                 {"fileSource": "catalogue.json", "fileDestination": "ThemeCatalogue/catalogue.json"},
-                {"fileSource": "marine_v1/preview.webp", "fileDestination": "ThemePreviews/marine_v1.webp"},
+                {"fileSource": "marine_v2/preview.webp", "fileDestination": "ThemePreviews/marine_v2.webp"},
             ],
             "platforms": ["iOS"],
         },
@@ -173,25 +200,32 @@ def build(output, package_apple):
         for name, checksum in manifest["checksums"].items():
             if hashlib.sha256(archive.read(name)).hexdigest() != checksum:
                 raise ValueError(f"Asset checksum mismatch: {name}")
-    for name in assets:
+    for name in image_assets:
         with Image.open(root / name) as image:
             expected = (768, 768) if name == "preview.webp" else (512, 512)
             if image.size != expected:
                 raise ValueError(f"Unexpected image dimensions: {name}")
     if any(digest(source / name) != checksum for name, checksum in source_hashes.items()):
         raise ValueError("A source image changed during packaging.")
+    if any(digest(PROJECT / name) != checksum for name, checksum in audio_hashes.items()):
+        raise ValueError("Source audio changed during packaging.")
+    if archive_path.stat().st_size > 64 * 1024 * 1024:
+        raise ValueError("Pilot ZIP exceeds the app's 64 MiB delivery limit.")
     report = {
         "theme": "marine",
-        "content_version": 1,
+        "content_version": 2,
         "minimum_app_build": app_build,
         "tile_count": 9,
-        "audio_included": False,
+        "audio_included": True,
+        "creature_audio_count": len(tile_audio),
+        "background_music_count": len(music),
+        "audio_source_sha256": audio_hashes,
         "zip_bytes": archive_path.stat().st_size,
         "zip_sha256": digest(archive_path),
         "source_sha256": source_hashes,
         "apple_archives_created": package_apple,
     }
-    write_json(output / "marine_v1.build_report.json", report)
+    write_json(output / "marine_v2.build_report.json", report)
     print(json.dumps({"output": str(output), **report}, indent=2))
 
 

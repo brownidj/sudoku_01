@@ -28,11 +28,10 @@ class SudokuBackgroundMusicService {
     math.Random? random,
     PremiumPolicyService premiumPolicyService = const PremiumPolicyService(),
     void Function(String trackAsset)? onTrackPlayAttempt,
-  })
-    : _player = player ?? AudioPlayer(),
-      _random = random ?? math.Random(),
-      _premiumPolicyService = premiumPolicyService,
-      _onTrackPlayAttempt = onTrackPlayAttempt {
+  }) : _player = player ?? AudioPlayer(),
+       _random = random ?? math.Random(),
+       _premiumPolicyService = premiumPolicyService,
+       _onTrackPlayAttempt = onTrackPlayAttempt {
     unawaited(
       _player.setAudioContext(
         AudioContext(
@@ -58,17 +57,28 @@ class SudokuBackgroundMusicService {
     _audioEnabled = enabled;
     _syncPlayback();
   }
+
   void setBackgroundMusicEnabled(bool enabled) {
     if (_backgroundMusicEnabled == enabled) return;
     _backgroundMusicEnabled = enabled;
     _syncPlayback();
   }
+
   void setVolume(double volume) {
     final next = volume.clamp(0.0, 1.0);
     if (_volume == next) return;
     _volume = next;
     unawaited(_player.setVolume(_volume));
   }
+
+  /// Installed pack paths become available asynchronously after game startup.
+  Future<void> refreshInstalledTracks() async {
+    if (_contentMode != 'marine') return;
+    await _stop();
+    _currentTrackIndex = -1;
+    _syncPlayback();
+  }
+
   void onUiStateChanged(UiState state) {
     final inProgress = !state.gameOver;
     final nextContentMode = state.contentMode;
@@ -150,7 +160,8 @@ class SudokuBackgroundMusicService {
     if (_currentTrackIndex < 0) {
       _currentTrackIndex = tracks.length - 1;
     } else {
-      _currentTrackIndex = (_currentTrackIndex - 1 + tracks.length) % tracks.length;
+      _currentTrackIndex =
+          (_currentTrackIndex - 1 + tracks.length) % tracks.length;
     }
     await _playCurrent();
   }
@@ -223,6 +234,10 @@ class SudokuBackgroundMusicService {
   }
 
   Future<bool> _playAssetWithFallback(String asset) async {
+    if (asset.startsWith('/')) {
+      await _player.play(DeviceFileSource(asset));
+      return true;
+    }
     final normalized = asset.startsWith('assets/')
         ? asset.substring('assets/'.length)
         : asset;

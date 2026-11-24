@@ -1,7 +1,11 @@
 import 'package:flutter_app/ui/services/sudoku_background_music_tracks.g.dart';
 import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
+import 'package:flutter_app/ui/theme/marine_game_theme.dart';
 
 List<String> backgroundTracksForContentMode(String contentMode) {
+  if (contentMode == 'marine') {
+    return MarineGameTheme.definition?.audio?.backgroundMusicAssets ?? const [];
+  }
   if (!BundledThemeRepository.hasTheme(contentMode)) {
     return const <String>[];
   }

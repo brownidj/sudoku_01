@@ -39,6 +39,9 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
         widget.controller.state.contentMode == 'marine') {
       widget.controller.onContentModeChanged('animals');
     }
+    if (mounted) {
+      unawaited(_services.backgroundMusicService.refreshInstalledTracks());
+    }
   }
 
   bool get _isBackgroundMusicTheme {

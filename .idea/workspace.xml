@@ -18,7 +18,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Improve Apple asset helper failure diagnostics" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Fix asset-loading analyzer warnings">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/ios/Runner/AppleThemePackPlugin.swift" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/ios/Runner/AppleThemePackPlugin.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/app/premium_policy_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/app/premium_policy_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_tracks.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_tracks.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen_handlers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/sudoku_screen_handlers.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/test/marine_theme_selection_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/marine_theme_selection_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/build_marine_theme_pack.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_marine_theme_pack.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -56,23 +68,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0274147322288443" />
-      <entry key="MS500" value="1.6824190523712754" />
-      <entry key="S2" value="3.6916178776296316" />
-      <entry key="S5" value="6.352268512195579" />
-      <entry key="S10" value="9.178328715299319" />
-      <entry key="S30" value="12.981584938609144" />
-      <entry key="S60" value="14.374349575356778" />
-      <entry key="M2" value="15.362060520553081" />
-      <entry key="M5" value="17.505854812224058" />
-      <entry key="M10" value="22.62036199066998" />
-      <entry key="M15" value="32.31976938517707" />
-      <entry key="M30" value="89.92234988951687" />
-      <entry key="H1" value="287.1562809157571" />
-      <entry key="H2" value="681.4105231414168" />
-      <entry key="H4" value="1143.9151969982054" />
-      <entry key="D1" value="2065.5433116446316" />
-      <entry key="W1" value="5248.777885316685" />
+      <entry key="MS100" value="1.0011613350784023" />
+      <entry key="MS500" value="1.2679622472585947" />
+      <entry key="S2" value="2.653919538102937" />
+      <entry key="S5" value="5.267183354020752" />
+      <entry key="S10" value="8.236079453086203" />
+      <entry key="S30" value="12.819706110257663" />
+      <entry key="S60" value="14.679793635570585" />
+      <entry key="M2" value="15.774659705924405" />
+      <entry key="M5" value="16.495550651907166" />
+      <entry key="M10" value="16.982384594414633" />
+      <entry key="M15" value="18.256718253160226" />
+      <entry key="M30" value="33.48142428935688" />
+      <entry key="H1" value="134.632452555954" />
+      <entry key="H2" value="450.4063379074998" />
+      <entry key="H4" value="930.7453971815659" />
+      <entry key="D1" value="2015.9725099215434" />
+      <entry key="W1" value="5250.129054340023" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -84,33 +96,33 @@
       <entry key="S60" value="0.0" />
       <entry key="M2" value="0.0" />
       <entry key="M5" value="0.0" />
-      <entry key="M10" value="1.2542986422182924E-185" />
-      <entry key="M15" value="5.398427850367786E-124" />
-      <entry key="M30" value="2.323451710358375E-62" />
-      <entry key="H1" value="1.524287279471402E-31" />
-      <entry key="H2" value="3.904212186179763E-16" />
-      <entry key="H4" value="1.9759079397027054E-8" />
-      <entry key="D1" value="0.05199494435054657" />
-      <entry key="W1" value="0.6554897032334822" />
+      <entry key="M10" value="4.205950406097598E-188" />
+      <entry key="M15" value="1.209417081848451E-125" />
+      <entry key="M30" value="3.477667439316663E-63" />
+      <entry key="H1" value="5.897175119764206E-32" />
+      <entry key="H2" value="2.428409998283737E-16" />
+      <entry key="H4" value="1.5583356500715757E-8" />
+      <entry key="D1" value="0.049977765429559916" />
+      <entry key="W1" value="0.6517949275430437" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9989529164376283" />
-      <entry key="MS500" value="1.6712950046397352" />
-      <entry key="S2" value="3.6849934399046376" />
-      <entry key="S5" value="6.347698131501342" />
-      <entry key="S10" value="9.175008940221632" />
-      <entry key="S30" value="12.980003670700716" />
-      <entry key="S60" value="14.373470888632083" />
-      <entry key="M2" value="15.36158914454486" />
-      <entry key="M5" value="17.505637314387837" />
-      <entry key="M10" value="22.620226264143756" />
-      <entry key="M15" value="32.31965038756005" />
-      <entry key="M30" value="89.92220799147034" />
-      <entry key="H1" value="287.15605495806875" />
-      <entry key="H2" value="681.4102441198613" />
-      <entry key="H4" value="1143.9149568519533" />
-      <entry key="D1" value="2065.595232418887" />
-      <entry key="W1" value="5249.43335020349" />
+      <entry key="MS100" value="0.9670737640728954" />
+      <entry key="MS500" value="1.2599202989879523" />
+      <entry key="S2" value="2.6497738309511876" />
+      <entry key="S5" value="5.26370024537141" />
+      <entry key="S10" value="8.233310895236368" />
+      <entry key="S30" value="12.818269554969458" />
+      <entry key="S60" value="14.678972969483508" />
+      <entry key="M2" value="15.77421942674208" />
+      <entry key="M5" value="16.495366686797222" />
+      <entry key="M10" value="16.982290112495377" />
+      <entry key="M15" value="18.256651004488536" />
+      <entry key="M30" value="33.481366969800426" />
+      <entry key="H1" value="134.63234438655363" />
+      <entry key="H2" value="450.4061528025915" />
+      <entry key="H4" value="930.7452016175226" />
+      <entry key="D1" value="2016.0224153015015" />
+      <entry key="W1" value="5250.78082443316" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -388,39 +400,7 @@
       <workItem from="1791023093089" duration="105000" />
       <workItem from="1791023445347" duration="4215000" />
       <workItem from="1793409045380" duration="320000" />
-      <workItem from="1795479528119" duration="11425000" />
-    </task>
-    <task id="LOCAL-00043" summary="Prior to refactoring of 595 flutter_app/lib/app/sudoku_controller.dart&#10;                        385 flutter_app/lib/app/game_session_service.dart">
-      <option name="closed" value="true" />
-      <created>1773101905738</created>
-      <option name="number" value="00043" />
-      <option name="presentableId" value="LOCAL-00043" />
-      <option name="project" value="LOCAL" />
-      <updated>1773101905738</updated>
-    </task>
-    <task id="LOCAL-00044" summary="After refactoring of 595 flutter_app/lib/app/sudoku_controller.dart&#10;                        385 flutter_app/lib/app/game_session_service.dart">
-      <option name="closed" value="true" />
-      <created>1773103046981</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1773103046981</updated>
-    </task>
-    <task id="LOCAL-00045" summary="Corrections 2nd pass">
-      <option name="closed" value="true" />
-      <created>1773116905392</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1773116905392</updated>
-    </task>
-    <task id="LOCAL-00046" summary="Corrections prior to adding all missing animals valid or not.">
-      <option name="closed" value="true" />
-      <created>1773267288312</created>
-      <option name="number" value="00046" />
-      <option name="presentableId" value="LOCAL-00046" />
-      <option name="project" value="LOCAL" />
-      <updated>1773267288312</updated>
+      <workItem from="1795479528119" duration="16649000" />
     </task>
     <task id="LOCAL-00047" summary="Changed to cheetah">
       <option name="closed" value="true" />
@@ -782,7 +762,39 @@
       <option name="project" value="LOCAL" />
       <updated>1795490810319</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="Marine life selectable">
+      <option name="closed" value="true" />
+      <created>1795493148596</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1795493148596</updated>
+    </task>
+    <task id="LOCAL-00093" summary="Marine life selectable">
+      <option name="closed" value="true" />
+      <created>1795493186458</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1795493186458</updated>
+    </task>
+    <task id="LOCAL-00094" summary="Enable installed Marine Life theme in puzzles">
+      <option name="closed" value="true" />
+      <created>1795493560994</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1795493560994</updated>
+    </task>
+    <task id="LOCAL-00095" summary="Fix asset-loading analyzer warnings">
+      <option name="closed" value="true" />
+      <created>1795493715892</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1795493715892</updated>
+    </task>
+    <option name="localTasksCounter" value="96" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -820,9 +832,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated version to 0.8.2+225" />
-    <MESSAGE value="Updated version to 0.8.2+226" />
-    <MESSAGE value="Updated version to 0.8.2+227" />
     <MESSAGE value="Updated version to 0.8.2+229" />
     <MESSAGE value="Updated version to 0.8.2+229 with evidence" />
     <MESSAGE value="Updated version to 0.9.0+230" />
@@ -845,7 +854,10 @@
     <MESSAGE value="Configure shared App Group and signing for Apple theme packs" />
     <MESSAGE value="Add Marine Life developer delivery and installation test flow" />
     <MESSAGE value="Improve Apple asset helper failure diagnostics" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improve Apple asset helper failure diagnostics" />
+    <MESSAGE value="Marine life selectable" />
+    <MESSAGE value="Enable installed Marine Life theme in puzzles" />
+    <MESSAGE value="Fix asset-loading analyzer warnings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix asset-loading analyzer warnings" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />

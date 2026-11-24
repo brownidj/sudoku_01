@@ -13,7 +13,7 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       const policy = PremiumPolicyService();
       expect(policy.isContentModeUnlocked('marine', Entitlement.free), isTrue);
-      expect(policy.isBackgroundMusicThemeMode('marine'), isFalse);
+      expect(policy.isBackgroundMusicThemeMode('marine'), isTrue);
 
       final controller = SudokuController();
       await controller.ready;

@@ -184,6 +184,8 @@ private final class AppleThemePackWorker {
       }
       do {
         self.send(id, stage: "waiting")
+        // Refresh native versions before resolving cached catalogue/pack data.
+        _ = try await manager.checkForUpdates()
         let pack: AssetPack
         if #available(iOS 27.0, *) {
           let manifest = try await manager.manifest
@@ -196,7 +198,7 @@ private final class AppleThemePackWorker {
         }
         try Task.checkCancellation()
         if #available(iOS 26.4, *) {
-          try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: false)
+          try await manager.ensureLocalAvailability(of: pack, requireLatestVersion: true)
         } else {
           try await manager.ensureLocalAvailability(of: pack)
         }

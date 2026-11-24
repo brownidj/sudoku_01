@@ -114,7 +114,7 @@ class PremiumPolicyService {
 
   bool isBackgroundMusicThemeMode(String contentMode) {
     final mode = contentMode.trim().toLowerCase();
-    return premiumContentModes.contains(mode);
+    return mode == 'marine' || premiumContentModes.contains(mode);
   }
 
   bool areEnhancedCelebrationsUnlocked(Entitlement entitlement) {

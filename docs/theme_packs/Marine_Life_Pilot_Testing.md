@@ -17,7 +17,7 @@ python3 scripts/build_marine_theme_pack.py --package-apple
 ```
 
 The output directory is `flutter_app/build/theme_packs/`. The server needs both
-`marine_v1.aar` and `theme_catalogue_v1.aar`. These are Apple's asset archives,
+`marine_v2.aar` and `theme_catalogue_v2.aar`. These are Apple's asset archives,
 not Android libraries. Generated files are ignored by Git and can be recreated.
 
 Apple's mock server requires a TLS server identity, with its private key, in
@@ -45,7 +45,7 @@ bash scripts/serve_marine_theme_packs.sh Mac.local
 
 The default port is 63245; an optional second argument changes it. Keep the
 server terminal open. Stop it with Control-C when finished. The helper uses
-native delivery version 1 for both archives; these native versions are separate
+native delivery version 2 for both archives; these native versions are separate
 from the theme manifest's content version.
 
 If an older server process is waiting at “Choose an identity in the panel to
@@ -101,10 +101,32 @@ configuration and reads existing local files; it does not fetch packs.
 
 ## Exercise the flow
 
+### Updating the image-only v1 pilot to audio v2
+
+Serve the v2 archives with native delivery version 2. The native bridge now
+checks for updates and requires the latest native version when explicitly
+fetching a pack. In the debug test screen, remove the installed v1 pilot, fetch
+the catalogue (expect v2), then download and install. This removes only the
+pilot's files; it does not reset the puzzle or purchases. The pilot installer
+continues to reject replacing a different installed version implicitly.
+
+In the game, select Marine Life, enable Audio and Background music in the
+drawer, and use the next/previous controls to change songs. Long-press a
+creature tile or filled cell for its clip. Audio plays from private installed
+files via DeviceFileSource; no Marine Life audio is added to the app bundle.
+The nine original songs are included; numbered alternate takes remain excluded.
+The v2 ZIP is approximately 35 MB. Offline game startup validates the installed
+files and refreshes the music service after the pack's paths become available.
+
+Verify on a physical phone that music and creature clips are audible, music
+resumes after a preview, volume/mute controls work, and playback survives a
+profile-build restart. Automated path-resolution tests cannot establish that
+the phone speaker is audible.
+
 After installing, return to the puzzle and open the theme dropdown above the
 board (the control showing Animals, Instruments, etc.). Choose **Marine Life**.
 The board, tile picker and notes use the private installed images. Long-press
-previews use the installed file paths and names. The pilot contains no audio.
+previews use the installed file paths and names. Version 2 contains nine creature clips and nine original background songs.
 Normal game startup only reads local files; it never fetches packs. The option
 appears only after local validation and image decoding succeed. Returning from
 the developer test screen refreshes availability after installation/removal.
