@@ -304,6 +304,43 @@ void main() {
     },
   );
 
+  testWidgets('another preview keeps music paused until the latest clip ends', (
+    tester,
+  ) async {
+    final audio = _FakeAudioController(hasAudioAsset: true, playResult: true);
+    final background = _FakeBackgroundMusicController();
+    final service = SudokuCellTooltipService(_FakeOverlay(), audio, background);
+    addTearDown(service.dispose);
+    late BuildContext context;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Builder(
+            builder: (ctx) {
+              context = ctx;
+              return const SizedBox.shrink();
+            },
+          ),
+        ),
+      ),
+    );
+    void preview() => service.showForCell(
+      context: context,
+      state: _stateWithValue(contentMode: 'butterflies', value: 1),
+      coord: const Coord(0, 0),
+      globalPosition: const Offset(100, 120),
+    );
+    preview();
+    await tester.pump(const Duration(seconds: 3));
+    preview();
+    await tester.pump(const Duration(seconds: 1));
+    expect(background.resumeCalls, 0);
+    await tester.pump(const Duration(seconds: 3));
+    expect(background.suspendCalls, 2);
+    expect(background.resumeCalls, 1);
+    expect(background.lastResumeReason, 'tile-preview');
+  });
+
   testWidgets('shows snackbar when tile audio is unavailable', (tester) async {
     final overlay = _FakeOverlay();
     final audio = _FakeAudioController(hasAudioAsset: false, playResult: false);

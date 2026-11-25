@@ -229,9 +229,9 @@ class _DownloadableThemesScreenState extends State<DownloadableThemesScreen>
                 if (installed != null) ...[
                   FilledButton(
                     key: ValueKey('use-theme-$id'),
-                    onPressed: controller.busy || !item.owned
-                        ? null
-                        : () => Navigator.of(context).pop(id),
+                    onPressed: controller.canUse(id)
+                        ? () => Navigator.of(context).pop(id)
+                        : null,
                     child: const Text('Use in puzzle'),
                   ),
                 ],

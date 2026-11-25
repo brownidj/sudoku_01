@@ -11,6 +11,78 @@ void main() {
   tearDown(() => fixture.dispose());
 
   test(
+    'validated Marine Life developer pack is usable without store or purchase',
+    () async {
+      final pilot = fixture.pilots['marine']!..developerPack = true;
+      pilot.installed = pilot.definition;
+      pilot.published = false;
+      fixture.purchases.storeAvailable = false;
+      await fixture.controller.initialize();
+      expect(fixture.controller.canUse('marine'), isTrue);
+      expect(fixture.controller.themes['marine']!.owned, isFalse);
+      expect(fixture.controller.canDownload('marine'), isFalse);
+      expect(fixture.purchases.bought, isEmpty);
+      fixture.controller.busy = true;
+      expect(fixture.controller.canUse('marine'), isFalse);
+      fixture.controller.busy = false;
+      pilot.damaged = true;
+      await fixture.controller.refresh();
+      expect(fixture.controller.canUse('marine'), isFalse);
+    },
+  );
+
+  test(
+    'paid installed themes require their own purchase, including after revocation',
+    () async {
+      for (final pilot in fixture.pilots.values) {
+        pilot.installed = pilot.definition;
+      }
+      fixture.purchases.owned.add('premium_unlock');
+      await fixture.controller.initialize();
+      for (final id in ['marine', 'planets', 'buttons']) {
+        expect(fixture.controller.canUse(id), isFalse);
+        final productId = fixture.pilots[id]!.definition.productId!;
+        fixture.purchases.owned.add(productId);
+        await fixture.controller.refreshOwnership();
+        expect(fixture.controller.canUse(id), isTrue);
+        fixture.purchases.owned.remove(productId);
+        await fixture.controller.refreshOwnership();
+        expect(fixture.controller.canUse(id), isFalse);
+      }
+    },
+  );
+
+  test('free developer exception does not extend to other themes', () async {
+    for (final id in ['planets', 'buttons']) {
+      final pilot = fixture.pilots[id]!..developerPack = true;
+      pilot.installed = pilot.definition;
+    }
+    await fixture.controller.initialize();
+    expect(fixture.controller.canUse('planets'), isFalse);
+    expect(fixture.controller.canUse('buttons'), isFalse);
+    expect(fixture.controller.canUse('marine'), isFalse);
+  });
+
+  test(
+    'owning the expected product cannot unlock a pack bound to another product',
+    () async {
+      fixture.pilots['marine']!.installed = const ThemeDefinition(
+        id: 'marine',
+        productId: 'theme_planets',
+        displayName: 'Marine Life',
+        tiles: [],
+        audio: null,
+        colours: ThemeColours(),
+        typography: null,
+        version: 4,
+      );
+      fixture.purchases.owned.add('theme_marine');
+      await fixture.controller.initialize();
+      expect(fixture.controller.canUse('marine'), isFalse);
+    },
+  );
+
+  test(
     'corrupt installed files can be removed before a purchased redownload',
     () async {
       fixture.purchases.owned.add('theme_marine');

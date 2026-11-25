@@ -37,6 +37,9 @@ class ThemeSummary {
 
 class ThemeDefinition {
   final String id;
+
+  /// Store binding from the installed manifest; null for bundled/developer content.
+  final String? productId;
   final String displayName;
   final List<ThemeTile> tiles;
   final ThemeAudio? audio;
@@ -46,6 +49,7 @@ class ThemeDefinition {
 
   const ThemeDefinition({
     required this.id,
+    this.productId,
     required this.displayName,
     required this.tiles,
     required this.audio,

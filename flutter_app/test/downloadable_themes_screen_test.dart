@@ -124,36 +124,84 @@ void main() {
     },
   );
 
-  testWidgets('Use in puzzle returns the installed theme to the caller', (
-    tester,
-  ) async {
-    fixture.purchases.owned.add('theme_marine');
-    fixture.pilots['marine']!.installed = fixture.pilots['marine']!.definition;
-    String? selected;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Builder(
-          builder: (context) => TextButton(
-            onPressed: () async {
-              selected = await Navigator.of(context).push<String>(
-                MaterialPageRoute(
-                  builder: (_) => DownloadableThemesScreen(
-                    createController: () async => fixture.controller,
-                  ),
-                ),
-              );
-            },
-            child: const Text('Open store'),
+  for (final developerPack in [false, true]) {
+    testWidgets(
+      'Use in puzzle returns the installed ${developerPack ? 'developer' : 'paid'} theme to the caller',
+      (tester) async {
+        if (!developerPack) fixture.purchases.owned.add('theme_marine');
+        fixture.pilots['marine']!.developerPack = developerPack;
+        fixture.pilots['marine']!.installed =
+            fixture.pilots['marine']!.definition;
+        String? selected;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Builder(
+              builder: (context) => TextButton(
+                onPressed: () async {
+                  selected = await Navigator.of(context).push<String>(
+                    MaterialPageRoute(
+                      builder: (_) => DownloadableThemesScreen(
+                        createController: () async => fixture.controller,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Open store'),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+        await tester.tap(find.text('Open store'));
+        await tester.pumpAndSettle();
+        await tap(tester, 'use-theme-marine');
+        expect(selected, 'marine');
+        expect(find.text('Open store'), findsOneWidget);
+        if (developerPack) {
+          expect(fixture.purchases.owned, isEmpty);
+          expect(fixture.purchases.bought, isEmpty);
+        }
+      },
     );
-    await tester.tap(find.text('Open store'));
-    await tester.pumpAndSettle();
-    await tap(tester, 'use-theme-marine');
-    expect(selected, 'marine');
-    expect(find.text('Open store'), findsOneWidget);
-  });
+  }
+
+  testWidgets(
+    'Use in puzzle is disabled for an installed paid pack without ownership',
+    (tester) async {
+      fixture.pilots['marine']!.installed =
+          fixture.pilots['marine']!.definition;
+      await mount(tester);
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const ValueKey('use-theme-marine')),
+            )
+            .onPressed,
+        isNull,
+      );
+      fixture.purchases.owned.add('theme_marine');
+      await fixture.controller.refreshOwnership();
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const ValueKey('use-theme-marine')),
+            )
+            .onPressed,
+        isNotNull,
+      );
+      fixture.purchases.owned.clear();
+      await fixture.controller.refreshOwnership();
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.byKey(const ValueKey('use-theme-marine')),
+            )
+            .onPressed,
+        isNull,
+      );
+    },
+  );
 
   testWidgets(
     'restore enables only purchased theme download and removal keeps purchase',

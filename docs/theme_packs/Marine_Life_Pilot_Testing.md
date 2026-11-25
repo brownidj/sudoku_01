@@ -112,6 +112,29 @@ The entry and screen are restricted to debug builds. No network request occurs
 when opening the drawer. Opening the test screen checks native support and
 configuration and reads existing local files; it does not fetch packs.
 
+## Background music during tile previews
+
+Background music pauses in place while a tile preview plays, then resumes the
+same loaded track from its paused position. It does not stop/reload the song,
+choose another track or seek back to the beginning. Repeated previews keep
+music paused until four seconds after the most recent preview. Music stays
+silent while another suspension is active, or if Audio/Background music is
+disabled, the game ends or the selected theme changes. Disposing the screen
+cancels the preview's pending resume timer.
+
+Regression coverage is in `test/sudoku_background_music_resume_test.dart`
+(native-player command contract, retained source/position, slow pause,
+overlapping suspension reasons, track controls, mute/game/theme changes) and
+`test/sudoku_cell_tooltip_service_test.dart` (real board long press and latest
+preview timer). On 2026-11-25, `flutter analyze` was clean and all 329 Flutter
+tests passed. The profile app was rebuilt and installed on David’s iPhone; the eight-tune v4 pack
+and app version/build 2.0.1+400 are unchanged.
+
+Listening check: enable background music, listen for several seconds, long-press
+a fish with audio and wait for its four-second preview to finish. The same
+song should continue from the interrupted point. Repeat with a second long
+press before the first preview finishes; music must wait for the last preview.
+
 ## Exercise the flow
 
 ### Updating the image-only v1 pilot to audio v2
@@ -313,3 +336,92 @@ Follow-up validation on 24 November 2026: `flutter analyze` clean, all 292
 unit/widget tests passed, and all seven simulator app-flow tests passed. This
 preview regression fix is complete in source; it requires rebuilding the app
 before checking it on the physical phone. Version/build remains `2.0.1+400`.
+
+### Pause/resume implementation — 2026-11-25
+
+Updated `SudokuBackgroundMusicService` to retain the native player's source and
+position through suspensions using pause/resume. Native playback operations
+are serialized; track changes respect active suspensions. A muted/disabled
+session or changed theme clears the old paused source rather than reviving it.
+`SudokuCellTooltipService` now replaces the prior preview resume timer and
+cancels it on screen disposal through the service registry.
+
+Created `test/sudoku_background_music_resume_test.dart` (seven regressions) and
+extended `test/sudoku_cell_tooltip_service_test.dart` with the overlapping-clip
+case. All 329 Flutter tests passed and `flutter analyze` reported no issues.
+Profile build and device installation succeeded for 2.0.1+400. Remote launch remained blocked by iOS with a Locked error after unlock/retry.
+The app is installed and can be opened from the phone’s Home Screen. Read back
+the installed Marine Life v4 manifest and confirmed all eight tunes remain.
+No theme pack rebuild is required for this playback-only change. Physical
+speaker continuity remains a listening check. Suggested commit:
+`Resume background music in place after tile previews`.
+
+### Activation recovery and measured device playback — 2026-11-25
+
+Device inspection found the v4 assets intact but the theme-level `current.json`
+missing after the manual development-pack replacement. Previous checks of the
+manifest alone did not prove an active installation. Read back and verified all
+18 asset checksums, restored the backed-up v4 activation file, then read it back
+again. After restarting, physically checked via iPhone Mirroring that Marine
+Life appeared in the puzzle selector and the downloads card showed Installed ·
+v4 with all nine images. Selected Marine Life in the existing puzzle. During that check, the store card's Use in puzzle button was still
+purchase-gated for the free developer pilot; the later fix below enables it
+without altering paid entitlement checks.
+
+Future manual replacements must preserve/restore and verify `current.json`
+after copying the version directory. Verify its active version, validate every
+manifest asset and confirm the installed theme in the running app. Do not treat
+successful copying of `versions/4/manifest.json` as completed activation.
+
+For a real-device position check, built/installed the profile app with
+`--dart-define=MUSIC_PLAYBACK_DIAGNOSTICS=true`. This opt-in local trace is
+inert in release builds and disabled in ordinary builds. It records preview
+boundaries and native audio player track, state and position to
+`Library/Application Support/music_playback_diagnostics.json`, retaining at most
+100 events and transmitting nothing. Diagnostics failures do not affect audio.
+The trace helper is `lib/ui/services/music_playback_diagnostics.dart`.
+
+Native player results on David’s iPhone:
+
+| Scenario | Track | Paused position | Resumed position | Outcome |
+| --- | --- | --- | --- | --- |
+| One Threadfin preview | `2_copperband_1.m4a` | 26.632 s | 26.632 s | Same source/position |
+| Threadfin → Copperband → Redtail, 1.5 s apart | `2_copperband_1.m4a` | 54.794 s | 54.795 s | Stayed paused through all three previews |
+
+The second resume occurred 4.009 seconds after the final preview began. Both
+cycles reported native states paused → playing, with no new play/source event
+between pause and resume. Evidence was read from the actual phone into
+`/tmp/marine-music-device-trace.json`. This verifies native player continuity;
+it is not a recording or subjective assessment of speaker quality.
+
+Analyze was clean and all 16 targeted music/tooltip tests passed for this trace
+build. The earlier pause/resume change also passed the full 329-test suite.
+The profile app 2.0.1+400 is running with Marine Life selected. No content files
+or purchases were changed during recovery, and no Git commit was created.
+Suggested commit: `Add opt-in playback diagnostics and document device verification`.
+
+### Developer pack Use in puzzle policy — 2026-11-25
+
+The loaded `ThemeDefinition` now retains its manifest `product_id`. The store
+screen uses the controller's `canUse` policy: a fully validated installed Marine
+Life pack with no product binding may be selected without purchase. Other
+installed packs require the expected product ID and verified ownership. The
+exception does not grant ownership, permit a paid download, extend to Planets
+or Antique Buttons, or allow damaged/missing installations. The game keeps its
+independent paid entitlement check.
+
+Updated loader, definition, controller and screen. Extended the controller,
+screen-navigation and real installed-media tests, and corrected the shared
+store fixture to identify paid definitions explicitly. No new source or test
+files were needed. `flutter analyze` was clean and all 48 targeted tests passed.
+The profile app was rebuilt and installed as 2.0.1+400; the v4 activation file
+was read back before and after installation and was unchanged.
+Suggested commit: `Allow validated Marine Life developer pack selection`.
+
+Physical verification of the developer Use in puzzle fix: reconnected with
+Mirroring, resumed the existing puzzle, selected Animals, opened Downloadable
+themes and confirmed the installed v4 Marine Life card had an enabled Use in
+puzzle button. Tapped it and observed the same puzzle return with Marine Life
+selected and all nine fish images loaded. The app remains running with Marine
+Life selected; the active installation and eight audio tunes were preserved.
+Paid-theme behavior was verified by the regression tests, not a live purchase.

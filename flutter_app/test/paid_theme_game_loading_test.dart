@@ -157,6 +157,7 @@ void main() {
         purchases: purchases,
       ))!;
       final images = await MarineGameTheme.decode(theme);
+      expect(theme.productId, 'theme_marine');
       expect(
         images.keys,
         orderedEquals(List.generate(9, (index) => index + 1)),
@@ -190,6 +191,23 @@ void main() {
       }
       expect(theme.audio!.backgroundMusicAssets, hasLength(8));
       expect(theme.audio!.backgroundMusicAssets, containsAll(redtail));
+    },
+  );
+
+  test(
+    'validated free developer manifest retains its free binding in the game',
+    () async {
+      manifest['product_id'] = null;
+      await File(
+        '${paths.versionDirectory('marine', 4).path}/manifest.json',
+      ).writeAsString(jsonEncode(manifest));
+      final theme = await MarineGameTheme.load(
+        storagePaths: paths,
+        purchases: purchases,
+      );
+      expect(theme, isNotNull);
+      expect(theme!.productId, isNull);
+      expect(purchases.owned, isEmpty);
     },
   );
 

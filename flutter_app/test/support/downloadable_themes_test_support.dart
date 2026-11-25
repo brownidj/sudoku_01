@@ -65,6 +65,7 @@ class TestThemePilot extends MarineThemePackPilot {
   bool published = true;
   bool failDownload = false;
   bool damaged = false;
+  bool developerPack = false;
   int downloads = 0;
   int cancels = 0;
   ThemeDefinition? installed;
@@ -105,6 +106,7 @@ class TestThemePilot extends MarineThemePackPilot {
 
   ThemeDefinition get definition => ThemeDefinition(
     id: themeId,
+    productId: developerPack ? null : DownloadableTheme.byId(themeId).productId,
     displayName: DownloadableTheme.byId(themeId).name,
     version: 2,
     tiles: const [],

@@ -188,6 +188,21 @@ class DownloadableThemesController extends ChangeNotifier {
         item.descriptor != null;
   }
 
+  bool canUse(String id) {
+    final item = themes[id]!;
+    final installed = item.installed;
+    if (busy ||
+        item.damagedInstallation ||
+        installed == null ||
+        installed.id != id) {
+      return false;
+    }
+    // Only the locally validated Marine Life pilot is usable without purchase.
+    // A missing store product/catalogue must never turn a paid pack into a pilot.
+    if (id == 'marine' && installed.productId == null) return true;
+    return installed.productId == item.theme.productId && item.owned;
+  }
+
   bool canDownload(String id) =>
       !busy &&
       supported &&

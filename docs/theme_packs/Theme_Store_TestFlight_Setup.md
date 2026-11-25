@@ -21,6 +21,17 @@ identify their product; game loading checks that verified entitlement again.
 Existing free developer-pilot files remain development content, not evidence
 of ownership of the new product.
 
+### Using an installed developer pilot
+
+A locally validated Marine Life developer pack (installed manifest has no
+`product_id`) can use **Use in puzzle** without a store purchase or published
+catalogue. This does not grant ownership or permit downloading a paid pack.
+The exception is limited to Marine Life. Installed paid packs must retain the
+matching product ID and verified ownership; Full Version, unavailable store
+products, missing catalogues or a revoked purchase do not unlock them.
+Corrupt/missing installations and busy operations keep the button disabled.
+The game still independently checks paid ownership before loading media.
+
 ## Create the App Store products
 
 In App Store Connect, open **Apps → SuDoKu Playtime → Monetization → In-App
@@ -81,7 +92,7 @@ Audio sources are under `flutter_app/assets/audio/marine/`:
 | Other fish | No matching recording yet; image and name still appear |
 
 On each Threadfin, Copperband, Raccoon or Redtail long press, the app randomly chooses one of that fish’s two tunes.
-Previews remain capped at four seconds. Ambient background music uses all eight
+Previews remain capped at four seconds. Background music pauses during a preview\nand resumes the same track at its previous position; overlapping previews\nextend the pause until the latest preview ends. Ambient background music uses all eight
 active tunes, starting at a random track and cycling through the playlist.
 The Threadfin songs were renamed from “Butterfly Fish.mp3” and
 “Butterfly Fish-2.mp3”; the former ten-second clip was moved to Mac Trash.

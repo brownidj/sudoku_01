@@ -197,6 +197,7 @@ class SudokuScreenServiceRegistry {
     victoryOverlayService.dispose();
     victoryAudioService.dispose();
     tilePreviewAudioService.dispose();
+    cellTooltipService.dispose();
     backgroundMusicService.dispose();
     victoryPositionService.dispose();
     tooltipService.dispose();

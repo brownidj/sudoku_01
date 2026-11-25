@@ -47,6 +47,7 @@ class RepositoryThemeLoader implements ThemeLoader {
   }) {
     return ThemeDefinition(
       id: manifest.themeId,
+      productId: manifest.productId,
       displayName: manifest.displayName,
       version: manifest.themeVersion,
       tiles: [

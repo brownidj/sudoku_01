@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_app/ui/animal_cache.dart';
 import 'package:flutter_app/ui/services/sudoku_background_music_service.dart';
 import 'package:flutter_app/ui/services/sudoku_tile_preview_audio_service.dart';
 import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
+import 'package:flutter_app/ui/services/music_playback_diagnostics.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
 
 abstract class CellTooltipOverlay {
@@ -89,12 +92,18 @@ class SudokuCellTooltipService {
   final CellTooltipOverlay _tooltipOverlayService;
   final TilePreviewAudioController _tilePreviewAudioService;
   final BackgroundMusicController _backgroundMusicService;
+  Timer? _previewResumeTimer;
 
-  const SudokuCellTooltipService(
+  SudokuCellTooltipService(
     this._tooltipOverlayService,
     this._tilePreviewAudioService,
     this._backgroundMusicService,
   );
+
+  void dispose() {
+    _previewResumeTimer?.cancel();
+    _previewResumeTimer = null;
+  }
 
   void showForCell({
     required BuildContext context,
@@ -143,13 +152,23 @@ class SudokuCellTooltipService {
     if (!started) {
       return;
     }
+    unawaited(
+      MusicPlaybackDiagnostics.record('preview-start', {
+        'digit': value,
+        'name': name,
+      }),
+    );
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(content: Text(name), duration: const Duration(seconds: 4)),
       );
     _backgroundMusicService.suspend('tile-preview');
-    Future<void>.delayed(_tilePreviewAudioService.maxClipDuration, () {
+    _previewResumeTimer?.cancel();
+    _previewResumeTimer = Timer(_tilePreviewAudioService.maxClipDuration, () {
+      unawaited(
+        MusicPlaybackDiagnostics.record('preview-end', {'digit': value}),
+      );
       _backgroundMusicService.resume('tile-preview');
     });
   }
