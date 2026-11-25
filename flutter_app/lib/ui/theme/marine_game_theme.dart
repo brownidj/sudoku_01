@@ -44,6 +44,9 @@ class MarineGameTheme {
       throw const FormatException('Installed theme metadata is inconsistent.');
     }
     final productId = validated.manifest.productId;
+    if (productId == null && !DownloadableTheme.permitsDeveloperPack(themeId)) {
+      return null;
+    }
     if (productId != null &&
         (productId != DownloadableTheme.byId(themeId).productId ||
             !await purchases.owns(productId))) {

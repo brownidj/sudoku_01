@@ -52,16 +52,22 @@ void main() {
     },
   );
 
-  test('free developer exception does not extend to other themes', () async {
-    for (final id in ['planets', 'buttons']) {
-      final pilot = fixture.pilots[id]!..developerPack = true;
-      pilot.installed = pilot.definition;
-    }
-    await fixture.controller.initialize();
-    expect(fixture.controller.canUse('planets'), isFalse);
-    expect(fixture.controller.canUse('buttons'), isFalse);
-    expect(fixture.controller.canUse('marine'), isFalse);
-  });
+  test(
+    'Planets developer pack needs opt-in; Buttons remains purchase-only',
+    () async {
+      for (final id in ['planets', 'buttons']) {
+        final pilot = fixture.pilots[id]!..developerPack = true;
+        pilot.installed = pilot.definition;
+      }
+      await fixture.controller.initialize();
+      expect(
+        fixture.controller.canUse('planets'),
+        const bool.fromEnvironment('PLANETS_DEVELOPER_PACK'),
+      );
+      expect(fixture.controller.canUse('buttons'), isFalse);
+      expect(fixture.controller.canUse('marine'), isFalse);
+    },
+  );
 
   test(
     'owning the expected product cannot unlock a pack bound to another product',

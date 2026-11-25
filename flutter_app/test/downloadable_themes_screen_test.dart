@@ -74,6 +74,28 @@ void main() {
   );
 
   testWidgets(
+    'Planets local developer copy has no purchase and needs build opt-in for Use',
+    (tester) async {
+      final pilot = fixture.pilots['planets']!..developerPack = true;
+      pilot.installed = pilot.definition;
+      await mount(tester);
+      final target = find.byKey(const ValueKey('use-theme-planets'));
+      await tester.scrollUntilVisible(
+        target,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      final button = tester.widget<FilledButton>(target);
+      expect(
+        button.onPressed != null,
+        const bool.fromEnvironment('PLANETS_DEVELOPER_PACK'),
+      );
+      expect(fixture.purchases.owned, isEmpty);
+      expect(fixture.purchases.bought, isEmpty);
+    },
+  );
+
+  testWidgets(
     'shows each separate theme and localized store price with unavailable content disabled',
     (tester) async {
       fixture.pilots['planets']!.published = false;

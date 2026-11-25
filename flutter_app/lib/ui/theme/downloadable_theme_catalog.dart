@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 /// Store product identifiers are independent of the Full Version unlock.
 /// Create these as non-consumables in App Store Connect before distribution.
 class DownloadableTheme {
@@ -41,4 +43,12 @@ class DownloadableTheme {
   static DownloadableTheme byId(String id) =>
       all.firstWhere((theme) => theme.id == id);
   static bool contains(String id) => all.any((theme) => theme.id == id);
+
+  /// A separate local pack can be exercised without granting a store purchase.
+  /// The Planets opt-in is compiled out of release builds, even if defined.
+  static bool permitsDeveloperPack(String id) =>
+      id == 'marine' ||
+      (id == 'planets' &&
+          !kReleaseMode &&
+          const bool.fromEnvironment('PLANETS_DEVELOPER_PACK'));
 }

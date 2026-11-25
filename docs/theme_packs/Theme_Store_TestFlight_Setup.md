@@ -235,6 +235,31 @@ option. Outputs are in `flutter_app/build/theme_packs_planets/`, including
 `planets_v1.aar`, `planets_v1.zip`, build report, manifest, preview, catalogue
 and standalone `theme_catalogue_v1.aar`.
 
+### Local Planets testing on David’s iPhone
+
+The release builder always produces a paid `theme_planets` manifest. For local
+media testing only, a separate copy can be staged with no product binding and
+installed in the phone’s private Planets directory. To load/select that copy,
+the app must be built with:
+
+```sh
+cd flutter_app
+flutter build ios --profile --dart-define=PLANETS_DEVELOPER_PACK=true
+```
+
+The exception is limited to Planets in debug/profile builds with the explicit
+flag. It is disabled in release builds even if the flag is supplied. Ordinary
+builds reject an unbound Planets pack. Paid Planets packs still require verified
+ownership in every build, including one with this flag; no purchase is fabricated.
+Marine Life’s existing developer policy remains available. Use a normal
+release build and the original paid archives for TestFlight/App Store.
+
+After a manual local transfer, validate every asset, write/read back the
+Planets `current.json`, restart the opted-in app, and use Downloadable themes →
+Planets → Use in puzzle. Preserve other installed themes and their activation
+files. A later ordinary build won’t expose the local unbound Planets pack;
+the media remains on disk until explicitly removed or replaced.
+
 ### Shared catalogue for Marine Life and Planets
 
 Apple delivers one live `theme_catalogue` per distribution context. Do not
@@ -391,3 +416,44 @@ Paid archives in `build/theme_packs_testflight/` still contain the earlier five
 tunes and must be regenerated before upload using the paid build command above.
 No App Store upload or Git commit was performed. Suggested commit:
 `Replace Threadfin preview with full songs and include Raccoon tunes`.
+
+## Planets developer installation on David’s iPhone — 2026-11-25
+
+Created a separate local developer copy of Planets v1 by staging the verified
+34 assets from the paid build and clearing the product binding only in that
+temporary copy. The original paid manifest/catalogue still use `theme_planets`.
+Added a shared developer-access policy used by the game loader and store
+controller: Planets with no product binding is accepted only when
+`PLANETS_DEVELOPER_PACK=true` in a non-release build. Release builds always
+reject that exception; a paid Planets manifest still needs its own verified
+purchase in every build. Marine Life’s prior developer access remains intact.
+
+Regression coverage was extended in `test/planets_theme_pack_loading_test.dart`,
+`test/downloadable_themes_controller_test.dart` and
+`test/downloadable_themes_screen_test.dart`. `flutter analyze` was clean. All
+28 targeted tests passed in the ordinary configuration, and all 24 Planets/store
+tests passed with the developer flag enabled, including checks that paid packs
+remain purchase-protected. No new source or test files were needed for this
+local access change.
+
+Built and installed profile 2.0.1+400 with both
+`PLANETS_DEVELOPER_PACK=true` and `MUSIC_PLAYBACK_DIAGNOSTICS=true`. Transferred
+the separate copy to `Library/Application Support/themes/installed/planets/versions/1`,
+read it back and verified all 34 asset checksums, then wrote and read back
+`planets/current.json` (active_version 1, validated true). Compared the Marine
+Life activation before/after: v5 was preserved without modification.
+
+On the physical phone via Mirroring, opened a puzzle and selected Planets from
+the theme selector. All nine planet images loaded. Long-pressed Mars and
+visually confirmed its large image and caption. Native diagnostics confirmed
+`1_mars_2.m4a` playing, while background track `9_pluto_1.m4a` paused at 25,013 ms
+and resumed at 25,013 ms. Evidence is in `/tmp/planets-first-phone-playback.json`.
+The phone is left in the Planets puzzle with background music enabled for
+David to test the other planet tunes. This was a native playback check, not a
+remote recording or subjective speaker-quality assessment.
+
+Rebuild future local test apps with the developer flag to keep this local copy
+selectable. Use the paid archive and an ordinary release app for TestFlight/App
+Store. No store products/entitlements were created, no purchase was made, and
+no App Store upload or commit was performed. Suggested commit:
+`Enable isolated Planets developer testing in profile builds`.

@@ -197,9 +197,11 @@ class DownloadableThemesController extends ChangeNotifier {
         installed.id != id) {
       return false;
     }
-    // Only the locally validated Marine Life pilot is usable without purchase.
+    // Developer content is separate from paid packs and never grants ownership.
     // A missing store product/catalogue must never turn a paid pack into a pilot.
-    if (id == 'marine' && installed.productId == null) return true;
+    if (installed.productId == null) {
+      return DownloadableTheme.permitsDeveloperPack(id);
+    }
     return installed.productId == item.theme.productId && item.owned;
   }
 

@@ -165,6 +165,35 @@ void main() {
   );
 
   test(
+    'local Planets developer copy is loaded only in the explicitly opted-in build',
+    () async {
+      final file = File('${version.path}/manifest.json');
+      final original = await file.readAsString();
+      try {
+        final manifest = jsonDecode(original) as Map<String, dynamic>;
+        manifest['product_id'] = null;
+        await file.writeAsString(jsonEncode(manifest));
+        final theme = await MarineGameTheme.load(
+          themeId: 'planets',
+          storagePaths: paths,
+          purchases: purchases,
+        );
+        expect(
+          theme != null,
+          const bool.fromEnvironment('PLANETS_DEVELOPER_PACK'),
+        );
+        if (theme != null) {
+          expect(theme.productId, isNull);
+          expect(theme.audio!.backgroundMusicAssets, hasLength(24));
+        }
+        expect(purchases.owned, isEmpty);
+      } finally {
+        await file.writeAsString(original);
+      }
+    },
+  );
+
+  test(
     'Planets requires its own current entitlement; Marine Life and Full Version do not unlock it',
     () async {
       purchases.owned.addAll(['theme_marine', 'premium_unlock']);
