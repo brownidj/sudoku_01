@@ -58,7 +58,7 @@ for app builds and catalogue/manifest packaging. Do not reuse `premium_unlock`.
 
 ## Marine Life assets prepared for upload
 
-Content version **4** keeps the v3 butterfly fish images and adds species-specific tunes. Tile order and display
+Content version **5** keeps the nine butterfly fish images and includes two tunes for every fish (18 in total). Tile order and display
 names come from `<n>_<name>_butterflyfish.png`:
 
 | Digit | Display name |
@@ -88,11 +88,17 @@ Audio sources are under `flutter_app/assets/audio/marine/`:
 | Threadfin (1) | `1_threadfin_1.mp3`, `1_threadfin_2.mp3` |
 | Copperband (2) | `2_copperband_1.wav`, `2_copperband_2.wav` |
 | Raccoon (3) | `3_raccoon_1.wav`, `3_raccoon_2.wav` |
+| Saddled (4) | `4_saddled_1.wav`, `4_saddled_2.wav` |
+| Ornate (5) | `5_ornate_1.wav`, `5_ornate_2.wav` |
+| Meyers (6) | `6_meyers_1.wav`, `6_meyers_2.wav` |
+| Blackback (7) | `7_blackback_1.wav`, `7_blackback_2.wav` |
 | Redtail (8) | `8_redtail_1.wav`, `8_redtail_2.wav` |
-| Other fish | No matching recording yet; image and name still appear |
+| Pyramid (9) | `9_pyramid_1.wav`, `9_pyramid_2.wav` |
 
-On each Threadfin, Copperband, Raccoon or Redtail long press, the app randomly chooses one of that fish’s two tunes.
-Previews remain capped at four seconds. Background music pauses during a preview\nand resumes the same track at its previous position; overlapping previews\nextend the pause until the latest preview ends. Ambient background music uses all eight
+On each fish long press, the app randomly chooses one of that fish’s two tunes.
+Previews remain capped at four seconds. Background music pauses during a preview
+and resumes the same track at its previous position; overlapping previews
+extend the pause until the latest preview ends. Ambient background music uses all 18
 active tunes, starting at a random track and cycling through the playlist.
 The Threadfin songs were renamed from “Butterfly Fish.mp3” and
 “Butterfly Fish-2.mp3”; the former ten-second clip was moved to Mac Trash.
@@ -105,13 +111,13 @@ Manifest `long_press` retains a first-tune fallback for older apps;
 every variant before choosing randomly. Each tune is stored once in
 `audio/tunes/` and referenced by both tile audio and the ambient playlist.
 Packaging requires `ffmpeg`: WAV originals are preserved and encoded as
-192 kbps AAC `.m4a` copies, keeping the pack within
+128 kbps AAC `.m4a` copies, keeping the pack within
 the 64 MiB download limit. MP3/M4A inputs are copied unchanged.
 
-Installed v2/v3 content remains unchanged until replaced. In the developer
+Previously installed content remains unchanged until replaced. In the developer
 pilot, remove the Apple delivery copy while the old pack is still installed
 (also clearing its catalogue cache), remove the installed pilot, then
-fetch/install v4. Restart the local server with the updated helper to serve v4.
+fetch/install v5. Restart the local server with the updated helper to serve v5.
 Rebuild the app to enable random preview alternatives. App version/build remains
 **2.0.1+400**; content versioning is independent. Existing purchases do not need
 to be bought again.
@@ -149,11 +155,11 @@ Suggested commit: `Link Marine Life species tunes and random preview variants`.
 
 The paid build is separate from the local developer server's free pilot:
 
-- `flutter_app/build/theme_packs_testflight/marine_v4.aar`
-- `flutter_app/build/theme_packs_testflight/theme_catalogue_v4.aar`
+- `flutter_app/build/theme_packs_testflight/marine_v5.aar`
+- `flutter_app/build/theme_packs_testflight/theme_catalogue_v5.aar`
 - The ZIP, paid `catalogue.json`, and build report are in that same directory.
 - The manifest and catalogue bind Marine Life to `theme_marine`.
-- Nine fish images and eight tunes are included: two each for Threadfin, Copperband, Raccoon and Redtail, all available for ambient music.
+- Nine fish images and 18 tunes are included: two for every fish, all available for ambient music. Regenerate the paid archives with the command below before uploading v5; previously built paid archives contain older content.
 
 To rebuild from the repository root, using this project's Python environment:
 

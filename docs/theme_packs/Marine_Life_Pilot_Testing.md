@@ -10,17 +10,16 @@ This narrow pilot integration does not implement the full theme browser.
 
 ## Prepare the asset server
 
-Current content is **v4**, with nine butterfly fish images and filename-derived
+Current content is **v5**, with nine butterfly fish images and filename-derived
 names. `flutter_app/assets/images/marine/` now contains only the nine
 `<n>_<name>_butterflyfish.png` source images; the old animal images and
 `1_threadfin.png.png` duplicate were removed on 2026-11-25. Archived animal
 images remain in `flutter_app/assets/images/unused/`. See the
 [current asset table and audio mappings](Theme_Store_TestFlight_Setup.md#marine-life-assets-prepared-for-upload).
-V4 links two tunes each to Threadfin, Copperband, Raccoon and Redtail.
-Previews choose randomly from the selected fish’s own alternatives,
-and all eight tunes form the ambient playlist. WAV sources are packaged as AAC
-copies to stay within the download limit. Other fish
-have image/name previews without sound. The v1/v2 sections below describe
+V5 links two tunes to each of the nine fish. Previews choose randomly from the
+selected fish’s own alternatives, and all 18 tunes form the ambient playlist.
+WAV sources are packaged as AAC copies to stay within the download limit.
+Every fish now has preview audio. The v1/v2 sections below describe
 historical content, not the current source inventory.
 
 From the repository root, generate the two Apple archives if needed:
@@ -30,7 +29,7 @@ python3 scripts/build_marine_theme_pack.py --package-apple
 ```
 
 The output directory is `flutter_app/build/theme_packs/`. The server needs both
-`marine_v4.aar` and `theme_catalogue_v4.aar`. These are Apple's asset archives,
+`marine_v5.aar` and `theme_catalogue_v5.aar`. These are Apple's asset archives,
 not Android libraries. Generated files are ignored by Git and can be recreated.
 
 Apple's mock server requires a TLS server identity, with its private key, in
@@ -58,7 +57,7 @@ bash scripts/serve_marine_theme_packs.sh Mac.local
 
 The default port is 63245; an optional second argument changes it. Keep the
 server terminal open. Stop it with Control-C when finished. The helper uses
-native delivery version 4 for both archives; these native versions are separate
+native delivery version 5 for both archives; these native versions are separate
 from the theme manifest's content version.
 
 If an older server process is waiting at “Choose an identity in the panel to
@@ -425,3 +424,39 @@ puzzle button. Tapped it and observed the same puzzle return with Marine Life
 selected and all nine fish images loaded. The app remains running with Marine
 Life selected; the active installation and eight audio tunes were preserved.
 Paid-theme behavior was verified by the regression tests, not a live purchase.
+
+### Eighteen-tune Marine Life v5 — 2026-11-25
+
+Included all new Saddled, Ornate, Meyers, Blackback and Pyramid recordings.
+Each of the nine fish now has two species-specific preview alternatives, and
+all 18 tunes form the background playlist. Content version is 5; app
+version/build remains 2.0.1+400. WAV originals are retained, with 128 kbps AAC
+copies in the pack. The developer ZIP is 60,600,524 bytes (57.8 MiB), within
+the 64 MiB delivery limit. The server helper now serves native versions 5/5.
+
+Expanded `scripts/tests/test_build_marine_theme_pack.py` to build nine pairs of
+audio fixtures and verify the correct digit/species/take mappings, all 18
+playlist entries and packaged audio files/checksums. Corrected the PCM fixture
+to use actual silent frames. Expanded `test/paid_theme_game_loading_test.dart`
+to load all nine pairs, verify both random choices for every digit and all 18
+background entries, and stream hashes/copy files rather than holding every WAV
+in memory. No new test files were needed. `flutter analyze` was clean, all 42
+targeted Flutter tests passed and all seven packaging tests passed.
+
+Rebuilt developer Apple archives and the profile app. Backed up the phone’s
+previous installation to `/tmp/marine-before-v5-backup-20261125`. Copied v5 to a
+new version directory without clearing parent contents, read it back and
+verified all 28 asset hashes and all 18 audio durations against their sources.
+Verified v4 activation was preserved during transfer, then explicitly activated
+v5 and read back `current.json` to confirm active_version 5/validated true.
+
+On David’s physical iPhone, confirmed Installed · v5 and enabled Use in puzzle,
+tapped that button and observed the Marine Life puzzle with its fish images.
+The updated profile app is running. Audio is On; Background music was Off and
+that preference was preserved. Turn on Background music in the drawer to hear
+the full playlist. Local sound files were verified; speaker quality was not
+remotely auditioned. Prior v4 content remains available for rollback.
+
+The paid archives were not regenerated or uploaded in this phone update;
+rebuild with `--product-id theme_marine` before uploading v5. No Git commit was
+created. Suggested commit: `Include two tunes for every Marine Life fish in v5`.

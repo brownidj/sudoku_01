@@ -1640,7 +1640,7 @@ Recommended command-line validation should check:
 ## 24. Suggested first pack
 
 Pilot selected by David on 2026-11-24: **Marine Life** (`marine`). Current
-content version **4** uses the nine butterfly fish PNG images in
+content version **5** uses the nine butterfly fish PNG images in
 `flutter_app/assets/images/marine/`. The former mixed-animal images and
 misnamed `1_threadfin.png.png` duplicate were removed from this source directory
 on 2026-11-25. Archived animal images remain in `assets/images/unused/` and
@@ -1658,13 +1658,16 @@ are not pack inputs. Do not copy images from Sudoku_02.
 | 8 | `8_redtail_butterflyfish.png` | Redtail Butterfly Fish |
 | 9 | `9_pyramid_butterflyfish.png` | Pyramid Butterfly Fish |
 
-Labels are derived from the filenames. V4 discovers tunes in
-`flutter_app/assets/audio/marine/` by digit and species. Threadfin has
-`1_threadfin_1.mp3` and `1_threadfin_2.mp3` (formerly the two “Butterfly Fish” songs); Copperband has `2_copperband_1.wav` and
-`2_copperband_2.wav`; Raccoon has `3_raccoon_1.wav` and `3_raccoon_2.wav`; Redtail has `8_redtail_1.wav` and `8_redtail_2.wav`.
-Long presses randomly choose a matching alternative (maximum four seconds).
-Fish without recordings still show their image/name. All eight tunes form the
-ambient playlist; archived music is excluded. WAVs are packaged as 192 kbps AAC\ncopies using ffmpeg, preserving the original source files. See the
+Labels are derived from the filenames. V5 discovers tunes in
+`flutter_app/assets/audio/marine/` by digit and species. Every fish now has two
+numbered tunes. Threadfin uses `1_threadfin_1.mp3` and `1_threadfin_2.mp3`
+(formerly the two “Butterfly Fish” songs); all other fish use
+`<digit>_<species>_1.wav` and `<digit>_<species>_2.wav`.
+Long presses randomly choose one of that fish’s alternatives (maximum four
+seconds). All 18 tunes form the ambient playlist. WAVs are packaged as 128 kbps
+AAC copies using ffmpeg, preserving the originals and staying within the 64 MiB
+ZIP download limit. Background music pauses during previews and resumes the
+same source/position after the latest preview ends. See the
 [current audio mapping](Theme_Store_TestFlight_Setup.md#marine-life-assets-prepared-for-upload).
 
 Keep these source images outside the app's bundled asset list when preparing

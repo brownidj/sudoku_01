@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_app/ui/theme/installed_theme_store.dart';
@@ -21,7 +22,7 @@ void main() {
     root = await Directory.systemTemp.createTemp('paid_theme_game_');
     paths = ThemeStoragePaths(root);
     purchases = TestThemePurchases();
-    final version = paths.versionDirectory('marine', 4);
+    final version = paths.versionDirectory('marine', 5);
     await version.create(recursive: true);
     fishImages =
         Directory('assets/images/marine')
@@ -56,19 +57,32 @@ void main() {
         'accessibility_label': label,
       });
     }
-    for (final name in [
-      '1_threadfin_1.mp3',
-      '1_threadfin_2.mp3',
-      '2_copperband_1.wav',
-      '2_copperband_2.wav',
-      '3_raccoon_1.wav',
-      '3_raccoon_2.wav',
-      '8_redtail_1.wav',
-      '8_redtail_2.wav',
-    ]) {
-      files['audio/$name'] = await File(
-        'assets/audio/marine/$name',
-      ).readAsBytes();
+    const species = [
+      'threadfin',
+      'copperband',
+      'raccoon',
+      'saddled',
+      'ornate',
+      'meyers',
+      'blackback',
+      'redtail',
+      'pyramid',
+    ];
+    final audioSources = <String, File>{
+      for (var digit = 1; digit <= 9; digit++)
+        for (final take in [1, 2])
+          'audio/${digit}_${species[digit - 1]}_$take.${digit == 1 ? 'mp3' : 'wav'}':
+              File(
+                'assets/audio/marine/${digit}_${species[digit - 1]}_$take.${digit == 1 ? 'mp3' : 'wav'}',
+              ),
+    };
+    final audioChecksums = <String, String>{};
+    for (final entry in audioSources.entries) {
+      final target = File('${version.path}/${entry.key}');
+      await target.parent.create(recursive: true);
+      await entry.value.copy(target.path);
+      audioChecksums[entry.key] =
+          (await sha256.bind(entry.value.openRead()).first).toString();
     }
     for (final entry in files.entries) {
       final target = File('${version.path}/${entry.key}');
@@ -78,7 +92,7 @@ void main() {
     manifest = {
       'schema_version': 1,
       'theme_id': 'marine',
-      'theme_version': 4,
+      'theme_version': 5,
       'product_id': 'theme_marine',
       'display_name': 'Marine Life',
       'tile_count': 9,
@@ -86,51 +100,21 @@ void main() {
       'tiles': tiles,
       'audio': {
         'tiles': [
-          {
-            'digit': 1,
-            'long_press': 'audio/1_threadfin_1.mp3',
-            'long_press_variants': [
-              'audio/1_threadfin_1.mp3',
-              'audio/1_threadfin_2.mp3',
-            ],
-          },
-          {
-            'digit': 3,
-            'long_press': 'audio/3_raccoon_1.wav',
-            'long_press_variants': [
-              'audio/3_raccoon_1.wav',
-              'audio/3_raccoon_2.wav',
-            ],
-          },
-          {
-            'digit': 2,
-            'long_press': 'audio/2_copperband_1.wav',
-            'long_press_variants': [
-              'audio/2_copperband_1.wav',
-              'audio/2_copperband_2.wav',
-            ],
-          },
-          {
-            'digit': 8,
-            'long_press': 'audio/8_redtail_1.wav',
-            'long_press_variants': [
-              'audio/8_redtail_1.wav',
-              'audio/8_redtail_2.wav',
-            ],
-          },
+          for (var digit = 1; digit <= 9; digit++)
+            {
+              'digit': digit,
+              'long_press': audioSources.keys
+                  .where((path) => path.startsWith('audio/${digit}_'))
+                  .first,
+              'long_press_variants': audioSources.keys
+                  .where((path) => path.startsWith('audio/${digit}_'))
+                  .toList(),
+            },
         ],
-        'music': [
-          'audio/1_threadfin_1.mp3',
-          'audio/1_threadfin_2.mp3',
-          'audio/2_copperband_1.wav',
-          'audio/2_copperband_2.wav',
-          'audio/3_raccoon_1.wav',
-          'audio/3_raccoon_2.wav',
-          'audio/8_redtail_1.wav',
-          'audio/8_redtail_2.wav',
-        ],
+        'music': audioSources.keys.toList(),
       },
       'checksums': {
+        ...audioChecksums,
         for (final entry in files.entries)
           entry.key: sha256.convert(entry.value).toString(),
       },
@@ -166,31 +150,38 @@ void main() {
         expect(image.width, greaterThan(0));
         image.dispose();
       }
-      expect(theme.audio!.tilePreviewAssets, hasLength(4));
+      expect(theme.audio!.tilePreviewAssets, hasLength(9));
       expect(theme.tiles.first.displayName, 'Threadfin Butterfly Fish');
       expect(theme.tileForDigit(7)!.displayName, 'Blackback Butterfly Fish');
       expect(theme.tiles.last.displayName, 'Pyramid Butterfly Fish');
-      expect(theme.audio!.tilePreviewAssetForDigit(7), isNull);
-      expect(theme.audio!.tilePreviewVariants[1], hasLength(2));
-      expect(theme.audio!.tilePreviewVariants[3], hasLength(2));
-      final redtail = theme.audio!.tilePreviewVariants[8]!;
-      expect(redtail, hasLength(2));
-      expect(theme.audio!.tilePreviewVariants[2], hasLength(2));
-      expect(
-        theme.audio!.backgroundMusicAssets,
-        containsAll(theme.audio!.tilePreviewVariants[2]!),
-      );
+      final random = Random(42);
+      for (var digit = 1; digit <= 9; digit++) {
+        final variants = theme.audio!.tilePreviewVariants[digit]!;
+        expect(variants, hasLength(2));
+        expect(
+          variants.every(
+            (path) => File(path).uri.pathSegments.last.startsWith('${digit}_'),
+          ),
+          isTrue,
+        );
+        final selections = {
+          for (var attempt = 0; attempt < 40; attempt++)
+            theme.audio!.tilePreviewAssetForDigit(digit, random: random),
+        };
+        expect(selections, variants.toSet());
+        expect(theme.audio!.backgroundMusicAssets, containsAll(variants));
+      }
       for (final installed in theme.audio!.backgroundMusicAssets) {
         final name = File(installed).uri.pathSegments.last;
         expect(
-          sha256.convert(await File(installed).readAsBytes()).toString(),
-          sha256
-              .convert(await File('assets/audio/marine/$name').readAsBytes())
+          (await sha256.bind(File(installed).openRead()).first).toString(),
+          (await sha256
+                  .bind(File('assets/audio/marine/$name').openRead())
+                  .first)
               .toString(),
         );
       }
-      expect(theme.audio!.backgroundMusicAssets, hasLength(8));
-      expect(theme.audio!.backgroundMusicAssets, containsAll(redtail));
+      expect(theme.audio!.backgroundMusicAssets, hasLength(18));
     },
   );
 
@@ -199,7 +190,7 @@ void main() {
     () async {
       manifest['product_id'] = null;
       await File(
-        '${paths.versionDirectory('marine', 4).path}/manifest.json',
+        '${paths.versionDirectory('marine', 5).path}/manifest.json',
       ).writeAsString(jsonEncode(manifest));
       final theme = await MarineGameTheme.load(
         storagePaths: paths,
@@ -237,7 +228,7 @@ void main() {
     () async {
       purchases.owned.add('theme_marine');
       await File(
-        '${paths.versionDirectory('marine', 4).path}/${(manifest['tiles'] as List).first['path']}',
+        '${paths.versionDirectory('marine', 5).path}/${(manifest['tiles'] as List).first['path']}',
       ).writeAsString('corrupt');
       await expectLater(
         MarineGameTheme.load(storagePaths: paths, purchases: purchases),

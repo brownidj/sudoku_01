@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_app/app/app_debug.dart';
 import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
 import 'package:flutter_app/ui/theme/marine_game_theme.dart';
+import 'package:flutter_app/ui/services/music_playback_diagnostics.dart';
 
 class SudokuTilePreviewAudioService {
   final AudioPlayer _player;
@@ -99,11 +100,23 @@ class SudokuTilePreviewAudioService {
       if (!await _playAssetWithFallback(asset)) {
         throw StateError('No playable source for asset $asset');
       }
+      if (MusicPlaybackDiagnostics.enabled) {
+        await MusicPlaybackDiagnostics.record('preview-playing', {
+          'track': asset.split('/').last,
+          'state': _player.state.name,
+        });
+      }
       _autoStopTimer = Timer(_maxClipDuration, () {
         unawaited(_stop());
       });
     } catch (error) {
       AppDebug.log('Failed to play tile preview audio: $error');
+      unawaited(
+        MusicPlaybackDiagnostics.record('preview-error', {
+          'track': asset.split('/').last,
+          'error': error.toString(),
+        }),
+      );
     }
   }
 

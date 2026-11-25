@@ -20,7 +20,7 @@ from PIL import Image, ImageDraw, ImageOps, features
 
 
 PROJECT = Path(__file__).resolve().parents[1]
-CONTENT_VERSION = 4
+CONTENT_VERSION = 5
 
 
 def discover_tiles(source):
@@ -73,7 +73,7 @@ def package_tune(source, destination):
         subprocess.run([
             "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
             "-i", str(source), "-map", "0:a:0", "-vn", "-c:a", "aac",
-            "-b:a", "192k", "-movflags", "+faststart", str(destination),
+            "-b:a", "128k", "-movflags", "+faststart", str(destination),
         ], check=True)
     else:
         shutil.copyfile(source, destination)

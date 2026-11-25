@@ -18,50 +18,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Update Threadfin songs and add Raccoon and other  tunes">
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/4_saddled_1.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/4_saddled_2.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/5_ornate_1.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/5_ornate_2.wav" afterDir="false" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Allow validated Marine Life developer pack selection">
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/6_meyers_1.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/6_meyers_2.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/7_blackback_1.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/7_blackback_2.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/9_pyramid_1.wav" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/9_pyramid_2.wav" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/theme_packs/Theme_Store_TestFlight_Setup.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Theme_Store_TestFlight_Setup.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/1_Mercury Run-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/1_mars_3.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/1_Mercury Run.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/1_mars_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/1_Mercury and Ash.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/1_mars_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_Ashen Flute-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_venus_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_Ashen Flute.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/3_earth_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_Veil and Ash-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_venus_3.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_Veil and Ash.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/2_venus_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/3_Blue Tide Atlas.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/3_earth_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/3_Earth_ Blue World &amp; Living Oceans.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/3_earth_3.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_Red Planet Oath-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_mercury_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_Red Planet Oath.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_mercury_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_Red Planet Overture-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_mercury_4.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_Red Planet Overture.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/4_mercury_3.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/5_Jupiter Storm Crown-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/5_jupiter_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/5_Jupiter Storm Crown.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/5_jupiter_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/6_Saturn Rings of Ice-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/6_saturn_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/6_Saturn Rings of Ice.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/6_saturn_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/7_Tilted Giant-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/7_uranus_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/7_Tilted Giant.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/7_uranus_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/8_Neptune Edge-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/8_neptune_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/8_Neptune Edge.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/8_neptune_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/9_Far Frontier-2.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/9_pluto_2.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/9_Far Frontier.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/9_pluto_1.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/assets/audio/planets/9_Pluto Frontier.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/assets/audio/planets/9_pluto_3.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_background_music_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_cell_tooltip_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_service_registry.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_screen_service_registry.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/theme/downloadable_themes_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/theme/downloadable_themes_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/theme/theme_definition.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/theme/theme_definition.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/theme/theme_loader.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/theme/theme_loader.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/themes/downloadable_themes_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/themes/downloadable_themes_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/downloadable_themes_controller_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/downloadable_themes_controller_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/downloadable_themes_screen_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/downloadable_themes_screen_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/flutter_app/test/paid_theme_game_loading_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/paid_theme_game_loading_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/sudoku_cell_tooltip_service_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/sudoku_cell_tooltip_service_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/support/downloadable_themes_test_support.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/support/downloadable_themes_test_support.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/build_marine_theme_pack.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_marine_theme_pack.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/tests/test_build_marine_theme_pack.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/tests/test_build_marine_theme_pack.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,22 +73,22 @@
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0000000006855592" />
-      <entry key="S2" value="1.0051169505265642" />
-      <entry key="S5" value="1.121228431798768" />
-      <entry key="S10" value="1.348179226041987" />
-      <entry key="S30" value="1.7258266340901285" />
-      <entry key="S60" value="2.368784428880014" />
-      <entry key="M2" value="4.763368236107325" />
-      <entry key="M5" value="10.76422553193102" />
-      <entry key="M10" value="20.05745979654471" />
-      <entry key="M15" value="30.641420135763465" />
-      <entry key="M30" value="62.462310698904595" />
-      <entry key="H1" value="106.90876727368696" />
-      <entry key="H2" value="148.76016514874405" />
-      <entry key="H4" value="202.78189366583288" />
-      <entry key="D1" value="1410.6194779537764" />
-      <entry key="W1" value="5265.412230249492" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0000985986134987" />
+      <entry key="S5" value="1.0368808652073334" />
+      <entry key="S10" value="1.3266093897534739" />
+      <entry key="S30" value="2.733287827527062" />
+      <entry key="S60" value="4.007732528700943" />
+      <entry key="M2" value="5.481151478976849" />
+      <entry key="M5" value="8.731685701751907" />
+      <entry key="M10" value="15.572949826280025" />
+      <entry key="M15" value="24.2499708736956" />
+      <entry key="M30" value="53.59531884398298" />
+      <entry key="H1" value="99.59946932747089" />
+      <entry key="H2" value="146.25885475481522" />
+      <entry key="H4" value="204.10487081490913" />
+      <entry key="D1" value="1410.4514346402339" />
+      <entry key="W1" value="5269.978236271468" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -128,33 +100,33 @@
       <entry key="S60" value="0.0" />
       <entry key="M2" value="0.0" />
       <entry key="M5" value="0.0" />
-      <entry key="M10" value="1.774173453204539E-229" />
-      <entry key="M15" value="3.157408092703291E-153" />
-      <entry key="M30" value="5.619081858011075E-77" />
-      <entry key="H1" value="7.496053533700927E-39" />
-      <entry key="H2" value="8.657975244652259E-20" />
-      <entry key="H4" value="2.9424437538640063E-10" />
-      <entry key="D1" value="0.025790001158305795" />
-      <entry key="W1" value="0.5930133634662045" />
+      <entry key="M10" value="6.267941974398383E-230" />
+      <entry key="M15" value="1.5779139349487027E-153" />
+      <entry key="M30" value="3.972296483079424E-77" />
+      <entry key="H1" value="6.302615713399784E-39" />
+      <entry key="H2" value="7.938901506757691E-20" />
+      <entry key="H4" value="2.817605633646882E-10" />
+      <entry key="D1" value="0.02560432716351713" />
+      <entry key="W1" value="0.5924015625979278" />
     </decayedSelected>
     <decayedShown>
       <entry key="MS100" value="0.9794202975869268" />
-      <entry key="MS500" value="0.9958497537762261" />
-      <entry key="S2" value="1.0040706813930633" />
-      <entry key="S5" value="1.1207454252782394" />
-      <entry key="S10" value="1.3478747811421719" />
-      <entry key="S30" value="1.7256904888231208" />
-      <entry key="S60" value="2.368687517938069" />
-      <entry key="M2" value="4.763264554554347" />
-      <entry key="M5" value="10.764128835507886" />
-      <entry key="M10" value="20.057370468792467" />
-      <entry key="M15" value="30.64132911509991" />
-      <entry key="M30" value="62.462216440283726" />
-      <entry key="H1" value="106.90868530010806" />
-      <entry key="H2" value="148.76010742300645" />
-      <entry key="H4" value="202.78185155897495" />
-      <entry key="D1" value="1410.6452111841993" />
-      <entry key="W1" value="5266.005217009569" />
+      <entry key="MS500" value="0.9958497530944581" />
+      <entry key="S2" value="0.9990593127968795" />
+      <entry key="S5" value="1.036447999270263" />
+      <entry key="S10" value="1.32632289327203" />
+      <entry key="S30" value="2.7330780014152474" />
+      <entry key="S60" value="4.007576279692361" />
+      <entry key="M2" value="5.481043916173849" />
+      <entry key="M5" value="8.731615570394897" />
+      <entry key="M10" value="15.572884920497522" />
+      <entry key="M15" value="24.249901977708358" />
+      <entry key="M30" value="53.59523984972044" />
+      <entry key="H1" value="99.59939404673834" />
+      <entry key="H2" value="146.25879859794088" />
+      <entry key="H4" value="204.10482886992799" />
+      <entry key="D1" value="1410.4769823329505" />
+      <entry key="W1" value="5270.570611219165" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -432,15 +404,7 @@
       <workItem from="1791023093089" duration="105000" />
       <workItem from="1791023445347" duration="4215000" />
       <workItem from="1793409045380" duration="320000" />
-      <workItem from="1795479528119" duration="34402000" />
-    </task>
-    <task id="LOCAL-00049" summary="PR 1 refactoring done">
-      <option name="closed" value="true" />
-      <created>1773362673972</created>
-      <option name="number" value="00049" />
-      <option name="presentableId" value="LOCAL-00049" />
-      <option name="project" value="LOCAL" />
-      <updated>1773362673972</updated>
+      <workItem from="1795479528119" duration="35957000" />
     </task>
     <task id="LOCAL-00050" summary="PR 2 refactoring done">
       <option name="closed" value="true" />
@@ -826,7 +790,15 @@
       <option name="project" value="LOCAL" />
       <updated>1795576609247</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="Allow validated Marine Life developer pack selection">
+      <option name="closed" value="true" />
+      <created>1795579291452</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1795579291453</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -864,7 +836,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated version to 0.9.0+230" />
     <MESSAGE value="Updated version to 0.9.0+231" />
     <MESSAGE value="Updated version to 0.9.1+232" />
     <MESSAGE value="Updated version to 0.9.1+233" />
@@ -889,7 +860,8 @@
     <MESSAGE value="Fix asset-loading analyzer warnings" />
     <MESSAGE value="Fixed audio asset resolution" />
     <MESSAGE value="Update Threadfin songs and add Raccoon and other  tunes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Threadfin songs and add Raccoon and other  tunes" />
+    <MESSAGE value="Allow validated Marine Life developer pack selection" />
+    <option name="LAST_COMMIT_MESSAGE" value="Allow validated Marine Life developer pack selection" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
