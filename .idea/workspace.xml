@@ -18,22 +18,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Allow validated Marine Life developer pack selection">
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/6_meyers_1.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/6_meyers_2.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/7_blackback_1.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/7_blackback_2.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/9_pyramid_1.wav" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/flutter_app/assets/audio/marine/9_pyramid_2.wav" afterDir="false" />
+    <list default="true" id="3bc0d4ba-8847-46c7-8092-e5015b3597c6" name="Changes" comment="Include two tunes for every Marine Life fish in v5">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Downloadable_Theme_Packs_Implementation_Blueprint.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Marine_Life_Pilot_Testing.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/theme_packs/Theme_Store_TestFlight_Setup.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/theme_packs/Theme_Store_TestFlight_Setup.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/lib/ui/services/sudoku_tile_preview_audio_service.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/flutter_app/test/paid_theme_game_loading_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/flutter_app/test/paid_theme_game_loading_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/scripts/build_marine_theme_pack.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/build_marine_theme_pack.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/serve_marine_theme_packs.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/tests/test_build_marine_theme_pack.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/tests/test_build_marine_theme_pack.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,23 +61,23 @@
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0" />
-      <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0000985986134987" />
-      <entry key="S5" value="1.0368808652073334" />
-      <entry key="S10" value="1.3266093897534739" />
-      <entry key="S30" value="2.733287827527062" />
-      <entry key="S60" value="4.007732528700943" />
-      <entry key="M2" value="5.481151478976849" />
-      <entry key="M5" value="8.731685701751907" />
-      <entry key="M10" value="15.572949826280025" />
-      <entry key="M15" value="24.2499708736956" />
-      <entry key="M30" value="53.59531884398298" />
-      <entry key="H1" value="99.59946932747089" />
-      <entry key="H2" value="146.25885475481522" />
-      <entry key="H4" value="204.10487081490913" />
-      <entry key="D1" value="1410.4514346402339" />
-      <entry key="W1" value="5269.978236271468" />
+      <entry key="MS100" value="1.0000005364787734" />
+      <entry key="MS500" value="1.061896240453912" />
+      <entry key="S2" value="1.7663228864115164" />
+      <entry key="S5" value="2.3658013505082134" />
+      <entry key="S10" value="2.8960165052001092" />
+      <entry key="S30" value="5.9627540008437006" />
+      <entry key="S60" value="9.533079876959667" />
+      <entry key="M2" value="12.845278325417876" />
+      <entry key="M5" value="16.37707846700988" />
+      <entry key="M10" value="20.513259687945542" />
+      <entry key="M15" value="24.929043909334396" />
+      <entry key="M30" value="43.16965655951637" />
+      <entry key="H1" value="84.78244085550902" />
+      <entry key="H2" value="140.14173760805787" />
+      <entry key="H4" value="208.25238013843045" />
+      <entry key="D1" value="1409.179533485701" />
+      <entry key="W1" value="5284.558391643591" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -100,33 +89,33 @@
       <entry key="S60" value="0.0" />
       <entry key="M2" value="0.0" />
       <entry key="M5" value="0.0" />
-      <entry key="M10" value="6.267941974398383E-230" />
-      <entry key="M15" value="1.5779139349487027E-153" />
-      <entry key="M30" value="3.972296483079424E-77" />
-      <entry key="H1" value="6.302615713399784E-39" />
-      <entry key="H2" value="7.938901506757691E-20" />
-      <entry key="H4" value="2.817605633646882E-10" />
-      <entry key="D1" value="0.02560432716351713" />
-      <entry key="W1" value="0.5924015625979278" />
+      <entry key="M10" value="1.8464039971828952E-231" />
+      <entry key="M15" value="1.5050507844533277E-154" />
+      <entry key="M30" value="1.2268051126618062E-77" />
+      <entry key="H1" value="3.5025777830931834E-39" />
+      <entry key="H2" value="5.918258006451964E-20" />
+      <entry key="H4" value="2.4327470083123465E-10" />
+      <entry key="D1" value="0.024985199673168212" />
+      <entry key="W1" value="0.5903336594147081" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9794202975869268" />
-      <entry key="MS500" value="0.9958497530944581" />
-      <entry key="S2" value="0.9990593127968795" />
-      <entry key="S5" value="1.036447999270263" />
-      <entry key="S10" value="1.32632289327203" />
-      <entry key="S30" value="2.7330780014152474" />
-      <entry key="S60" value="4.007576279692361" />
-      <entry key="M2" value="5.481043916173849" />
-      <entry key="M5" value="8.731615570394897" />
-      <entry key="M10" value="15.572884920497522" />
-      <entry key="M15" value="24.249901977708358" />
-      <entry key="M30" value="53.59523984972044" />
-      <entry key="H1" value="99.59939404673834" />
-      <entry key="H2" value="146.25879859794088" />
-      <entry key="H4" value="204.10482886992799" />
-      <entry key="D1" value="1410.4769823329505" />
-      <entry key="W1" value="5270.570611219165" />
+      <entry key="MS100" value="0.972655472850424" />
+      <entry key="MS500" value="1.0561009857373185" />
+      <entry key="S2" value="1.764044113569068" />
+      <entry key="S5" value="2.3645954927615342" />
+      <entry key="S10" value="2.895285087205795" />
+      <entry key="S30" value="5.962241789899675" />
+      <entry key="S60" value="9.53265734154725" />
+      <entry key="M2" value="12.844987840801542" />
+      <entry key="M5" value="16.376927492286153" />
+      <entry key="M10" value="20.51316342247892" />
+      <entry key="M15" value="24.928965584225132" />
+      <entry key="M30" value="43.169589347478215" />
+      <entry key="H1" value="84.78237516681622" />
+      <entry key="H2" value="140.14168308886764" />
+      <entry key="H4" value="208.25233739555784" />
+      <entry key="D1" value="1409.2044623032555" />
+      <entry key="W1" value="5285.148698620678" />
     </decayedShown>
   </component>
   <component name="ProblemsViewState">
@@ -404,15 +393,7 @@
       <workItem from="1791023093089" duration="105000" />
       <workItem from="1791023445347" duration="4215000" />
       <workItem from="1793409045380" duration="320000" />
-      <workItem from="1795479528119" duration="35957000" />
-    </task>
-    <task id="LOCAL-00050" summary="PR 2 refactoring done">
-      <option name="closed" value="true" />
-      <created>1773363170040</created>
-      <option name="number" value="00050" />
-      <option name="presentableId" value="LOCAL-00050" />
-      <option name="project" value="LOCAL" />
-      <updated>1773363170041</updated>
+      <workItem from="1795479528119" duration="38369000" />
     </task>
     <task id="LOCAL-00051" summary="PR 2 refactoring done">
       <option name="closed" value="true" />
@@ -798,7 +779,15 @@
       <option name="project" value="LOCAL" />
       <updated>1795579291453</updated>
     </task>
-    <option name="localTasksCounter" value="99" />
+    <task id="LOCAL-00099" summary="Include two tunes for every Marine Life fish in v5">
+      <option name="closed" value="true" />
+      <created>1795581024063</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1795581024063</updated>
+    </task>
+    <option name="localTasksCounter" value="100" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -836,7 +825,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Updated version to 0.9.0+231" />
     <MESSAGE value="Updated version to 0.9.1+232" />
     <MESSAGE value="Updated version to 0.9.1+233" />
     <MESSAGE value="Updated version to 0.9.1+234" />
@@ -861,7 +849,8 @@
     <MESSAGE value="Fixed audio asset resolution" />
     <MESSAGE value="Update Threadfin songs and add Raccoon and other  tunes" />
     <MESSAGE value="Allow validated Marine Life developer pack selection" />
-    <option name="LAST_COMMIT_MESSAGE" value="Allow validated Marine Life developer pack selection" />
+    <MESSAGE value="Include two tunes for every Marine Life fish in v5" />
+    <option name="LAST_COMMIT_MESSAGE" value="Include two tunes for every Marine Life fish in v5" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Sudoku_01$.coverage" NAME=" Coverage Results" MODIFIED="1768767809714" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />

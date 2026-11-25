@@ -67,9 +67,9 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def package_tune(source, destination):
+def package_tune(source, destination, *, force_aac=False):
     """Keep originals; encode PCM WAVs as AAC for practical device downloads."""
-    if source.suffix.lower() == ".wav":
+    if force_aac or source.suffix.lower() == ".wav":
         subprocess.run([
             "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
             "-i", str(source), "-map", "0:a:0", "-vn", "-c:a", "aac",
@@ -79,7 +79,11 @@ def package_tune(source, destination):
         shutil.copyfile(source, destination)
 
 
-def build(output, package_apple, product_id=None):
+def build(output, package_apple, product_id=None, *, theme_id="marine",
+          display_name="Marine Life", content_version=CONTENT_VERSION,
+          description="Nine butterfly fish with filename-derived names, short sounds and music.",
+          tile_discovery=discover_tiles, audio_discovery=discover_audio,
+          transcode_audio=False):
     if not features.check("webp"):
         raise RuntimeError("Pillow requires WebP encoding support.")
     version = re.search(
@@ -90,10 +94,10 @@ def build(output, package_apple, product_id=None):
     if version is None:
         raise ValueError("Cannot determine minimum app build from pubspec.yaml.")
     app_build = int(version.group(1))
-    source = PROJECT / "flutter_app/assets/images/marine"
-    tiles = discover_tiles(source)
-    pack_name = f"marine_v{CONTENT_VERSION}"
-    catalogue_name = f"theme_catalogue_v{CONTENT_VERSION}"
+    source = PROJECT / f"flutter_app/assets/images/{theme_id}"
+    tiles = tile_discovery(source)
+    pack_name = f"{theme_id}_v{content_version}"
+    catalogue_name = f"theme_catalogue_v{content_version}"
     root = output / pack_name
     (root / "tiles").mkdir(parents=True, exist_ok=True)
     entries, images, source_hashes = [], [], {}
@@ -132,15 +136,15 @@ def build(output, package_apple, product_id=None):
     assets = ["preview.webp", *(entry["path"] for entry in entries)]
     image_assets = list(assets)
     tile_audio, music, audio_hashes = [], [], {}
-    for digit, sources in discover_audio(PROJECT / "flutter_app/assets/audio/marine", tiles).items():
+    for digit, sources in audio_discovery(PROJECT / f"flutter_app/assets/audio/{theme_id}", tiles).items():
         variants = []
         for source_path in sources:
-            filename = source_path.with_suffix(".m4a").name if source_path.suffix.lower() == ".wav" else source_path.name
+            filename = source_path.with_suffix(".m4a").name if transcode_audio or source_path.suffix.lower() == ".wav" else source_path.name
             relative = f"audio/tunes/{filename}"
             if relative in assets:
                 raise ValueError(f"Duplicate packaged audio path: {relative}")
             (root / relative).parent.mkdir(parents=True, exist_ok=True)
-            package_tune(source_path, root / relative)
+            package_tune(source_path, root / relative, force_aac=transcode_audio)
             audio_hashes[str(source_path.relative_to(PROJECT))] = digest(source_path)
             assets.append(relative)
             variants.append(relative)
@@ -150,10 +154,10 @@ def build(output, package_apple, product_id=None):
                            "long_press_variants": variants})
     manifest = {
         "schema_version": 1,
-        "theme_id": "marine",
-        "theme_version": CONTENT_VERSION,
+        "theme_id": theme_id,
+        "theme_version": content_version,
         "product_id": product_id,
-        "display_name": "Marine Life",
+        "display_name": display_name,
         "tile_count": 9,
         "tiles": entries,
         "preview_path": "preview.webp",
@@ -177,11 +181,11 @@ def build(output, package_apple, product_id=None):
         "minimum_supported_app_build": app_build,
         "themes": [
             {
-                "id": "marine",
-                "version": CONTENT_VERSION,
-                "display_name": "Marine Life",
-                "description": "Nine butterfly fish with filename-derived names, short sounds and music.",
-                "apple_asset_pack_id": "marine",
+                "id": theme_id,
+                "version": content_version,
+                "display_name": display_name,
+                "description": description,
+                "apple_asset_pack_id": theme_id,
                 "archive_path": f"ThemePacks/{pack_name}.zip",
                 "preview_path": f"ThemePreviews/{pack_name}.webp",
                 "sha256": digest(archive_path),
@@ -196,7 +200,7 @@ def build(output, package_apple, product_id=None):
     write_json(output / "catalogue.json", catalogue)
     apple_manifests = {
         pack_name: {
-            "assetPackID": "marine",
+            "assetPackID": theme_id,
             "downloadPolicy": {"onDemand": {}},
             "fileSelectors": [
                 {
@@ -247,8 +251,8 @@ def build(output, package_apple, product_id=None):
     if archive_path.stat().st_size > 64 * 1024 * 1024:
         raise ValueError("Pilot ZIP exceeds the app's 64 MiB delivery limit.")
     report = {
-        "theme": "marine",
-        "content_version": CONTENT_VERSION,
+        "theme": theme_id,
+        "content_version": content_version,
         "minimum_app_build": app_build,
         "tile_count": 9,
         "audio_included": True,

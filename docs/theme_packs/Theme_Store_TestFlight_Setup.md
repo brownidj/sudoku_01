@@ -188,25 +188,106 @@ On the TestFlight phone, disable the local Background Assets development URL
 override. Purchases and assets must both come from Apple's test environment;
 no Mac server or development CA is required for that path.
 
-## Planets and Antique Buttons
+## Planets pack v1
 
-The app has catalogue, purchase, installer, selector, session persistence and
-media-loader support for all three IDs. Only Marine Life has a published-format
-archive builder and prepared distribution archives in this change. Planets and
-Antique Buttons remain **Not available yet** until their own paid catalogue
-entries and asset packs are built and uploaded; the screen cannot charge for
-missing content.
+Planets now has a paid on-demand pack, product **`theme_planets`**, content
+version **1**, minimum app build **400**. Sources are the existing PNG images
+under `flutter_app/assets/images/planets/` and MP3 tunes under
+`flutter_app/assets/audio/planets/`. Originals are preserved. The numeric image
+prefix fixes puzzle digits; `_01` is an image variant and is omitted from tile
+names. The current source audio prefixes now match the images (the earlier
+Mercury-first warning no longer applies). The supplied Pluto image is included.
 
-Source images have been located:
+| Digit | Name | Tunes |
+| --- | --- | --- |
+| 1 | Mars | 3 |
+| 2 | Venus | 3 |
+| 3 | Earth | 3 |
+| 4 | Mercury | 4 |
+| 5 | Jupiter | 2 |
+| 6 | Saturn | 2 |
+| 7 | Uranus | 2 |
+| 8 | Neptune | 2 |
+| 9 | Pluto | 3 |
 
-- `flutter_app/assets/images/planets/`: nine PNGs. The current order is Mars,
-  Venus, Earth, Mercury, Jupiter, Saturn, Uranus, Neptune, Pluto. Planet music
-  filenames use a different initial ordering (Mercury first), so align music
-  by planet name when preparing that pack, rather than blindly by digit.
-- `flutter_app/assets/audio/planets/`: candidate music tracks and alternate takes.
-- `flutter_app/assets/images/buttons/`: nine PNGs: pearly cream, red coat, blue
-  faceted, green marbled, golden brass, lavender flower, brown leather,
-  turquoise enamel and black carved. No button audio pack was found.
+On long press the game shows the planet image/name and randomly chooses one of
+that planet’s numbered tunes (four-second preview). All **24** tunes form the
+ambient playlist. Background music pauses/resumes in place through the shared
+playback service. Planets requires its own verified entitlement; neither Marine
+Life nor Full Version ownership grants access, and the free Marine Life pilot
+exception does not apply to Planets.
+
+The builder encodes 128 kbps AAC `.m4a` copies of all planet MP3s: the source
+collection is about 81 MiB, while the pack ZIP is **58,953,359 bytes (56.2 MiB)**,
+within the app’s 64 MiB compressed limit. It includes nine 512×512 WebP tiles,
+a 768×768 preview, a schema-1 manifest, all 24 tunes and SHA-256 checksums.
+Converted audio durations were checked against all 24 originals.
+
+Rebuild from the repository root with the project Python environment:
+
+```sh
+.venv/bin/python scripts/build_planets_theme_pack.py --package-apple
+```
+
+The paid product ID defaults to `theme_planets`; use `--product-id` only if the
+app is configured with the same alternative ID. There is no free Planets build
+option. Outputs are in `flutter_app/build/theme_packs_planets/`, including
+`planets_v1.aar`, `planets_v1.zip`, build report, manifest, preview, catalogue
+and standalone `theme_catalogue_v1.aar`.
+
+### Shared catalogue for Marine Life and Planets
+
+Apple delivers one live `theme_catalogue` per distribution context. Do not
+replace the shared catalogue with the Planets-only catalogue. Use the prepared
+combined upload directory `flutter_app/build/theme_packs_store/`:
+
+- `marine_v5.aar` — paid Marine Life v5, 18 tunes;
+- `planets_v1.aar` — paid Planets v1, 24 tunes;
+- `theme_catalogue_v6.aar` — both paid entries and both browser previews;
+- both ZIPs, `catalogue.json`, previews and the catalogue packaging manifest.
+
+The catalogue archive's local delivery version 6 is distinct from the content
+versions 5/1 and App Store Connect’s automatically assigned upload versions.
+Recreate the combined directory with:
+
+```sh
+.venv/bin/python scripts/build_marine_theme_pack.py \
+  --output flutter_app/build/theme_packs_testflight \
+  --package-apple --product-id theme_marine
+.venv/bin/python scripts/build_planets_theme_pack.py --package-apple
+.venv/bin/python scripts/build_theme_pack_catalogue.py \
+  --catalogue flutter_app/build/theme_packs_testflight/catalogue.json \
+  --catalogue flutter_app/build/theme_packs_planets/catalogue.json \
+  --output flutter_app/build/theme_packs_store --version 6 --package-apple
+```
+
+The merge validates pack ZIP identities, hashes and sizes, rejects duplicate
+IDs/free pilots, and includes each theme's own preview. Regenerate and advance
+the local catalogue delivery version for later changes rather than overwriting
+an active version during development. Upload all three `.aar` files together,
+create/configure both non-consumable products in App Store Connect, then follow
+the TestFlight/review steps above. Building files does not publish products or
+assets. Physical purchase/download/speaker checks remain rollout validation.
+
+Validation on 2026-11-25: six new Planets packaging tests, seven existing Marine
+Life packaging tests and three combined-catalogue tests passed (**16 Python
+tests**). `flutter analyze` was clean and **29 targeted Flutter tests** passed.
+`test/planets_theme_pack_loading_test.dart` uses the real image/audio sources
+to check offline loading, image decoding, all planet names, random tune
+alternatives and all 24 background tracks, entitlement revocation and corruption
+of an alternate tune. The generated Planets preview was visually checked.
+No app build, phone installation, App Store upload or purchase was performed for
+this pack preparation. App version/build remains 2.0.1+400.
+
+### Antique Buttons
+
+The app already supports the `buttons` theme ID, but its paid pack is not
+prepared yet. It remains Not available yet until its catalogue entry, asset
+pack and product `theme_antique_buttons` are ready.
+
+Source images are under `flutter_app/assets/images/buttons/`: pearly cream,
+red coat, blue faceted, green marbled, golden brass, lavender flower, brown
+leather, turquoise enamel and black carved. No button audio pack was found.
 
 ## Validation and manual TestFlight checklist
 

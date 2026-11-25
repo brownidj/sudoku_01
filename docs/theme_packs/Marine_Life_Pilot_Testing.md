@@ -460,3 +460,45 @@ remotely auditioned. Prior v4 content remains available for rollback.
 The paid archives were not regenerated or uploaded in this phone update;
 rebuild with `--product-id theme_marine` before uploading v5. No Git commit was
 created. Suggested commit: `Include two tunes for every Marine Life fish in v5`.
+
+### All nine fish physically checked with music enabled — 2026-11-25
+
+Turned Background music On on David’s iPhone and confirmed it remained On
+alongside Audio after the check. Extended opt-in diagnostics with the actual
+preview filename and player state after a successful native play call, plus
+an explicit preview-error event. This is behind the existing non-release
+`MUSIC_PLAYBACK_DIAGNOSTICS` flag. Analyze was clean and all 20 targeted
+preview/music/tooltip tests passed. Rebuilt/installed profile 2.0.1+400 with
+the flag enabled, confirmed Marine Life v5 activation survived the app update,
+then tested one long press per species on the real phone.
+
+Visually compared all nine large preview images against the generated v5
+source contact sheet and checked each full filename-derived caption. The
+native trace confirmed a valid species-specific tune was playing in every
+case, followed by pause → resume of the same background source. It reported
+no preview errors or song reloads between pause and resume. The background
+track during these checks was `3_raccoon_2.m4a`.
+
+| Fish | Actual preview tune | Background paused → resumed (ms) |
+| --- | --- | --- |
+| Threadfin Butterfly Fish | `1_threadfin_1.mp3` | 27049 → 27049 |
+| Copperband Butterfly Fish | `2_copperband_2.m4a` | 36983 → 36984 |
+| Raccoon Butterfly Fish | `3_raccoon_1.m4a` | 50987 → 50986 |
+| Saddled Butterfly Fish | `4_saddled_2.m4a` | 71793 → 71794 |
+| Ornate Butterfly Fish | `5_ornate_1.m4a` | 84018 → 84018 |
+| Meyers Butterfly Fish | `6_meyers_2.m4a` | 99117 → 99116 |
+| Blackback Butterfly Fish | `7_blackback_1.m4a` | 128025 → 128025 |
+| Redtail Butterfly Fish | `8_redtail_1.m4a` | 140515 → 140515 |
+| Pyramid Butterfly Fish | `9_pyramid_2.m4a` | 151502 → 151501 |
+
+Every chosen tune was a member of that digit’s two manifest alternatives.
+Every resume followed the preview-end event, at least four seconds after its
+start, and differed from the paused position by at most 1 ms (native timestamp
+rounding). This checks successful native playback and source/position
+continuity, not a remote recording or subjective assessment of speaker quality.
+
+Evidence: `/tmp/marine-nine-fish-trace.json` and
+`/tmp/marine-nine-fish-check-results.json` on the Mac, read from the phone’s
+local diagnostic file. Marine Life remains selected, the puzzle is open and
+background music is On. No content changes, uploads or commits were made.
+Suggested commit: `Record native preview playback for physical-device QA`.
