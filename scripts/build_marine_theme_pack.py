@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the Marine Life pilot with creature sounds and music for Apple.
+"""Build Marine Life's nine butterfly fish with linked sound and music for Apple.
 
 Requires Pillow with WebP support. Does not change source images, bundle assets,
 sign anything, upload content, or run Flutter/Xcode application builds.
@@ -20,28 +20,66 @@ from PIL import Image, ImageDraw, ImageOps, features
 
 
 PROJECT = Path(__file__).resolve().parents[1]
-TILES = (
-    ("butterflyfish", "Butterflyfish"),
-    ("octopus", "Octopus"),
-    ("crab", "Crab"),
-    ("seahorse", "Seahorse"),
-    ("starfish", "Starfish"),
-    ("walrus", "Walrus"),
-    ("shark", "Shark"),
-    ("jellyfish", "Jellyfish"),
-    ("turtle", "Turtle"),
-)
+CONTENT_VERSION = 4
+
+
+def discover_tiles(source):
+    """The numeric prefix controls Sudoku digits; the filename supplies the name."""
+    tiles = {}
+    for path in source.glob("*_butterflyfish.png"):
+        match = re.fullmatch(r"([1-9])_([a-z][a-z0-9]*(?:_[a-z0-9]+)*)_butterflyfish\.png", path.name)
+        if match is None:
+            raise ValueError(f"Invalid butterfly fish filename: {path.name}")
+        digit = int(match.group(1))
+        if digit in tiles:
+            raise ValueError(f"Duplicate butterfly fish digit: {digit}")
+        tile_id = path.stem.split("_", 1)[1]
+        label = f"{match.group(2).replace('_', ' ').title()} Butterfly Fish"
+        tiles[digit] = (tile_id, label, path)
+    if set(tiles) != set(range(1, 10)):
+        raise ValueError("Expected exactly one <n>_<name>_butterflyfish.png for each digit 1–9.")
+    return [tiles[digit] for digit in range(1, 10)]
 
 
 def write_json(path, value):
     path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
 
 
+def discover_audio(source, tiles):
+    """Match digit and species; numbered takes are alternatives, never other fish."""
+    audio = {}
+    for path in sorted(source.iterdir()):
+        if path.suffix.lower() not in {".mp3", ".wav", ".m4a"}:
+            continue
+        match = re.fullmatch(r"([1-9])_([a-z]+(?:_[a-z]+)*)(?:_([0-9]+))?", path.stem)
+        if match is None:
+            raise ValueError(f"Invalid fish audio filename: {path.name}")
+        digit = int(match.group(1))
+        if tiles[digit - 1][0] != f"{match.group(2)}_butterflyfish":
+            raise ValueError(f"Fish audio does not match digit/species: {path.name}")
+        audio.setdefault(digit, []).append(path)
+    if not audio:
+        raise ValueError("No fish audio found in the active Marine Life audio directory.")
+    return audio
+
+
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build(output, package_apple):
+def package_tune(source, destination):
+    """Keep originals; encode PCM WAVs as AAC for practical device downloads."""
+    if source.suffix.lower() == ".wav":
+        subprocess.run([
+            "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+            "-i", str(source), "-map", "0:a:0", "-vn", "-c:a", "aac",
+            "-b:a", "192k", "-movflags", "+faststart", str(destination),
+        ], check=True)
+    else:
+        shutil.copyfile(source, destination)
+
+
+def build(output, package_apple, product_id=None):
     if not features.check("webp"):
         raise RuntimeError("Pillow requires WebP encoding support.")
     version = re.search(
@@ -53,11 +91,13 @@ def build(output, package_apple):
         raise ValueError("Cannot determine minimum app build from pubspec.yaml.")
     app_build = int(version.group(1))
     source = PROJECT / "flutter_app/assets/images/marine"
-    root = output / "marine_v2"
+    tiles = discover_tiles(source)
+    pack_name = f"marine_v{CONTENT_VERSION}"
+    catalogue_name = f"theme_catalogue_v{CONTENT_VERSION}"
+    root = output / pack_name
     (root / "tiles").mkdir(parents=True, exist_ok=True)
     entries, images, source_hashes = [], [], {}
-    for digit, (tile_id, label) in enumerate(TILES, start=1):
-        input_path = source / f"{digit}_{tile_id}.png"
+    for digit, (tile_id, label, input_path) in enumerate(tiles, start=1):
         source_hashes[input_path.name] = digest(input_path)
         with Image.open(input_path) as original:
             if max(original.size) > 8192:
@@ -87,38 +127,32 @@ def build(output, package_apple):
             (x + (256 - thumbnail.width) // 2, y + 8),
             thumbnail.getchannel("A") if thumbnail.mode == "RGBA" else None,
         )
-        draw.text((x + 128, y + 238), TILES[index][1], fill="#163F50", anchor="mm")
+        draw.text((x + 128, y + 238), tiles[index][1], fill="#163F50", anchor="mm")
     preview.save(root / "preview.webp", "WEBP", quality=86, method=6)
     assets = ["preview.webp", *(entry["path"] for entry in entries)]
     image_assets = list(assets)
-    audio_source = PROJECT / "flutter_app/assets/audio/marine"
-    music_source = PROJECT / "flutter_app/assets/audio/unused/marine"
     tile_audio, music, audio_hashes = [], [], {}
-    for digit, (tile_id, _) in enumerate(TILES, start=1):
-        filename = "1_butterfly.mp3" if digit == 1 else f"{digit}_{tile_id}.mp3"
-        source_path = audio_source / filename
-        relative = f"audio/tiles/{digit:02d}.mp3"
-        (root / relative).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source_path, root / relative)
-        audio_hashes[str(source_path.relative_to(PROJECT))] = digest(source_path)
-        assets.append(relative)
-        tile_audio.append({"digit": digit, "long_press": relative})
-    # Include the nine original songs, without the numbered alternate takes.
-    for source_path in sorted(music_source.glob("*.mp3")):
-        if re.search(r"-\d+$", source_path.stem):
-            continue
-        relative = f"audio/music/{source_path.name}"
-        (root / relative).parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(source_path, root / relative)
-        audio_hashes[str(source_path.relative_to(PROJECT))] = digest(source_path)
-        assets.append(relative)
-        music.append(relative)
-    if len(music) != 9:
-        raise ValueError("Expected nine original Marine Life background songs.")
+    for digit, sources in discover_audio(PROJECT / "flutter_app/assets/audio/marine", tiles).items():
+        variants = []
+        for source_path in sources:
+            filename = source_path.with_suffix(".m4a").name if source_path.suffix.lower() == ".wav" else source_path.name
+            relative = f"audio/tunes/{filename}"
+            if relative in assets:
+                raise ValueError(f"Duplicate packaged audio path: {relative}")
+            (root / relative).parent.mkdir(parents=True, exist_ok=True)
+            package_tune(source_path, root / relative)
+            audio_hashes[str(source_path.relative_to(PROJECT))] = digest(source_path)
+            assets.append(relative)
+            variants.append(relative)
+            music.append(relative)
+        # Keep the single-path fallback for older readers of schema 1.
+        tile_audio.append({"digit": digit, "long_press": variants[0],
+                           "long_press_variants": variants})
     manifest = {
         "schema_version": 1,
         "theme_id": "marine",
-        "theme_version": 2,
+        "theme_version": CONTENT_VERSION,
+        "product_id": product_id,
         "display_name": "Marine Life",
         "tile_count": 9,
         "tiles": entries,
@@ -128,7 +162,7 @@ def build(output, package_apple):
         "checksums": {name: digest(root / name) for name in assets},
     }
     write_json(root / "manifest.json", manifest)
-    archive_path = output / "marine_v2.zip"
+    archive_path = output / f"{pack_name}.zip"
     with zipfile.ZipFile(archive_path, "w", zipfile.ZIP_DEFLATED) as archive:
         for name in sorted(["manifest.json", *assets]):
             # Stable ZIP metadata makes unchanged inputs produce the same hash.
@@ -144,39 +178,40 @@ def build(output, package_apple):
         "themes": [
             {
                 "id": "marine",
-                "version": 2,
+                "version": CONTENT_VERSION,
                 "display_name": "Marine Life",
-                "description": "Nine familiar sea creatures.",
+                "description": "Nine butterfly fish with filename-derived names, short sounds and music.",
                 "apple_asset_pack_id": "marine",
-                "archive_path": "ThemePacks/marine_v2.zip",
-                "preview_path": "ThemePreviews/marine_v2.webp",
+                "archive_path": f"ThemePacks/{pack_name}.zip",
+                "preview_path": f"ThemePreviews/{pack_name}.webp",
                 "sha256": digest(archive_path),
                 "file_size_bytes": archive_path.stat().st_size,
                 "minimum_app_build": app_build,
-                "is_free": True,
+                "is_free": product_id is None,
+                "product_id": product_id,
                 "active": True,
             }
         ],
     }
     write_json(output / "catalogue.json", catalogue)
     apple_manifests = {
-        "marine_v2": {
+        pack_name: {
             "assetPackID": "marine",
             "downloadPolicy": {"onDemand": {}},
             "fileSelectors": [
                 {
-                    "fileSource": "marine_v2.zip",
-                    "fileDestination": "ThemePacks/marine_v2.zip",
+                    "fileSource": f"{pack_name}.zip",
+                    "fileDestination": f"ThemePacks/{pack_name}.zip",
                 }
             ],
             "platforms": ["iOS"],
         },
-        "theme_catalogue_v2": {
+        catalogue_name: {
             "assetPackID": "theme_catalogue",
             "downloadPolicy": {"onDemand": {}},
             "fileSelectors": [
                 {"fileSource": "catalogue.json", "fileDestination": "ThemeCatalogue/catalogue.json"},
-                {"fileSource": "marine_v2/preview.webp", "fileDestination": "ThemePreviews/marine_v2.webp"},
+                {"fileSource": f"{pack_name}/preview.webp", "fileDestination": f"ThemePreviews/{pack_name}.webp"},
             ],
             "platforms": ["iOS"],
         },
@@ -213,11 +248,12 @@ def build(output, package_apple):
         raise ValueError("Pilot ZIP exceeds the app's 64 MiB delivery limit.")
     report = {
         "theme": "marine",
-        "content_version": 2,
+        "content_version": CONTENT_VERSION,
         "minimum_app_build": app_build,
         "tile_count": 9,
         "audio_included": True,
-        "creature_audio_count": len(tile_audio),
+        "creature_audio_count": len(audio_hashes),
+        "tile_preview_mapping_count": len(tile_audio),
         "background_music_count": len(music),
         "audio_source_sha256": audio_hashes,
         "zip_bytes": archive_path.stat().st_size,
@@ -225,7 +261,7 @@ def build(output, package_apple):
         "source_sha256": source_hashes,
         "apple_archives_created": package_apple,
     }
-    write_json(output / "marine_v2.build_report.json", report)
+    write_json(output / f"{pack_name}.build_report.json", report)
     print(json.dumps({"output": str(output), **report}, indent=2))
 
 
@@ -233,5 +269,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, default=PROJECT / "flutter_app/build/theme_packs")
     parser.add_argument("--package-apple", action="store_true", help="Also create .aar files using Xcode's ba-package.")
+    parser.add_argument("--product-id", help="App Store non-consumable ID, e.g. theme_marine. Omit only for the free developer pilot.")
     args = parser.parse_args()
-    build(args.output.resolve(), args.package_apple)
+    build(args.output.resolve(), args.package_apple, args.product_id)

@@ -6,27 +6,52 @@ import 'package:flutter_app/ui/theme/theme_definition.dart';
 import 'package:flutter_app/ui/theme/theme_loader.dart';
 import 'package:flutter_app/ui/theme/theme_pack_validator.dart';
 import 'package:flutter_app/ui/theme/theme_storage_paths.dart';
+import 'package:flutter_app/ui/theme/downloadable_theme_catalog.dart';
+import 'package:flutter_app/ui/theme/theme_purchase_gateway.dart';
 
-/// Reads the installed free pilot without contacting Apple delivery.
+/// Reads validated installed themes without contacting Apple delivery.
+/// The Marine Life getter is retained for compatibility with the debug pilot.
 class MarineGameTheme {
-  static ThemeDefinition? definition;
+  static final definitions = <String, ThemeDefinition>{};
+  static ThemeDefinition? get definition => definitions['marine'];
+  static set definition(ThemeDefinition? value) {
+    if (value == null) {
+      definitions.remove('marine');
+    } else {
+      definitions['marine'] = value;
+    }
+  }
 
-  static Future<ThemeDefinition?> load() async {
+  static bool isDownloaded(String id) =>
+      const ['marine', 'planets', 'buttons'].contains(id);
+
+  static Future<ThemeDefinition?> load({
+    String themeId = 'marine',
+    ThemeStoragePaths? storagePaths,
+    ThemePurchaseGateway purchases = const ThemePurchaseGateway(),
+  }) async {
     final store = InstalledThemeStore(
-      storagePaths: await ThemeStoragePaths.applicationSupport(),
+      storagePaths:
+          storagePaths ?? await ThemeStoragePaths.applicationSupport(),
     );
-    final installed = await store.readInstalledTheme('marine');
+    final installed = await store.readInstalledTheme(themeId);
     if (installed == null || !installed.validated) return null;
     final validated = await const ThemePackValidator().validate(
       Directory(installed.rootPath),
     );
-    if (validated.manifest.themeId != 'marine' ||
+    if (validated.manifest.themeId != themeId ||
         validated.manifest.themeVersion != installed.version) {
-      throw const FormatException('Marine Life metadata is inconsistent.');
+      throw const FormatException('Installed theme metadata is inconsistent.');
+    }
+    final productId = validated.manifest.productId;
+    if (productId != null &&
+        (productId != DownloadableTheme.byId(themeId).productId ||
+            !await purchases.owns(productId))) {
+      return null;
     }
     return RepositoryThemeLoader(
       installedThemeStore: store,
-    ).loadInstalledTheme('marine');
+    ).loadInstalledTheme(themeId);
   }
 
   static Future<Map<int, ui.Image>> decode(ThemeDefinition theme) async {

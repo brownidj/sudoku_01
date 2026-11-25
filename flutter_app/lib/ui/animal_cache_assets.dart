@@ -72,8 +72,10 @@ class AnimalCacheAssets {
   }
 
   static String displayNameForDigit(String contentMode, int digit) {
-    if (contentMode == 'marine') {
-      return MarineGameTheme.definition?.tileForDigit(digit)?.displayName ??
+    if (MarineGameTheme.isDownloaded(contentMode)) {
+      return MarineGameTheme.definitions[contentMode]
+              ?.tileForDigit(digit)
+              ?.displayName ??
           digit.toString();
     }
     return BundledThemeRepository.displayNameForDigit(contentMode, digit);
@@ -116,8 +118,11 @@ class AnimalCacheAssets {
     required String animalStyle,
     required int digit,
   }) {
-    if (contentMode == 'marine') {
-      return MarineGameTheme.definition?.tileForDigit(digit)?.imagePath ?? '';
+    if (MarineGameTheme.isDownloaded(contentMode)) {
+      return MarineGameTheme.definitions[contentMode]
+              ?.tileForDigit(digit)
+              ?.imagePath ??
+          '';
     }
     if (contentMode == 'instruments') {
       return instrumentAssetPathForDigit(digit);

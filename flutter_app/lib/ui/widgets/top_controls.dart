@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/ui/ui_strings.dart';
+import 'package:flutter_app/ui/theme/downloadable_theme_catalog.dart';
 
 class TopControls extends StatelessWidget {
   final bool marineAvailable;
+  final Set<String> downloadedThemeIds;
   final UiState state;
   final VoidCallback onProgressPressed;
   final VoidCallback onHelpPressed;
@@ -15,6 +17,7 @@ class TopControls extends StatelessWidget {
   const TopControls({
     super.key,
     this.marineAvailable = false,
+    this.downloadedThemeIds = const {},
     required this.state,
     required this.onProgressPressed,
     required this.onHelpPressed,
@@ -46,6 +49,7 @@ class TopControls extends StatelessWidget {
                     'old_opera' => 'old_opera',
                     'numbers' => 'numbers',
                     'marine' when marineAvailable => 'marine',
+                    final id when downloadedThemeIds.contains(id) => id,
                     _ => 'animals',
                   },
                   iconSize: 20,
@@ -62,6 +66,13 @@ class TopControls extends StatelessWidget {
                         value: 'marine',
                         child: Text('Marine Life'),
                       ),
+                    for (final theme in DownloadableTheme.all)
+                      if (downloadedThemeIds.contains(theme.id) &&
+                          !(theme.id == 'marine' && marineAvailable))
+                        DropdownMenuItem(
+                          value: theme.id,
+                          child: Text(theme.name),
+                        ),
                     DropdownMenuItem<String>(
                       value: 'animals',
                       child: Text(UiStrings.contentModeAnimals(context)),

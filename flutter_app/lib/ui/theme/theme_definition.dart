@@ -1,3 +1,5 @@
+import 'dart:math';
+
 enum ThemeSource { bundled, downloaded }
 
 enum ThemeInstallationState {
@@ -99,17 +101,24 @@ class ThemeTile {
 }
 
 class ThemeAudio {
+  static final Random _random = Random();
   final Map<int, String> tilePreviewAssets;
+  final Map<int, List<String>> tilePreviewVariants;
   final Map<int, String> tileCelebrationAssets;
   final List<String> backgroundMusicAssets;
 
   const ThemeAudio({
     this.tilePreviewAssets = const <int, String>{},
+    this.tilePreviewVariants = const {},
     this.tileCelebrationAssets = const <int, String>{},
     this.backgroundMusicAssets = const <String>[],
   });
 
-  String? tilePreviewAssetForDigit(int digit) => tilePreviewAssets[digit];
+  String? tilePreviewAssetForDigit(int digit, {Random? random}) {
+    final variants = tilePreviewVariants[digit];
+    if (variants == null || variants.isEmpty) return tilePreviewAssets[digit];
+    return variants[(random ?? _random).nextInt(variants.length)];
+  }
 
   String? tileCelebrationAssetForDigit(int digit) =>
       tileCelebrationAssets[digit] ?? tilePreviewAssets[digit];

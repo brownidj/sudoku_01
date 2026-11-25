@@ -10,6 +10,19 @@ This narrow pilot integration does not implement the full theme browser.
 
 ## Prepare the asset server
 
+Current content is **v4**, with nine butterfly fish images and filename-derived
+names. `flutter_app/assets/images/marine/` now contains only the nine
+`<n>_<name>_butterflyfish.png` source images; the old animal images and
+`1_threadfin.png.png` duplicate were removed on 2026-11-25. Archived animal
+images remain in `flutter_app/assets/images/unused/`. See the
+[current asset table and audio mappings](Theme_Store_TestFlight_Setup.md#marine-life-assets-prepared-for-upload).
+V4 links two tunes each to Threadfin, Copperband, Raccoon and Redtail.
+Previews choose randomly from the selected fish’s own alternatives,
+and all eight tunes form the ambient playlist. WAV sources are packaged as AAC
+copies to stay within the download limit. Other fish
+have image/name previews without sound. The v1/v2 sections below describe
+historical content, not the current source inventory.
+
 From the repository root, generate the two Apple archives if needed:
 
 ```sh
@@ -17,7 +30,7 @@ python3 scripts/build_marine_theme_pack.py --package-apple
 ```
 
 The output directory is `flutter_app/build/theme_packs/`. The server needs both
-`marine_v2.aar` and `theme_catalogue_v2.aar`. These are Apple's asset archives,
+`marine_v4.aar` and `theme_catalogue_v4.aar`. These are Apple's asset archives,
 not Android libraries. Generated files are ignored by Git and can be recreated.
 
 Apple's mock server requires a TLS server identity, with its private key, in
@@ -45,7 +58,7 @@ bash scripts/serve_marine_theme_packs.sh Mac.local
 
 The default port is 63245; an optional second argument changes it. Keep the
 server terminal open. Stop it with Control-C when finished. The helper uses
-native delivery version 2 for both archives; these native versions are separate
+native delivery version 4 for both archives; these native versions are separate
 from the theme manifest's content version.
 
 If an older server process is waiting at “Choose an identity in the panel to
@@ -103,9 +116,11 @@ configuration and reads existing local files; it does not fetch packs.
 
 ### Updating the image-only v1 pilot to audio v2
 
-Serve the v2 archives with native delivery version 2. The native bridge now
-checks for updates and requires the latest native version when explicitly
-fetching a pack. In the debug test screen, remove the installed v1 pilot, fetch
+Serve the v2 archives with native delivery version 2. The native bridge checks
+for updates before resolving the manifest and tolerates an already-scheduled
+refresh. To reset native cached delivery data, first press Remove Apple delivery
+copy (this now removes the catalogue delivery cache as well). In the debug test
+screen, remove the installed v1 pilot, fetch
 the catalogue (expect v2), then download and install. This removes only the
 pilot's files; it does not reset the puzzle or purchases. The pilot installer
 continues to reject replacing a different installed version implicitly.
@@ -197,22 +212,104 @@ native bridge now retains NSError domains/codes and adds simulator recovery
 guidance for helper connection failures. It does not bypass Apple's delivery
 or integrity checks.
 
-## Manual checks for this change
+## Automated regression checks
 
 From `flutter_app/`:
 
 ```sh
 flutter analyze
-flutter test test/marine_theme_pack_pilot_test.dart test/marine_theme_pack_test_screen_test.dart test/local_theme_pack_installer_test.dart test/sudoku_screen_debug_toggle_test.dart
-flutter test test/marine_theme_selection_test.dart test/top_controls_labels_test.dart test/sudoku_screen_asset_loading_test.dart
+flutter test --coverage
+flutter test integration_test/app_flow_test.dart -d <simulator-id>
+bash scripts/run_patrol_release_checklist.sh <simulator-id>
 ```
+
+Use a simulator for integration and Patrol checks: they change preferences and
+game sessions. The integration suite covers launch, board controls, drawer/help,
+tooltips, bundled theme changes and saved-game resume. Patrol checks drawer
+controls and premium difficulty/theme routing through the running iOS app.
+
+Marine Life regression tests cover selector availability, selection persistence,
+audio path resolution, music/volume controls, installation button gating,
+pending-operation locking, cancellation, failure/retry, offline verification,
+removal, and retention of all nine creature sound files and nine music files
+in private storage after delivery-cache removal. UI state tests use a controlled
+pilot; installer tests use real temporary archives and filesystem operations.
+Their synthetic audio bytes establish storage integrity, not media decoding.
 
 Then perform the real local-server/device flow above. Mocked Dart tests cannot
 establish that Apple signing, TLS, development overrides or native delivery
-work on a device. No Flutter analysis, tests or app builds were run by the
-assistant for this implementation, following `docs/CURRENT_STATE.md`.
+work on a device. Listen on the physical phone to confirm audio quality,
+creature playback, and background-music suspension/resume during previews.
+The user confirmed phone music playback on 24 November 2026.
+
+The 24 November 2026 regression run passed `flutter analyze`, all 283
+unit/widget tests, and all six `app_flow_test.dart` simulator tests.
+`coverage/lcov.info` reported 5,833 of 8,466 instrumented lines covered (68.9%);
+this is Dart line coverage, not a measure of native delivery or visual quality.
+The Patrol runner requires `ENABLE_TESTING_SEARCH_PATHS = YES` in the debug
+Xcode configuration for its SwiftPM XCTest/XCUIAutomation linkage. The checklist
+script also passes the selected simulator's iOS version explicitly because
+Patrol 4.4 otherwise defaults to the latest installed runtime.
+The UI-test target links Flutter's generated Swift package and uses Patrol's
+supplied Objective-C runner macro. This avoids stale module lookups in a copied
+runner. Simulator debug runtime search paths include Apple's test support
+libraries. The three native checklist files are bundled into a single run so
+Xcode's simulator shutdown does not interrupt subsequent targets. The launch
+helper waits for asynchronous first-launch guidance before dismissing it, and
+waits for dropdown animations before selecting an item.
+
+The repaired native checklist passed all three tests on the iOS 26.5 iPhone 17
+Pro simulator. Its result bundle is
+`flutter_app/build/ios_results_1795501323294.xcresult` (generated, not committed).
+No new source files were created. Regression changes are in
+`test/marine_theme_pack_pilot_test.dart`,
+`test/marine_theme_pack_test_screen_test.dart`, and
+`test/sudoku_drawer_audio_test.dart`; runner repairs are in
+`ios/Flutter/Debug.xcconfig`, `ios/Runner.xcodeproj/project.pbxproj`,
+`ios/RunnerUITests/RunnerUITests.m`,
+`patrol_test/release_checklist_helpers.dart`, and
+`scripts/run_patrol_release_checklist.sh` (paths relative to `flutter_app/`).
+Version/build remains `2.0.1+400`. Automated regression validation is complete;
+physical-device audio quality and preview/music interaction remain listening
+checks. Review the changes before committing; suggested commit message:
+`Expand Marine Life regression coverage and repair iOS UI test runner`.
 
 For the gameplay integration, also check that selecting Marine Life preserves
 the current puzzle, notes and undo history; restart offline and confirm the
 selection persists. Remove the installed pilot from the test screen and return
 to the game: Animals should be selected and Marine Life should disappear.
+
+## Tile long-press preview regression
+
+Long-press a populated picture tile on the puzzle board. Its enlarged image
+and name appear together for four seconds. With Audio enabled, the existing
+short creature/instrument clip plays and background music is suspended for
+the preview. The image and name remain available when Audio is off or the
+tile has no sound. Numbers and empty board cells do not have creature previews.
+
+The overlay previously hid its text whenever an image was present and relied
+on an audio-related snackbar for the name. It now always renders the caption,
+fits the image/caption to the viewport with text scaling, and cancels the old
+dismissal timer when a new preview replaces it.
+
+The new `flutter_app/test/tooltip_overlay_service_test.dart` covers layout,
+replacement timing, and disposal. Updated
+`flutter_app/test/sudoku_cell_tooltip_service_test.dart` drives actual board
+long-press gestures for butterflies and Marine Life, with enabled, muted, and
+missing audio; it checks image/name presentation, audio requests, and music
+suspension/resume. Audio controllers are faked in these widget tests.
+`flutter_app/integration_test/app_flow_test.dart` also checks the fully wired
+game screen with audio explicitly muted. These tests protect both the visual
+caption and gesture wiring. The implementation change is in
+`flutter_app/lib/ui/services/tooltip_overlay_service.dart`.
+
+Manual phone check after rebuilding: select Marine Life, enable Audio, then
+long-press a filled board tile and confirm its image, name, and short sound;
+repeat with Audio off and confirm its image/name still appear.
+
+Suggested commit: `Restore named tile previews and add gesture regression tests`.
+
+Follow-up validation on 24 November 2026: `flutter analyze` clean, all 292
+unit/widget tests passed, and all seven simulator app-flow tests passed. This
+preview regression fix is complete in source; it requires rebuilding the app
+before checking it on the physical phone. Version/build remains `2.0.1+400`.

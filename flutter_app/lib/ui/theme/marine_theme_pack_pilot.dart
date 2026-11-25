@@ -20,9 +20,12 @@ class MarinePilotCancelledException extends MarinePilotException {
   const MarinePilotCancelledException() : super('Pilot operation cancelled.');
 }
 
-/// Only the explicitly free Marine Life pilot is accepted by this test flow.
+/// Validates a theme-specific catalogue entry. The debug pilot accepts free
+/// entries; the store supplies a product ID and enforces a verified purchase.
 /// Apple's delivery version and the manifest's content version are independent.
 class MarinePilotDescriptor {
+  final String themeId;
+  final String? productId;
   final int version;
   final int minimumAppBuild;
   final String archivePath;
@@ -30,6 +33,8 @@ class MarinePilotDescriptor {
   final String checksum;
 
   const MarinePilotDescriptor._({
+    required this.themeId,
+    required this.productId,
     required this.version,
     required this.minimumAppBuild,
     required this.archivePath,
@@ -37,7 +42,12 @@ class MarinePilotDescriptor {
     required this.checksum,
   });
 
-  factory MarinePilotDescriptor.fromCatalogue(String text, int appBuild) {
+  factory MarinePilotDescriptor.fromCatalogue(
+    String text,
+    int appBuild, {
+    String themeId = 'marine',
+    String? expectedProductId,
+  }) {
     try {
       final json = jsonDecode(text);
       if (json is! Map<String, dynamic> ||
@@ -49,7 +59,7 @@ class MarinePilotDescriptor {
         throw const FormatException('Invalid pilot catalogue.');
       }
       final matches = (json['themes'] as List).where(
-        (entry) => entry is Map<String, dynamic> && entry['id'] == 'marine',
+        (entry) => entry is Map<String, dynamic> && entry['id'] == themeId,
       );
       if (matches.length != 1) {
         throw const FormatException(
@@ -61,10 +71,16 @@ class MarinePilotDescriptor {
       final minimum = entry['minimum_app_build'];
       final size = entry['file_size_bytes'];
       final checksum = entry['sha256'];
-      if (entry['active'] != true ||
-          entry['is_free'] != true ||
-          entry['product_id'] != null ||
-          entry['apple_asset_pack_id'] != 'marine' ||
+      final free = entry['is_free'] == true && entry['product_id'] == null;
+      final paid =
+          expectedProductId != null &&
+          expectedProductId.isNotEmpty &&
+          entry['is_free'] == false &&
+          entry['product_id'] == expectedProductId;
+      if (!RegExp(r'^[a-z][a-z0-9_]{2,63}$').hasMatch(themeId) ||
+          entry['active'] != true ||
+          !(free || paid) ||
+          entry['apple_asset_pack_id'] != themeId ||
           version is! int ||
           version < 1 ||
           minimum is! int ||
@@ -74,7 +90,7 @@ class MarinePilotDescriptor {
           size > 64 * 1024 * 1024 ||
           checksum is! String ||
           !RegExp(r'^[a-fA-F0-9]{64}$').hasMatch(checksum) ||
-          entry['archive_path'] != 'ThemePacks/marine_v$version.zip') {
+          entry['archive_path'] != 'ThemePacks/${themeId}_v$version.zip') {
         throw const FormatException(
           'Invalid or unavailable free Marine Life pack.',
         );
@@ -84,6 +100,8 @@ class MarinePilotDescriptor {
         throw const FormatException('This pilot requires a newer app build.');
       }
       return MarinePilotDescriptor._(
+        themeId: themeId,
+        productId: entry['product_id'] as String?,
         version: version,
         minimumAppBuild: minimum,
         archivePath: entry['archive_path'] as String,
@@ -99,6 +117,9 @@ class MarinePilotDescriptor {
 /// Coordinates the native transport and existing local installer. No operation
 /// runs automatically at game startup. All destructive actions target marine.
 class MarineThemePackPilot {
+  final String themeId;
+  final String? expectedProductId;
+  final Future<bool> Function()? hasEntitlement;
   final AppleThemePackDelivery delivery;
   final ThemeStoragePaths storagePaths;
   final int appBuild;
@@ -114,6 +135,9 @@ class MarineThemePackPilot {
     required this.delivery,
     required this.storagePaths,
     required this.appBuild,
+    this.themeId = 'marine',
+    this.expectedProductId,
+    this.hasEntitlement,
   }) : store = InstalledThemeStore(storagePaths: storagePaths),
        installer = LocalThemePackInstaller(storagePaths: storagePaths);
 
@@ -132,14 +156,17 @@ class MarineThemePackPilot {
     );
   }
 
-  File get _cache =>
-      File('${storagePaths.rootDirectory.path}/catalogue/apple_pilot.json');
+  File get _cache => File(
+    '${storagePaths.rootDirectory.path}/catalogue/${expectedProductId == null && themeId == 'marine' ? 'apple_pilot' : 'store_$themeId'}.json',
+  );
 
   Future<MarinePilotDescriptor?> cachedCatalogue() async {
     try {
       return MarinePilotDescriptor.fromCatalogue(
         await _readSmallFile(_cache),
         appBuild,
+        themeId: themeId,
+        expectedProductId: expectedProductId,
       );
     } on FileSystemException {
       return null;
@@ -162,7 +189,12 @@ class MarineThemePackPilot {
       );
       _checkCancelled();
       final text = await _readSmallFile(File(path));
-      final descriptor = MarinePilotDescriptor.fromCatalogue(text, appBuild);
+      final descriptor = MarinePilotDescriptor.fromCatalogue(
+        text,
+        appBuild,
+        themeId: themeId,
+        expectedProductId: expectedProductId,
+      );
       _checkCancelled();
       await _cache.parent.create(recursive: true);
       temporary = File('${_cache.path}.tmp');
@@ -192,12 +224,29 @@ class MarineThemePackPilot {
     RandomAccessFile? output;
     var committed = false;
     try {
+      if (descriptor.themeId != themeId) {
+        throw const MarinePilotException(
+          'The catalogue does not match this theme.',
+        );
+      }
+      if (expectedProductId != null &&
+          descriptor.productId != expectedProductId) {
+        throw const MarinePilotException(
+          'This theme is not available for this store product.',
+        );
+      }
+      if (expectedProductId != null &&
+          (hasEntitlement == null || !await hasEntitlement!())) {
+        throw const MarinePilotException(
+          'Purchase or restore this theme before downloading.',
+        );
+      }
       if (descriptor.minimumAppBuild > appBuild) {
         throw const MarinePilotException(
           'This pilot requires a newer app build.',
         );
       }
-      final installed = await store.readInstalledTheme('marine');
+      final installed = await store.readInstalledTheme(themeId);
       if (installed != null) {
         if (installed.version != descriptor.version) {
           throw const MarinePilotException(
@@ -207,10 +256,10 @@ class MarineThemePackPilot {
         return (await loadInstalled())!;
       }
       _checkCancelled();
-      _activePack = 'marine';
+      _activePack = themeId;
       onStage?.call('Downloading Marine Life…');
       final path = await delivery.ensureAvailable(
-        assetPackId: 'marine',
+        assetPackId: themeId,
         relativePath: descriptor.archivePath,
       );
       _activePack = null;
@@ -249,11 +298,17 @@ class MarineThemePackPilot {
       }
       _checkCancelled();
       onStage?.call('Validating manifest and installing…');
+      if (expectedProductId != null && !await hasEntitlement!()) {
+        throw const MarinePilotException(
+          'This theme purchase is no longer available. Restore purchases and try again.',
+        );
+      }
       await installer.installFromZip(
         zip,
-        expectedThemeId: 'marine',
+        expectedThemeId: themeId,
         expectedVersion: descriptor.version,
         appBuild: appBuild,
+        expectedProductId: expectedProductId,
         checkCancelled: _checkCancelled,
       );
       committed = true;
@@ -274,13 +329,13 @@ class MarineThemePackPilot {
   /// Performs full local asset validation and uses the same loader as other
   /// installed themes. This method never calls the native delivery service.
   Future<ThemeDefinition?> loadInstalled() async {
-    final installed = await store.readInstalledTheme('marine');
+    final installed = await store.readInstalledTheme(themeId);
     if (installed == null) return null;
     final validated = await const ThemePackValidator().validate(
       Directory(installed.rootPath),
     );
     if (!installed.validated ||
-        validated.manifest.themeId != 'marine' ||
+        validated.manifest.themeId != themeId ||
         validated.manifest.themeVersion != installed.version) {
       throw const MarinePilotException(
         'Installed Marine Life metadata is inconsistent.',
@@ -288,11 +343,11 @@ class MarineThemePackPilot {
     }
     return RepositoryThemeLoader(
       installedThemeStore: store,
-    ).loadInstalledTheme('marine');
+    ).loadInstalledTheme(themeId);
   }
 
   Future<void> removeInstallation() =>
-      _operation(() => store.removeTheme('marine'));
+      _operation(() => store.removeTheme(themeId));
 
   Future<void> removeDeliveryCopy() => _operation(() async {
     if (await loadInstalled() == null) {
@@ -300,7 +355,10 @@ class MarineThemePackPilot {
         'Install and verify the pilot before removing the delivery copy.',
       );
     }
-    await delivery.removeAssetPack('marine');
+    await delivery.removeAssetPack(themeId);
+    // Reset the native catalogue cache too when testing a new delivery version.
+    // The validated private installation and cached JSON remain available.
+    await delivery.removeAssetPack('theme_catalogue');
   });
 
   Future<void> cancel() async {

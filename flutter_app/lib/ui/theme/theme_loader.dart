@@ -87,10 +87,17 @@ class RepositoryThemeLoader implements ThemeLoader {
     Directory rootDirectory,
   ) {
     final previewAssets = <int, String>{};
+    final previewVariants = <int, List<String>>{};
     final celebrationAssets = <int, String>{};
     for (final tileAudio in audio.tiles) {
       final longPress = tileAudio.longPress;
       final celebration = tileAudio.celebration;
+      if (tileAudio.longPressVariants.isNotEmpty) {
+        previewVariants[tileAudio.digit] = List.unmodifiable([
+          for (final path in tileAudio.longPressVariants)
+            _absoluteAssetPath(rootDirectory, path),
+        ]);
+      }
       if (longPress != null) {
         previewAssets[tileAudio.digit] = _absoluteAssetPath(
           rootDirectory,
@@ -106,6 +113,7 @@ class RepositoryThemeLoader implements ThemeLoader {
     }
     return ThemeAudio(
       tilePreviewAssets: Map.unmodifiable(previewAssets),
+      tilePreviewVariants: Map.unmodifiable(previewVariants),
       tileCelebrationAssets: Map.unmodifiable(celebrationAssets),
       backgroundMusicAssets: [
         for (final musicPath in audio.music)

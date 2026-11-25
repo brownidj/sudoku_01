@@ -49,6 +49,34 @@ UiState _state() {
 
 void main() {
   testWidgets(
+    'installed Planets and Antique Buttons are selectable without Full Version',
+    (tester) async {
+      String? selected;
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: TopControls(
+              downloadedThemeIds: const {'planets', 'buttons'},
+              state: _state(),
+              onProgressPressed: () {},
+              onHelpPressed: () {},
+              onContentModeChanged: (value) => selected = value,
+              onConfigurationLockTapped: () {},
+              onConfigurationLockDoubleTapped: () {},
+              onStyleChanged: (_) {},
+            ),
+          ),
+        ),
+      );
+      await tester.tap(find.byType(DropdownButton<String>));
+      await tester.pumpAndSettle();
+      expect(find.text('Planets'), findsOneWidget);
+      await tester.tap(find.text('Antique Buttons'));
+      await tester.pumpAndSettle();
+      expect(selected, 'buttons');
+    },
+  );
+  testWidgets(
     'Marine Life is selectable only when installed assets are ready',
     (tester) async {
       String? selected;

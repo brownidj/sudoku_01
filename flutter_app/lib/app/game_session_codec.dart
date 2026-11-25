@@ -257,6 +257,8 @@ class GameSessionCodec {
         value == 'shells' ||
         value == 'old_opera' ||
         value == 'marine' ||
+        value == 'planets' ||
+        value == 'buttons' ||
         value == 'numbers') {
       return value;
     }

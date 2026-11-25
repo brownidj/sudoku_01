@@ -33,6 +33,7 @@ class LocalThemePackInstaller {
     String? expectedThemeId,
     int? expectedVersion,
     int? appBuild,
+    String? expectedProductId,
     void Function()? checkCancelled,
   }) async {
     Directory? stagingDirectory;
@@ -43,6 +44,12 @@ class LocalThemePackInstaller {
       stagingDirectory = await extractor.extractToStaging(zipFile);
       final validatedPack = await validator.validate(stagingDirectory);
       final manifest = validatedPack.manifest;
+      if (expectedProductId != null &&
+          manifest.productId != expectedProductId) {
+        throw const InvalidThemeManifestException(
+          'The theme does not match the purchased product.',
+        );
+      }
       if ((expectedThemeId != null && manifest.themeId != expectedThemeId) ||
           (expectedVersion != null &&
               manifest.themeVersion != expectedVersion)) {

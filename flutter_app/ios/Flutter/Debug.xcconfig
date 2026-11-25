@@ -1,2 +1,5 @@
 #include "Generated.xcconfig"
 CONFIGURATION_BUILD_DIR = $(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+// Patrol's native debug runner links XCTest / XCUIAutomation via SwiftPM.
+ENABLE_TESTING_SEARCH_PATHS = YES
+LD_RUNPATH_SEARCH_PATHS[sdk=iphonesimulator*] = $(inherited) $(PLATFORM_DIR)/Developer/Library/Frameworks $(PLATFORM_DIR)/Developer/usr/lib

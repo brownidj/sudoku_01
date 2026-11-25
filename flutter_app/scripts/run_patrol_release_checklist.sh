@@ -20,8 +20,20 @@ xcrun simctl boot "${SIMULATOR_ID}" >/dev/null 2>&1 || true
 open -a Simulator >/dev/null 2>&1 || true
 xcrun simctl bootstatus "${SIMULATOR_ID}" -b
 
+# Patrol 4.4 resolves simulator destinations by name and OS. Its default
+# OS=latest misses older runtimes even when --device is an explicit UUID.
+SIMULATOR_OS="$(xcrun simctl list devices available --json | /usr/bin/ruby -rjson -e '
+  runtime = JSON.parse(STDIN.read).fetch("devices").find do |_, devices|
+    devices.any? { |device| device["udid"] == ARGV.fetch(0) }
+  end
+  abort "Simulator UUID not found" unless runtime
+  puts runtime.first.split(".iOS-").last.tr("-", ".")
+' "${SIMULATOR_ID}")"
+
+# Bundle the checklist into one native run. Xcode shuts the simulator down after
+# a run, so separate invocations can lose the selected device between targets.
+TARGET_ARGS=()
 for target in "${TARGETS[@]}"; do
-  echo
-  echo "Running ${target}"
-  patrol test --target "${target}" --device "${SIMULATOR_ID}"
+  TARGET_ARGS+=(--target "${target}")
 done
+patrol test "${TARGET_ARGS[@]}" --device "${SIMULATOR_ID}" --ios "${SIMULATOR_OS}"

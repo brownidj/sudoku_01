@@ -24,6 +24,11 @@ Future<void> waitForBoardControls(PatrolIntegrationTester $) async {
     final hasUndo = byKey($, 'action-undo-button').evaluate().isNotEmpty;
     final hasNotes = byKey($, 'action-notes-button').evaluate().isNotEmpty;
     if (hasUndo && hasNotes) {
+      // First-launch guidance is scheduled after the board's first frame and
+      // an asynchronous preferences read. Let it open before dismissing it.
+      await $.pumpAndSettle();
+      await dismissInfoSheetIfVisible($);
+      await $.pumpAndSettle();
       return;
     }
     await $.pump(const Duration(milliseconds: 250));
@@ -123,8 +128,10 @@ Future<void> assertPremiumSheetForDifficulty(
   String difficultyLabel,
 ) async {
   await byKey($, 'board-difficulty-dropdown').tap();
-  await $.pump(const Duration(milliseconds: 300));
-  await $(find.text(difficultyLabel).hitTestable().last).tap();
+  await $.pumpAndSettle();
+  // The menu creates a second copy of the dropdown's items. Select that
+  // overlay copy after its animation, then let Patrol wait for visibility.
+  await $(find.text(difficultyLabel).last).tap();
   await byKey($, 'premium-sheet-title').waitUntilVisible();
   expect(byKey($, 'premium-sheet-title'), findsOneWidget);
   await byKey($, 'premium-sheet-dismiss-button').tap();

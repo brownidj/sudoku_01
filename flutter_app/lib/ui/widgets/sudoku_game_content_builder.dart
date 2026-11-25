@@ -11,9 +11,11 @@ import 'package:flutter_app/ui/widgets/sudoku_game_content.dart';
 
 class SudokuGameContentBuilder extends StatelessWidget {
   final bool marineAvailable;
+  final Set<String> downloadedThemeIds;
   const SudokuGameContentBuilder({
     super.key,
     this.marineAvailable = false,
+    this.downloadedThemeIds = const {},
     required this.victoryStateListenable,
     required this.victoryCenterYListenable,
     required this.state,
@@ -85,6 +87,7 @@ class SudokuGameContentBuilder extends StatelessWidget {
           builder: (context, centerY, _) {
             return SudokuGameContent(
               marineAvailable: marineAvailable,
+              downloadedThemeIds: downloadedThemeIds,
               state: state,
               style: style,
               animalImages: animalImages,

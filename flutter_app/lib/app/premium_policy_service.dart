@@ -16,7 +16,11 @@ class PremiumPolicyService {
   };
 
   static const Set<String> freeContentModes = <String>{
+    // Downloadable themes have their own purchases. They do not require the
+    // separate Full Version unlock; installation enforces their entitlement.
     'marine',
+    'planets',
+    'buttons',
     'animals',
     'instruments',
     'numbers',
@@ -114,7 +118,10 @@ class PremiumPolicyService {
 
   bool isBackgroundMusicThemeMode(String contentMode) {
     final mode = contentMode.trim().toLowerCase();
-    return mode == 'marine' || premiumContentModes.contains(mode);
+    return mode == 'marine' ||
+        mode == 'planets' ||
+        mode == 'buttons' ||
+        premiumContentModes.contains(mode);
   }
 
   bool areEnhancedCelebrationsUnlocked(Entitlement entitlement) {

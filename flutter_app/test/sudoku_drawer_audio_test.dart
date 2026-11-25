@@ -4,7 +4,36 @@ import 'package:flutter_test/flutter_test.dart';
 import 'support/sudoku_drawer_test_support.dart';
 
 void main() {
-  testWidgets('audio row toggles between on and off', (WidgetTester tester) async {
+  testWidgets('Marine Life music and volume controls reach their callbacks', (
+    tester,
+  ) async {
+    bool? musicEnabled;
+    double? volume;
+    await tester.pumpWidget(
+      drawerHarness(
+        contentMode: 'marine',
+        audioEnabled: true,
+        backgroundMusicEnabled: true,
+        onAudioEnabledChanged: (_) {},
+        onBackgroundMusicEnabledChanged: (value) => musicEnabled = value,
+        audioVolume: 0.5,
+        onAudioVolumeChanged: (value) => volume = value,
+      ),
+    );
+    await tester.drag(find.byType(ListView), const Offset(0, -700));
+    await tester.pumpAndSettle();
+    expect(find.text('Background music'), findsOneWidget);
+    await tester.tap(find.text('Background music'));
+    await tester.pumpAndSettle();
+    expect(musicEnabled, isFalse);
+    await tester.drag(find.byType(Slider), const Offset(100, 0));
+    await tester.pumpAndSettle();
+    expect(volume, greaterThan(0.5));
+  });
+
+  testWidgets('audio row toggles between on and off', (
+    WidgetTester tester,
+  ) async {
     bool? audioEnabled;
 
     await tester.pumpWidget(
@@ -22,7 +51,10 @@ void main() {
     expect(find.text('Audio'), findsOneWidget);
     expect(
       find.descendant(
-        of: find.ancestor(of: find.text('Audio'), matching: find.byType(ListTile)),
+        of: find.ancestor(
+          of: find.text('Audio'),
+          matching: find.byType(ListTile),
+        ),
         matching: find.text('On'),
       ),
       findsOneWidget,
@@ -45,7 +77,10 @@ void main() {
 
     expect(
       find.descendant(
-        of: find.ancestor(of: find.text('Audio'), matching: find.byType(ListTile)),
+        of: find.ancestor(
+          of: find.text('Audio'),
+          matching: find.byType(ListTile),
+        ),
         matching: find.text('Off'),
       ),
       findsOneWidget,

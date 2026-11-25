@@ -16,6 +16,7 @@ class ThemeManifest {
   final ThemeManifestColours colours;
   final int? minimumAppBuild;
   final Map<String, String> checksums;
+  final String? productId;
 
   const ThemeManifest({
     required this.schemaVersion,
@@ -29,6 +30,7 @@ class ThemeManifest {
     required this.colours,
     required this.minimumAppBuild,
     required this.checksums,
+    this.productId,
   });
 
   factory ThemeManifest.fromJsonText(String text) {
@@ -49,6 +51,11 @@ class ThemeManifest {
       throw InvalidThemeManifestException('Invalid theme_id: $themeId');
     }
     final themeVersion = _requiredInt(json, 'theme_version');
+    final productId = json['product_id'];
+    if (productId != null &&
+        (productId is! String || productId.trim().isEmpty)) {
+      throw const InvalidThemeManifestException('Invalid theme product_id.');
+    }
     if (themeVersion <= 0) {
       throw const InvalidThemeManifestException(
         'theme_version must be greater than zero.',
@@ -82,6 +89,7 @@ class ThemeManifest {
           ? json['minimum_app_build'] as int
           : null,
       checksums: _parseChecksums(_optionalMap(json['checksums'])),
+      productId: productId as String?,
     );
   }
 
@@ -144,6 +152,7 @@ class ThemeManifestAudio {
   Iterable<String> referencedPaths() sync* {
     for (final tile in tiles) {
       if (tile.longPress != null) yield tile.longPress!;
+      yield* tile.longPressVariants;
       if (tile.celebration != null) yield tile.celebration!;
     }
     yield* music;
@@ -153,11 +162,13 @@ class ThemeManifestAudio {
 class ThemeManifestTileAudio {
   final int digit;
   final String? longPress;
+  final List<String> longPressVariants;
   final String? celebration;
 
   const ThemeManifestTileAudio({
     required this.digit,
     required this.longPress,
+    this.longPressVariants = const [],
     required this.celebration,
   });
 
@@ -170,6 +181,15 @@ class ThemeManifestTileAudio {
     }
     return ThemeManifestTileAudio(
       digit: digit,
+      longPressVariants: json['long_press_variants'] is List
+          ? [
+              for (final item in json['long_press_variants'] as List)
+                if (item is String)
+                  item
+                else
+                  _invalidString('long press variant'),
+            ]
+          : const [],
       longPress: json['long_press'] is String
           ? json['long_press'] as String
           : null,

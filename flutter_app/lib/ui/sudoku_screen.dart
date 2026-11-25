@@ -20,6 +20,8 @@ import 'package:flutter_app/ui/sudoku_screen_view_model.dart';
 import 'package:flutter_app/ui/styles.dart';
 import 'package:flutter_app/ui/debug/marine_theme_pack_test_screen.dart';
 import 'package:flutter_app/ui/theme/marine_game_theme.dart';
+import 'package:flutter_app/ui/theme/downloadable_theme_catalog.dart';
+import 'package:flutter_app/ui/themes/downloadable_themes_screen.dart';
 import 'package:flutter_app/ui/widgets/help_dialog.dart';
 import 'package:flutter_app/ui/widgets/sudoku_game_content_builder.dart';
 import 'package:flutter_app/ui/widgets/sudoku_drawer.dart';
@@ -51,6 +53,7 @@ class _SudokuScreenState extends State<SudokuScreen> {
   late final SudokuScreenServiceRegistry _services;
   Future<void>? _animalLoad;
   bool _marineAvailable = false;
+  final Set<String> _downloadedThemeIds = {};
   bool _marineChecked = false;
   final List<ui.Image> _ownedMarineImages = [];
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -128,6 +131,8 @@ class _SudokuScreenState extends State<SudokuScreen> {
           'shells' => 'shells',
           'old_opera' => 'old_opera',
           'marine' => 'marine',
+          'planets' => 'planets',
+          'buttons' => 'buttons',
           _ => null,
         };
         final viewModel = SudokuScreenViewModel.from(

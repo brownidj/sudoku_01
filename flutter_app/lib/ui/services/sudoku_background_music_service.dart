@@ -73,7 +73,7 @@ class SudokuBackgroundMusicService {
 
   /// Installed pack paths become available asynchronously after game startup.
   Future<void> refreshInstalledTracks() async {
-    if (_contentMode != 'marine') return;
+    if (!const ['marine', 'planets', 'buttons'].contains(_contentMode)) return;
     await _stop();
     _currentTrackIndex = -1;
     _syncPlayback();

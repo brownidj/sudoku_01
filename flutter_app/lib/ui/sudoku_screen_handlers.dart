@@ -2,46 +2,55 @@ part of 'sudoku_screen.dart';
 
 extension _SudokuScreenHandlers on _SudokuScreenState {
   Future<void> _refreshMarineTheme() async {
-    try {
-      final theme = await MarineGameTheme.load();
-      final images = theme == null
-          ? <int, ui.Image>{}
-          : await MarineGameTheme.decode(theme);
-      if (!mounted) {
-        for (final image in images.values) {
-          image.dispose();
+    for (final item in DownloadableTheme.all) {
+      final id = item.id;
+      try {
+        final theme = await MarineGameTheme.load(themeId: id);
+        final images = theme == null
+            ? <int, ui.Image>{}
+            : await MarineGameTheme.decode(theme);
+        if (!mounted) {
+          for (final image in images.values) {
+            image.dispose();
+          }
+          return;
         }
-        return;
+        _updateScreenState(() {
+          _ownedMarineImages.addAll(images.values);
+          if (theme == null) {
+            MarineGameTheme.definitions.remove(id);
+            _downloadedThemeIds.remove(id);
+          } else {
+            MarineGameTheme.definitions[id] = theme;
+            _downloadedThemeIds.add(id);
+          }
+          _animalImages[id] = images;
+          _noteImages[id] = {
+            for (final size in [16, 20, 24, 32]) size: images,
+          };
+        });
+      } catch (error) {
+        AppDebug.log('${item.name} is unavailable: $error');
+        if (!mounted) return;
+        _updateScreenState(() {
+          MarineGameTheme.definitions.remove(id);
+          _downloadedThemeIds.remove(id);
+          _animalImages.remove(id);
+          _noteImages.remove(id);
+        });
       }
-      _updateScreenState(() {
-        _ownedMarineImages.addAll(images.values);
-        _marineChecked = true;
-        MarineGameTheme.definition = theme;
-        _marineAvailable = theme != null;
-        _animalImages['marine'] = images;
-        _noteImages['marine'] = {
-          for (final size in [16, 20, 24, 32]) size: images,
-        };
-      });
-    } catch (error) {
-      AppDebug.log('Marine Life is unavailable: $error');
-      if (!mounted) return;
-      _updateScreenState(() {
-        _marineChecked = true;
-        MarineGameTheme.definition = null;
-        _marineAvailable = false;
-        _animalImages.remove('marine');
-        _noteImages.remove('marine');
-      });
     }
-    if (mounted &&
-        !_marineAvailable &&
-        widget.controller.state.contentMode == 'marine') {
+    if (!mounted) return;
+    _updateScreenState(() {
+      _marineChecked = true;
+      _marineAvailable = _downloadedThemeIds.contains('marine');
+    });
+    final selected = widget.controller.state.contentMode;
+    if (MarineGameTheme.isDownloaded(selected) &&
+        !_downloadedThemeIds.contains(selected)) {
       widget.controller.onContentModeChanged('animals');
     }
-    if (mounted) {
-      unawaited(_services.backgroundMusicService.refreshInstalledTracks());
-    }
+    unawaited(_services.backgroundMusicService.refreshInstalledTracks());
   }
 
   bool get _isBackgroundMusicTheme {
@@ -59,7 +68,9 @@ extension _SudokuScreenHandlers on _SudokuScreenState {
     }
     final controller = widget.controller;
     final state = controller.state;
-    if (_marineChecked && !_marineAvailable && state.contentMode == 'marine') {
+    if (_marineChecked &&
+        MarineGameTheme.isDownloaded(state.contentMode) &&
+        !_downloadedThemeIds.contains(state.contentMode)) {
       controller.onContentModeChanged('animals');
       return;
     }

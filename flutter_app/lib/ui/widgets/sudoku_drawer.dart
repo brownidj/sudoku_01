@@ -27,6 +27,7 @@ class SudokuDrawer extends StatelessWidget {
   final VoidCallback? onLoadExhaustedCorrectionScenario;
   final VoidCallback? onResetEntitlementToFreeSelected;
   final VoidCallback? onThemePackTestSelected;
+  final VoidCallback? onDownloadableThemesSelected;
   final String? selectedLanguageCode;
   final ValueChanged<String>? onLanguageChanged;
   final bool showDebugTools;
@@ -53,6 +54,7 @@ class SudokuDrawer extends StatelessWidget {
     this.onLoadExhaustedCorrectionScenario,
     this.onResetEntitlementToFreeSelected,
     this.onThemePackTestSelected,
+    this.onDownloadableThemesSelected,
     this.selectedLanguageCode,
     this.onLanguageChanged,
     this.showDebugTools = AppDebug.enabled,
@@ -103,6 +105,14 @@ class SudokuDrawer extends StatelessWidget {
               onRestorePurchasesSelected: onRestorePurchasesSelected,
               onRedeemCodeSelected: onRedeemCodeSelected,
               showRedeemCode: defaultTargetPlatform == TargetPlatform.iOS,
+            ),
+            ListTile(
+              key: const ValueKey('drawer-downloadable-themes'),
+              contentPadding: _sectionPadding,
+              leading: const Icon(Icons.shopping_bag_outlined),
+              title: const Text('Downloadable themes'),
+              subtitle: const Text('Marine Life, Planets and Antique Buttons'),
+              onTap: onDownloadableThemesSelected,
             ),
             SudokuDrawerAboutSection(
               sectionPadding: _sectionPadding,

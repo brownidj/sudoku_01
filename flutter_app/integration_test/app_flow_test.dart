@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +14,9 @@ import 'package:flutter_app/app/settings_state.dart';
 import 'package:flutter_app/application/state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/main.dart' as app;
+import 'package:flutter_app/ui/animal_cache.dart';
+import 'package:flutter_app/ui/widgets/sudoku_board.dart';
+import 'package:flutter_app/ui/theme/apple_theme_pack_delivery.dart';
 
 const _menuTooltip =
     'Press this to open a drawer. Use the drawer menu to change animals and style.';
@@ -26,6 +30,101 @@ const _clearIconLabel = '⌫';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  testWidgets('drawer opens downloadable themes outside the developer tools', (
+    tester,
+  ) async {
+    const channel = MethodChannel(AppleThemePackDelivery.methodChannelName);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          channel,
+          (_) async => {'supported': false, 'configured': false},
+        );
+    addTearDown(
+      () => TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, null),
+    );
+    await _resetPreferences();
+    await _launchApp(tester);
+    // Exercise the scrollable drawer within the real device viewport.
+    await tester.binding.setSurfaceSize(null);
+    await tester.pumpAndSettle();
+    await _startGameFromLaunch(tester, buttonLabel: 'Play');
+    await _dismissInfoSheetIfVisible(tester);
+    await _openDrawer(tester);
+    await _dismissInfoSheetIfVisible(tester);
+    final entry = find.byKey(const ValueKey('drawer-downloadable-themes'));
+    await tester.scrollUntilVisible(
+      entry,
+      250,
+      scrollable: find
+          .descendant(
+            of: find.byType(Drawer),
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(entry);
+    await tester.pumpAndSettle();
+    expect(find.text('Downloadable themes'), findsOneWidget);
+    expect(find.text('Marine Life'), findsOneWidget);
+    expect(find.byKey(const ValueKey('buy-theme-marine')), findsOneWidget);
+    expect(
+      tester
+          .widget<FilledButton>(find.byKey(const ValueKey('buy-theme-marine')))
+          .onPressed,
+      isNull,
+    );
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.byType(SudokuBoard), findsOneWidget);
+  });
+
+  testWidgets('board long press shows a tile image and name with audio muted', (
+    tester,
+  ) async {
+    await _resetPreferences();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(PreferencesStore.keyAudioEnabled, false);
+    await _launchApp(tester);
+    await _startGameFromLaunch(tester, buttonLabel: 'Play');
+    await _dismissInfoSheetIfVisible(tester);
+    final board = tester.widget<SudokuBoard>(find.byType(SudokuBoard));
+    final cell = board.state.board.cells
+        .expand((row) => row)
+        .firstWhere((cell) => cell.value != null);
+    final origin = tester.getTopLeft(find.byType(SudokuBoard));
+    final cellSize = tester.getSize(find.byType(SudokuBoard)).width / 9;
+    await tester.longPressAt(
+      origin +
+          Offset(
+            (cell.coord.col + 0.5) * cellSize,
+            (cell.coord.row + 0.5) * cellSize,
+          ),
+    );
+    await tester.pump();
+    final preview = find.byKey(const ValueKey('tile-preview-overlay'));
+    expect(preview, findsOneWidget);
+    expect(
+      find.descendant(of: preview, matching: find.byType(Image)),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(
+        of: preview,
+        matching: find.text(
+          AnimalImageCache.displayNameForDigitTitleCase(
+            board.state.contentMode,
+            cell.value!,
+          ),
+        ),
+      ),
+      findsOneWidget,
+    );
+    await tester.pump(const Duration(seconds: 4));
+    expect(preview, findsNothing);
+  });
 
   testWidgets('launch and play show the board controls', (tester) async {
     await _resetPreferences();

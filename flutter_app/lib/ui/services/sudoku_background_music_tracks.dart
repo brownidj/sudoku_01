@@ -3,8 +3,12 @@ import 'package:flutter_app/ui/theme/bundled_theme_repository.dart';
 import 'package:flutter_app/ui/theme/marine_game_theme.dart';
 
 List<String> backgroundTracksForContentMode(String contentMode) {
-  if (contentMode == 'marine') {
-    return MarineGameTheme.definition?.audio?.backgroundMusicAssets ?? const [];
+  if (MarineGameTheme.isDownloaded(contentMode)) {
+    return MarineGameTheme
+            .definitions[contentMode]
+            ?.audio
+            ?.backgroundMusicAssets ??
+        const [];
   }
   if (!BundledThemeRepository.hasTheme(contentMode)) {
     return const <String>[];

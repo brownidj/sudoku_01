@@ -1639,22 +1639,33 @@ Recommended command-line validation should check:
 
 ## 24. Suggested first pack
 
-Pilot selected by David on 2026-11-24: **Marine Life** (`marine`). Use the nine
-existing PNG images in `flutter_app/assets/images/marine/`, restored from
-`assets/images/unused/marine/`. This is the source directory for pack preparation;
-do not use the former `unused/marine/` location or copy images from Sudoku_02.
+Pilot selected by David on 2026-11-24: **Marine Life** (`marine`). Current
+content version **4** uses the nine butterfly fish PNG images in
+`flutter_app/assets/images/marine/`. The former mixed-animal images and
+misnamed `1_threadfin.png.png` duplicate were removed from this source directory
+on 2026-11-25. Archived animal images remain in `assets/images/unused/` and
+are not pack inputs. Do not copy images from Sudoku_02.
 
 | Digit | Source image | Tile label |
 | --- | --- | --- |
-| 1 | `1_butterflyfish.png` | Butterflyfish |
-| 2 | `2_octopus.png` | Octopus |
-| 3 | `3_crab.png` | Crab |
-| 4 | `4_seahorse.png` | Seahorse |
-| 5 | `5_starfish.png` | Starfish |
-| 6 | `6_walrus.png` | Walrus |
-| 7 | `7_shark.png` | Shark |
-| 8 | `8_jellyfish.png` | Jellyfish |
-| 9 | `9_turtle.png` | Turtle |
+| 1 | `1_threadfin_butterflyfish.png` | Threadfin Butterfly Fish |
+| 2 | `2_copperband_butterflyfish.png` | Copperband Butterfly Fish |
+| 3 | `3_raccoon_butterflyfish.png` | Raccoon Butterfly Fish |
+| 4 | `4_saddled_butterflyfish.png` | Saddled Butterfly Fish |
+| 5 | `5_ornate_butterflyfish.png` | Ornate Butterfly Fish |
+| 6 | `6_meyers_butterflyfish.png` | Meyers Butterfly Fish |
+| 7 | `7_blackback_butterflyfish.png` | Blackback Butterfly Fish |
+| 8 | `8_redtail_butterflyfish.png` | Redtail Butterfly Fish |
+| 9 | `9_pyramid_butterflyfish.png` | Pyramid Butterfly Fish |
+
+Labels are derived from the filenames. V4 discovers tunes in
+`flutter_app/assets/audio/marine/` by digit and species. Threadfin has
+`1_threadfin_1.mp3` and `1_threadfin_2.mp3` (formerly the two “Butterfly Fish” songs); Copperband has `2_copperband_1.wav` and
+`2_copperband_2.wav`; Raccoon has `3_raccoon_1.wav` and `3_raccoon_2.wav`; Redtail has `8_redtail_1.wav` and `8_redtail_2.wav`.
+Long presses randomly choose a matching alternative (maximum four seconds).
+Fish without recordings still show their image/name. All eight tunes form the
+ambient playlist; archived music is excluded. WAVs are packaged as 192 kbps AAC\ncopies using ffmpeg, preserving the original source files. See the
+[current audio mapping](Theme_Store_TestFlight_Setup.md#marine-life-assets-prepared-for-upload).
 
 Keep these source images outside the app's bundled asset list when preparing
 the downloadable pilot; the pack builder reads them directly from disk.

@@ -100,6 +100,8 @@ class UiController {
       'shells' ||
       'old_opera' ||
       'marine' ||
+      'planets' ||
+      'buttons' ||
       'numbers' => mode,
       _ => 'numbers',
     };

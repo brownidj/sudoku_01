@@ -32,6 +32,8 @@ class SettingsController {
         prefs.contentMode == 'shells' ||
         prefs.contentMode == 'old_opera' ||
         prefs.contentMode == 'marine' ||
+        prefs.contentMode == 'planets' ||
+        prefs.contentMode == 'buttons' ||
         prefs.contentMode == 'numbers') {
       next = next.copyWith(contentMode: prefs.contentMode);
     }
@@ -89,6 +91,8 @@ class SettingsController {
         mode != 'shells' &&
         mode != 'old_opera' &&
         mode != 'marine' &&
+        mode != 'planets' &&
+        mode != 'buttons' &&
         mode != 'numbers') {
       return;
     }

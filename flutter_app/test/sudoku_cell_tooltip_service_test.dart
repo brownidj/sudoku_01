@@ -1,7 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/app/ui_state.dart';
 import 'package:flutter_app/domain/types.dart';
 import 'package:flutter_app/ui/services/sudoku_cell_tooltip_service.dart';
+import 'package:flutter_app/ui/services/tooltip_overlay_service.dart';
+import 'package:flutter_app/ui/styles.dart';
+import 'package:flutter_app/ui/theme/marine_game_theme.dart';
+import 'package:flutter_app/ui/theme/theme_definition.dart';
+import 'package:flutter_app/ui/widgets/sudoku_board.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class _FakeOverlay implements CellTooltipOverlay {
@@ -125,6 +132,130 @@ UiState _stateWithValue({required String contentMode, required int value}) {
 }
 
 void main() {
+  tearDown(() => MarineGameTheme.definition = null);
+
+  for (final mode in ['butterflies', 'marine']) {
+    for (final soundState in ['enabled', 'muted', 'missing']) {
+      final soundEnabled = soundState == 'enabled';
+      testWidgets(
+        '$mode board long press shows image and name with audio $soundState',
+        (tester) async {
+          if (mode == 'marine') {
+            MarineGameTheme.definition = ThemeDefinition(
+              id: 'marine',
+              displayName: 'Marine Life',
+              version: 2,
+              tiles: [
+                for (var i = 1; i <= 9; i++)
+                  ThemeTile(
+                    id: '$i',
+                    imagePath: File(
+                      'assets/images/marine/7_blackback_butterflyfish.png',
+                    ).absolute.path,
+                    accessibilityLabel: 'Blackback Butterfly Fish',
+                    displayName: 'Blackback Butterfly Fish',
+                    label: '$i',
+                  ),
+              ],
+              audio: null,
+              colours: const ThemeColours(),
+              typography: null,
+            );
+          }
+          final overlay = TooltipOverlayService();
+          addTearDown(overlay.dispose);
+          final audio = _FakeAudioController(
+            hasAudioAsset: soundState != 'missing',
+            playResult: soundEnabled,
+          );
+          final background = _FakeBackgroundMusicController();
+          final service = SudokuCellTooltipService(
+            TooltipOverlayAdapter(overlay),
+            audio,
+            background,
+          );
+          final state = _stateWithValue(
+            contentMode: mode,
+            value: mode == 'marine' ? 7 : 1,
+          );
+          await tester.pumpWidget(
+            MaterialApp(
+              home: Scaffold(
+                body: Builder(
+                  builder: (context) => Center(
+                    child: SizedBox(
+                      width: 360,
+                      height: 360,
+                      child: SudokuBoard(
+                        state: state,
+                        style: styleModern,
+                        animalImages: const {},
+                        noteImagesBySize: const {},
+                        devicePixelRatio: 1,
+                        onTapCell: (_) {},
+                        onLongPressCell: (position, coord) =>
+                            service.showForCell(
+                              context: context,
+                              state: state,
+                              coord: coord,
+                              globalPosition: position,
+                            ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+
+          // Exercise the real gesture recognizer, board coordinate mapping,
+          // service and overlay together, rather than calling showForCell alone.
+          final topLeft = tester.getTopLeft(find.byType(SudokuBoard));
+          await tester.longPressAt(topLeft + const Offset(20, 20));
+          await tester.pump();
+          final preview = find.byKey(const ValueKey('tile-preview-overlay'));
+          expect(preview, findsOneWidget);
+          expect(
+            find.descendant(
+              of: preview,
+              matching: find.text(
+                mode == 'marine' ? 'Blackback Butterfly Fish' : 'Monarch',
+              ),
+            ),
+            findsOneWidget,
+          );
+          final image = tester.widget<Image>(
+            find.descendant(of: preview, matching: find.byType(Image)),
+          );
+          if (mode == 'marine') {
+            expect(image.image, isA<FileImage>());
+            expect(
+              (image.image as FileImage).file.path,
+              endsWith('/7_blackback_butterflyfish.png'),
+            );
+          } else {
+            expect(image.image, isA<AssetImage>());
+            expect(
+              (image.image as AssetImage).assetName,
+              'assets/images/butterflies/1_monarch.png',
+            );
+          }
+          expect(audio.playCalls, soundState == 'missing' ? 0 : 1);
+          if (soundState != 'missing') {
+            expect(audio.lastMode, mode);
+            expect(audio.lastDigit, mode == 'marine' ? 7 : 1);
+          }
+          expect(background.suspendCalls, soundEnabled ? 1 : 0);
+          await tester.pump(const Duration(seconds: 3));
+          expect(preview, findsOneWidget);
+          await tester.pump(const Duration(seconds: 1));
+          expect(preview, findsNothing);
+          expect(background.resumeCalls, soundEnabled ? 1 : 0);
+        },
+      );
+    }
+  }
+
   testWidgets(
     'butterfly tile long press shows large image preview and triggers audio',
     (tester) async {

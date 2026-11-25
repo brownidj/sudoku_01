@@ -35,6 +35,207 @@ void main() {
 
   tearDown(() => root.delete(recursive: true));
 
+  test(
+    'a purchased catalogue cannot install an archive bound to a different product',
+    () async {
+      final zip = await _pack(root, productId: 'premium_unlock');
+      final json = _catalogue(zip);
+      ((json['themes'] as List).single as Map<String, Object?>).addAll({
+        'is_free': false,
+        'product_id': 'theme_marine',
+      });
+      await delivery.catalogue.writeAsString(jsonEncode(json));
+      final paid = MarineThemePackPilot(
+        delivery: delivery,
+        storagePaths: paths,
+        appBuild: 400,
+        expectedProductId: 'theme_marine',
+        hasEntitlement: () async => true,
+      );
+      await expectLater(
+        paid.downloadAndInstall(await paid.fetchCatalogue()),
+        throwsA(isA<InvalidThemeManifestException>()),
+      );
+      expect(await paths.currentFile('marine').exists(), isFalse);
+      expect(await paths.tempDirectory.list().toList(), isEmpty);
+    },
+  );
+
+  test(
+    'paid catalogue accepts only its configured product, never Full Version',
+    () {
+      final json = _catalogue(delivery.zip);
+      final entry = (json['themes'] as List).single as Map<String, Object?>;
+      entry['is_free'] = false;
+      entry['product_id'] = 'theme_marine';
+      final text = jsonEncode(json);
+      expect(
+        () => MarinePilotDescriptor.fromCatalogue(text, 400),
+        throwsA(isA<MarinePilotException>()),
+      );
+      expect(
+        () => MarinePilotDescriptor.fromCatalogue(
+          text,
+          400,
+          expectedProductId: 'premium_unlock',
+        ),
+        throwsA(isA<MarinePilotException>()),
+      );
+      expect(
+        MarinePilotDescriptor.fromCatalogue(
+          text,
+          400,
+          expectedProductId: 'theme_marine',
+        ).themeId,
+        'marine',
+      );
+    },
+  );
+
+  test(
+    'paid download is blocked before native delivery without a verified entitlement',
+    () async {
+      final json = _catalogue(delivery.zip);
+      ((json['themes'] as List).single as Map<String, Object?>).addAll({
+        'is_free': false,
+        'product_id': 'theme_marine',
+      });
+      final paid = MarineThemePackPilot(
+        delivery: delivery,
+        storagePaths: paths,
+        appBuild: 400,
+        expectedProductId: 'theme_marine',
+        hasEntitlement: () async => false,
+      );
+      final descriptor = MarinePilotDescriptor.fromCatalogue(
+        jsonEncode(json),
+        400,
+        expectedProductId: 'theme_marine',
+      );
+      await expectLater(
+        paid.downloadAndInstall(descriptor),
+        throwsA(isA<MarinePilotException>()),
+      );
+      expect(delivery.requests, isEmpty);
+      expect(await paths.currentFile('marine').exists(), isFalse);
+    },
+  );
+
+  test(
+    'revocation during a paid download prevents committing installation',
+    () async {
+      var owned = true;
+      final paidCatalogue = _catalogue(delivery.zip);
+      ((paidCatalogue['themes'] as List).single as Map<String, Object?>).addAll(
+        {'is_free': false, 'product_id': 'theme_marine'},
+      );
+      final paid = MarineThemePackPilot(
+        delivery: delivery,
+        storagePaths: paths,
+        appBuild: 400,
+        expectedProductId: 'theme_marine',
+        hasEntitlement: () async => owned,
+      );
+      final descriptor = MarinePilotDescriptor.fromCatalogue(
+        jsonEncode(paidCatalogue),
+        400,
+        expectedProductId: 'theme_marine',
+      );
+      await expectLater(
+        paid.downloadAndInstall(
+          descriptor,
+          onStage: (stage) {
+            if (stage.startsWith('Downloading')) owned = false;
+          },
+        ),
+        throwsA(isA<MarinePilotException>()),
+      );
+      expect(await paths.currentFile('marine').exists(), isFalse);
+      expect(await paths.tempDirectory.list().toList(), isEmpty);
+    },
+  );
+
+  for (final id in ['marine', 'planets', 'buttons']) {
+    test(
+      'paid $id installs and reopens through the shared validated loader',
+      () async {
+        final zip = await _pack(
+          root,
+          themeId: id,
+          includeAudio: true,
+          productId: 'theme_$id',
+        );
+        final json = _catalogue(zip);
+        final entry = (json['themes'] as List).single as Map<String, Object?>;
+        entry.addAll({
+          'id': id,
+          'apple_asset_pack_id': id,
+          'archive_path': 'ThemePacks/${id}_v1.zip',
+          'is_free': false,
+          'product_id': 'theme_$id',
+        });
+        await delivery.catalogue.writeAsString(jsonEncode(json));
+        final paid = MarineThemePackPilot(
+          delivery: delivery,
+          storagePaths: paths,
+          appBuild: 400,
+          themeId: id,
+          expectedProductId: 'theme_$id',
+          hasEntitlement: () async => true,
+        );
+        final theme = await paid.downloadAndInstall(
+          await paid.fetchCatalogue(),
+        );
+        expect(theme.id, id);
+        expect(theme.tiles, hasLength(9));
+        expect(theme.audio!.tilePreviewAssets, hasLength(9));
+        expect(theme.audio!.backgroundMusicAssets, hasLength(9));
+        delivery.requests.clear();
+        expect((await paid.loadInstalled())!.id, id);
+        expect(delivery.requests, isEmpty);
+        await paid.removeInstallation();
+        expect(await paid.loadInstalled(), isNull);
+      },
+    );
+  }
+
+  test(
+    'v2 keeps all creature sounds and music after delivery cache removal',
+    () async {
+      final zip = await _pack(root, version: 2, includeAudio: true);
+      final json = _catalogue(zip);
+      final entry = (json['themes'] as List).single as Map<String, Object?>;
+      entry['version'] = 2;
+      entry['archive_path'] = 'ThemePacks/marine_v2.zip';
+      await delivery.catalogue.writeAsString(jsonEncode(json));
+      await pilot.downloadAndInstall(await pilot.fetchCatalogue());
+      await pilot.removeDeliveryCopy();
+      expect(delivery.removed, ['marine', 'theme_catalogue']);
+      delivery.requests.clear();
+      delivery.offline = true;
+
+      // A new coordinator reloads from private storage, as the profile build does.
+      final reopened = MarineThemePackPilot(
+        delivery: delivery,
+        storagePaths: paths,
+        appBuild: 400,
+      );
+      final theme = (await reopened.loadInstalled())!;
+      expect(theme.version, 2);
+      expect(theme.tiles, hasLength(9));
+      expect(theme.audio!.tilePreviewAssets, hasLength(9));
+      expect(theme.audio!.backgroundMusicAssets, hasLength(9));
+      for (final path in [
+        ...theme.audio!.tilePreviewAssets.values,
+        ...theme.audio!.backgroundMusicAssets,
+      ]) {
+        expect(path, startsWith(paths.versionDirectory('marine', 2).path));
+        expect(await File(path).readAsBytes(), [21, 22, 23]);
+      }
+      expect(delivery.requests, isEmpty);
+    },
+  );
+
   test('downloads, verifies and installs through the shared loader', () async {
     final descriptor = await pilot.fetchCatalogue();
     final theme = await pilot.downloadAndInstall(descriptor);
@@ -206,7 +407,7 @@ void main() {
   test('delivery removal retains a verified private installation', () async {
     await pilot.downloadAndInstall(await pilot.fetchCatalogue());
     await pilot.removeDeliveryCopy();
-    expect(delivery.removed, ['marine']);
+    expect(delivery.removed, ['marine', 'theme_catalogue']);
     expect((await pilot.loadInstalled())?.tiles, hasLength(9));
     await pilot.removeInstallation();
     expect(await pilot.loadInstalled(), isNull);
@@ -253,6 +454,8 @@ Future<File> _pack(
   String themeId = 'marine',
   int version = 1,
   int minimumBuild = 359,
+  bool includeAudio = false,
+  String? productId,
 }) async {
   final png = base64Decode(
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a0BsAAAAASUVORK5CYII=',
@@ -260,15 +463,28 @@ Future<File> _pack(
   final files = <String, List<int>>{
     'preview.png': png,
     for (var i = 1; i <= 9; i++) 'tiles/tile_$i.png': png,
+    if (includeAudio) ...{
+      for (var i = 1; i <= 9; i++) 'audio/tiles/$i.mp3': [21, 22, 23],
+      for (var i = 1; i <= 9; i++) 'audio/music/$i.mp3': [21, 22, 23],
+    },
   };
   final manifest = {
     'schema_version': 1,
+    'product_id': productId,
     'theme_id': themeId,
     'theme_version': version,
     'display_name': 'Marine Life',
     'tile_count': 9,
     'preview_path': 'preview.png',
     'minimum_app_build': minimumBuild,
+    if (includeAudio)
+      'audio': {
+        'tiles': [
+          for (var i = 1; i <= 9; i++)
+            {'digit': i, 'long_press': 'audio/tiles/$i.mp3'},
+        ],
+        'music': [for (var i = 1; i <= 9; i++) 'audio/music/$i.mp3'],
+      },
     'tiles': [
       for (var i = 1; i <= 9; i++)
         {

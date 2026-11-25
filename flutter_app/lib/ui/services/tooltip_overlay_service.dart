@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 class TooltipOverlayService {
   OverlayEntry? _entry;
+  Timer? _dismissTimer;
 
   void show({
     required BuildContext context,
@@ -11,90 +14,103 @@ class TooltipOverlayService {
     required String text,
     String? imageAssetPath,
   }) {
-    _entry?.remove();
+    dispose();
 
     final overlay = Overlay.of(context);
-    final size = MediaQuery.of(context).size;
-    const tooltipPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 10);
-    const tooltipMargin = 8.0;
-    const previewSize = 256.0;
+    final media = MediaQuery.of(context);
+    final colours = Theme.of(context).colorScheme;
+    const padding = EdgeInsets.symmetric(horizontal: 12, vertical: 10);
+    const margin = 8.0;
     final hasImage = imageAssetPath != null && imageAssetPath.isNotEmpty;
-    final imagePath = hasImage ? imageAssetPath : null;
+    final contentWidth = math.min(
+      256.0,
+      math.max(1.0, media.size.width - 2 * margin - padding.horizontal),
+    );
+    final textStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+      inherit: false,
+      color: colours.onSurface,
+      fontSize: 14,
+    );
     final textPainter = TextPainter(
-      text: TextSpan(
-        text: text,
-        style: const TextStyle(color: Colors.black, fontSize: 14),
+      text: TextSpan(text: text, style: textStyle),
+      textDirection: Directionality.of(context),
+      textScaler: media.textScaler,
+    )..layout(maxWidth: contentWidth);
+    final textWidth = textPainter.width;
+    final textHeight = textPainter.height;
+    textPainter.dispose();
+    final previewSize = math.min(
+      contentWidth,
+      math.max(
+        1.0,
+        media.size.height - 2 * margin - padding.vertical - textHeight - 8,
       ),
-      textDirection: TextDirection.ltr,
-    )..layout(maxWidth: hasImage ? previewSize : double.infinity);
+    );
     final tooltipSize = Size(
-      hasImage
-          ? previewSize + tooltipPadding.horizontal
-          : textPainter.width + tooltipPadding.horizontal,
-      (hasImage ? previewSize : textPainter.height) + tooltipPadding.vertical,
+      (hasImage ? contentWidth : textWidth) + padding.horizontal,
+      (hasImage ? previewSize + 8 : 0) + textHeight + padding.vertical,
     );
-
-    var left = globalPosition.dx - tooltipSize.width / 2;
-    var top = globalPosition.dy - tooltipSize.height - 14;
-    left = left.clamp(
-      tooltipMargin,
-      size.width - tooltipSize.width - tooltipMargin,
+    final left = (globalPosition.dx - tooltipSize.width / 2).clamp(
+      margin,
+      math.max(margin, media.size.width - tooltipSize.width - margin),
     );
-    top = top.clamp(
-      tooltipMargin,
-      size.height - tooltipSize.height - tooltipMargin,
+    final top = (globalPosition.dy - tooltipSize.height - 14).clamp(
+      margin,
+      math.max(margin, media.size.height - tooltipSize.height - margin),
     );
 
     _entry = OverlayEntry(
       builder: (context) => Positioned(
-        left: left,
-        top: top,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            padding: tooltipPadding,
-            decoration: BoxDecoration(
-              color: hasImage ? Colors.transparent : Colors.white,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (hasImage)
-                  Container(
-                    width: previewSize,
-                    height: previewSize,
-                    color: Colors.transparent,
-                    child: Image(
-                      image: imagePath!.startsWith('/')
-                          ? FileImage(File(imagePath))
-                          : AssetImage(imagePath) as ImageProvider,
-                      fit: BoxFit.contain,
-                      filterQuality: FilterQuality.high,
+        left: left.toDouble(),
+        top: top.toDouble(),
+        width: tooltipSize.width,
+        child: IgnorePointer(
+          child: Material(
+            key: const ValueKey('tile-preview-overlay'),
+            color: colours.surface,
+            elevation: 4,
+            borderRadius: BorderRadius.circular(6),
+            child: Padding(
+              padding: padding,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (hasImage) ...[
+                    SizedBox(
+                      width: previewSize,
+                      height: previewSize,
+                      child: Image(
+                        image: imageAssetPath.startsWith('/')
+                            ? FileImage(File(imageAssetPath))
+                            : AssetImage(imageAssetPath) as ImageProvider,
+                        fit: BoxFit.contain,
+                        filterQuality: FilterQuality.high,
+                        errorBuilder: (_, _, _) =>
+                            const Icon(Icons.broken_image),
+                      ),
                     ),
-                  ),
-                if (!hasImage)
+                    const SizedBox(height: 8),
+                  ],
                   Text(
                     text,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.black, fontSize: 14),
+                    textScaler: media.textScaler,
+                    style: textStyle,
                   ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
-
     overlay.insert(_entry!);
-    Future<void>.delayed(const Duration(seconds: 2), () {
-      _entry?.remove();
-      _entry = null;
-    });
+    _dismissTimer = Timer(Duration(seconds: hasImage ? 4 : 2), dispose);
   }
 
   void dispose() {
+    _dismissTimer?.cancel();
+    _dismissTimer = null;
     _entry?.remove();
     _entry = null;
   }

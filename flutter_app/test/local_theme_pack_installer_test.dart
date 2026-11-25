@@ -74,6 +74,38 @@ void main() {
       );
     });
 
+    test(
+      'validates every alternative preview, including unsafe or missing files',
+      () async {
+        for (final path in ['audio/missing.wav', '../outside.wav']) {
+          final manifest = _validManifest();
+          manifest['audio'] = {
+            'tiles': [
+              {
+                'digit': 8,
+                'long_press': 'audio/tile_01.m4a',
+                'long_press_variants': ['audio/tile_01.m4a', path],
+              },
+            ],
+            'music': [],
+          };
+          final zip = await _writeZip(
+            tempDirectory,
+            manifest: manifest,
+            files: _validFiles(),
+          );
+          await expectLater(
+            installer.installFromZip(zip),
+            throwsA(
+              path.startsWith('..')
+                  ? isA<UnsafeThemeArchivePathException>()
+                  : isA<MissingThemeAssetException>(),
+            ),
+          );
+        }
+      },
+    );
+
     test('rejects a ZIP file that is not found', () async {
       expect(
         () =>

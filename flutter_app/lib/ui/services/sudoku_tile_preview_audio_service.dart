@@ -77,8 +77,9 @@ class SudokuTilePreviewAudioService {
     if (digit < 1 || digit > 9) {
       return null;
     }
-    if (contentMode == 'marine') {
-      return MarineGameTheme.definition?.audio?.tilePreviewAssetForDigit(digit);
+    if (MarineGameTheme.isDownloaded(contentMode)) {
+      return MarineGameTheme.definitions[contentMode]?.audio
+          ?.tilePreviewAssetForDigit(digit);
     }
     return BundledThemeRepository.tilePreviewAudioAsset(
       themeId: contentMode,

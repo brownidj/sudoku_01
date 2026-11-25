@@ -75,6 +75,20 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
         Navigator.of(context).maybePop();
         controller.onSetEntitlement(Entitlement.free);
       },
+      onDownloadableThemesSelected: () async {
+        final navigator = Navigator.of(context);
+        navigator.pop();
+        final selected = await navigator.push<String>(
+          MaterialPageRoute(builder: (_) => const DownloadableThemesScreen()),
+        );
+        if (!mounted) return;
+        await _refreshMarineTheme();
+        if (mounted &&
+            selected != null &&
+            _downloadedThemeIds.contains(selected)) {
+          controller.onContentModeChanged(selected);
+        }
+      },
       onThemePackTestSelected: () async {
         final navigator = Navigator.of(context);
         navigator.pop();
@@ -106,6 +120,7 @@ extension _SudokuScreenBuilders on _SudokuScreenState {
   }) {
     return SudokuGameContentBuilder(
       marineAvailable: _marineAvailable,
+      downloadedThemeIds: _downloadedThemeIds,
       victoryStateListenable: _services.victoryOverlayService.state,
       victoryCenterYListenable: _services.victoryPositionService.centerY,
       state: state,
